@@ -47,7 +47,6 @@ public extension TargetDependency.Target.Core {
         )
     }
     static let CoreKit = project(name: "CoreKit")
-    static let RxPackage = project(name: "RxPackage")
 }
 
 // MARK: - Core + Network

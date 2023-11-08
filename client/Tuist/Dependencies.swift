@@ -11,8 +11,7 @@ import UtilityPlugin
 
 let dependencies = Dependencies(
     swiftPackageManager: .init([
-        .RIBs,
-        .RxSwift
+        .ModernRIBs
     ]),
     platforms: [.iOS]
 )
