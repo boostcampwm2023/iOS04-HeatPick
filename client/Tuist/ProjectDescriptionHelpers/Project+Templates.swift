@@ -5,7 +5,7 @@ extension Project {
     
     public static func app(
         name: String,
-        organizationName: String = "boostcamp",
+        organizationName: String = "codesquad",
         deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.0", devices: .iphone),
         appTargets: Set<AppTarget> = [.release, .dev],
         infoPlist: InfoPlist,
@@ -18,13 +18,16 @@ extension Project {
                 name: name + "-Dev",
                 platform: .iOS,
                 product: .app,
-                bundleId: "com.heatpick.\(name)-dev",
+                bundleId: "kr.\(organizationName).boostcamp8.\(name)-dev",
                 deploymentTarget: deploymentTarget,
                 infoPlist: infoPlist,
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
                 dependencies: dependencies,
-                settings: .settings(configurations: [.debug(name: .debug)])
+                settings: .settings(
+                    base: ["OTHER_LDFLAGS" : "$(inherited) -all_load"],
+                    configurations: [.debug(name: .debug)]
+                )
             )
             targets.append(target)
         }
@@ -34,13 +37,16 @@ extension Project {
                 name: name,
                 platform: .iOS,
                 product: .app,
-                bundleId: "com.heatpick.\(name)",
+                bundleId: "kr.\(organizationName).boostcamp8.\(name)",
                 deploymentTarget: deploymentTarget,
                 infoPlist: infoPlist,
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
                 dependencies: dependencies,
-                settings: .settings(configurations: [.release(name: .release)])
+                settings: .settings(
+                    base: ["OTHER_LDFLAGS" : "$(inherited)"],
+                    configurations: [.release(name: .release)]
+                )
             )
             targets.append(target)
         }
@@ -60,7 +66,7 @@ extension Project {
     
     public static func framework(
         name: String,
-        organizationName: String = "boostcamp",
+        organizationName: String = "codesquad",
         deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.0", devices: .iphone),
         featureTargets: [FeatureTarget] = [.staticLibrary],
         packages: [Package] = [],
@@ -73,7 +79,7 @@ extension Project {
                 name: name,
                 platform: .iOS,
                 product: .framework,
-                bundleId: "com.heatpick.\(name)",
+                bundleId: "kr.\(organizationName).boostcamp8.heatpick.\(name)",
                 deploymentTarget: deploymentTarget,
                 infoPlist: .default,
                 sources: ["Sources/**"],
@@ -87,7 +93,7 @@ extension Project {
                 name: name,
                 platform: .iOS,
                 product: .staticLibrary,
-                bundleId: "com.heatpick.\(name)",
+                bundleId: "kr.\(organizationName).boostcamp8.heatpick.\(name)",
                 deploymentTarget: deploymentTarget,
                 infoPlist: .default,
                 sources: ["Sources/**"],
@@ -115,7 +121,7 @@ extension Project {
     
     public static func demo(
         name: String,
-        organizationName: String = "boostcamp",
+        organizationName: String = "codesquad",
         deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.0", devices: .iphone),
         packages: [Package] = [],
         dependencies: [TargetDependency] = []
@@ -126,7 +132,7 @@ extension Project {
             name: name,
             platform: .iOS,
             product: .app,
-            bundleId: "com.heatpick.\(name)Demo",
+            bundleId: "kr.\(organizationName).boostcamp8.heatpick.\(name)Demo",
             deploymentTarget: deploymentTarget,
             infoPlist: .extendingDefault(with: [
                 "UIMainStoryboardFile": "",
