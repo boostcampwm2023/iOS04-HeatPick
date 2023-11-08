@@ -15,4 +15,10 @@
 | jyt001532@gmail.com | cgg7777@naver.com |
 
 
-# 프로젝트 소개
+# 🔨 프로젝트 소개
+
+# 📔 문서
+- 🏝️ [그라운드 룰](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%F0%9F%93%94-%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)
+- 🎨 [앱 디자인](https://www.figma.com/team_invite/redeem/Rdu2CXbnpL6Ut8glMcs7PA)
+- 📇 [템플릿](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%F0%9F%93%87-%ED%85%9C%ED%94%8C%EB%A6%BF)
+- 📝 [API](https://junbok97.notion.site/junbok97/HeatPick-API-5773319977624e3f898bc3952ed6080e)
