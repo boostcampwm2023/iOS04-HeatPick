@@ -16,10 +16,12 @@ extension TargetDependency {
 
 public extension TargetDependency.SPM {
     static let ModernRIBs = TargetDependency.external(name: "ModernRIBs")
+    static let NaverLogin = TargetDependency.external(name: "naveridlogin-ios-sp")
 }
 
 public extension Package {
     static let ModernRIBs = Package.remote(url: "https://github.com/DevYeom/ModernRIBs.git", requirement: .exact("1.0.0"))
+    static let NaverLogin = Package.remote(url: "https://github.com/kyungkoo/naveridlogin-ios-sp", requirement: .exact("4.1.5"))
 }
 
 // MARK: - Resources

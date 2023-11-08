@@ -11,6 +11,8 @@ let project = Project.app(
         .Target.Domain.Interfaces,
         .Target.Data.Repositories,
         .Target.Presentation.Home.Interfaces,
-        .Target.Presentation.Home.Implementations
+        .Target.Presentation.Home.Implementations,
+        .Target.Presentation.Auth.Interfaces,
+        .Target.Presentation.Auth.Implementations
     ]
 )
