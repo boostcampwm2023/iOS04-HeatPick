@@ -19,3 +19,16 @@ public extension TargetDependency.Target.Presentation.Home {
     static let Interfaces = project(name: "Interfaces")
     static let Implementations = project(name: "Implementations")
 }
+
+public extension TargetDependency.Target.Presentation.Auth {
+    static let group = "Auth"
+    static func project(name: String) -> TargetDependency {
+        return .project(
+            target: "\(group)\(name)",
+            path: .relativeToRoot("Targets/Presentation/\(group)/\(name)")
+        )
+    }
+    static let Interfaces = project(name: "Interfaces")
+    static let Implementations = project(name: "Implementations")
+}
+
