@@ -7,6 +7,7 @@ let project = Project.framework(
     featureTargets: [.staticLibrary],
     dependencies: [
         .Target.Core.CoreKit,
-        .Target.Domain.Interfaces
+        .Target.Domain.Interfaces,
+        .SPM.ModernRIBs
     ]
 )

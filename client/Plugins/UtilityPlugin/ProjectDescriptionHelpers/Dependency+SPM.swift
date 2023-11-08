@@ -15,15 +15,11 @@ extension TargetDependency {
 }
 
 public extension TargetDependency.SPM {
-    static let RIBs = TargetDependency.external(name: "RIBs")
-    static let RxCocoa = TargetDependency.external(name: "RxCocoa")
-    static let RxRelay = TargetDependency.external(name: "RxRelay")
-    static let RxSwift = TargetDependency.external(name: "RxSwift")
+    static let ModernRIBs = TargetDependency.external(name: "ModernRIBs")
 }
 
 public extension Package {
-    static let RIBs = Package.remote(url: "https://github.com/uber/RIBs.git", requirement: .exact("0.16.0"))
-    static let RxSwift = Package.remote(url: "https://github.com/ReactiveX/RxSwift.git", requirement: .exact("6.6.0"))
+    static let ModernRIBs = Package.remote(url: "https://github.com/DevYeom/ModernRIBs.git", requirement: .exact("1.0.0"))
 }
 
 // MARK: - Resources

@@ -14,7 +14,6 @@ let workspace = Workspace(
     projects: [
         "Targets/App",
         "Targets/Core/CoreKit",
-        "Targets/Core/RxPackage",
         "Targets/DesignSystem/DesignKit"
     ],
     schemes: [
