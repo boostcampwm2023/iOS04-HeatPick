@@ -52,6 +52,13 @@ final class LoginButton: UIButton {
         configuration.imagePlacement = .leading
         configuration.titleAlignment = .center
         
+        let titleAttribute = UIConfigurationTextAttributesTransformer { transform in
+            var transform = transform
+            transform.font = UIFont.bodySemibold
+            return transform
+        }
+        configuration.titleTextAttributesTransformer = titleAttribute
+        
         self.configuration = configuration
     }
     

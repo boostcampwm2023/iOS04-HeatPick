@@ -28,14 +28,18 @@ public final class NaverLoginRepository: NSObject, NaverLoginRepositoryInterface
         instance?.isOnlyPortraitSupportedInIphone()
         
         instance?.appName = "heatpick"
-        instance?.consumerKey = "jVSHpqp9TC4MltNI4lVJ"
+        instance?.consumerKey = "j5v71CnQPr7q9LdtskbQ"
         instance?.consumerSecret = ""
         instance?.serviceUrlScheme = "heatpick"
     }
     
     public func requestLogin() {
-        instance?.delegate = self
-        instance?.requestThirdPartyLogin()
+        guard let token = instance?.accessToken else {
+            instance?.delegate = self
+            instance?.requestThirdPartyLogin()
+            return
+        }
+        accessTokenCurrentValue.send(token)
     }
     
 }
