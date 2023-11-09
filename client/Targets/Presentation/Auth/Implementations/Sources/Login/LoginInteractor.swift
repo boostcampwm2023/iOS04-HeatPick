@@ -13,7 +13,7 @@ import ModernRIBs
 import DomainInterfaces
 
 protocol LoginRouting: ViewableRouting {
-    
+    func attachSignUp()
 }
 
 protocol LoginPresentable: Presentable {
@@ -32,7 +32,8 @@ final class LoginInteractor: PresentableInteractor<LoginPresentable>, LoginInter
     
     weak var router: LoginRouting?
     weak var listener: LoginListener?
-
+    
+    private var cancellables = Set<AnyCancellable>()
     private let dependency: LoginInteractorDependency
     
     init(
@@ -42,6 +43,11 @@ final class LoginInteractor: PresentableInteractor<LoginPresentable>, LoginInter
         self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
+        
+        dependency.loginUseCase.naverAcessToken
+            .sink { [weak self] _ in
+                self?.router?.attachSignUp()
+            }.store(in: &cancellables)
     }
 
     override func didBecomeActive() {
