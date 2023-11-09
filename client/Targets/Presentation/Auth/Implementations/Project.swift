@@ -7,6 +7,7 @@ let project = Project.framework(
     featureTargets: [.staticLibrary],
     dependencies: [
         .Target.DesignSystem.DesignKit,
-        .Target.Presentation.Auth.Interfaces
+        .Target.Presentation.Auth.Interfaces,
+        .Target.Domain.UseCases
     ]
 )
