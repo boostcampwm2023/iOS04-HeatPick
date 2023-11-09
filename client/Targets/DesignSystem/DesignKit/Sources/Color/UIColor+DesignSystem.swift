@@ -9,6 +9,7 @@
 import UIKit
 
 public extension UIColor {
+    
     static let hpBlack: UIColor = .init(resource: .hpBlack)
     static let hpWhite: UIColor = .init(resource: .hpWhite)
     
@@ -27,4 +28,5 @@ public extension UIColor {
     
     static let hpBlue1: UIColor = .init(resource: .hpBlue1)
     static let hpBlue2: UIColor = .init(resource: .hpBlue2)
+    
 }

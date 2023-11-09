@@ -9,7 +9,9 @@
 import UIKit
 
 public extension UIImage {
+    
     static let naverButtonIcon: UIImage = .init(resource: .naverButton)
     static let appleButtonIcon: UIImage = .init(resource: .appleButton)
     static let logoWithSubtitle: UIImage = .init(resource: .logoWithSubtitle)
+    
 }
