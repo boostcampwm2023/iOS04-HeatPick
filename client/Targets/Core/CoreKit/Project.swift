@@ -7,5 +7,6 @@ let project = Project.framework(
     featureTargets: [.framework],
     dependencies: [
         .Target.Core.Network.NetworkAPIs,
+        .SPM.ModernRIBs
     ]
 )
