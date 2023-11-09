@@ -8,9 +8,9 @@
 
 import UIKit
 
+public enum Constants { }
 
-enum Constants {
-    
+public extension Constants {
     static let leadingOffset: CGFloat = 20
     static let traillingOffset: CGFloat = -leadingOffset
     
@@ -24,5 +24,4 @@ enum Constants {
     
     static let imageWidthSmall: CGFloat = 100
     static let imageHegihtSmall: CGFloat = imageWidthSmall
-    
 }

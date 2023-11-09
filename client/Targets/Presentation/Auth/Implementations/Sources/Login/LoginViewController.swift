@@ -8,29 +8,38 @@
 
 import ModernRIBs
 import UIKit
+import DesignKit
 
 protocol LoginPresentableListener: AnyObject {
-    // TODO: Declare properties and methods that the view controller can invoke to perform
-    // business logic, such as signIn(). This protocol is implemented by the corresponding
-    // interactor class.
+    func naverButtonDidTap()
+    func appleButtonDidTap()
 }
 
 public final class LoginViewController: UIViewController, LoginPresentable, LoginViewControllable {
 
     weak var listener: LoginPresentableListener?
     
-    private let naverLoginButton: LoginButton = {
+    private lazy var naverLoginButton: LoginButton = {
         let button = LoginButton()
         button.setup(type: .naver)
+        button.addTarget(self, action: #selector(naverButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private let appleLoginButton: LoginButton = {
+    private lazy var appleLoginButton: LoginButton = {
         let button = LoginButton()
         button.setup(type: .apple)
+        button.addTarget(self, action: #selector(appleButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
+    }()
+    
+    private let logoImageView: UIImageView = {
+        let imageView = UIImageView(image: .logoWithSubtitle)
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     public override func viewDidLoad() {
@@ -41,24 +50,40 @@ public final class LoginViewController: UIViewController, LoginPresentable, Logi
 }
 
 private extension LoginViewController {
+    
     func setupViews() {
-        let padding: CGFloat = 20
-        let height: CGFloat = 50
-        
         view.backgroundColor = .white
-        view.addSubview(naverLoginButton)
-        view.addSubview(appleLoginButton)
+        [logoImageView, naverLoginButton, appleLoginButton].forEach { view.addSubview($0) }
+        
+        let padding: CGFloat = 20
         
         NSLayoutConstraint.activate([
             appleLoginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -padding),
-            appleLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: padding),
-            appleLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -padding),
-            appleLoginButton.heightAnchor.constraint(equalToConstant: height),
+            appleLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            appleLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
+            appleLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             
             naverLoginButton.bottomAnchor.constraint(equalTo: appleLoginButton.topAnchor, constant: -padding),
-            naverLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: padding),
-            naverLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -padding),
-            naverLoginButton.heightAnchor.constraint(equalToConstant: height)
+            naverLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            naverLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
+            naverLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
+            
+            logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            logoImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            logoImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
+            logoImageView.bottomAnchor.constraint(equalTo: naverLoginButton.topAnchor)
         ])
+    }
+    
+}
+
+private extension LoginViewController {
+    
+    @objc func naverButtonDidTap() {
+        listener?.naverButtonDidTap()
+    }
+    
+    @objc func appleButtonDidTap() {
+        listener?.appleButtonDidTap()
     }
 }

@@ -13,16 +13,16 @@ enum LoginType {
     case naver
     case apple
     
-    var imageName: String {
+    var icon: UIImage {
         switch self {
         case .naver:
-            return ""
+            return .naverButtonIcon
         case .apple:
-            return ""
+            return .appleButtonIcon
         }
     }
     
-    var buttonTitle: String {
+    var title: String {
         switch self {
         case .naver:
             return "네이버로 계속하기"
@@ -45,12 +45,19 @@ final class LoginButton: UIButton {
     
     func setup(type: LoginType) {
         var configuration = UIButton.Configuration.filled()
-        configuration.baseForegroundColor = .white
+        configuration.baseForegroundColor = .hpWhite
         configuration.baseBackgroundColor = .init(hex: type.backgroundColor)
-        configuration.title = type.buttonTitle
-        configuration.image = UIImage(named: type.imageName)
+        configuration.title = type.title
+        configuration.image = type.icon
         configuration.imagePlacement = .leading
         configuration.titleAlignment = .center
+        
+        let titleAttribute = UIConfigurationTextAttributesTransformer { transform in
+            var transform = transform
+            transform.font = UIFont.bodySemibold
+            return transform
+        }
+        configuration.titleTextAttributesTransformer = titleAttribute
         
         self.configuration = configuration
     }
