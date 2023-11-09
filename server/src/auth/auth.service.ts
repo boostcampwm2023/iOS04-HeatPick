@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './../user/user.repository';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -8,14 +9,30 @@ export class AuthService {
     private userRepository: UserRepository,
     private jwtService: JwtService,
   ) {}
-  async signIn(OAuthToken: string) {
+  async signIn(OAuthToken: string): Promise<string> {
     const userId = await this.getId(OAuthToken);
 
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findOneById(userId);
 
     let accessToken = '';
 
     if (user) accessToken = this.jwtService.sign({ userId });
+
+    return accessToken;
+  }
+
+  async signUp(OAuthToken: string, username: string): Promise<string> {
+    const userId = await this.getId(OAuthToken);
+
+    const userObj = new User();
+    userObj.username = username;
+    userObj.oauthId = userId;
+    userObj.profileImageURL = '';
+    userObj.temperature = 0;
+
+    this.userRepository.createUser(userObj);
+
+    const accessToken = this.jwtService.sign({ userId });
 
     return accessToken;
   }

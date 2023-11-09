@@ -9,7 +9,11 @@ export class UserRepository {
     private userRepository: Repository<User>,
   ) {}
 
-  async findOne(id: string): Promise<User> {
-    return this.userRepository.findOne({ where: { oauthId: id } });
+  async findOneById(id: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { oauthId: id } });
+  }
+
+  createUser(user: User) {
+    this.userRepository.save(user);
   }
 }

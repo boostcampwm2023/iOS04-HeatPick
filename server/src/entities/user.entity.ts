@@ -17,9 +17,9 @@ export class User {
   @Column()
   temperature: number;
 
-  @Column()
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createAt: Date;
 
-  @Column()
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   recentActive: Date;
 }
