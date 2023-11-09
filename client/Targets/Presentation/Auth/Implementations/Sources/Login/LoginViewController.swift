@@ -11,23 +11,26 @@ import UIKit
 import DesignKit
 
 protocol LoginPresentableListener: AnyObject {
-    
+    func naverButtonDidTap()
+    func appleButtonDidTap()
 }
 
 public final class LoginViewController: UIViewController, LoginPresentable, LoginViewControllable {
 
     weak var listener: LoginPresentableListener?
     
-    private let naverLoginButton: LoginButton = {
+    private lazy var naverLoginButton: LoginButton = {
         let button = LoginButton()
         button.setup(type: .naver)
+        button.addTarget(self, action: #selector(naverButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private let appleLoginButton: LoginButton = {
+    private lazy var appleLoginButton: LoginButton = {
         let button = LoginButton()
         button.setup(type: .apple)
+        button.addTarget(self, action: #selector(appleButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -47,6 +50,7 @@ public final class LoginViewController: UIViewController, LoginPresentable, Logi
 }
 
 private extension LoginViewController {
+    
     func setupViews() {
         view.backgroundColor = .white
         [logoImageView, naverLoginButton, appleLoginButton].forEach { view.addSubview($0) }
@@ -69,5 +73,17 @@ private extension LoginViewController {
             logoImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
             logoImageView.bottomAnchor.constraint(equalTo: naverLoginButton.topAnchor)
         ])
+    }
+    
+}
+
+private extension LoginViewController {
+    
+    @objc func naverButtonDidTap() {
+        listener?.naverButtonDidTap()
+    }
+    
+    @objc func appleButtonDidTap() {
+        listener?.appleButtonDidTap()
     }
 }
