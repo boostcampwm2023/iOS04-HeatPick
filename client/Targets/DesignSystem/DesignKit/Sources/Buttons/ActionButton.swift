@@ -55,6 +55,10 @@ open class ActionButton: UIButton {
         didSet { pressedView.isHidden = !isHighlighted }
     }
     
+    public override var isEnabled: Bool {
+        didSet { updateStyle() }
+    }
+    
     private let pressedView: UIView = {
         let view = UIView()
         view.backgroundColor = .white.withAlphaComponent(0.3)

@@ -14,7 +14,9 @@ public protocol LoginDependency: Dependency {
     var loginUseCase: LoginUseCaseInterface { get }
 }
 
-final class LoginComponent: Component<LoginDependency>, LoginInteractorDependency {
+final class LoginComponent: Component<LoginDependency>,
+                            LoginInteractorDependency,
+                            SignUpDependency {
     var loginUseCase: LoginUseCaseInterface { dependency.loginUseCase }
 }
 
@@ -33,11 +35,18 @@ public final class LoginBuilder: Builder<LoginDependency>, LoginBuildable {
     public func build(withListener listener: LoginListener) -> ViewableRouting {
         let component = LoginComponent(dependency: dependency)
         let viewController = LoginViewController()
+        
+        let signUpBuilder: SignUpBuildable = SignUpBuilder(dependency: component)
+        
         let interactor = LoginInteractor(
             presenter: viewController,
             dependency: component
         )
         interactor.listener = listener
-        return LoginRouter(interactor: interactor, viewController: viewController)
+        return LoginRouter(
+            interactor: interactor,
+            viewController: viewController,
+            signUpBuilder: signUpBuilder
+        )
     }
 }

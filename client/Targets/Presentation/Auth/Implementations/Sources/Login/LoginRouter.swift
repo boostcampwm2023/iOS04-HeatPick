@@ -8,7 +8,7 @@
 
 import ModernRIBs
 
-protocol LoginInteractable: Interactable {
+protocol LoginInteractable: Interactable, SignUpListener {
     var router: LoginRouting? { get set }
     var listener: LoginListener? { get set }
 }
@@ -18,10 +18,24 @@ protocol LoginViewControllable: ViewControllable {
 }
 
 final class LoginRouter: ViewableRouter<LoginInteractable, LoginViewControllable>, LoginRouting {
-
-    // TODO: Constructor inject child builder protocols to allow building children.
-    override init(interactor: LoginInteractable, viewController: LoginViewControllable) {
+    
+    private let signUpBuilder: SignUpBuildable
+    private var signUpRouter: Routing?
+    
+    init(interactor: LoginInteractable, viewController: LoginViewControllable, signUpBuilder: SignUpBuildable) {
+        self.signUpBuilder = signUpBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
+    }
+    
+    func attachSignUp() {
+        guard signUpRouter == nil else { return }
+        
+        let router = signUpBuilder.build(withListener: interactor)
+        attachChild(router)
+        signUpRouter = router
+        
+        router.viewControllable.uiviewController.modalPresentationStyle = .fullScreen
+        viewControllable.uiviewController.present(router.viewControllable.uiviewController, animated: true)
     }
 }
