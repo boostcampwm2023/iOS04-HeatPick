@@ -8,7 +8,10 @@
 
 import ModernRIBs
 
-protocol AppRootInteractable: Interactable {
+import AuthImplementations
+
+protocol AppRootInteractable: Interactable,
+                              LoginListener {
     var router: AppRootRouting? { get set }
     var listener: AppRootListener? { get set }
 }
@@ -19,13 +22,31 @@ protocol AppRootViewControllable: ViewControllable {
 
 final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControllable>, AppRootRouting {
 
+    private let loginBuilder: LoginBuildable
+    private var loginRouter: Routing?
     
-    override init(interactor: AppRootInteractable, viewController: AppRootViewControllable) {
+    init(
+        interactor: AppRootInteractable,
+        viewController: AppRootViewControllable,
+        loginBuilder: LoginBuildable
+    ) {
+        self.loginBuilder = loginBuilder
+        
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
     func attachTabs() {
+        guard loginRouter == nil else { return }
         
+        let loginRouting = loginBuilder.build(withListener: interactor)
+        self.loginRouter = loginRouting
+        
+        attachChild(loginRouting)
+        
+        let viewControllers = [
+            loginRouting.viewControllable
+        ]
+        viewController.setViewControllers(viewControllers)
     }
 }

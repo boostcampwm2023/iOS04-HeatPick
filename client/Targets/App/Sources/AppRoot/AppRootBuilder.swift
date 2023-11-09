@@ -8,12 +8,15 @@
 
 import ModernRIBs
 
+import AuthImplementations
+import DomainInterfaces
+
 protocol AppRootDependency: Dependency {
-    
+    var loginUseCase: LoginUseCaseInterface { get }
 }
 
-final class AppRootComponent: Component<AppRootDependency> {
-
+final class AppRootComponent: Component<AppRootDependency>, LoginDependency {
+    var loginUseCase: LoginUseCaseInterface { dependency.loginUseCase }
 }
 
 // MARK: - Builder
@@ -31,11 +34,14 @@ final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
     func build() -> LaunchRouting {
         let component = AppRootComponent(dependency: dependency)
         
-
         let tabBarController = AppRootTabBarController()
         let interactor = AppRootInteractor(presenter: tabBarController)
-
+        let loginBuilder = LoginBuilder(dependency: component)
         
-        return AppRootRouter(interactor: interactor, viewController: tabBarController)
+        return AppRootRouter(
+            interactor: interactor,
+            viewController: tabBarController,
+            loginBuilder: loginBuilder
+        )
     }
 }
