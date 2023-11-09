@@ -1,25 +1,25 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-class User {
-    @PrimaryGeneratedColumn()
-    userId: number;
+export class User {
+  @PrimaryGeneratedColumn()
+  userId: number;
 
-    @Column({ unique: true })
-    username: string;
+  @Column({ unique: true })
+  username: string;
 
-    @Column({unique: true})
-    oauthId: string;
+  @Column({ unique: true })
+  oauthId: string;
 
-    @Column()
-    profileImageURL: string;
+  @Column()
+  profileImageURL: string;
 
-    @Column()
-    temperature: number;
+  @Column()
+  temperature: number;
 
-    @Column()
-    createAt: Date;
+  @Column()
+  createAt: Date;
 
-    @Column()
-    recentActive: Date;
+  @Column()
+  recentActive: Date;
 }

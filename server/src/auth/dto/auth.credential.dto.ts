@@ -1,3 +1,3 @@
 export class AuthCredentialDto {
-    token: string;
+  OAuthToken: string;
 }
