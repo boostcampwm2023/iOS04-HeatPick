@@ -57,12 +57,12 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
 
     }
     
-    func signUpTextFieldDidEndEditing(_ nickname: String?) {
+    func signUpNicknameDidChange(_ nickname: String?) {
         guard let nickname else {
             isSignUpEnabledSubject.send(false)
             return
         }
-        isSignUpEnabledSubject.send(nickname.isEmpty)
+        isSignUpEnabledSubject.send(!nickname.isEmpty)
     }
     
 }

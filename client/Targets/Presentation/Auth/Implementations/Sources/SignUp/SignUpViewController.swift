@@ -19,7 +19,7 @@ protocol SignUpPresentableListener: AnyObject {
     
     func profileImageViewDidChange(_ imageData: Data)
     func signUpButtonDidTap()
-    func signUpTextFieldDidEndEditing(_ nickname: String?)
+    func signUpNicknameDidChange(_ nickname: String?)
 }
 
 final class SignUpViewController: UIViewController, SignUpPresentable, SignUpViewControllable {
@@ -63,7 +63,7 @@ final class SignUpViewController: UIViewController, SignUpPresentable, SignUpVie
         textField.rightView = .init(frame: .init(origin: .zero, size: .init(width: 5, height: 0)))
         textField.rightViewMode = .always
         
-        textField.delegate = self
+        textField.addTarget(self, action: #selector(nicknameTextFieldDidChange), for: .editingChanged)
         
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -104,6 +104,9 @@ private extension SignUpViewController {
         listener?.signUpButtonDidTap()
     }
     
+    @objc func nicknameTextFieldDidChange() {
+        listener?.signUpNicknameDidChange(nicknameTextField.text)
+    }
 }
 
 private extension SignUpViewController {
@@ -144,14 +147,6 @@ private extension SignUpViewController {
             .sink { [weak self] isEnabled in
                 self?.signUpButton.isEnabled = isEnabled
             }.store(in: &cancellables)
-    }
-    
-}
-
-extension SignUpViewController: UITextFieldDelegate {
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        listener?.signUpTextFieldDidEndEditing(textField.text)
     }
     
 }
