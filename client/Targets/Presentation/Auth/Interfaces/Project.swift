@@ -8,7 +8,6 @@ let project = Project.framework(
     dependencies: [
         .Target.Core.CoreKit,
         .Target.Domain.Interfaces,
-        .SPM.ModernRIBs,
         .SPM.NaverLogin
     ]
 )
