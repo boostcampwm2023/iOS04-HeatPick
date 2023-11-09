@@ -8,8 +8,8 @@ class User {
     @Column({ unique: true })
     username: string;
 
-    @Column()
-    password: string;
+    @Column({unique: true})
+    oauthId: string;
 
     @Column()
     profileImageURL: string;

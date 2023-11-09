@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './db/database.module';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
+import {AuthController} from "./auth/auth.controller";
 
 @Module({
   imports: [DatabaseModule, AuthModule],
