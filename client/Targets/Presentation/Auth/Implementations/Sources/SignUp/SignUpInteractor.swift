@@ -21,7 +21,7 @@ protocol SignUpPresentable: Presentable {
 }
 
 protocol SignUpListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func signUpDidTapClose()
 }
 
 final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpInteractable, SignUpPresentableListener {
@@ -63,6 +63,10 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
             return
         }
         isSignUpEnabledSubject.send(!nickname.isEmpty)
+    }
+    
+    func didTapClose() {
+        listener?.signUpDidTapClose()
     }
     
 }

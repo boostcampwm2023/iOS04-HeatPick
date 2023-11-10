@@ -20,6 +20,7 @@ protocol SignUpPresentableListener: AnyObject {
     func profileImageViewDidChange(_ imageData: Data)
     func signUpButtonDidTap()
     func signUpNicknameDidChange(_ nickname: String?)
+    func didTapClose()
 }
 
 final class SignUpViewController: UIViewController, SignUpPresentable, SignUpViewControllable {
@@ -27,6 +28,14 @@ final class SignUpViewController: UIViewController, SignUpPresentable, SignUpVie
     weak var listener: SignUpPresentableListener?
     
     private var cancellables = Set<AnyCancellable>()
+    
+    private lazy var navigationView: NavigationView = {
+        let navigationView = NavigationView()
+        navigationView.setup(model: .init(title: "회원가입", leftButtonType: .back, rightButtonTypes: []))
+        navigationView.delegate = self
+        navigationView.translatesAutoresizingMaskIntoConstraints = false
+        return navigationView
+    }()
     
     private lazy var profileImageView: UIImageView = {
         let imageView: UIImageView = .init(image: .profileDefault)
@@ -117,11 +126,16 @@ private extension SignUpViewController {
         
         view.backgroundColor = .hpWhite
         
-        [profileImageView, nicknameLabel, nicknameTextField, signUpButton].forEach { view.addSubview($0) }
+        [navigationView, profileImageView, nicknameLabel, nicknameTextField, signUpButton].forEach { view.addSubview($0) }
         
         NSLayoutConstraint.activate([
+            navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
             profileImageView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: padding),
+            profileImageView.topAnchor.constraint(equalTo: navigationView.bottomAnchor, constant: padding),
             profileImageView.widthAnchor.constraint(equalToConstant: profileImageWidthHeight),
             profileImageView.heightAnchor.constraint(equalToConstant: profileImageWidthHeight),
             
@@ -171,6 +185,14 @@ extension SignUpViewController: PHPickerViewControllerDelegate {
         } else {
             // TODO: Handle empty results or item provider not being able load UIImage
         }
+    }
+    
+}
+
+extension SignUpViewController: NavigationViewDelegate {
+    
+    func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
+        listener?.didTapClose()
     }
     
 }

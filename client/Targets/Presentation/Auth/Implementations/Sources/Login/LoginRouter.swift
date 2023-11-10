@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import CoreKit
 
 protocol LoginInteractable: Interactable, SignUpListener {
     var router: LoginRouting? { get set }
@@ -30,12 +31,18 @@ final class LoginRouter: ViewableRouter<LoginInteractable, LoginViewControllable
     
     func attachSignUp() {
         guard signUpRouter == nil else { return }
-        
         let router = signUpBuilder.build(withListener: interactor)
         attachChild(router)
         signUpRouter = router
         
-        router.viewControllable.uiviewController.modalPresentationStyle = .fullScreen
-        viewControllable.uiviewController.present(router.viewControllable.uiviewController, animated: true)
+        viewControllable.pushViewController(router.viewControllable, animated: true)
     }
+    
+    func detachSignUp() {
+        guard let router = signUpRouter else { return }
+        detachChild(router)
+        signUpRouter = nil
+        viewControllable.popViewController(animated: true)
+    }
+    
 }
