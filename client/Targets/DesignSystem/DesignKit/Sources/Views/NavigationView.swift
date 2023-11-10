@@ -86,11 +86,11 @@ public final class NavigationView: UIView {
     }
     
     public func showSeparator() {
-        separator.isHidden = true
+        separator.isHidden = false
     }
     
     public func hideSeparator() {
-        separator.isHidden = false
+        separator.isHidden = true
     }
     
 }
