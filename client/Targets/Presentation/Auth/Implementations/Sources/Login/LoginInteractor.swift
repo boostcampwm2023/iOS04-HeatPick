@@ -14,6 +14,7 @@ import DomainInterfaces
 
 protocol LoginRouting: ViewableRouting {
     func attachSignUp()
+    func detachSignUp()
 }
 
 protocol LoginPresentable: Presentable {
@@ -57,7 +58,6 @@ final class LoginInteractor: PresentableInteractor<LoginPresentable>, LoginInter
 
     override func willResignActive() {
         super.willResignActive()
-        
     }
     
     func naverButtonDidTap() {
@@ -67,4 +67,11 @@ final class LoginInteractor: PresentableInteractor<LoginPresentable>, LoginInter
     func appleButtonDidTap() {
         
     }
+    
+    // MARK: - SignUp
+    
+    func signUpDidTapClose() {
+        router?.detachSignUp()
+    }
+    
 }

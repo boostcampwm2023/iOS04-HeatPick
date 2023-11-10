@@ -15,6 +15,22 @@ public extension ViewControllable {
         uiviewController.present(viewControllable.uiviewController, animated: animated, completion: completion)
     }
     
+    func pushViewController(_ viewControllable: ViewControllable, animated: Bool) {
+        if let navigationController = uiviewController as? UINavigationController {
+            navigationController.pushViewController(viewControllable.uiviewController, animated: animated)
+        } else {
+            uiviewController.navigationController?.pushViewController(viewControllable.uiviewController, animated: animated)
+        }
+    }
+    
+    func setViewControllers(_ viewControllables: [ViewControllable], animated: Bool) {
+        if let navigationController = uiviewController as? UINavigationController {
+            navigationController.setViewControllers(viewControllables.map(\.uiviewController), animated: animated)
+        } else {
+            uiviewController.navigationController?.setViewControllers(viewControllables.map(\.uiviewController), animated: animated)
+        }
+    }
+    
     func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
         uiviewController.dismiss(animated: animated, completion: completion)
     }

@@ -8,6 +8,7 @@
 
 import ModernRIBs
 
+import CoreKit
 import AuthImplementations
 
 protocol AppRootInteractable: Interactable,
@@ -45,7 +46,7 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         attachChild(loginRouting)
         
         let viewControllers = [
-            loginRouting.viewControllable
+            NavigationControllable(viewControllable: loginRouting.viewControllable)
         ]
         viewController.setViewControllers(viewControllers)
     }

@@ -51,6 +51,13 @@ public final class NavigationView: UIView {
         return stackView
     }()
     
+    private let separator: UIView = {
+        let view = UIView()
+        view.backgroundColor = .hpGray4
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -78,13 +85,21 @@ public final class NavigationView: UIView {
         titleLabel.text = title
     }
     
+    public func showSeparator() {
+        separator.isHidden = false
+    }
+    
+    public func hideSeparator() {
+        separator.isHidden = true
+    }
+    
 }
 
 private extension NavigationView {
     
     func setupViews() {
         backgroundColor = .white
-        [titleLabel, leftButton, rightButtonStackView].forEach(addSubview)
+        [titleLabel, leftButton, rightButtonStackView, separator].forEach(addSubview)
         
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -94,7 +109,12 @@ private extension NavigationView {
             leftButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             
             rightButtonStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
-            rightButtonStackView.centerYAnchor.constraint(equalTo: centerYAnchor)
+            rightButtonStackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
+            separator.leadingAnchor.constraint(equalTo: leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: trailingAnchor),
+            separator.bottomAnchor.constraint(equalTo: bottomAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
     
