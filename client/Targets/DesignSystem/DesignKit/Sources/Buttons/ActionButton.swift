@@ -8,43 +8,6 @@
 
 import UIKit
 
-public enum ActionButtonStyle {
-    
-    case normal
-    case alert
-    
-    var textColor: UIColor {
-        switch self {
-        case .normal: return .hpWhite
-        case .alert: return .hpWhite
-        }
-    }
-    
-    var disabledTextColor: UIColor {
-        return .white
-    }
-    
-    var backgroundColor: UIColor {
-        switch self {
-        case .normal: return .hpBlack
-        case .alert: return .hpRed1
-        }
-    }
-    
-    var disabledBackgroundColor: UIColor {
-        return .hpGray3
-    }
-    
-    var font: UIFont {
-        return .bodySemibold
-    }
-    
-    var disabledFont: UIFont {
-        return .bodySemibold
-    }
-    
-}
-
 open class ActionButton: UIButton {
     
     public var style: ActionButtonStyle = .normal {
@@ -61,7 +24,6 @@ open class ActionButton: UIButton {
     
     private let pressedView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white.withAlphaComponent(0.3)
         view.isUserInteractionEnabled = false
         view.isHidden = true
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -100,6 +62,7 @@ private extension ActionButton {
         updateFont()
         updateTextColor()
         updateBackgroundColor()
+        updateBorder()
     }
     
     func updateFont() {
@@ -113,6 +76,12 @@ private extension ActionButton {
     
     func updateBackgroundColor() {
         backgroundColor = isEnabled ? style.backgroundColor : style.disabledBackgroundColor
+        pressedView.backgroundColor = style.pressedBackgroundColor
+    }
+    
+    func updateBorder() {
+        layer.borderWidth = style.borderWidh
+        layer.borderColor = style.borderColor.cgColor
     }
     
 }
