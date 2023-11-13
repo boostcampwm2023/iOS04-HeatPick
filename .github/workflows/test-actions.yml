@@ -20,6 +20,26 @@ jobs:
               run: |
                   cd server
                   npm install
+            - name: env file create
+            run: |
+              echo "SSH_HOST=$SSH_HOST" >> .env
+              echo "SSH_PORT=$SSH_PORT" >> .env
+              echo "SSH_USER=$SSH_USER" >> .env
+              echo "SSH_PASSWORD=$SSH_PASSWORD" >> .env
+              echo "DB_USERNAME=$DB_USERNAME" >> .env
+              echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+              echo "DB_NAME=$DB_NAME" >> .env
+              echo "DB_HOST=$DB_HOST" >> .env
+            env:
+              SSH_HOST: ${{ secrets.SSH_HOST }}
+              SSH_PORT: ${{ secrets.SSH_PORT }}
+              SSH_USER: ${{ secrets.SSH_USER }}
+              SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+              DB_USERNAME: ${{ secrets.DB_USERNAME }}
+              DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+              DB_NAME: ${{ secrets.DB_NAME }}
+              DB_HOST: ${{ secrets.DB_HOST }}
+
 
             - name: Build Docker image
               run: docker build -t geomgichoi/heatpick:latest ./server
