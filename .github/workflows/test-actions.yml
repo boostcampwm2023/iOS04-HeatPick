@@ -21,6 +21,9 @@ jobs:
                   cd server
                   npm install
 
+            - name: Build Docker image
+              run: docker build -t heatpick-latest .
+
             - name: Login to Docker Hub
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
