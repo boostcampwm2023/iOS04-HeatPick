@@ -12,7 +12,8 @@ import UtilityPlugin
 let dependencies = Dependencies(
     swiftPackageManager: .init([
         .ModernRIBs,
-        .NaverLogin
+        .NaverLogin,
+        .NaverMap
     ]),
     platforms: [.iOS]
 )
