@@ -23,7 +23,7 @@ final class AppRootTabBarController: UITabBarController, AppRootPresentable, App
         
         view.backgroundColor = .white
         tabBar.isTranslucent = false
-        tabBar.tintColor = .hpGray2
+        tabBar.tintColor = .hpBlack
         tabBar.backgroundColor = .hpWhite
     }
     

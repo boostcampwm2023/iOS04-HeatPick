@@ -8,7 +8,7 @@
 
 import ModernRIBs
 
-protocol SearchHomeDependency: Dependency {
+public protocol SearchHomeDependency: Dependency {
     
 }
 
@@ -19,17 +19,17 @@ final class SearchHomeComponent: Component<SearchHomeDependency> {
 
 // MARK: - Builder
 
-protocol SearchHomeBuildable: Buildable {
-    func build(withListener listener: SearchHomeListener) -> SearchHomeRouting
+public protocol SearchHomeBuildable: Buildable {
+    func build(withListener listener: SearchHomeListener) -> ViewableRouting
 }
 
-final class SearchHomeBuilder: Builder<SearchHomeDependency>, SearchHomeBuildable {
+public final class SearchHomeBuilder: Builder<SearchHomeDependency>, SearchHomeBuildable {
 
-    override init(dependency: SearchHomeDependency) {
+    public override init(dependency: SearchHomeDependency) {
         super.init(dependency: dependency)
     }
 
-    func build(withListener listener: SearchHomeListener) -> SearchHomeRouting {
+    public func build(withListener listener: SearchHomeListener) -> ViewableRouting {
         let component = SearchHomeComponent(dependency: dependency)
         let viewController = SearchHomeViewController()
         let interactor = SearchHomeInteractor(presenter: viewController)

@@ -17,7 +17,7 @@ protocol SearchHomePresentable: Presentable {
     
 }
 
-protocol SearchHomeListener: AnyObject {
+public protocol SearchHomeListener: AnyObject {
     
 }
 
