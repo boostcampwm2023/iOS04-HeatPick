@@ -12,14 +12,16 @@ import DomainInterfaces
 
 public protocol SignInDependency: Dependency {
     var signInUseCase: SignInUseCaseInterface { get }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
 }
 
 final class SignInComponent: Component<SignInDependency>,
                              SignInInteractorDependency,
                              SignUpDependency,
                              SignUpSuccessDependency,
-                                LocationAuthorityDependency {
+                             LocationAuthorityDependency {
     var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
 }
 
 // MARK: - Builder

@@ -98,6 +98,15 @@ public final class LocationAuthorityViewController: UIViewController, LocationAu
         super.viewDidLoad()
         setupViews()
     }
+    
+    func openSettingApp() {
+        guard let url = URL(string: UIApplication.openSettingsURLString),
+              UIApplication.shared.canOpenURL(url)
+        else {
+            return
+        }
+        UIApplication.shared.open(url, options: [:])
+    }
 }
 
 private extension LocationAuthorityViewController {

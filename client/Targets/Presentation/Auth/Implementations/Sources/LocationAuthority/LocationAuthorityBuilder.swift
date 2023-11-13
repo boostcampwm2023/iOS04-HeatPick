@@ -7,13 +7,15 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
 protocol LocationAuthorityDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
 }
 
-final class LocationAuthorityComponent: Component<LocationAuthorityDependency> {
+final class LocationAuthorityComponent: Component<LocationAuthorityDependency>, LocationAuthorityInteractorDependency {
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
+    
 
     // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
 }
@@ -33,7 +35,10 @@ final class LocationAuthorityBuilder: Builder<LocationAuthorityDependency>, Loca
     func build(withListener listener: LocationAuthorityListener) -> LocationAuthorityRouting {
         let component = LocationAuthorityComponent(dependency: dependency)
         let viewController = LocationAuthorityViewController()
-        let interactor = LocationAuthorityInteractor(presenter: viewController)
+        let interactor = LocationAuthorityInteractor(
+            presenter: viewController,
+            dependency: component
+        )
         interactor.listener = listener
         return LocationAuthorityRouter(interactor: interactor, viewController: viewController)
     }
