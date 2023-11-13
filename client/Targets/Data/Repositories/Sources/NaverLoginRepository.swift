@@ -34,12 +34,12 @@ public final class NaverLoginRepository: NSObject, NaverLoginRepositoryInterface
     }
     
     public func requestLogin() {
-        guard let token = instance?.accessToken else {
-            instance?.delegate = self
-            instance?.requestThirdPartyLogin()
-            return
-        }
-        accessTokenCurrentValue.send(token)
+//        guard let token = instance?.accessToken else {
+//            instance?.delegate = self
+//            instance?.requestThirdPartyLogin()
+//            return
+//        }
+        accessTokenCurrentValue.send("TOKEN")
     }
     
 }

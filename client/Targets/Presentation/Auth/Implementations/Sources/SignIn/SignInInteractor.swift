@@ -26,7 +26,7 @@ protocol SignInPresentable: Presentable {
 }
 
 public protocol SignInListener: AnyObject {
-    
+    func signInDidComplete()
 }
 
 public protocol SignInInteractorDependency: AnyObject {
@@ -91,11 +91,11 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     // MARK: - LocationAuthority
     
     func locationAuthorityDidComplete() {
-        print("# 홈 화면으로 이동")
+        listener?.signInDidComplete()
     }
     
     func locationAuthorityDidSkip() {
-        print("# 홈 화면으로 이동")
+        listener?.signInDidComplete()
     }
     
 }
