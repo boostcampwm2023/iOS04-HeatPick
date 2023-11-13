@@ -18,15 +18,11 @@ protocol SignUpSuccessPresentable: Presentable {
 }
 
 protocol SignUpSuccessListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func signUpSuccessDidTapNext()
 }
 
 final class SignUpSuccessInteractor: PresentableInteractor<SignUpSuccessPresentable>, SignUpSuccessInteractable, SignUpSuccessPresentableListener {
-    func didTapNext() {
-        
-    }
     
-
     weak var router: SignUpSuccessRouting?
     weak var listener: SignUpSuccessListener?
 
@@ -46,4 +42,9 @@ final class SignUpSuccessInteractor: PresentableInteractor<SignUpSuccessPresenta
         super.willResignActive()
         // TODO: Pause any business logic.
     }
+    
+    func didTapNext() {
+        listener?.signUpSuccessDidTapNext()
+    }
+    
 }

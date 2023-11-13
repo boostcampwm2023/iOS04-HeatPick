@@ -15,6 +15,8 @@ import DomainInterfaces
 protocol SignInRouting: ViewableRouting {
     func attachSignUp()
     func detachSignUp()
+    func attachSignUpSuccess()
+    func detachSignUpSuccess()
 }
 
 protocol SignInPresentable: Presentable {
@@ -72,6 +74,16 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     
     func signUpDidTapClose() {
         router?.detachSignUp()
+    }
+    
+    func signUpDidComplete() {
+        router?.attachSignUpSuccess()
+    }
+    
+    // MARK: - SignUpSuccess
+    
+    func signUpSuccessDidTapNext() {
+        print("# 위치 권한 플로우 ㄱ")
     }
     
 }

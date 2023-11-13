@@ -9,7 +9,7 @@
 import ModernRIBs
 import CoreKit
 
-protocol SignInInteractable: Interactable, SignUpListener {
+protocol SignInInteractable: Interactable, SignUpListener, SignUpSuccessListener {
     var router: SignInRouting? { get set }
     var listener: SignInListener? { get set }
 }
@@ -21,8 +21,17 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
     private let signUpBuilder: SignUpBuildable
     private var signUpRouter: Routing?
     
-    init(interactor: SignInInteractable, viewController: SignInViewControllable, signUpBuilder: SignUpBuildable) {
+    private let signUpSuccessBuilder: SignUpSuccessBuildable
+    private var signUpSuccessRouter: Routing?
+    
+    init(
+        interactor: SignInInteractable,
+        viewController: SignInViewControllable,
+        signUpBuilder: SignUpBuildable,
+        signUpSuccessBuilder: SignUpSuccessBuildable
+    ) {
         self.signUpBuilder = signUpBuilder
+        self.signUpSuccessBuilder = signUpSuccessBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -40,6 +49,21 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
         guard let router = signUpRouter else { return }
         detachChild(router)
         signUpRouter = nil
+        viewControllable.popViewController(animated: true)
+    }
+    
+    func attachSignUpSuccess() {
+        guard signUpSuccessRouter == nil else { return }
+        let router = signUpSuccessBuilder.build(withListener: interactor)
+        attachChild(router)
+        signUpSuccessRouter = router
+        viewControllable.pushViewController(router.viewControllable, animated: true)
+    }
+    
+    func detachSignUpSuccess() {
+        guard let router = signUpSuccessRouter else { return }
+        detachChild(router)
+        signUpSuccessRouter = nil
         viewControllable.popViewController(animated: true)
     }
     

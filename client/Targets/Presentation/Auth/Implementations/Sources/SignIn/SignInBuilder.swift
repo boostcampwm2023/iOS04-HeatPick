@@ -15,8 +15,9 @@ public protocol SignInDependency: Dependency {
 }
 
 final class SignInComponent: Component<SignInDependency>,
-                            SignInInteractorDependency,
-                            SignUpDependency {
+                             SignInInteractorDependency,
+                             SignUpDependency,
+                             SignUpSuccessDependency {
     var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
 }
 
@@ -27,16 +28,17 @@ public protocol SignInBuildable: Buildable {
 }
 
 public final class SignInBuilder: Builder<SignInDependency>, SignInBuildable {
-
+    
     public override init(dependency: SignInDependency) {
         super.init(dependency: dependency)
     }
-
+    
     public func build(withListener listener: SignInListener) -> ViewableRouting {
         let component = SignInComponent(dependency: dependency)
         let viewController = SignInViewController()
         
         let signUpBuilder: SignUpBuildable = SignUpBuilder(dependency: component)
+        let signUpSuccessBuilder: SignUpSuccessBuildable = SignUpSuccessBuilder(dependency: component)
         
         let interactor = SignInInteractor(
             presenter: viewController,
@@ -46,7 +48,8 @@ public final class SignInBuilder: Builder<SignInDependency>, SignInBuildable {
         return SignInRouter(
             interactor: interactor,
             viewController: viewController,
-            signUpBuilder: signUpBuilder
+            signUpBuilder: signUpBuilder,
+            signUpSuccessBuilder: signUpSuccessBuilder
         )
     }
 }

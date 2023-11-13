@@ -22,6 +22,7 @@ protocol SignUpPresentable: Presentable {
 
 protocol SignUpListener: AnyObject {
     func signUpDidTapClose()
+    func signUpDidComplete()
 }
 
 final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpInteractable, SignUpPresentableListener {
@@ -54,7 +55,7 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
     }
     
     func signUpButtonDidTap() {
-
+        listener?.signUpDidComplete()
     }
     
     func signUpNicknameDidChange(_ nickname: String?) {
