@@ -37,17 +37,23 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         interactor.router = self
     }
     
-    func attachTabs() {
+    func attachSignIn() {
         guard signInRouter == nil else { return }
-        
         let signInRouting = signInBuilder.build(withListener: interactor)
         self.signInRouter = signInRouting
-        
         attachChild(signInRouting)
-        
-        let viewControllers = [
-            NavigationControllable(viewControllable: signInRouting.viewControllable)
-        ]
-        viewController.setViewControllers(viewControllers)
+        let signInViewController = NavigationControllable(viewControllable: signInRouting.viewControllable)
+        viewController.present(signInViewController, animated: true, isFullScreen: true)
+    }
+    
+    func detachSignIn() {
+        guard let router = signInRouter else { return }
+        detachChild(router)
+        self.signInRouter = nil
+        viewControllable.dismiss(animated: true)
+    }
+    
+    func attachTabs() {
+        print("# TODO: TabBar Attach")
     }
 }
