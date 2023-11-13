@@ -23,7 +23,9 @@ jobs:
 
             - name: Build Docker image
               run: docker build -t geomgichoi/heatpick:latest ./server
-
+              
+            - name: Login to Docker Hub
+              run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Push Docker image to Docker Hub
               run: docker push geomgichoi/heatpick:latest
