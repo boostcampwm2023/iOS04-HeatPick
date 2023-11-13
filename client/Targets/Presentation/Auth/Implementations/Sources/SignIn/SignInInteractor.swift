@@ -1,5 +1,5 @@
 //
-//  LoginInteractor.swift
+//  SignInInteractor.swift
 //  AuthImplementations
 //
 //  Created by jungmin lim on 11/8/23.
@@ -12,40 +12,40 @@ import ModernRIBs
 
 import DomainInterfaces
 
-protocol LoginRouting: ViewableRouting {
+protocol SignInRouting: ViewableRouting {
     func attachSignUp()
     func detachSignUp()
 }
 
-protocol LoginPresentable: Presentable {
-    var listener: LoginPresentableListener? { get set }
+protocol SignInPresentable: Presentable {
+    var listener: SignInPresentableListener? { get set }
 }
 
-public protocol LoginListener: AnyObject {
+public protocol SignInListener: AnyObject {
     
 }
 
-public protocol LoginInteractorDependency: AnyObject {
-    var loginUseCase: LoginUseCaseInterface { get }
+public protocol SignInInteractorDependency: AnyObject {
+    var signInUseCase: SignInUseCaseInterface { get }
 }
 
-final class LoginInteractor: PresentableInteractor<LoginPresentable>, LoginInteractable, LoginPresentableListener {
+final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInInteractable, SignInPresentableListener {
     
-    weak var router: LoginRouting?
-    weak var listener: LoginListener?
+    weak var router: SignInRouting?
+    weak var listener: SignInListener?
     
     private var cancellables = Set<AnyCancellable>()
-    private let dependency: LoginInteractorDependency
+    private let dependency: SignInInteractorDependency
     
     init(
-        presenter: LoginPresentable,
-        dependency: LoginInteractorDependency
+        presenter: SignInPresentable,
+        dependency: SignInInteractorDependency
     ) {
         self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
         
-        dependency.loginUseCase.naverAcessToken
+        dependency.signInUseCase.naverAcessToken
             .sink { [weak self] _ in
                 self?.router?.attachSignUp()
             }.store(in: &cancellables)
@@ -61,7 +61,7 @@ final class LoginInteractor: PresentableInteractor<LoginPresentable>, LoginInter
     }
     
     func naverButtonDidTap() {
-        dependency.loginUseCase.requestNaverLogin()
+        dependency.signInUseCase.requestNaverLogin()
     }
     
     func appleButtonDidTap() {

@@ -16,12 +16,12 @@ import DataRepositories
 
 final class AppComponent: Component<EmptyComponent>, AppRootDependency {
     
-    let loginUseCase: LoginUseCaseInterface
+    let signInUseCase: SignInUseCaseInterface
     let naverLoginRepository: NaverLoginRepositoryInterface
     
     init() {
         self.naverLoginRepository = NaverLoginRepository()
-        self.loginUseCase = LoginUseCase(naverLoginRepository: naverLoginRepository)
+        self.signInUseCase = SignInUseCase(naverLoginRepository: naverLoginRepository)
         super.init(dependency: EmptyComponent())
     }
 }

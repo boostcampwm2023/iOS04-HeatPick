@@ -1,5 +1,5 @@
 //
-//  LoginUseCase.swift
+//  SignInUseCase.swift
 //  DomainUseCases
 //
 //  Created by 이준복 on 2023/11/09.
@@ -11,7 +11,7 @@ import Foundation
 
 import DomainInterfaces
 
-public final class LoginUseCase: LoginUseCaseInterface {
+public final class SignInUseCase: SignInUseCaseInterface {
     
     public var naverAcessToken: AnyPublisher<String, Never> {
         naverLoginRepository.accessToken.eraseToAnyPublisher()

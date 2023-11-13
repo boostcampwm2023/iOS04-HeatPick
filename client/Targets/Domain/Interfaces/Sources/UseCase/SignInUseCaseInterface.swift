@@ -1,5 +1,5 @@
 //
-//  LoginUseCaseInterface.swift
+//  SignInUseCaseInterface.swift
 //  DomainInterfaces
 //
 //  Created by 이준복 on 2023/11/09.
@@ -9,7 +9,7 @@
 import Combine
 import Foundation
 
-public protocol LoginUseCaseInterface {
+public protocol SignInUseCaseInterface {
     
     var naverAcessToken: AnyPublisher<String, Never> { get }
     

@@ -9,21 +9,19 @@
 import ModernRIBs
 import CoreKit
 
-protocol LoginInteractable: Interactable, SignUpListener {
-    var router: LoginRouting? { get set }
-    var listener: LoginListener? { get set }
+protocol SignInInteractable: Interactable, SignUpListener {
+    var router: SignInRouting? { get set }
+    var listener: SignInListener? { get set }
 }
 
-protocol LoginViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy.
-}
+protocol SignInViewControllable: ViewControllable {}
 
-final class LoginRouter: ViewableRouter<LoginInteractable, LoginViewControllable>, LoginRouting {
+final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControllable>, SignInRouting {
     
     private let signUpBuilder: SignUpBuildable
     private var signUpRouter: Routing?
     
-    init(interactor: LoginInteractable, viewController: LoginViewControllable, signUpBuilder: SignUpBuildable) {
+    init(interactor: SignInInteractable, viewController: SignInViewControllable, signUpBuilder: SignUpBuildable) {
         self.signUpBuilder = signUpBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
