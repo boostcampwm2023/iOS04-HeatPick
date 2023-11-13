@@ -22,19 +22,27 @@ jobs:
                   npm install
 
             - name: env file create
+              env:
+                  ACTIONS_STEP_DEBUG: true
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+                  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+                  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+                  DB_NAME: ${{ secrets.DB_NAME }}
+                  DB_HOST: ${{ secrets.DB_HOST }}
               run: |
                   cd server
                   touch .env
-                  echo "SSH_HOST=${{ secrets.SSH_HOST }}" >> .env
-                  echo "SSH_PORT=${{ secrets.SSH_PORT }}" >> .env
-                  echo "SSH_USER=${{ secrets.SSH_USER }}" >> .env
-                  echo "SSH_PASSWORD=${{ secrets.SSH_PASSWORD }}" >> .env
-                  echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-                  echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-                  echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-                  echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-                  echo "SSH_HOST=${{ secrets.SSH_HOST }}"
-                  echo "DB_USERNAME=${{ secrets.DB_USERNAME }}"
+                  echo "SSH_HOST=$SSH_HOST" >> .env
+                  echo "SSH_PORT=$SSH_PORT" >> .env
+                  echo "SSH_USER=$SSH_USER" >> .env
+                  echo "SSH_PASSWORD=$SSH_PASSWORD" >> .env
+                  echo "DB_USERNAME=$DB_USERNAME" >> .env
+                  echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+                  echo "DB_NAME=$DB_NAME" >> .env
+                  echo "DB_HOST=$DB_HOST" >> .env
 
             - name: Build Docker image
               run: docker build -t geomgichoi/heatpick:latest ./server
