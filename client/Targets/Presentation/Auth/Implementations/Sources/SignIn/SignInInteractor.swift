@@ -17,6 +17,8 @@ protocol SignInRouting: ViewableRouting {
     func detachSignUp()
     func attachSignUpSuccess()
     func detachSignUpSuccess()
+    func attachLocationAuthority()
+    func detachLocationAuthority()
 }
 
 protocol SignInPresentable: Presentable {
@@ -83,7 +85,17 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     // MARK: - SignUpSuccess
     
     func signUpSuccessDidTapNext() {
-        print("# 위치 권한 플로우 ㄱ")
+        router?.attachLocationAuthority()
+    }
+    
+    // MARK: - LocationAuthority
+    
+    func locationAuthorityDidComplete() {
+        print("# 홈 화면으로 이동")
+    }
+    
+    func locationAuthorityDidSkip() {
+        print("# 홈 화면으로 이동")
     }
     
 }

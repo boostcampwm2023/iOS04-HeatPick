@@ -15,5 +15,6 @@ public extension UIImage {
     static let logoWithSubtitle: UIImage = .init(resource: .logoWithSubtitle)
     static let profileDefault: UIImage = .init(resource: .profileDefault)
     static let congratulation: UIImage = .init(resource: .congratulation)
+    static let map: UIImage = .init(resource: .map)
     
 }
