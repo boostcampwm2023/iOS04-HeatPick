@@ -16,14 +16,10 @@ jobs:
               with:
                   node-version: "18"
 
-            - name: folder change
-              run: cd server
-
             - name: Install dependencies
               run: |
                   cd server
                   npm install
-              working-directory: ./server
 
             - name: Login to Docker Hub
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
