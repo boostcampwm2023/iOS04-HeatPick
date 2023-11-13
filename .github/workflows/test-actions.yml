@@ -2,7 +2,7 @@ name: CI/CD using github actions & docker
 
 on:
     push:
-        branches: ["#47-build/deployment_automation"]
+        branches: ["server"]
 jobs:
     deploy:
         runs-on: ubuntu-latest
@@ -23,7 +23,6 @@ jobs:
 
             - name: env file create
               env:
-                  ACTIONS_STEP_DEBUG: true
                   SSH_HOST: ${{ secrets.SSH_HOST }}
                   SSH_PORT: ${{ secrets.SSH_PORT }}
                   SSH_USER: ${{ secrets.SSH_USER }}
