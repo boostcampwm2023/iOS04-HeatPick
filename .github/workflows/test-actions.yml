@@ -1,0 +1,44 @@
+name: CI/CD using github actions & docker
+
+on:
+    push:
+        branches: ["#47-build/deployment_automation"]
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: "18"
+
+            - name: folder change
+              run: cd server
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Build Docker image
+              run: docker build -t heatpick-latest .
+
+            - name: Login to Docker Hub
+              run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+            - name: Push Docker image to Docker Hub
+              run: docker push heatpick-latest
+
+            - name: SSH into Ubuntu server and pull the latest image
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_IP }}
+                  username: ${{ secrets.SERVER_USERNAME }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  script: |
+                      docker pull heatpick-latest
+                      docker stop heatpick-container || true
+                      docker rm heatpick-container || true
+                      docker run -d -p 3000:3000 --name heatpick-container heatpick-latest
