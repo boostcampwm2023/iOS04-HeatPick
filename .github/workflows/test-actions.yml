@@ -37,7 +37,7 @@ jobs:
                   username: ${{ secrets.SERVER_USERNAME }}
                   password: ${{ secrets.PASSWORD }}
                   script: |
-                      docker pull geomgichoi/heatpick:latest
+                      docker pull geomgichoi/heatpick
                       docker stop heatpick-container || true
                       docker rm heatpick-container || true
-                      docker run -d -p 3000:3000 --name heatpick-container geomgichoi/heatpick:latest
+                      docker run -d -p 3000:3000 --name heatpick-container geomgichoi/heatpick
