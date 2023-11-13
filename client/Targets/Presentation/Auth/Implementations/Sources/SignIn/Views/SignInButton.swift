@@ -9,7 +9,7 @@
 import UIKit
 import DesignKit
 
-enum LoginType {
+enum SignInType {
     case naver
     case apple
     
@@ -41,9 +41,9 @@ enum LoginType {
     }
 }
 
-final class LoginButton: UIButton {
+final class SignInButton: UIButton {
     
-    func setup(type: LoginType) {
+    func setup(type: SignInType) {
         var configuration = UIButton.Configuration.filled()
         configuration.baseForegroundColor = .hpWhite
         configuration.baseBackgroundColor = .init(hex: type.backgroundColor)

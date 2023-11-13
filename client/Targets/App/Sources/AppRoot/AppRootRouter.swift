@@ -12,7 +12,7 @@ import CoreKit
 import AuthImplementations
 
 protocol AppRootInteractable: Interactable,
-                              LoginListener {
+                              SignInListener {
     var router: AppRootRouting? { get set }
     var listener: AppRootListener? { get set }
 }
@@ -23,30 +23,30 @@ protocol AppRootViewControllable: ViewControllable {
 
 final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControllable>, AppRootRouting {
 
-    private let loginBuilder: LoginBuildable
-    private var loginRouter: Routing?
+    private let signInBuilder: SignInBuildable
+    private var signInRouter: Routing?
     
     init(
         interactor: AppRootInteractable,
         viewController: AppRootViewControllable,
-        loginBuilder: LoginBuildable
+        signInBuilder: SignInBuildable
     ) {
-        self.loginBuilder = loginBuilder
+        self.signInBuilder = signInBuilder
         
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
     func attachTabs() {
-        guard loginRouter == nil else { return }
+        guard signInRouter == nil else { return }
         
-        let loginRouting = loginBuilder.build(withListener: interactor)
-        self.loginRouter = loginRouting
+        let signInRouting = signInBuilder.build(withListener: interactor)
+        self.signInRouter = signInRouting
         
-        attachChild(loginRouting)
+        attachChild(signInRouting)
         
         let viewControllers = [
-            NavigationControllable(viewControllable: loginRouting.viewControllable)
+            NavigationControllable(viewControllable: signInRouting.viewControllable)
         ]
         viewController.setViewControllers(viewControllers)
     }

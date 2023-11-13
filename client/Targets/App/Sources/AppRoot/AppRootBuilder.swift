@@ -12,11 +12,11 @@ import AuthImplementations
 import DomainInterfaces
 
 protocol AppRootDependency: Dependency {
-    var loginUseCase: LoginUseCaseInterface { get }
+    var signInUseCase: SignInUseCaseInterface { get }
 }
 
-final class AppRootComponent: Component<AppRootDependency>, LoginDependency {
-    var loginUseCase: LoginUseCaseInterface { dependency.loginUseCase }
+final class AppRootComponent: Component<AppRootDependency>, SignInDependency {
+    var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
 }
 
 // MARK: - Builder
@@ -36,12 +36,12 @@ final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
         
         let tabBarController = AppRootTabBarController()
         let interactor = AppRootInteractor(presenter: tabBarController)
-        let loginBuilder = LoginBuilder(dependency: component)
+        let signInBuilder = SignInBuilder(dependency: component)
         
         return AppRootRouter(
             interactor: interactor,
             viewController: tabBarController,
-            loginBuilder: loginBuilder
+            signInBuilder: signInBuilder
         )
     }
 }

@@ -1,5 +1,5 @@
 //
-//  LoginViewController.swift
+//  SignInViewController.swift
 //  AuthImplementations
 //
 //  Created by jungmin lim on 11/8/23.
@@ -10,25 +10,25 @@ import ModernRIBs
 import UIKit
 import DesignKit
 
-protocol LoginPresentableListener: AnyObject {
+protocol SignInPresentableListener: AnyObject {
     func naverButtonDidTap()
     func appleButtonDidTap()
 }
 
-public final class LoginViewController: UIViewController, LoginPresentable, LoginViewControllable {
+public final class SignInViewController: UIViewController, SignInPresentable, SignInViewControllable {
 
-    weak var listener: LoginPresentableListener?
+    weak var listener: SignInPresentableListener?
     
-    private lazy var naverLoginButton: LoginButton = {
-        let button = LoginButton()
+    private lazy var naverLoginButton: SignInButton = {
+        let button = SignInButton()
         button.setup(type: .naver)
         button.addTarget(self, action: #selector(naverButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private lazy var appleLoginButton: LoginButton = {
-        let button = LoginButton()
+    private lazy var appleLoginButton: SignInButton = {
+        let button = SignInButton()
         button.setup(type: .apple)
         button.addTarget(self, action: #selector(appleButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -49,7 +49,7 @@ public final class LoginViewController: UIViewController, LoginPresentable, Logi
     
 }
 
-private extension LoginViewController {
+private extension SignInViewController {
     
     func setupViews() {
         view.backgroundColor = .white
@@ -77,7 +77,7 @@ private extension LoginViewController {
     
 }
 
-private extension LoginViewController {
+private extension SignInViewController {
     
     @objc func naverButtonDidTap() {
         listener?.naverButtonDidTap()
