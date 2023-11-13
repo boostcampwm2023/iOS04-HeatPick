@@ -13,10 +13,12 @@ import DomainInterfaces
 
 protocol AppRootDependency: Dependency {
     var signInUseCase: SignInUseCaseInterface { get }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
 }
 
 final class AppRootComponent: Component<AppRootDependency>, SignInDependency {
     var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
 }
 
 // MARK: - Builder
