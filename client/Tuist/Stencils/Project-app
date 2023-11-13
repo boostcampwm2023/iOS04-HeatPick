@@ -1,0 +1,11 @@
+import ProjectDescription
+import ProjectDescriptionHelpers
+import UtilityPlugin
+
+let project = Project.app(
+    name: "{{ name }}",
+    infoPlist: "Targets/{{ name }}/Info.plist",
+    dependencies: [
+        // TODO: - 의존성 추가
+    ]
+)

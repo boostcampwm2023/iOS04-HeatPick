@@ -140,8 +140,8 @@ extension Project {
                 "LSSupportsOpeningDocumentsInPlace": true,
                 "UIFileSharingEnabled": true,
             ]),
-            sources: ["Demo/Sources/**"],
-            resources: ["Demo/Resources/**"],
+            sources: ["Sources/**"],
+            resources: ["Resources/**"],
             dependencies: dependencies,
             settings: .settings(defaultSettings: .recommended)
         )
