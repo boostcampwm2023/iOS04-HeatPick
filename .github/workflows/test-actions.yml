@@ -20,8 +20,10 @@ jobs:
               run: |
                   cd server
                   npm install
+
             - name: env file create
               run: |
+                  cd server
                   echo "SSH_HOST=$SSH_HOST" >> .env
                   echo "SSH_PORT=$SSH_PORT" >> .env
                   echo "SSH_USER=$SSH_USER" >> .env
