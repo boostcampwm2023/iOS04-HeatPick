@@ -24,6 +24,7 @@ jobs:
             - name: env file create
               run: |
                   cd server
+                  touch .env
                   echo "SSH_HOST=$SSH_HOST" >> .env
                   echo "SSH_PORT=$SSH_PORT" >> .env
                   echo "SSH_USER=$SSH_USER" >> .env
@@ -32,7 +33,6 @@ jobs:
                   echo "DB_PASSWORD=$DB_PASSWORD" >> .env
                   echo "DB_NAME=$DB_NAME" >> .env
                   echo "DB_HOST=$DB_HOST" >> .env
-                  cat .env
               env:
                   SSH_HOST: ${{ secrets.SSH_HOST }}
                   SSH_PORT: ${{ secrets.SSH_PORT }}
