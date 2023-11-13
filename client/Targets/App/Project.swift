@@ -13,6 +13,8 @@ let project = Project.app(
         .Target.Presentation.Home.Interfaces,
         .Target.Presentation.Home.Implementations,
         .Target.Presentation.Auth.Interfaces,
-        .Target.Presentation.Auth.Implementations
+        .Target.Presentation.Auth.Implementations,
+        .Target.Presentation.Story.Interfaces,
+        .Target.Presentation.Story.Implementations
     ]
 )
