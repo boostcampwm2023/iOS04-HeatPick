@@ -32,6 +32,7 @@ jobs:
                   echo "DB_PASSWORD=$DB_PASSWORD" >> .env
                   echo "DB_NAME=$DB_NAME" >> .env
                   echo "DB_HOST=$DB_HOST" >> .env
+                  cat .env
               env:
                   SSH_HOST: ${{ secrets.SSH_HOST }}
                   SSH_PORT: ${{ secrets.SSH_PORT }}
