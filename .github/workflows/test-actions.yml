@@ -35,7 +35,7 @@ jobs:
               with:
                   host: ${{ secrets.SERVER_IP }}
                   username: ${{ secrets.SERVER_USERNAME }}
-                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  password: ${{ secrets.PASSWORD }}
                   script: |
                       docker pull geomgichoi/heatpick:latest
                       docker stop heatpick-container || true
