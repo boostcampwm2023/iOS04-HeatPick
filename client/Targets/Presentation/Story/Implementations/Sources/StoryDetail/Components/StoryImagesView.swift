@@ -12,8 +12,6 @@ final class StoryImagesView: UIView {
     
     private var listener: StoryDetailPresentableListener?
     
-    private let pageControlPadding: CGFloat = -10
-    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.delegate = self
@@ -75,7 +73,10 @@ final class StoryImagesView: UIView {
 }
 
 private extension StoryImagesView {
+    
     func setupViews() {
+        let pageControlPadding: CGFloat = -10
+        
         addSubview(scrollView)
         addSubview(pageControl)
         scrollView.addSubview(stackView)
