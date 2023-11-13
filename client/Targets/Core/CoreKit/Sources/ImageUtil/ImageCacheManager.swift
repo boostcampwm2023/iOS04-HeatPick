@@ -8,8 +8,6 @@
 
 import Foundation
 
-import DataRepositories
-
 public final class ImageCacheManager {
     
     public static let shared = ImageCacheManager()
