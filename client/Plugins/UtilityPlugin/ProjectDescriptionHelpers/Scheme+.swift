@@ -12,7 +12,7 @@ public extension Scheme {
     
     static let Dev = makeScheme(
         name: "HeatPick-Dev",
-        path: "Targets/App",
+        path: .relativeToRoot("Targets/App"),
         target: "HeatPick-Dev",
         configuration: .debug
     )
