@@ -17,7 +17,8 @@ public protocol SignInDependency: Dependency {
 final class SignInComponent: Component<SignInDependency>,
                              SignInInteractorDependency,
                              SignUpDependency,
-                             SignUpSuccessDependency {
+                             SignUpSuccessDependency,
+                                LocationAuthorityDependency {
     var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
 }
 
@@ -39,6 +40,7 @@ public final class SignInBuilder: Builder<SignInDependency>, SignInBuildable {
         
         let signUpBuilder: SignUpBuildable = SignUpBuilder(dependency: component)
         let signUpSuccessBuilder: SignUpSuccessBuildable = SignUpSuccessBuilder(dependency: component)
+        let locationAuthorityBuilder: LocationAuthorityBuildable = LocationAuthorityBuilder(dependency: component)
         
         let interactor = SignInInteractor(
             presenter: viewController,
@@ -49,7 +51,8 @@ public final class SignInBuilder: Builder<SignInDependency>, SignInBuildable {
             interactor: interactor,
             viewController: viewController,
             signUpBuilder: signUpBuilder,
-            signUpSuccessBuilder: signUpSuccessBuilder
+            signUpSuccessBuilder: signUpSuccessBuilder,
+            locationAuthorityBuilder: locationAuthorityBuilder
         )
     }
 }

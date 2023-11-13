@@ -18,7 +18,8 @@ protocol LocationAuthorityPresentable: Presentable {
 }
 
 protocol LocationAuthorityListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func locationAuthorityDidComplete()
+    func locationAuthorityDidSkip()
 }
 
 final class LocationAuthorityInteractor: PresentableInteractor<LocationAuthorityPresentable>, LocationAuthorityInteractable, LocationAuthorityPresentableListener {
@@ -26,8 +27,6 @@ final class LocationAuthorityInteractor: PresentableInteractor<LocationAuthority
     weak var router: LocationAuthorityRouting?
     weak var listener: LocationAuthorityListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
     override init(presenter: LocationAuthorityPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
@@ -35,11 +34,18 @@ final class LocationAuthorityInteractor: PresentableInteractor<LocationAuthority
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
     }
+    
+    func didTapNext() {
+        // TODO: - 권한 요청 후 응답 받기
+    }
+    
+    func didTapSkip() {
+        listener?.locationAuthorityDidSkip()
+    }
+    
 }
