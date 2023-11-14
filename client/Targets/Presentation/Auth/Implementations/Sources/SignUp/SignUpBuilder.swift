@@ -7,15 +7,14 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
 protocol SignUpDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var authUseCase: AuthUseCaseInterface { get }
 }
 
-final class SignUpComponent: Component<SignUpDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+final class SignUpComponent: Component<SignUpDependency>, SignUpInteractorDependency {
+    var authUseCase: AuthUseCaseInterface { dependency.authUseCase }
 }
 
 // MARK: - Builder
@@ -33,7 +32,10 @@ final class SignUpBuilder: Builder<SignUpDependency>, SignUpBuildable {
     func build(withListener listener: SignUpListener) -> SignUpRouting {
         let component = SignUpComponent(dependency: dependency)
         let viewController = SignUpViewController()
-        let interactor = SignUpInteractor(presenter: viewController)
+        let interactor = SignUpInteractor(
+            presenter: viewController,
+            dependency: component
+        )
         interactor.listener = listener
         return SignUpRouter(interactor: interactor, viewController: viewController)
     }
