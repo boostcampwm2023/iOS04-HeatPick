@@ -45,7 +45,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         let network: Network = {
 //            let configuration = URLSessionConfiguration.default
             let configuration = URLSessionConfiguration.ephemeral
-            configuration.protocolClasses = [SignInURLProtocol.self]
+            configuration.protocolClasses = [AuthURLProtocol.self]
             let provider = NetworkProvider(session: URLSession(configuration: configuration))
             return provider
         }()

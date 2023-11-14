@@ -13,5 +13,6 @@ import DomainEntities
 public protocol AuthRepositoryInterface: AnyObject {
     
     func requestSignIn(token: String) -> AnyPublisher<AuthToken, Error>
+    func requestSignUp(token: String, userName: String) -> AnyPublisher<AuthToken, Error>
     
 }

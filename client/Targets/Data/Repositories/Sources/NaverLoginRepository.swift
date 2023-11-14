@@ -9,6 +9,7 @@
 import Combine
 import Foundation
 
+import CoreKit
 import DomainInterfaces
 
 import NaverThirdPartyLogin
@@ -16,7 +17,6 @@ import NaverThirdPartyLogin
 public final class NaverLoginRepository: NSObject, NaverLoginRepositoryInterface {
     
     public var accessToken: AnyPublisher<String, Never> { accessTokenCurrentValue.eraseToAnyPublisher() }
-    
     private var accessTokenCurrentValue: PassthroughSubject<String, Never> = .init()
     private let instance = NaverThirdPartyLoginConnection.getSharedInstance()
     
@@ -26,20 +26,19 @@ public final class NaverLoginRepository: NSObject, NaverLoginRepositoryInterface
         instance?.isInAppOauthEnable = true
         instance?.isNaverAppOauthEnable = true
         instance?.isOnlyPortraitSupportedInIphone()
-        
         instance?.appName = "heatpick"
-        instance?.consumerKey = "j5v71CnQPr7q9LdtskbQ"
+        instance?.consumerKey = "jVSHpqp9TC4MltNI4lVJ"
         instance?.consumerSecret = ""
         instance?.serviceUrlScheme = "heatpick"
     }
     
     public func requestLogin() {
-//        guard let token = instance?.accessToken else {
-//            instance?.delegate = self
-//            instance?.requestThirdPartyLogin()
-//            return
-//        }
-        accessTokenCurrentValue.send("TOKEN")
+        guard let token = instance?.accessToken else {
+            instance?.delegate = self
+            instance?.requestThirdPartyLogin()
+            return
+        }
+        accessTokenCurrentValue.send(token)
     }
     
 }

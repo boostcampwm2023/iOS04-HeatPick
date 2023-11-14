@@ -31,4 +31,13 @@ public final class AuthRepository: AuthRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
+    public func requestSignUp(token: String, userName: String) -> AnyPublisher<AuthToken, Error> {
+        let requestDTO = SignUpRequestDTO(OAuthToken: token, username: userName)
+        let target = SignUpTarget(task: .json(requestDTO))
+        let request: AnyPublisher<SignUpResponseDTO, Error> = session.request(target)
+        return request
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+    
 }

@@ -1,5 +1,5 @@
 //
-//  SignInURLProtocol.swift
+//  AuthURLProtocol.swift
 //  NetworkAPIAuth
 //
 //  Created by 홍성준 on 11/14/23.
@@ -8,7 +8,12 @@
 
 import Foundation
 
-public final class SignInURLProtocol: URLProtocol {
+public final class AuthURLProtocol: URLProtocol {
+    
+    private lazy var mocks: [String: Data] = [
+        "/auth/signin": signInResponseMock(),
+        "/auth/signup": signUpResponseMock()
+    ]
     
     public override class func canInit(with request: URLRequest) -> Bool {
         return true
@@ -20,8 +25,9 @@ public final class SignInURLProtocol: URLProtocol {
     
     public override func startLoading() {
         defer { client?.urlProtocolDidFinishLoading(self) }
-        if let data = mockData,
-           let url = request.url,
+        if let url = request.url,
+           let path = request.url?.path(percentEncoded: true),
+           let data = mocks[path],
            let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil) {
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data)
@@ -32,14 +38,22 @@ public final class SignInURLProtocol: URLProtocol {
     
     public override func stopLoading() {}
     
-    private var mockData: Data? {
-        let json = """
-{
-    "token": "SampleToken"
-}
-"""
-        return json.data(using: .utf8)
+    private func signInResponseMock() -> Data {
+        let parameters: [String: Any] = [
+            "token": "signInResponseMock"
+        ]
+        return makeMock(paramters: parameters)
     }
     
+    private func signUpResponseMock() -> Data {
+        let parameters: [String: Any] = [
+            "token": "signUpResponseMock"
+        ]
+        return makeMock(paramters: parameters)
+    }
+    
+    private func makeMock(paramters: [String: Any]) -> Data {
+        return try! JSONSerialization.data(withJSONObject: paramters)
+    }
     
 }
