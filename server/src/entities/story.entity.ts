@@ -1,7 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { User } from './user.entity';
 import { Category } from './category.entity';
-import { JoinColumn } from 'typeorm/browser';
 
 @Entity()
 export class Story {
@@ -26,7 +25,7 @@ export class Story {
   @Column()
   createAt: Date;
 
-  @Column(() => Category)
-  @JoinColumn()
-  category: Category;
+  @ManyToMany(() => Category)
+  @JoinTable()
+  categories: Category[];
 }
