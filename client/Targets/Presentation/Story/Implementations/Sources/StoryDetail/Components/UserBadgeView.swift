@@ -31,6 +31,14 @@ final class UserBadgeView: UIView {
     
     func setBadge(_ badge: String) {
         label.text = badge
+        
+        guard !badge.isEmpty else {
+            return
+        }
+        
+        layer.cornerRadius = 15
+        layer.borderColor = UIColor.hpBlack.cgColor
+        layer.borderWidth = 1
     }
     
     private func setupViews() {
@@ -38,15 +46,13 @@ final class UserBadgeView: UIView {
         let topBottomPadding: CGFloat = 7
         
         addSubview(label)
-        layer.cornerRadius = 16
-        layer.borderColor = UIColor.hpBlack.cgColor
-        layer.borderWidth = 1
         
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leadingTrailingPadding),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: leadingTrailingPadding),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -leadingTrailingPadding),
             label.topAnchor.constraint(equalTo: topAnchor, constant: topBottomPadding),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: topBottomPadding)
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -topBottomPadding)
         ])
     }
+    
 }
