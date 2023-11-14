@@ -10,8 +10,6 @@ import UIKit
 
 final class StoryImagesView: UIView {
     
-    private var listener: StoryDetailPresentableListener?
-    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.delegate = self
@@ -52,12 +50,6 @@ final class StoryImagesView: UIView {
         setupViews()
     }
     
-    convenience init(listener: StoryDetailPresentableListener?) {
-        self.init()
-        self.listener = listener
-        setupViews()
-    }
-    
     func updateImages(_ imageUrls: [String]) {
         imageUrls.forEach { imageUrl in
             let imageView = UIImageView()
@@ -66,6 +58,7 @@ final class StoryImagesView: UIView {
             stackView.addArrangedSubview(imageView)
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
+            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
         }
         
         pageControl.numberOfPages = imageUrls.count
@@ -75,7 +68,7 @@ final class StoryImagesView: UIView {
 private extension StoryImagesView {
     
     func setupViews() {
-        let pageControlPadding: CGFloat = -10
+        let pageControlBottomPadding: CGFloat = -10
         
         addSubview(scrollView)
         addSubview(pageControl)
@@ -94,7 +87,7 @@ private extension StoryImagesView {
             stackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
             
             pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
-            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: pageControlPadding)
+            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: pageControlBottomPadding)
         ])
     }
     
