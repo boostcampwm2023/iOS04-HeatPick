@@ -13,5 +13,7 @@ public enum NetworkError: Error {
     case invalidURL
     case emptyRequest
     case emptyResponse
+    case unauthorized
+    case unknown(String)
     
 }

@@ -10,59 +10,72 @@ import Combine
 import Foundation
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SignUpRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
-}
+protocol SignUpRouting: ViewableRouting {}
 
 protocol SignUpPresentable: Presentable {
     var listener: SignUpPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    func updateButtonEnabled(_ isEnabled: Bool)
 }
 
 protocol SignUpListener: AnyObject {
     func signUpDidTapClose()
+    func signUpDidComplete()
+}
+
+protocol SignUpInteractorDependency: AnyObject {
+    var authUseCase: AuthUseCaseInterface { get }
 }
 
 final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpInteractable, SignUpPresentableListener {
     
     weak var router: SignUpRouting?
     weak var listener: SignUpListener?
+    private var userNameSubject = CurrentValueSubject<String, Never>("")
+    private let dependency: SignUpInteractorDependency
+    private var cancellables = Set<AnyCancellable>()
     
-    private var isSignUpEnabledSubject = PassthroughSubject<Bool, Never>()
-    var isSignUpEnabled: AnyPublisher<Bool, Never> { isSignUpEnabledSubject.eraseToAnyPublisher() }
-
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: SignUpPresentable) {
+    init(
+        presenter: SignUpPresentable,
+        dependency: SignUpInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
     }
     
-    func profileImageViewDidChange(_ imageData: Data) {
-
-    }
+    func profileImageViewDidChange(_ imageData: Data) {}
     
     func signUpButtonDidTap() {
-
+        dependency.authUseCase
+            .requestSignUp(userName: userNameSubject.value)
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { [weak self] result in
+                    switch result {
+                    case .finished:
+                        self?.listener?.signUpDidComplete()
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                },
+                receiveValue: { _ in }
+            )
+            .store(in: &cancellables)
     }
     
-    func signUpNicknameDidChange(_ nickname: String?) {
-        guard let nickname else {
-            isSignUpEnabledSubject.send(false)
-            return
-        }
-        isSignUpEnabledSubject.send(!nickname.isEmpty)
+    func nicknameDidChange(_ nickname: String) {
+        userNameSubject.send(nickname)
+        presenter.updateButtonEnabled(nickname.isEmpty == false)
     }
     
     func didTapClose() {

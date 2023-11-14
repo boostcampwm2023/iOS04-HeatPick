@@ -9,6 +9,8 @@
 import ModernRIBs
 
 protocol AppRootRouting: ViewableRouting {
+    func attachSignIn()
+    func detachSignIn()
     func attachTabs()
 }
 
@@ -24,7 +26,10 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
 
     weak var router: AppRootRouting?
     weak var listener: AppRootListener?
-
+    
+    // TODO: - 인증 서비스에서 판단하기
+    private var isUserAuthorized: Bool = false
+    
     override init(presenter: AppRootPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
@@ -32,10 +37,22 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        router?.attachTabs()
+        if isUserAuthorized {
+            router?.attachTabs()
+        } else {
+            router?.attachSignIn()
+        }
     }
 
     override func willResignActive() {
         super.willResignActive()
     }
+    
+    // MARK: - SignIn
+    
+    func signInDidComplete() {
+        router?.detachSignIn()
+        router?.attachTabs()
+    }
+    
 }

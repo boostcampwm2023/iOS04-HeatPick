@@ -11,7 +11,15 @@ import ModernRIBs
 
 public extension ViewControllable {
     
-    func present(_ viewControllable: ViewControllable, animated: Bool, completion: (() -> Void)? = nil) {
+    func present(
+        _ viewControllable: ViewControllable,
+        animated: Bool,
+        isFullScreen: Bool = false,
+        completion: (() -> Void)? = nil
+    ) {
+        if isFullScreen {
+            viewControllable.uiviewController.modalPresentationStyle = .overFullScreen
+        }
         uiviewController.present(viewControllable.uiviewController, animated: animated, completion: completion)
     }
     

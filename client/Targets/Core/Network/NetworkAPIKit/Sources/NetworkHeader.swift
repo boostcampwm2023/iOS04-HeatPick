@@ -10,6 +10,10 @@ import Foundation
 
 public class NetworkHeader {
     
+    public static var `default`: NetworkHeader {
+        return NetworkHeader().withJSON()
+    }
+    
     public var headers: [String: String] = [:]
     
     @discardableResult

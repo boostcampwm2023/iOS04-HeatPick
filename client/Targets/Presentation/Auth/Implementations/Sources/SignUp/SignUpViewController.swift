@@ -6,7 +6,6 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import Combine
 import UIKit
 import PhotosUI
 
@@ -15,19 +14,15 @@ import ModernRIBs
 import DesignKit
 
 protocol SignUpPresentableListener: AnyObject {
-    var isSignUpEnabled: AnyPublisher<Bool, Never> { get }
-    
     func profileImageViewDidChange(_ imageData: Data)
     func signUpButtonDidTap()
-    func signUpNicknameDidChange(_ nickname: String?)
+    func nicknameDidChange(_ nickname: String)
     func didTapClose()
 }
 
 final class SignUpViewController: UIViewController, SignUpPresentable, SignUpViewControllable {
-
-    weak var listener: SignUpPresentableListener?
     
-    private var cancellables = Set<AnyCancellable>()
+    weak var listener: SignUpPresentableListener?
     
     private lazy var navigationView: NavigationView = {
         let navigationView = NavigationView()
@@ -92,10 +87,13 @@ final class SignUpViewController: UIViewController, SignUpPresentable, SignUpVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupViews()
-        bind()
     }
+    
+    func updateButtonEnabled(_ isEnabled: Bool) {
+        signUpButton.isEnabled = isEnabled
+    }
+    
 }
 
 private extension SignUpViewController {
@@ -114,8 +112,9 @@ private extension SignUpViewController {
     }
     
     @objc func nicknameTextFieldDidChange() {
-        listener?.signUpNicknameDidChange(nicknameTextField.text)
+        listener?.nicknameDidChange(nicknameTextField.text ?? "")
     }
+    
 }
 
 private extension SignUpViewController {
@@ -156,34 +155,27 @@ private extension SignUpViewController {
         profileImageView.layer.cornerRadius = profileImageWidthHeight / 2
     }
     
-    func bind() {
-        listener?.isSignUpEnabled
-            .sink { [weak self] isEnabled in
-                self?.signUpButton.isEnabled = isEnabled
-            }.store(in: &cancellables)
-    }
-    
 }
 
 extension SignUpViewController: PHPickerViewControllerDelegate {
+    
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
         
-        let itemProvider = results.first?.itemProvider
-        
-        if let itemProvider = itemProvider,
-           itemProvider.canLoadObject(ofClass: UIImage.self) {
-            itemProvider.loadObject(ofClass: UIImage.self) { (image, error) in
-                DispatchQueue.main.async { [weak self] in
-                    guard let image = image as? UIImage,
-                          let imageData = image.pngData() else { return }
-                    
-                    self?.profileImageView.image = image
-                    self?.listener?.profileImageViewDidChange(imageData)
-                }
-            }
-        } else {
+        guard let itemProvider = results.first?.itemProvider,
+              itemProvider.canLoadObject(ofClass: UIImage.self)
+        else {
             // TODO: Handle empty results or item provider not being able load UIImage
+            return
+        }
+        
+        itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
+            DispatchQueue.main.async { [weak self] in
+                guard let image = image as? UIImage,
+                      let imageData = image.pngData() else { return }
+                self?.profileImageView.image = image
+                self?.listener?.profileImageViewDidChange(imageData)
+            }
         }
     }
     

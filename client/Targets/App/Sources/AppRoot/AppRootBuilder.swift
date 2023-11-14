@@ -7,23 +7,18 @@
 //
 
 import ModernRIBs
-
-import AuthImplementations
 import DomainInterfaces
+import AuthImplementations
+import SearchImplementations
 
-protocol AppRootDependency: Dependency {
-    var loginUseCase: LoginUseCaseInterface { get }
-}
-
-final class AppRootComponent: Component<AppRootDependency>, LoginDependency {
-    var loginUseCase: LoginUseCaseInterface { dependency.loginUseCase }
-}
+protocol AppRootDependency: Dependency {}
 
 // MARK: - Builder
 
 protocol AppRootBuildable: Buildable {
     func build() -> LaunchRouting
 }
+
 
 final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
 
@@ -32,16 +27,15 @@ final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
     }
 
     func build() -> LaunchRouting {
-        let component = AppRootComponent(dependency: dependency)
         
+        let component = AppRootComponent(dependency: dependency)
         let tabBarController = AppRootTabBarController()
         let interactor = AppRootInteractor(presenter: tabBarController)
-        let loginBuilder = LoginBuilder(dependency: component)
         
         return AppRootRouter(
             interactor: interactor,
             viewController: tabBarController,
-            loginBuilder: loginBuilder
+            dependency: component
         )
     }
 }

@@ -31,7 +31,7 @@ const dbConfig: DBConfig = {
 
 const sshOptions: SSHOptions = {
   host: process.env.SSH_HOST!,
-  port: 22,
+  port: 1225,
   username: process.env.SSH_USER!,
   password: process.env.SSH_PASSWORD!,
 };
