@@ -1,5 +1,5 @@
 //
-//  Logger.swift
+//  Log.swift
 //  CoreKit
 //
 //  Created by 이준복 on 2023/11/14.
