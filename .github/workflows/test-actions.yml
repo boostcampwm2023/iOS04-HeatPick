@@ -3,7 +3,7 @@ name: CI/CD using github actions & docker
 on:
     pull_request:
         branches: ["develop"]
-        types: ["labled"]
+        types: ["labeled"]
 jobs:
     deploy:
         runs-on: ubuntu-latest
