@@ -49,4 +49,8 @@ final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>,
     func searchTextFieldDidTap() {
         router?.attachSearchResult()
     }
+    
+    func detachSearchResult() {
+        router?.detachSearchResult()
+    }
 }

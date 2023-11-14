@@ -9,13 +9,11 @@
 import ModernRIBs
 
 protocol SearchResultDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    
 }
 
 final class SearchResultComponent: Component<SearchResultDependency> {
 
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
 }
 
 // MARK: - Builder
@@ -35,6 +33,9 @@ final class SearchResultBuilder: Builder<SearchResultDependency>, SearchResultBu
         let viewController = SearchResultViewController()
         let interactor = SearchResultInteractor(presenter: viewController)
         interactor.listener = listener
-        return SearchResultRouter(interactor: interactor, viewController: viewController)
+        return SearchResultRouter(
+            interactor: interactor,
+            viewController: viewController
+        )
     }
 }

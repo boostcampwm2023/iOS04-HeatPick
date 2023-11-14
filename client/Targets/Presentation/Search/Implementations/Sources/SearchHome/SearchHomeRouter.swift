@@ -11,7 +11,7 @@ import ModernRIBs
 
 protocol SearchHomeInteractable: Interactable,
                                  SearchHomeListListener,
-                                 SearchResultListener{
+                                 SearchResultListener {
     var router: SearchHomeRouting? { get set }
     var listener: SearchHomeListener? { get set }
 }
