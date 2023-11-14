@@ -1,11 +1,13 @@
 name: CI/CD using github actions & docker
 
 on:
-    push:
-        branches: ["server"]
+    pull_request:
+        branches: ["develop"]
+        types: ["labled"]
 jobs:
     deploy:
         runs-on: ubuntu-latest
+         if: ${{ github.event.action == 'labeled' && github.event.label.name == '🖥️ Server' }}
 
         steps:
             - name: Checkout repository
