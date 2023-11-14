@@ -15,7 +15,7 @@ let project = Project.app(
         .Target.Presentation.Auth.Interfaces,
         .Target.Presentation.Auth.Implementations,
         .Target.Presentation.Search.Interfaces,
-        .Target.Presentation.Search.Implementations
+        .Target.Presentation.Search.Implementations,
         .Target.Presentation.Story.Interfaces,
         .Target.Presentation.Story.Implementations
     ]
