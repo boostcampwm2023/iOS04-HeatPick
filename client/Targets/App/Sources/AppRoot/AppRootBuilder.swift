@@ -18,10 +18,21 @@ protocol AppRootDependency: Dependency {
 }
 
 final class AppRootComponent: Component<AppRootDependency>, 
+                                AppRootRouterDependency,
                                 SignInDependency,
                                 SearchHomeDependency {
+    
     var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
+    
+    lazy var signInBuilder: SignInBuildable = {
+        SignInBuilder(dependency: self)
+    }()
+    
+    lazy var searchBuilder: SearchHomeBuildable = {
+        SearchHomeBuilder(dependency: self)
+    }()
+    
 }
 
 // MARK: - Builder
@@ -30,10 +41,6 @@ protocol AppRootBuildable: Buildable {
     func build() -> LaunchRouting
 }
 
-struct AppRootRouterDependencyImp: AppRootRouterDependency {
-    var signInBuilder: SignInBuildable
-    var searchBuilder: SearchHomeBuildable
-}
 
 final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
 
@@ -42,19 +49,15 @@ final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
     }
 
     func build() -> LaunchRouting {
-        let component = AppRootComponent(dependency: dependency)
         
+        let component = AppRootComponent(dependency: dependency)
         let tabBarController = AppRootTabBarController()
         let interactor = AppRootInteractor(presenter: tabBarController)
-        let appRootRouterDependency = AppRootRouterDependencyImp(
-            signInBuilder: SignInBuilder(dependency: component),
-            searchBuilder: SearchHomeBuilder(dependency: component)
-        )
         
         return AppRootRouter(
             interactor: interactor,
             viewController: tabBarController,
-            dependency: appRootRouterDependency
+            dependency: component
         )
     }
 }
