@@ -65,7 +65,6 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         viewControllable.pushViewController(router.viewControllable, animated: true)
     }
     
-    
     func detachSearchResult() {
         guard let router = searchResultRouter else { return }
         detachChild(router)

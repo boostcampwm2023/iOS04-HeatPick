@@ -18,4 +18,10 @@ protocol SearchResultPresentableListener: AnyObject {
 final class SearchResultViewController: UIViewController, SearchResultPresentable, SearchResultViewControllable {
 
     weak var listener: SearchResultPresentableListener?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .red
+    }
 }

@@ -35,7 +35,6 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         textField.addGestureRecognizer(tapGesture)
         
         textField.placeholder = Constant.searchTextFieldPlaceholder
-        textField.isEnabled = false
         textField.clipsToBounds = true
         textField.layer.cornerRadius = Constants.cornerRadiusMedium
         textField.translatesAutoresizingMaskIntoConstraints = false
