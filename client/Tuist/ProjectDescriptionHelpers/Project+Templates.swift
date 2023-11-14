@@ -24,10 +24,8 @@ extension Project {
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
                 dependencies: dependencies,
-                settings: .settings(
-                    base: ["OTHER_LDFLAGS" : "$(inherited) -all_load"],
-                    configurations: [.debug(name: .debug)]
-                )
+                settings: .settings(configurations: [.debug(name: .debug)]
+                                   )
             )
             targets.append(target)
         }
@@ -43,10 +41,8 @@ extension Project {
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
                 dependencies: dependencies,
-                settings: .settings(
-                    base: ["OTHER_LDFLAGS" : "$(inherited)"],
-                    configurations: [.release(name: .release)]
-                )
+                settings: .settings(configurations: [.release(name: .release)]
+                                   )
             )
             targets.append(target)
         }
@@ -75,6 +71,7 @@ extension Project {
         var targets: [Target] = []
         
         if featureTargets.isDynamic {
+            let setting: SettingsDictionary = ["OTHER_LDFLAGS" : "$(inherited) -all_load"]
             let target = Target(
                 name: name,
                 platform: .iOS,
@@ -85,10 +82,11 @@ extension Project {
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
                 dependencies: dependencies,
-                settings: .settings(defaultSettings: .recommended)
+                settings: .settings(base: setting, defaultSettings: .recommended)
             )
             targets.append(target)
         } else if featureTargets.contains(.staticLibrary) {
+            let setting: SettingsDictionary = ["OTHER_LDFLAGS" : "$(inherited)"]
             let target = Target(
                 name: name,
                 platform: .iOS,
@@ -99,7 +97,7 @@ extension Project {
                 sources: ["Sources/**"],
                 resources: [],
                 dependencies: dependencies,
-                settings: .settings(defaultSettings: .recommended)
+                settings: .settings(base: setting, defaultSettings: .recommended)
             )
             targets.append(target)
         }

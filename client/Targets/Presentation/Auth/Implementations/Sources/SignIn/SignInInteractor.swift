@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 
 import ModernRIBs
 
@@ -30,7 +31,7 @@ public protocol SignInListener: AnyObject {
 }
 
 public protocol SignInInteractorDependency: AnyObject {
-    var signInUseCase: SignInUseCaseInterface { get }
+    var authUseCase: AuthUseCaseInterface { get }
 }
 
 final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInInteractable, SignInPresentableListener {
@@ -49,9 +50,9 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
         super.init(presenter: presenter)
         presenter.listener = self
         
-        dependency.signInUseCase.naverAcessToken
-            .sink { [weak self] _ in
-                self?.router?.attachSignUp()
+        dependency.authUseCase.naverToken
+            .sink { [weak self] token in
+                self?.requestSignIn(token: token)
             }.store(in: &cancellables)
     }
 
@@ -65,11 +66,25 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     }
     
     func naverButtonDidTap() {
-        dependency.signInUseCase.requestNaverLogin()
+        dependency.authUseCase.requestNaverSignIn()
     }
     
     func appleButtonDidTap() {
         
+    }
+    
+    private func requestSignIn(token: String) {
+        dependency.authUseCase
+            .requestSignIn(token: token)
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { _ in }, 
+                receiveValue: { [weak self] token in
+                    print(token)
+                    self?.router?.attachSignUp()
+                }
+            )
+            .store(in: &cancellables)
     }
     
     // MARK: - SignUp

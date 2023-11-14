@@ -63,6 +63,7 @@ public extension TargetDependency.Target.Core.Network {
     }
     static let NetworkAPIKit = project(name: "NetworkAPIKit")
     static let NetworkAPIHome = project(name: "NetworkAPIHome")
+    static let NetworkAPIAuth = project(name: "NetworkAPIAuth")
     static let NetworkAPIs = project(name: "NetworkAPIs")
 }
 

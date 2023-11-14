@@ -22,7 +22,7 @@ public final class NetworkProvider: Network {
         self.session = session
     }
     
-    public func request<T>(_ target: T) -> AnyPublisher<T.Response, Error> where T : Target {
+    public func request<T: Decodable>(_ target: Target) -> AnyPublisher<T, Error> {
         let isMultipartFormData: Bool = {
             switch target.task {
             case .multipart: return true
@@ -43,20 +43,20 @@ public final class NetworkProvider: Network {
         }
     }
     
-    private func makeRequestPublisher<T>(_ target: T, request: URLRequest) -> AnyPublisher<T.Response, Error> where T : Target {
+    private func makeRequestPublisher<T: Decodable>(_ target: Target, request: URLRequest) -> AnyPublisher<T, Error> {
         return session.dataTaskPublisher(for: request)
             .tryMap { data, _ in
-                return try JSONDecoder().decode(T.Response.self, from: data)
+                return try JSONDecoder().decode(T.self, from: data)
             }
             .eraseToAnyPublisher()
     }
     
-    private func makeUploadPublisher<T>(_ target: T, request: URLRequest, body: Data) -> AnyPublisher<T.Response, Error> where T : Target {
-        let subject = PassthroughSubject<T.Response, Error>()
+    private func makeUploadPublisher<T: Decodable>(_ target: Target, request: URLRequest, body: Data) -> AnyPublisher<T, Error>  {
+        let subject = PassthroughSubject<T, Error>()
         _Concurrency.Task {
             do {
                 let (data, _) = try await session.upload(for: request, from: body)
-                let dataResponse = try JSONDecoder().decode(T.Response.self, from: data)
+                let dataResponse = try JSONDecoder().decode(T.self, from: data)
                 subject.send(dataResponse)
                 subject.send(completion: .finished)
             } catch {
@@ -66,7 +66,7 @@ public final class NetworkProvider: Network {
         return subject.eraseToAnyPublisher()
     }
     
-    private func makeRequest<T: Target>(_ target: T, isMultipartFormData: Bool = false) throws -> NetworkRequest {
+    private func makeRequest(_ target: Target, isMultipartFormData: Bool = false) throws -> NetworkRequest {
         let boundary = UUID().uuidString
         let components: URLComponents? = {
             let endpoint = target.baseURL.appendingPathComponent(target.path)

@@ -7,6 +7,9 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
+import AuthImplementations
+import SearchImplementations
 
 protocol AppRootDependency: Dependency {}
 

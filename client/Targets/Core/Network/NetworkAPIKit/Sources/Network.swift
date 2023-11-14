@@ -11,6 +11,6 @@ import Combine
 
 public protocol Network {
     
-    func request<T: Target>(_ target: T) -> AnyPublisher<T.Response, Error>
+    func request<T: Decodable>(_ target: any Target) -> AnyPublisher<T, Error>
     
 }

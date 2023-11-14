@@ -10,6 +10,8 @@ import Foundation
 
 import ModernRIBs
 
+import NetworkAPIKit
+import NetworkAPIAuth
 import DomainUseCases
 import DomainInterfaces
 import DataRepositories
@@ -19,9 +21,8 @@ import SearchImplementations
 final class AppRootComponent: Component<AppRootDependency>,
                                 AppRootRouterDependency,
                                 SignInDependency,
-                                SearchHomeDependency {
-    
-    let signInUseCase: SignInUseCaseInterface
+                              SearchHomeDependency {
+    let authUseCase: AuthUseCaseInterface
     let naverLoginRepository: NaverLoginRepositoryInterface
     
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
@@ -35,18 +36,24 @@ final class AppRootComponent: Component<AppRootDependency>,
     }()
     
     override init(dependency: AppRootDependency) {
-        
         let naverLoginRepository: NaverLoginRepositoryInterface = {
            let repository = NaverLoginRepository()
             repository.setup()
             return repository
         }()
-        
-        self.signInUseCase = SignInUseCase(naverLoginRepository: naverLoginRepository)
-        self.locationAuthorityUseCase = LocationAuthorityUseCase(service: LocationService())
-        
         self.naverLoginRepository = naverLoginRepository
-        
+        let network: Network = {
+//            let configuration = URLSessionConfiguration.default
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.protocolClasses = [SignInURLProtocol.self]
+            let provider = NetworkProvider(session: URLSession(configuration: configuration))
+            return provider
+        }()
+        self.authUseCase = AuthUseCase(
+            repository: AuthRepository(session: network),
+            signInUseCase: SignInUseCase(naverLoginRepository: naverLoginRepository)
+        )
+        self.locationAuthorityUseCase = LocationAuthorityUseCase(service: LocationService())
         super.init(dependency: dependency)
     }
     
