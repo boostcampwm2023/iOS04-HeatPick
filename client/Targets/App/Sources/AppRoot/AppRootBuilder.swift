@@ -8,32 +8,7 @@
 
 import ModernRIBs
 
-import DomainInterfaces
-import AuthImplementations
-import SearchImplementations
-
-protocol AppRootDependency: Dependency {
-    var signInUseCase: SignInUseCaseInterface { get }
-    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
-}
-
-final class AppRootComponent: Component<AppRootDependency>, 
-                                AppRootRouterDependency,
-                                SignInDependency,
-                                SearchHomeDependency {
-    
-    var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
-    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
-    
-    lazy var signInBuilder: SignInBuildable = {
-        SignInBuilder(dependency: self)
-    }()
-    
-    lazy var searchBuilder: SearchHomeBuildable = {
-        SearchHomeBuilder(dependency: self)
-    }()
-    
-}
+protocol AppRootDependency: Dependency {}
 
 // MARK: - Builder
 
