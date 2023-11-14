@@ -8,7 +8,7 @@
 
 import ModernRIBs
 
-protocol StoryEditorDependency: Dependency {
+public protocol StoryEditorDependency: Dependency {
     // TODO: Declare the set of dependencies required by this RIB, but cannot be
     // created by this RIB.
 }
@@ -20,17 +20,17 @@ final class StoryEditorComponent: Component<StoryEditorDependency> {
 
 // MARK: - Builder
 
-protocol StoryEditorBuildable: Buildable {
+public protocol StoryEditorBuildable: Buildable {
     func build(withListener listener: StoryEditorListener) -> StoryEditorRouting
 }
 
-final class StoryEditorBuilder: Builder<StoryEditorDependency>, StoryEditorBuildable {
+public final class StoryEditorBuilder: Builder<StoryEditorDependency>, StoryEditorBuildable {
 
-    override init(dependency: StoryEditorDependency) {
+    public override init(dependency: StoryEditorDependency) {
         super.init(dependency: dependency)
     }
 
-    func build(withListener listener: StoryEditorListener) -> StoryEditorRouting {
+    public func build(withListener listener: StoryEditorListener) -> StoryEditorRouting {
         let component = StoryEditorComponent(dependency: dependency)
         let viewController = StoryEditorViewController()
         let interactor = StoryEditorInteractor(presenter: viewController)

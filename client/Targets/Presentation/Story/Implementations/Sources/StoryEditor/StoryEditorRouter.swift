@@ -8,12 +8,12 @@
 
 import ModernRIBs
 
-protocol StoryEditorInteractable: Interactable {
+public protocol StoryEditorInteractable: Interactable {
     var router: StoryEditorRouting? { get set }
     var listener: StoryEditorListener? { get set }
 }
 
-protocol StoryEditorViewControllable: ViewControllable {
+public protocol StoryEditorViewControllable: ViewControllable {
     // TODO: Declare methods the router invokes to manipulate the view hierarchy.
 }
 

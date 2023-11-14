@@ -12,11 +12,13 @@ import CoreKit
 import AuthImplementations
 import HomeImplementations
 import SearchImplementations
+import StoryImplementations
 
 protocol AppRootInteractable: Interactable,
                               SignInListener,
                               SearchHomeListener,
-                              HomeListener {
+                              HomeListener, 
+                              StoryEditorListener {
     var router: AppRootRouting? { get set }
     var listener: AppRootListener? { get set }
 }
@@ -29,6 +31,7 @@ protocol AppRootRouterDependency {
     var signInBuilder: SignInBuildable { get }
     var homeBuilder: HomeBuildable { get }
     var searchBuilder: SearchHomeBuildable { get }
+    var storyEditorBuilder: StoryEditorBuildable { get }
 }
 
 
@@ -43,6 +46,9 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     private let searchHomeBuilder: SearchHomeBuildable
     private var searchHomeRouter: Routing?
     
+    private let storyEditorBuilder: StoryEditorBuildable
+    private var storyEditorRouter: Routing?
+    
     init(
         interactor: AppRootInteractable,
         viewController: AppRootViewControllable,
@@ -51,6 +57,7 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         self.signInBuilder = dependency.signInBuilder
         self.homeBuilder = dependency.homeBuilder
         self.searchHomeBuilder = dependency.searchBuilder
+        self.storyEditorBuilder = dependency.storyEditorBuilder
         
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
@@ -86,9 +93,14 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         self.searchHomeRouter = searchHomeRouting
         attachChild(searchHomeRouting)
         
+        let storyEditorRouting = storyEditorBuilder.build(withListener: interactor)
+        self.storyEditorRouter = storyEditorRouting
+        attachChild(storyEditorRouting)
+        
         let viewControllers = [
             NavigationControllable(viewControllable: homeRouting.viewControllable),
             NavigationControllable(viewControllable: searchHomeRouting.viewControllable),
+            NavigationControllable(viewControllable: storyEditorRouting.viewControllable),
         ]
         
         viewController.setViewControllers(viewControllers)
