@@ -10,6 +10,7 @@ import Foundation
 
 public enum NetworkHost {
     
-    public static let base = ""
+    // MARK: - 도메인 추가
+    public static let base = "https://github.com/boostcampwm2023/iOS04-HeatPick"
     
 }

@@ -14,6 +14,7 @@ import NetworkAPIKit
 import DomainUseCases
 import DomainInterfaces
 import DataRepositories
+import NetworkAPIAuth
 
 final class AppComponent: Component<EmptyComponent>, AppRootDependency {
     
@@ -24,7 +25,9 @@ final class AppComponent: Component<EmptyComponent>, AppRootDependency {
     
     init() {
         let network: Network = {
-            let configuration = URLSessionConfiguration.default
+//            let configuration = URLSessionConfiguration.default
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.protocolClasses = [SignInURLProtocol.self]
             let provider = NetworkProvider(session: URLSession(configuration: configuration))
             return provider
         }()
