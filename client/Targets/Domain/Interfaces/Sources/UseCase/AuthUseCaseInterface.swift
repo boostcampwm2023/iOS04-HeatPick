@@ -12,6 +12,8 @@ import DomainEntities
 
 public protocol AuthUseCaseInterface: AnyObject {
     
+    var naverToken: AnyPublisher<String, Never> { get }
+    func requestNaverSignIn()
     func requestSignIn(token: String) -> AnyPublisher<AuthToken, Error>
     
 }

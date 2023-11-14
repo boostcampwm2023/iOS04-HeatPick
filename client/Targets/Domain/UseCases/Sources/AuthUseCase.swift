@@ -14,9 +14,22 @@ import DomainInterfaces
 public final class AuthUseCase: AuthUseCaseInterface {
     
     private let repository: AuthRepositoryInterface
+    private let signInUseCase: SignInUseCaseInterface
     
-    public init(repository: AuthRepositoryInterface) {
+    public var naverToken: AnyPublisher<String, Never> {
+        return signInUseCase.naverAcessToken
+    }
+    
+    public init(
+        repository: AuthRepositoryInterface,
+        signInUseCase: SignInUseCaseInterface
+    ) {
         self.repository = repository
+        self.signInUseCase = signInUseCase
+    }
+    
+    public func requestNaverSignIn() {
+        signInUseCase.requestNaverLogin()
     }
     
     public func requestSignIn(token: String) -> AnyPublisher<AuthToken, Error> {
