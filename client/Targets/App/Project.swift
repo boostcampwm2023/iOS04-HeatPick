@@ -17,6 +17,8 @@ let project = Project.app(
         .Target.Presentation.Search.Interfaces,
         .Target.Presentation.Search.Implementations,
         .Target.Presentation.Story.Interfaces,
-        .Target.Presentation.Story.Implementations
+        .Target.Presentation.Story.Implementations,
+        .Target.Presentation.StoryEditor.Interfaces,
+        .Target.Presentation.StoryEditor.Implementations
     ]
 )
