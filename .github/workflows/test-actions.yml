@@ -3,11 +3,11 @@ name: CI/CD using github actions & docker
 on:
     pull_request:
         branches: ["develop"]
-        types: ["labeled"]
+        types: ["closed"]
 jobs:
     deploy:
         runs-on: ubuntu-latest
-        if: ${{ github.event.action == 'labeled' && github.event.label.name == '🖥️ Server' }}
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, '🖥️ Server') }}
 
         steps:
             - name: Checkout repository
