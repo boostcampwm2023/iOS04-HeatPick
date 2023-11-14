@@ -6,11 +6,11 @@ import { Story } from '../entities/story.entity';
 export class StoryService {
   constructor(private storyRepository: StoryRepository) {}
 
-  public async create({ title, content, imageList, date }): Promise<number> {
+  public async create({ title, content, savedImagePaths, date }): Promise<number> {
     const story = new Story();
     story.title = title;
     story.content = content;
-    story.storyImageURL = imageList;
+    story.storyImageURL = JSON.stringify(savedImagePaths);
     story.createAt = new Date();
     story.likeCount = 0;
 

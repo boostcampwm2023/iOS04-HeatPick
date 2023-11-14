@@ -13,10 +13,10 @@ export class CreateStoryDto {
   content: string;
 
   @ApiProperty({
-    example: '[...(stringBuffer?)]',
+    example: '[...(stringBuffer)]',
     description: 'ImageList in Story',
   })
-  imageList: string[];
+  imageList: Array<Express.Multer.File>;
 
   @ApiProperty({
     example: `['coffee', 'travel']`,
