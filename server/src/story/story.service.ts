@@ -6,7 +6,7 @@ import { Story } from '../entities/story.entity';
 export class StoryService {
   constructor(private storyRepository: StoryRepository) {}
 
-  async create({ title, content, imageList, date }): Promise<number> {
+  public async create({ title, content, imageList, date }): Promise<number> {
     const story = new Story();
     story.title = title;
     story.content = content;
