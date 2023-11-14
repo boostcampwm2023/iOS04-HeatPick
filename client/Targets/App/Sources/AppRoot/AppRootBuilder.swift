@@ -8,17 +8,31 @@
 
 import ModernRIBs
 
-import AuthImplementations
 import DomainInterfaces
+import AuthImplementations
+import SearchImplementations
 
 protocol AppRootDependency: Dependency {
     var signInUseCase: SignInUseCaseInterface { get }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
 }
 
-final class AppRootComponent: Component<AppRootDependency>, SignInDependency {
+final class AppRootComponent: Component<AppRootDependency>, 
+                                AppRootRouterDependency,
+                                SignInDependency,
+                                SearchHomeDependency {
+    
     var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
+    
+    lazy var signInBuilder: SignInBuildable = {
+        SignInBuilder(dependency: self)
+    }()
+    
+    lazy var searchBuilder: SearchHomeBuildable = {
+        SearchHomeBuilder(dependency: self)
+    }()
+    
 }
 
 // MARK: - Builder
@@ -27,6 +41,7 @@ protocol AppRootBuildable: Buildable {
     func build() -> LaunchRouting
 }
 
+
 final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
 
     override init(dependency: AppRootDependency) {
@@ -34,16 +49,15 @@ final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
     }
 
     func build() -> LaunchRouting {
-        let component = AppRootComponent(dependency: dependency)
         
+        let component = AppRootComponent(dependency: dependency)
         let tabBarController = AppRootTabBarController()
         let interactor = AppRootInteractor(presenter: tabBarController)
-        let signInBuilder = SignInBuilder(dependency: component)
         
         return AppRootRouter(
             interactor: interactor,
             viewController: tabBarController,
-            signInBuilder: signInBuilder
+            dependency: component
         )
     }
 }
