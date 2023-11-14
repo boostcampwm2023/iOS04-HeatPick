@@ -25,7 +25,7 @@ extension OSLog {
     
 }
 
-enum Log {
+public enum Log {
     static func make(message: String, log: OSLog) {
         os_log("%@", log: log, message)
     }
