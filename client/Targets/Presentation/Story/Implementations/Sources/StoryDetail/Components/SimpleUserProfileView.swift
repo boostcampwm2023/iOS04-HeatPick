@@ -31,6 +31,7 @@ struct SimpleUserProfileViewModel {
 }
 
 extension UserStatus {
+    
     var image: UIImage? {
         switch self {
         case .selfUser:
@@ -41,6 +42,7 @@ extension UserStatus {
             return UIImage(systemName: "person.badge.plus")
         }
     }
+    
 }
 
 final class SimpleUserProfileView: UIView {
@@ -65,7 +67,7 @@ final class SimpleUserProfileView: UIView {
     private let profileImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .profileDefault
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -105,6 +107,11 @@ final class SimpleUserProfileView: UIView {
         let imageView = UIImageView()
         imageView.image = UserStatus.nonFollowingUser.image
         imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .hpBlack
+        imageView.isUserInteractionEnabled = true
+        
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(followButtonDidTap))
+        imageView.addGestureRecognizer(gesture)
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -123,7 +130,12 @@ final class SimpleUserProfileView: UIView {
     convenience init(listener: StoryDetailPresentableListener?) {
         self.init()
         self.listener = listener
-        setupViews()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        profileImage.layer.cornerRadius = 20
+        profileImage.layer.masksToBounds = true
     }
     
     func setup(model: SimpleUserProfileViewModel) {
@@ -138,26 +150,41 @@ final class SimpleUserProfileView: UIView {
 private extension SimpleUserProfileView {
     
     func setupViews() {
+        let followButtonWidth: CGFloat = 24
+        let followButtonHeight: CGFloat = followButtonWidth
+        
         addSubview(userStackView)
         [nicknameLabel, subtitleLabel].forEach(titleStackView.addArrangedSubview)
         [profileImage, titleStackView, followButton].forEach(userStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
+            profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor, multiplier: 1),
             userStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             userStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             userStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            userStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+            userStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            
+            followButton.widthAnchor.constraint(equalToConstant: followButtonWidth),
+            followButton.heightAnchor.constraint(equalToConstant: followButtonHeight)
         ])
-        
-        
-        profileImage.layer.cornerRadius = profileImage.frame.height / 2
     }
     
 //    TODO: bind following button
 //    func bind() {
 //        listener?.userStatus
 //            .sink { status in
-//                status.image
+//                followButton.image = status.image
 //            }.store(in: &cancellables)
 //    }
+    
+}
+
+// MARK: objc
+private extension SimpleUserProfileView {
+    
+    @objc func followButtonDidTap() {
+//        TODO: add interactor function
+//        listener?.followButtonDidTap()
+    }
+    
 }
