@@ -8,13 +8,19 @@
 
 import ModernRIBs
 
-public protocol SearchHomeDependency: Dependency {
-    
-}
+public protocol SearchHomeDependency: Dependency { }
 
-final class SearchHomeComponent: Component<SearchHomeDependency> {
-
+final class SearchHomeComponent: Component<SearchHomeDependency>,
+                                 SearchHomeRouterDependency,
+                                 SearchHomeListDependency,
+                                 SearchResultDependency {
     
+    lazy var searchHomeListBuilder: SearchHomeListBuildable = SearchHomeListBuilder(dependency: self)
+    lazy var searchResultBuilder: SearchResultBuildable = SearchResultBuilder(dependency: self)
+    
+    override init(dependency: SearchHomeDependency) {
+        super.init(dependency: dependency)
+    }
 }
 
 // MARK: - Builder
@@ -24,16 +30,20 @@ public protocol SearchHomeBuildable: Buildable {
 }
 
 public final class SearchHomeBuilder: Builder<SearchHomeDependency>, SearchHomeBuildable {
-
+    
     public override init(dependency: SearchHomeDependency) {
         super.init(dependency: dependency)
     }
-
+    
     public func build(withListener listener: SearchHomeListener) -> ViewableRouting {
         let component = SearchHomeComponent(dependency: dependency)
         let viewController = SearchHomeViewController()
         let interactor = SearchHomeInteractor(presenter: viewController)
         interactor.listener = listener
-        return SearchHomeRouter(interactor: interactor, viewController: viewController)
+        return SearchHomeRouter(
+            interactor: interactor,
+            viewController: viewController,
+            dependency: component
+        )
     }
 }

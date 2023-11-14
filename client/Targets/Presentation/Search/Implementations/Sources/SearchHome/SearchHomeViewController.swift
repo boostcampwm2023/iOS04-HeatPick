@@ -13,9 +13,8 @@ import DesignKit
 import ModernRIBs
 import NMapsMap
 
-
 protocol SearchHomePresentableListener: AnyObject {
-    
+    func searchTextFieldDidTap()
 }
 
 public final class SearchHomeViewController: UIViewController, SearchHomePresentable, SearchHomeViewControllable {
@@ -29,9 +28,14 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
     
     weak var listener: SearchHomePresentableListener?
     
-    private let searchTextField: SearchTextField = {
+    private lazy var searchTextField: SearchTextField = {
         let textField = SearchTextField()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(searchTextFieldDidTap))
+        textField.addGestureRecognizer(tapGesture)
+        
         textField.placeholder = Constant.searchTextFieldPlaceholder
+        textField.isEnabled = false
         textField.clipsToBounds = true
         textField.layer.cornerRadius = Constants.cornerRadiusMedium
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -41,6 +45,10 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+    }
+    
+    func addDashboard(_ view: ViewControllable) {
+        
     }
 }
 
@@ -67,4 +75,10 @@ private extension SearchHomeViewController {
         
     }
     
+}
+
+private extension SearchHomeViewController {
+    @objc func searchTextFieldDidTap() {
+        listener?.searchTextFieldDidTap()
+    }
 }
