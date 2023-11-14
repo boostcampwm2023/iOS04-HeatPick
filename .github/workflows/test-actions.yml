@@ -7,7 +7,7 @@ on:
 jobs:
     deploy:
         runs-on: ubuntu-latest
-         if: ${{ github.event.action == 'labeled' && github.event.label.name == '🖥️ Server' }}
+        if: ${{ github.event.action == 'labeled' && github.event.label.name == '🖥️ Server' }}
 
         steps:
             - name: Checkout repository
