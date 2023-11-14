@@ -10,21 +10,31 @@ import Foundation
 
 import ModernRIBs
 
+import NetworkAPIKit
 import DomainUseCases
 import DomainInterfaces
 import DataRepositories
 
 final class AppComponent: Component<EmptyComponent>, AppRootDependency {
     
-    let signInUseCase: SignInUseCaseInterface
+    let authUseCase: AuthUseCaseInterface
     let naverLoginRepository: NaverLoginRepositoryInterface
     
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
     
     init() {
+        let network: Network = {
+            let configuration = URLSessionConfiguration.default
+            let provider = NetworkProvider(session: URLSession(configuration: configuration))
+            return provider
+        }()
         self.naverLoginRepository = NaverLoginRepository()
-        self.signInUseCase = SignInUseCase(naverLoginRepository: naverLoginRepository)
+        self.authUseCase = AuthUseCase(
+            repository: AuthRepository(session: network),
+            signInUseCase: SignInUseCase(naverLoginRepository: naverLoginRepository)
+        )
         self.locationAuthorityUseCase = LocationAuthorityUseCase(service: LocationService())
         super.init(dependency: EmptyComponent())
     }
+    
 }

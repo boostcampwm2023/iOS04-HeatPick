@@ -11,7 +11,7 @@ import ModernRIBs
 import DomainInterfaces
 
 public protocol SignInDependency: Dependency {
-    var signInUseCase: SignInUseCaseInterface { get }
+    var authUseCase: AuthUseCaseInterface { get }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
 }
 
@@ -20,7 +20,7 @@ final class SignInComponent: Component<SignInDependency>,
                              SignUpDependency,
                              SignUpSuccessDependency,
                              LocationAuthorityDependency {
-    var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
+    var authUseCase: AuthUseCaseInterface { dependency.authUseCase }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
 }
 

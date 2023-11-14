@@ -13,7 +13,7 @@ import AuthImplementations
 import SearchImplementations
 
 protocol AppRootDependency: Dependency {
-    var signInUseCase: SignInUseCaseInterface { get }
+    var authUseCase: AuthUseCaseInterface { get }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
 }
 
@@ -22,7 +22,7 @@ final class AppRootComponent: Component<AppRootDependency>,
                                 SignInDependency,
                                 SearchHomeDependency {
     
-    var signInUseCase: SignInUseCaseInterface { dependency.signInUseCase }
+    var authUseCase: AuthUseCaseInterface { dependency.authUseCase }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
     
     lazy var signInBuilder: SignInBuildable = {
