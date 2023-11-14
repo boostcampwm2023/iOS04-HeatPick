@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.credential.dto';
 import { RegisterDto } from './dto/auth.resgister.dto';
@@ -9,6 +9,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from 'src/entities/user.entity';
+import { JwtAuthGuard } from './jwt.guard';
 
 @ApiBearerAuth()
 @ApiTags('auth')
