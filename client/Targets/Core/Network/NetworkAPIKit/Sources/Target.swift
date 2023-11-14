@@ -10,8 +10,6 @@ import Foundation
 
 public protocol Target {
     
-    associatedtype Response: Decodable
-    
     var baseURL: URL { get }
     var path: String { get }
     var method: HTTPMethod { get }
