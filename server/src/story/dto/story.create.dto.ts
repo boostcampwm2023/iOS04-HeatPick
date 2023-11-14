@@ -13,16 +13,16 @@ export class CreateStoryDto {
   content: string;
 
   @ApiProperty({
-    example: 'place images(buffer)',
+    example: '[...(stringBuffer?)]',
     description: 'ImageList in Story',
   })
-  imageList: [];
+  imageList: string[];
 
   @ApiProperty({
     example: `['coffee', 'travel']`,
     description: 'Story Category',
   })
-  category: [];
+  category: string[];
 
   @ApiProperty({
     example: `{ lat: 1.2345, lng: 6.7890 }`,

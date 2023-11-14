@@ -10,7 +10,9 @@ export class StoryController {
   @Post('create')
   @ApiOperation({ summary: 'Create story' })
   @ApiResponse({ status: 200, description: 'storyId' })
-  async create(@Body() createStoryDto: CreateStoryDto): Promise<string> {
-    return this.storyService.create(createStoryDto);
+  async create(@Body() createStoryDto: CreateStoryDto): Promise<number> {
+    const { title, content, imageList, date } = createStoryDto;
+
+    return this.storyService.create({ title, content, imageList, date });
   }
 }

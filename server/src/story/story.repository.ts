@@ -8,4 +8,8 @@ export class StoryRepository {
     @Inject('STORY_REPOSITORY')
     private storyRepository: Repository<Story>,
   ) {}
+
+  addStory(story: Story) {
+    return this.storyRepository.save(story);
+  }
 }
