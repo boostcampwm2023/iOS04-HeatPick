@@ -5,5 +5,4 @@ import { StoryRepository } from './story.repository';
 export class StoryService {
   constructor(private storyRepository: StoryRepository) {}
 
-
 }
