@@ -6,8 +6,9 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import ModernRIBs
 import UIKit
+import DesignKit
+import ModernRIBs
 
 protocol HomePresentableListener: AnyObject {}
 
@@ -41,7 +42,7 @@ final class HomeViewController: UIViewController, HomePresentable, HomeViewContr
 private extension HomeViewController {
     
     func setupViews() {
-        
+        view.backgroundColor = .hpWhite
     }
     
     func setupTabBar() {
