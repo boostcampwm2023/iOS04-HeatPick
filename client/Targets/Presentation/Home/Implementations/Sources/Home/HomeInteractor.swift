@@ -43,8 +43,15 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     }
     
     // MARK: - Recommend
+    
     func recommendDashboardDidTapSeeAll() {
         print("# Attach Recommend See All View")
+    }
+    
+    // MARK: - HotPlace
+    
+    func hotPlaceDashboardDidTapSeeAll() {
+        print("# Attach HotPlace See All View")
     }
     
 }
