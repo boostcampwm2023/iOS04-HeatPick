@@ -9,7 +9,7 @@
 import Foundation
 import OSLog
 
-extension OSLog {
+public extension OSLog {
     
     private static let subsystem = Bundle.main.bundleIdentifier!
     
@@ -26,7 +26,11 @@ extension OSLog {
 }
 
 public enum Log {
+    
     public static func make(message: String, log: OSLog) {
+        #if DEBUG
         os_log("%@", log: log, message)
+        #endif
     }
+    
 }
