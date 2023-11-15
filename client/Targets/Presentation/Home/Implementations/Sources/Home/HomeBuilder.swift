@@ -10,7 +10,7 @@ import ModernRIBs
 
 public protocol HomeDependency: Dependency {}
 
-final class HomeComponent: Component<HomeDependency>, HomeRecommendDashboardDependency {}
+final class HomeComponent: Component<HomeDependency>, HomeRecommendDashboardDependency, HomeHotPlaceDashboardDependency {}
 
 public protocol HomeBuildable: Buildable {
     func build(withListener listener: HomeListener) -> ViewableRouting
@@ -29,11 +29,13 @@ public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {
         interactor.listener = listener
         
         let recommendDashboardBuilder = HomeRecommendDashboardBuilder(dependency: component)
+        let hotPlaceDashboardBuilder = HomeHotPlaceDashboardBuilder(dependency: component)
         
         return HomeRouter(
             interactor: interactor,
             viewController: viewController,
-            recommendDashboardBuilder: recommendDashboardBuilder
+            recommendDashboardBuilder: recommendDashboardBuilder,
+            hotPlaceDashboardBuilder: hotPlaceDashboardBuilder
         )
     }
 }

@@ -8,7 +8,7 @@
 
 import ModernRIBs
 
-protocol HomeInteractable: Interactable, HomeRecommendDashboardListener {
+protocol HomeInteractable: Interactable, HomeRecommendDashboardListener, HomeHotPlaceDashboardListener {
     var router: HomeRouting? { get set }
     var listener: HomeListener? { get set }
 }
@@ -22,12 +22,17 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     private let recommendDashboardBuilder: HomeRecommendDashboardBuildable
     private var recommendDashboardRouting: Routing?
     
+    private let hotPlaceDashboardBuilder: HomeHotPlaceDashboardBuildable
+    private var hotPlaceDashboardRouting: Routing?
+    
     init(
         interactor: HomeInteractable, 
         viewController: HomeViewControllable,
-        recommendDashboardBuilder: HomeRecommendDashboardBuildable
+        recommendDashboardBuilder: HomeRecommendDashboardBuildable,
+        hotPlaceDashboardBuilder: HomeHotPlaceDashboardBuildable
     ) {
         self.recommendDashboardBuilder = recommendDashboardBuilder
+        self.hotPlaceDashboardBuilder = hotPlaceDashboardBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -37,6 +42,14 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
         let router = recommendDashboardBuilder.build(withListener: interactor)
         viewController.setDashboard(router.viewControllable)
         self.recommendDashboardRouting = router
+        attachChild(router)
+    }
+    
+    func attachHotPlaceDashboard() {
+        guard hotPlaceDashboardRouting == nil else { return }
+        let router = hotPlaceDashboardBuilder.build(withListener: interactor)
+        viewController.setDashboard(router.viewControllable)
+        self.hotPlaceDashboardRouting = router
         attachChild(router)
     }
     
