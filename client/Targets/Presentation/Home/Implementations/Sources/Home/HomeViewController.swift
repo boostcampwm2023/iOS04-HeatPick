@@ -65,6 +65,19 @@ public final class HomeViewController: UIViewController, HomePresentable, HomeVi
         viewController.didMove(toParent: self)
     }
     
+    func insertDashboard(_ viewControllable: ViewControllable, at index: Int) {
+        let viewController = viewControllable.uiviewController
+        addChild(viewController)
+        stackView.insertArrangedSubview(viewController.view, at: index)
+        viewController.didMove(toParent: self)
+    }
+    
+    func removeDashboard(_ viewControllable: ViewControllable) {
+        let viewController = viewControllable.uiviewController
+        stackView.removeArrangedSubview(viewController.view)
+        viewController.removeFromParent()
+    }
+    
 }
 
 private extension HomeViewController {
