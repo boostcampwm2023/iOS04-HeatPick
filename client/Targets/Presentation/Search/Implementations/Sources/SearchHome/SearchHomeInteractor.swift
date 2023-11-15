@@ -53,4 +53,9 @@ final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>,
     func detachSearchResult() {
         router?.detachSearchResult()
     }
+    
+    func attacHomeListView() {
+        router?.attachSearchHomeList()
+    }
+    
 }

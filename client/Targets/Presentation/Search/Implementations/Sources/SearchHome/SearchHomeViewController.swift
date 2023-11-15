@@ -8,16 +8,20 @@
 
 import UIKit
 
+import CoreKit
 import DesignKit
 
-import ModernRIBs
 import NMapsMap
+import ModernRIBs
 
 protocol SearchHomePresentableListener: AnyObject {
     func searchTextFieldDidTap()
+    func attacHomeListView()
 }
 
 public final class SearchHomeViewController: UIViewController, SearchHomePresentable, SearchHomeViewControllable {
+    
+    var searchListViewController: ViewControllable?
     
     private enum Constant {
         static let tabBarTitle = "검색"
@@ -43,12 +47,10 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        listener?.attacHomeListView()
         setupViews()
     }
-    
-    func addDashboard(_ view: ViewControllable) {
-        
-    }
+
 }
 
 private extension SearchHomeViewController {
