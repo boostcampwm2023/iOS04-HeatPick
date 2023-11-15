@@ -16,12 +16,17 @@ import DomainUseCases
 import DomainInterfaces
 import DataRepositories
 import AuthImplementations
+import HomeImplementations
 import SearchImplementations
+import StoryImplementations
 
 final class AppRootComponent: Component<AppRootDependency>,
-                                AppRootRouterDependency,
-                                SignInDependency,
-                              SearchHomeDependency {
+                              AppRootRouterDependency,
+                              SignInDependency,
+                              HomeDependency,
+                              SearchHomeDependency, 
+                              StoryEditorDependency {
+    
     let authUseCase: AuthUseCaseInterface
     let naverLoginRepository: NaverLoginRepositoryInterface
     
@@ -31,13 +36,21 @@ final class AppRootComponent: Component<AppRootDependency>,
         SignInBuilder(dependency: self)
     }()
     
+    lazy var homeBuilder: HomeBuildable = {
+        HomeBuilder(dependency: self)
+    }()
+    
     lazy var searchBuilder: SearchHomeBuildable = {
         SearchHomeBuilder(dependency: self)
     }()
     
+    lazy var storyEditorBuilder: StoryEditorBuildable = {
+        StoryEditorBuilder(dependency: self)
+    }()
+    
     override init(dependency: AppRootDependency) {
         let naverLoginRepository: NaverLoginRepositoryInterface = {
-           let repository = NaverLoginRepository()
+            let repository = NaverLoginRepository()
             repository.setup()
             return repository
         }()

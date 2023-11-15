@@ -10,11 +10,15 @@ import ModernRIBs
 
 import CoreKit
 import AuthImplementations
+import HomeImplementations
 import SearchImplementations
+import StoryImplementations
 
 protocol AppRootInteractable: Interactable,
                               SignInListener,
-                              SearchHomeListener {
+                              SearchHomeListener,
+                              HomeListener, 
+                              StoryEditorListener {
     var router: AppRootRouting? { get set }
     var listener: AppRootListener? { get set }
 }
@@ -25,7 +29,9 @@ protocol AppRootViewControllable: ViewControllable {
 
 protocol AppRootRouterDependency {
     var signInBuilder: SignInBuildable { get }
+    var homeBuilder: HomeBuildable { get }
     var searchBuilder: SearchHomeBuildable { get }
+    var storyEditorBuilder: StoryEditorBuildable { get }
 }
 
 
@@ -34,8 +40,14 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     private let signInBuilder: SignInBuildable
     private var signInRouter: Routing?
     
+    private let homeBuilder: HomeBuildable
+    private var homeRouter: Routing?
+    
     private let searchHomeBuilder: SearchHomeBuildable
-    private var serachHomeRouter: Routing?
+    private var searchHomeRouter: Routing?
+    
+    private let storyEditorBuilder: StoryEditorBuildable
+    private var storyEditorRouter: Routing?
     
     init(
         interactor: AppRootInteractable,
@@ -43,7 +55,9 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         dependency: AppRootRouterDependency
     ) {
         self.signInBuilder = dependency.signInBuilder
+        self.homeBuilder = dependency.homeBuilder
         self.searchHomeBuilder = dependency.searchBuilder
+        self.storyEditorBuilder = dependency.storyEditorBuilder
         
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
@@ -66,13 +80,27 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     }
     
     func attachTabs() {
-        print("# TODO: TabBar Attach")
+        guard homeRouter == nil,
+              searchHomeRouter == nil
+        else {
+            return
+        }
+        let homeRouting = homeBuilder.build(withListener: interactor)
+        self.homeRouter = homeRouting
+        attachChild(homeRouting)
         
-        let searchHomeRouter = searchHomeBuilder.build(withListener: interactor)
-        attachChild(searchHomeRouter)
+        let searchHomeRouting = searchHomeBuilder.build(withListener: interactor)
+        self.searchHomeRouter = searchHomeRouting
+        attachChild(searchHomeRouting)
+        
+        let storyEditorRouting = storyEditorBuilder.build(withListener: interactor)
+        self.storyEditorRouter = storyEditorRouting
+        attachChild(storyEditorRouting)
         
         let viewControllers = [
-            NavigationControllable(viewControllable: searchHomeRouter.viewControllable),
+            NavigationControllable(viewControllable: homeRouting.viewControllable),
+            NavigationControllable(viewControllable: searchHomeRouting.viewControllable),
+            NavigationControllable(viewControllable: storyEditorRouting.viewControllable),
         ]
         
         viewController.setViewControllers(viewControllers)

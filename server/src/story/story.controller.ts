@@ -15,6 +15,7 @@ export class StoryController {
   @UseInterceptors(FilesInterceptor('images', 3))
   @ApiOperation({ summary: 'Create story' })
   @ApiResponse({ status: 200, description: 'storyId' })
+
   async create(@UploadedFiles() images: Array<Express.Multer.File>, @Body() createStoryDto: CreateStoryDto) {
     const savedImagePaths = await Promise.all(images.map(async (image) => await saveImage('../../uploads', image.buffer)));
 
