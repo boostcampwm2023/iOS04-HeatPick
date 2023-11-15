@@ -16,4 +16,8 @@ export class StoryService {
 
     return (await this.storyRepository.addStory(story)).storyId;
   }
+
+  public async read(storyId: number): Promise<Story> {
+    return await this.storyRepository.findById(storyId);
+  }
 }

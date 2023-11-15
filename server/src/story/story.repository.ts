@@ -9,7 +9,10 @@ export class StoryRepository {
     private storyRepository: Repository<Story>,
   ) {}
 
-  addStory(story: Story) {
+  addStory(story: Story): Promise<Story> {
     return this.storyRepository.save(story);
+  }
+  findById(storyId: number): Promise<Story> {
+    return this.storyRepository.findOneBy({ storyId: storyId });
   }
 }

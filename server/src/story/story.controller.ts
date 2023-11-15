@@ -7,7 +7,6 @@ import { saveImage } from '../util/story.util.saveImage';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { Story } from '../entities/story.entity';
 
-@UseGuards(JwtAuthGuard)
 @Controller('story')
 export class StoryController {
   constructor(private storyService: StoryService) {}
@@ -26,7 +25,7 @@ export class StoryController {
 
   @Get('detail/:storyId')
   @ApiOperation({ summary: 'Send detail story info' })
-  @ApiResponse({ status: 200, description: '{ story, isfollowd, recommandStoryList, author }' })
+  @ApiResponse({ status: 200, description: '{ story, isFollowed, recommendStoryList, author }' })
   async read(@Param('storyId') storyId: number): Promise<Story> {
     return this.storyService.read(storyId);
   }
