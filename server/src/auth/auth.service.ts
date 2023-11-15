@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UploadedFiles } from '@nestjs/common';
 import { UserRepository } from './../user/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
@@ -21,13 +21,13 @@ export class AuthService {
     return accessToken;
   }
 
-  async signUp(OAuthToken: string, username: string): Promise<string> {
+  async signUp(OAuthToken: string, username: string, imagePath: string): Promise<string> {
     const userId = await this.getId(OAuthToken);
 
     const userObj = new User();
     userObj.username = username;
     userObj.oauthId = userId;
-    userObj.profileImageURL = '';
+    userObj.profileImageURL = imagePath;
     userObj.temperature = 0;
 
     this.userRepository.createUser(userObj);
