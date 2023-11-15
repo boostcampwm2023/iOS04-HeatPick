@@ -37,12 +37,10 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        setupTabBar()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupTabBar()
     }
     
     override func viewDidLoad() {
@@ -66,18 +64,12 @@ private extension StoryEditorViewController {
         ])
     }
     
-    func setupTabBar() {
-        tabBarItem = .init(title: "",
-                           image: UIImage(systemName: Constant.tabBarImage)?.withRenderingMode(.alwaysTemplate),
-                           selectedImage: UIImage(systemName: Constant.tabBarImageSelected)?.withRenderingMode(.alwaysTemplate))
-    }
-    
 }
 
 extension StoryEditorViewController: NavigationViewDelegate {
+    
     func navigationViewButtonDidTap(_ view: DesignKit.NavigationView, type: DesignKit.NavigationViewButtonType) {
         listener?.didTapClose()
     }
-    
-    
+
 }
