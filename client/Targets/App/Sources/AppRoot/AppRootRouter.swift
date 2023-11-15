@@ -10,22 +10,29 @@ import ModernRIBs
 
 import CoreKit
 import AuthImplementations
+import HomeImplementations
 import SearchImplementations
+import StoryImplementations
 
 protocol AppRootInteractable: Interactable,
                               SignInListener,
-                              SearchHomeListener {
+                              SearchHomeListener,
+                              HomeListener, 
+                              StoryCreatorListener {
     var router: AppRootRouting? { get set }
     var listener: AppRootListener? { get set }
 }
 
 protocol AppRootViewControllable: ViewControllable {
     func setViewControllers(_ viewControllers: [ViewControllable])
+    func selectPreviousTab()
 }
 
 protocol AppRootRouterDependency {
     var signInBuilder: SignInBuildable { get }
+    var homeBuilder: HomeBuildable { get }
     var searchBuilder: SearchHomeBuildable { get }
+    var storyCreatorBuilder: StoryCreatorBuildable { get }
 }
 
 
@@ -34,8 +41,14 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     private let signInBuilder: SignInBuildable
     private var signInRouter: Routing?
     
+    private let homeBuilder: HomeBuildable
+    private var homeRouter: Routing?
+    
     private let searchHomeBuilder: SearchHomeBuildable
-    private var serachHomeRouter: Routing?
+    private var searchHomeRouter: Routing?
+    
+    private let storyCreatorBuilder: StoryCreatorBuildable
+    private var storyCreatorRouter: Routing?
     
     init(
         interactor: AppRootInteractable,
@@ -43,7 +56,9 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         dependency: AppRootRouterDependency
     ) {
         self.signInBuilder = dependency.signInBuilder
+        self.homeBuilder = dependency.homeBuilder
         self.searchHomeBuilder = dependency.searchBuilder
+        self.storyCreatorBuilder = dependency.storyCreatorBuilder
         
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
@@ -66,15 +81,34 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     }
     
     func attachTabs() {
-        print("# TODO: TabBar Attach")
+        guard homeRouter == nil,
+              searchHomeRouter == nil
+        else {
+            return
+        }
+        let homeRouting = homeBuilder.build(withListener: interactor)
+        self.homeRouter = homeRouting
+        attachChild(homeRouting)
         
-        let searchHomeRouter = searchHomeBuilder.build(withListener: interactor)
-        attachChild(searchHomeRouter)
+        let searchHomeRouting = searchHomeBuilder.build(withListener: interactor)
+        self.searchHomeRouter = searchHomeRouting
+        attachChild(searchHomeRouting)
+        
+        let storyCreatorRouting = storyCreatorBuilder.build(withListener: interactor)
+        self.storyCreatorRouter = storyCreatorRouting
+        attachChild(storyCreatorRouting)
         
         let viewControllers = [
-            NavigationControllable(viewControllable: searchHomeRouter.viewControllable),
+            NavigationControllable(viewControllable: homeRouting.viewControllable),
+            NavigationControllable(viewControllable: searchHomeRouting.viewControllable),
+            NavigationControllable(viewControllable: storyCreatorRouting.viewControllable),
         ]
         
         viewController.setViewControllers(viewControllers)
     }
+    
+    func routeToPreivousTab() {
+        viewController.selectPreviousTab()
+    }
+    
 }

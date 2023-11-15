@@ -33,6 +33,7 @@ jobs:
                   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
                   DB_NAME: ${{ secrets.DB_NAME }}
                   DB_HOST: ${{ secrets.DB_HOST }}
+                  SECRET_KEY: ${{ secrets.SECRET_KEY }}
               run: |
                   cd server
                   touch .env
@@ -44,6 +45,7 @@ jobs:
                   echo "DB_PASSWORD=$DB_PASSWORD" >> .env
                   echo "DB_NAME=$DB_NAME" >> .env
                   echo "DB_HOST=$DB_HOST" >> .env
+                  echo "SECRET_KEY=$SECRET_KEY" >> .env
 
             - name: Build Docker image
               run: docker build -t geomgichoi/heatpick:latest ./server

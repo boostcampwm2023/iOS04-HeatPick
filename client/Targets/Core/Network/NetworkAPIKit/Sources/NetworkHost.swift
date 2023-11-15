@@ -10,7 +10,22 @@ import Foundation
 
 public enum NetworkHost {
     
-    // MARK: - 도메인 추가
-    public static let base = "https://github.com/boostcampwm2023/iOS04-HeatPick"
+    public static var base: String {
+        guard let url = infoDictionary["BaseURL"] as? String else {
+            fatalError("URL 설정이 되지 않았습니다")
+        }
+        return url
+    }
+    
+}
+
+private extension NetworkHost {
+    
+    static let infoDictionary: [String: Any] = {
+        guard let dict = Bundle.main.infoDictionary else {
+            fatalError("info 파일이 존재하지 않습니다.")
+        }
+        return dict
+    }()
     
 }

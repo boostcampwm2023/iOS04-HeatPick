@@ -11,12 +11,13 @@ import UIKit
 public enum ActionButtonStyle {
     
     case normal
+    case smallNormal
     case secondary
     case alert
     
     var textColor: UIColor {
         switch self {
-        case .normal: return .hpWhite
+        case .normal, .smallNormal: return .hpWhite
         case .secondary: return .hpBlack
         case .alert: return .hpWhite
         }
@@ -28,7 +29,7 @@ public enum ActionButtonStyle {
     
     var backgroundColor: UIColor {
         switch self {
-        case .normal: return .hpBlack
+        case .normal, .smallNormal: return .hpBlack
         case .secondary: return .hpGray5
         case .alert: return .hpRed1
         }
@@ -60,11 +61,23 @@ public enum ActionButtonStyle {
     }
     
     var font: UIFont {
-        return .bodySemibold
+        switch self {
+        case .smallNormal:
+            return .captionSemibold
+        default:
+            return .bodySemibold
+            
+        }
     }
     
     var disabledFont: UIFont {
-        return .bodySemibold
+        switch self {
+        case .smallNormal:
+            return .captionSemibold
+        default:
+            return .bodySemibold
+            
+        }
     }
     
 }

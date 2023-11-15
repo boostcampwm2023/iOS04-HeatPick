@@ -25,7 +25,9 @@ export class Story {
   @Column()
   createAt: Date;
 
-  @ManyToMany(() => Category)
+  @ManyToMany(() => Category, {
+    cascade: true,
+  })
   @JoinTable()
-  categories: Category[];
+  categories: Promise<Category[]>;
 }

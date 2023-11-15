@@ -27,6 +27,7 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
     private enum Constant {
         static let tabBarTitle = "검색"
         static let tabBarImage = "magnifyingglass"
+        static let tabBarImageSelected = "magnifyingglass"
         static let searchTextFieldPlaceholder = "위치, 장소 검색"
         static let searchTextFieldTopSpacing: CGFloat = 35
     }
@@ -53,6 +54,16 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
+    
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        setupTabBar()
+    }
+    
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupTabBar()
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,7 +100,14 @@ private extension SearchHomeViewController {
             searchTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
             searchTextField.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight)
         ])
-        
+    }
+    
+    func setupTabBar() {
+        tabBarItem = .init(
+            title: Constant.tabBarTitle,
+            image: UIImage(systemName: Constant.tabBarImage)?.withRenderingMode(.alwaysTemplate),
+            selectedImage: UIImage(systemName: Constant.tabBarImageSelected)?.withRenderingMode(.alwaysTemplate)
+        )
     }
     
 }
