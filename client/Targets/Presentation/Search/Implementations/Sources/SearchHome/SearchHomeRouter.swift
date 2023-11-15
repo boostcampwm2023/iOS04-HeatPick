@@ -52,8 +52,17 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         attachChild(router)
         searchHomeListRouter = router
         
-        viewControllable.present(router.viewControllable, animated: true)
+        viewController.present(router.viewControllable, animated: true)
         viewController.searchListViewController = router.viewControllable
+    }
+    
+    func detachSearchHomeList() {
+        guard let router = searchHomeListRouter else { return }
+        detachChild(router)
+        searchHomeListRouter = nil
+        
+        viewController.dismiss(animated: true)
+        viewController.searchListViewController = nil
     }
 
     func attachSearchResult() {
