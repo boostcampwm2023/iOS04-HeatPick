@@ -33,10 +33,13 @@ export class StoryService {
 
   public async read(storyId: number): Promise<StoryDetailViewData> {
     const story: Story = await this.storyRepository.findById(storyId);
+    const user = story.user;
+    delete story.user;
+
     const userData: userDataInStoryView = {
-      userId: story.user.userId,
-      username: story.user.username,
-      profileImageURL: story.user.profileImage.imageUrl,
+      userId: user.userId,
+      username: user.username,
+      //profileImageURL: story.user.profileImage.imageUrl,
       //badge: story.user.badge
     };
 
