@@ -8,7 +8,7 @@
 
 import ModernRIBs
 
-protocol HomeInteractable: Interactable, HomeRecommendDashboardListener, HomeHotPlaceDashboardListener {
+protocol HomeInteractable: Interactable, HomeRecommendDashboardListener, HomeHotPlaceDashboardListener, HomeFollowingDashboardListener {
     var router: HomeRouting? { get set }
     var listener: HomeListener? { get set }
 }
@@ -24,15 +24,20 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     private let hotPlaceDashboardBuilder: HomeHotPlaceDashboardBuildable
     private var hotPlaceDashboardRouting: Routing?
+   
+    private let followingDashboardBuilder: HomeFollowingDashboardBuildable
+    private var followingDashboardRouting: Routing?
     
     init(
         interactor: HomeInteractable, 
         viewController: HomeViewControllable,
         recommendDashboardBuilder: HomeRecommendDashboardBuildable,
-        hotPlaceDashboardBuilder: HomeHotPlaceDashboardBuildable
+        hotPlaceDashboardBuilder: HomeHotPlaceDashboardBuildable,
+        followingDashboardBuilder: HomeFollowingDashboardBuildable
     ) {
         self.recommendDashboardBuilder = recommendDashboardBuilder
         self.hotPlaceDashboardBuilder = hotPlaceDashboardBuilder
+        self.followingDashboardBuilder = followingDashboardBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -50,6 +55,14 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
         let router = hotPlaceDashboardBuilder.build(withListener: interactor)
         viewController.setDashboard(router.viewControllable)
         self.hotPlaceDashboardRouting = router
+        attachChild(router)
+    }
+    
+    func attachFollowingDashboard() {
+        guard followingDashboardRouting == nil else { return }
+        let router = followingDashboardBuilder.build(withListener: interactor)
+        viewController.setDashboard(router.viewControllable)
+        self.followingDashboardRouting = router
         attachChild(router)
     }
     

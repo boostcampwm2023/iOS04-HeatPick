@@ -10,18 +10,23 @@ import ModernRIBs
 
 public protocol HomeDependency: Dependency {}
 
-final class HomeComponent: Component<HomeDependency>, HomeRecommendDashboardDependency, HomeHotPlaceDashboardDependency {}
+final class HomeComponent: Component<HomeDependency>,
+                           HomeRecommendDashboardDependency,
+                           HomeHotPlaceDashboardDependency,
+                           HomeFollowingDashboardDependency {
+    
+}
 
 public protocol HomeBuildable: Buildable {
     func build(withListener listener: HomeListener) -> ViewableRouting
 }
 
 public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {
-
+    
     public override init(dependency: HomeDependency) {
         super.init(dependency: dependency)
     }
-
+    
     public func build(withListener listener: HomeListener) -> ViewableRouting {
         let component = HomeComponent(dependency: dependency)
         let viewController = HomeViewController()
@@ -30,12 +35,14 @@ public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {
         
         let recommendDashboardBuilder = HomeRecommendDashboardBuilder(dependency: component)
         let hotPlaceDashboardBuilder = HomeHotPlaceDashboardBuilder(dependency: component)
+        let followingDashboardBuilder = HomeFollowingDashboardBuilder(dependency: component)
         
         return HomeRouter(
             interactor: interactor,
             viewController: viewController,
             recommendDashboardBuilder: recommendDashboardBuilder,
-            hotPlaceDashboardBuilder: hotPlaceDashboardBuilder
+            hotPlaceDashboardBuilder: hotPlaceDashboardBuilder,
+            followingDashboardBuilder: followingDashboardBuilder
         )
     }
 }

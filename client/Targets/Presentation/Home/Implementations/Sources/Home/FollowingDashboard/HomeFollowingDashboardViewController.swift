@@ -1,5 +1,5 @@
 //
-//  HomeHotPlaceDashboardViewController.swift
+//  HomeFollowingDashboardViewController.swift
 //  HomeImplementations
 //
 //  Created by 홍성준 on 11/15/23.
@@ -10,16 +10,16 @@ import ModernRIBs
 import UIKit
 import DesignKit
 
-protocol HomeHotPlaceDashboardPresentableListener: AnyObject {}
+protocol HomeFollowingDashboardPresentableListener: AnyObject {}
 
-final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceDashboardPresentable, HomeHotPlaceDashboardViewControllable {
-    
-    weak var listener: HomeHotPlaceDashboardPresentableListener?
+final class HomeFollowingDashboardViewController: UIViewController, HomeFollowingDashboardPresentable, HomeFollowingDashboardViewControllable {
+
+    weak var listener: HomeFollowingDashboardPresentableListener?
     
     private let titleView: HomeTitleView = {
         let titleView = HomeTitleView()
         titleView.setup(model: .init(
-            title: "핫플레이스",
+            title: "팔로잉",
             isButtonEnabled: false
         ))
         titleView.translatesAutoresizingMaskIntoConstraints = false
@@ -29,8 +29,8 @@ final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceD
     private let emptyView: HomeEmptyView = {
         let emptyView = HomeEmptyView()
         emptyView.setup(model: .init(
-            title: "핫플레이가 없어요",
-            subtitle: "{업데이트 되는 일정}에 업데이트 되어요"
+            title: "팔로잉이 없어요",
+            subtitle: "새로운 친구를 추가해보세요"
         ))
         emptyView.translatesAutoresizingMaskIntoConstraints = false
         return emptyView
@@ -40,9 +40,10 @@ final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceD
         super.viewDidLoad()
         setupViews()
     }
+    
 }
 
-private extension HomeHotPlaceDashboardViewController {
+private extension HomeFollowingDashboardViewController {
     
     func setupViews() {
         view.addSubview(titleView)

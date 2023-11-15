@@ -11,6 +11,7 @@ import ModernRIBs
 protocol HomeRouting: ViewableRouting {
     func attachRecommendDashboard()
     func attachHotPlaceDashboard()
+    func attachFollowingDashboard()
 }
 
 protocol HomePresentable: Presentable {
@@ -34,6 +35,7 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         super.didBecomeActive()
         router?.attachRecommendDashboard()
         router?.attachHotPlaceDashboard()
+        router?.attachFollowingDashboard()
     }
 
     override func willResignActive() {
