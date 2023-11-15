@@ -29,7 +29,7 @@ final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceD
     private let emptyView: HomeEmptyView = {
         let emptyView = HomeEmptyView()
         emptyView.setup(model: .init(
-            title: "핫플레이가 없어요",
+            title: "핫플레이스가 없어요",
             subtitle: "{업데이트 되는 일정}에 업데이트 되어요"
         ))
         emptyView.translatesAutoresizingMaskIntoConstraints = false
