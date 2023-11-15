@@ -20,8 +20,8 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     
     private enum Constant {
         static let navBarTitle = "스토리 생성"
-        static let tabBarImage = "plus.circle"
-        static let tabBarImageSelected = "plus.circle.fill"
+        static let scrollViewInset: CGFloat = 20
+        static let stackViewSpacing: CGFloat = 30
     }
     
     weak var listener: StoryEditorPresentableListener?
@@ -33,6 +33,33 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         navigationView.translatesAutoresizingMaskIntoConstraints = false
         
         return navigationView
+    }()
+    
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.showsHorizontalScrollIndicator = false
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+    
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = Constant.stackViewSpacing
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private lazy var titleField: TitleField = {
+        let titleField = TitleField()
+        
+        titleField.translatesAutoresizingMaskIntoConstraints = false
+        return titleField
     }()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -54,14 +81,26 @@ private extension StoryEditorViewController {
     
     func setupViews() {
         view.backgroundColor = .hpWhite
-        [navigationView].forEach(view.addSubview)
-        
+        [navigationView, scrollView].forEach(view.addSubview)
+        scrollView.addSubview(stackView)
+        [titleField].forEach(stackView.addArrangedSubview)
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
+            scrollView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1, constant: Constant.scrollViewInset * 2),
+            
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
         ])
+        
+        scrollView.contentInset = .init(top: 40, left: Constant.scrollViewInset, bottom: 0, right: Constant.scrollViewInset)
     }
     
 }
