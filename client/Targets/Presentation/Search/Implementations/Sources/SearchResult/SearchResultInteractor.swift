@@ -9,7 +9,7 @@
 import ModernRIBs
 
 protocol SearchResultRouting: ViewableRouting {
-    func detachSearchResult()
+    
 }
 
 protocol SearchResultPresentable: Presentable {

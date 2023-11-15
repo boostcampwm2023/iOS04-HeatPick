@@ -19,17 +19,14 @@ protocol SearchHomePresentable: Presentable {
     
 }
 
-public protocol SearchHomeListener: AnyObject {
-    
-}
+public protocol SearchHomeListener: AnyObject { }
 
 final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>, 
                                     SearchHomeInteractable,
-                                    SearchHomePresentableListener {
+                                  SearchHomePresentableListener {
 
     weak var router: SearchHomeRouting?
     weak var listener: SearchHomeListener?
-
     
     override init(presenter: SearchHomePresentable) {
         super.init(presenter: presenter)
@@ -38,7 +35,6 @@ final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>,
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        
     }
 
     override func willResignActive() {
@@ -53,4 +49,13 @@ final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>,
     func detachSearchResult() {
         router?.detachSearchResult()
     }
+    
+    func presentHomeListView() {
+        router?.attachSearchHomeList()
+    }
+    
+    func dismissHomeListView() {
+        router?.detachSearchResult()
+    }
+    
 }
