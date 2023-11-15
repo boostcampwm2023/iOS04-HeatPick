@@ -14,6 +14,6 @@ extension UISheetPresentationController.Detent.Identifier {
 
 extension UISheetPresentationController.Detent {
     class func small() -> UISheetPresentationController.Detent {
-        UISheetPresentationController.Detent.custom(identifier: .small) { 0.2 * $0.maximumDetentValue }
+        UISheetPresentationController.Detent.custom(identifier: .small) { 0.05 * $0.maximumDetentValue }
     }
 }
