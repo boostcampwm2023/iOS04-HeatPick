@@ -1,11 +1,8 @@
 import { StoryService } from './story.service';
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { saveImage } from '../util/util.generate.randomFileName';
-import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { Story } from '../entities/story.entity';
 import { StoryDetailViewData } from './type/story.detail.view.data';
 
 @Controller('story')
@@ -17,11 +14,8 @@ export class StoryController {
   @ApiOperation({ summary: 'Create story' })
   @ApiResponse({ status: 200, description: 'storyId' })
   async create(@UploadedFiles() images: Array<Express.Multer.File>, @Body() createStoryDto: CreateStoryDto) {
-    const savedImagePaths = await Promise.all(images.map(async (image) => await saveImage('../../uploads', image.buffer)));
-
     const { title, content, date } = createStoryDto;
-
-    return this.storyService.create({ title, content, savedImagePaths, date });
+    return this.storyService.create({ title, content, images, date });
   }
 
   @Get('detail/:storyId')

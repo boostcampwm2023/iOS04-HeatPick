@@ -1,16 +1,16 @@
-import { Injectable, UploadedFiles } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserRepository } from './../user/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
 import { idDuplicatedException } from 'src/exception/cuntom.exception/id.duplicate.exception';
 import { profileImage } from 'src/entities/profileImage.entity';
-import { Repository } from 'typeorm';
-import { saveImage } from 'src/util/util.generate.randomFileName';
+import { ImageService } from '../image/image.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userRepository: UserRepository,
+    private imageService: ImageService,
     private jwtService: JwtService,
   ) {}
   async signIn(OAuthToken: string): Promise<string> {
@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   async signUp(image: Express.Multer.File, OAuthToken: string, username: string): Promise<string> {
-    const imagePath = await saveImage('./images/profile', image.buffer);
+    const imagePath = await this.imageService.saveImage('./images/profile', image.buffer);
 
     const userId = await this.getId(OAuthToken);
 

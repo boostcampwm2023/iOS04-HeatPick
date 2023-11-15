@@ -9,7 +9,7 @@ export class ImageController {
   @Get(':path')
   @ApiOperation({ summary: 'Get Image' })
   @ApiResponse({ status: 200, description: 'Profile Image or Story Image' })
-  async profileImage(@Param('path') path: string): Promise<Buffer> {
+  async requestImage(@Param('path') path: string): Promise<Buffer> {
     return await this.imageService.readImage(path);
   }
 }

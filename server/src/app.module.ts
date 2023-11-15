@@ -7,6 +7,7 @@ import { StoryModule } from './story/story.module';
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 
 import { Request, Response, NextFunction } from 'express';
+import { ImageModule } from './image/image.module';
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
@@ -26,7 +27,7 @@ export class AppLoggerMiddleware implements NestMiddleware {
   }
 }
 @Module({
-  imports: [DatabaseModule, AuthModule, StoryModule],
+  imports: [DatabaseModule, AuthModule, StoryModule, ImageModule],
   controllers: [AppController],
   providers: [AppService],
 })
