@@ -6,6 +6,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { saveImage } from '../util/story.util.saveImage';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { Story } from '../entities/story.entity';
+import { StoryDetailViewData } from './type/story.detail.view.data';
 
 @Controller('story')
 export class StoryController {
@@ -26,7 +27,7 @@ export class StoryController {
   @Get('detail/:storyId')
   @ApiOperation({ summary: 'Send detail story info' })
   @ApiResponse({ status: 200, description: '{ story, isFollowed, recommendStoryList, author }' })
-  async read(@Param('storyId') storyId: number): Promise<Story> {
+  async read(@Param('storyId') storyId: number): Promise<StoryDetailViewData> {
     return this.storyService.read(storyId);
   }
 }
