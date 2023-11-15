@@ -5,11 +5,11 @@ import { RegisterDto } from './dto/auth.resgister.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { saveImage } from 'src/util/story.util.saveImage';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { HttpExceptionFilter } from 'src/exception/http-exception.filter';
+import { CustomExceptionFilter } from 'src/exception/custom-exception.filter';
 
 @ApiBearerAuth()
 @ApiTags('auth')
-@UseFilters(HttpExceptionFilter)
+@UseFilters(CustomExceptionFilter)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
