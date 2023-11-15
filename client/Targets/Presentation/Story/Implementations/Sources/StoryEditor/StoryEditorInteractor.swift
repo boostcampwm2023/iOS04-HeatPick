@@ -19,6 +19,7 @@ public protocol StoryEditorPresentable: Presentable {
 
 public protocol StoryEditorListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func newStoryDidTapClose()
 }
 
 final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>, StoryEditorInteractable, StoryEditorPresentableListener {
@@ -41,5 +42,9 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    func didTapClose() {
+        listener?.newStoryDidTapClose()
     }
 }

@@ -25,6 +25,7 @@ protocol AppRootInteractable: Interactable,
 
 protocol AppRootViewControllable: ViewControllable {
     func setViewControllers(_ viewControllers: [ViewControllable])
+    func selectTab(index: Int)
 }
 
 protocol AppRootRouterDependency {
@@ -105,4 +106,9 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         
         viewController.setViewControllers(viewControllers)
     }
+    
+    func routeToHomeTab() {
+        viewController.selectTab(index: 0)
+    }
+    
 }

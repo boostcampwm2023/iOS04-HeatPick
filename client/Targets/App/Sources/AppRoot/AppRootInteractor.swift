@@ -12,6 +12,7 @@ protocol AppRootRouting: ViewableRouting {
     func attachSignIn()
     func detachSignIn()
     func attachTabs()
+    func routeToHomeTab()
 }
 
 protocol AppRootPresentable: Presentable {
@@ -55,4 +56,7 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
         router?.attachTabs()
     }
     
+    func newStoryDidTapClose() {
+        router?.routeToHomeTab()
+    }
 }

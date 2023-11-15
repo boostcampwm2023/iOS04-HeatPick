@@ -28,6 +28,14 @@ final class AppRootTabBarController: UITabBarController, AppRootPresentable, App
         super.setViewControllers(viewControllers.map(\.uiviewController), animated: false)
     }
     
+    func selectTab(index: Int) {
+        guard let numberOfTabs = viewControllers?.count,
+              (0..<numberOfTabs) ~= index else {
+            return
+        }
+        selectedIndex = index
+    }
+    
     private func setupTabBar() {
         let appearance: UITabBarAppearance = tabBar.standardAppearance
         appearance.configureWithDefaultBackground()
