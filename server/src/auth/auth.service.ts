@@ -2,6 +2,7 @@ import { Injectable, UploadedFiles } from '@nestjs/common';
 import { UserRepository } from './../user/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
+import { idDuplicatedException } from 'src/exception/cuntom.exception/id.duplicate.exception';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +30,9 @@ export class AuthService {
     userObj.oauthId = userId;
     userObj.profileImageURL = imagePath;
     userObj.temperature = 0;
+
+    const user = this.userRepository.findOneById(userId);
+    if (user) throw new idDuplicatedException();
 
     this.userRepository.createUser(userObj);
 

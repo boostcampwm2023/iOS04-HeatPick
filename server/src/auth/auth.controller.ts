@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, UploadedFile, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.credential.dto';
 import { RegisterDto } from './dto/auth.resgister.dto';
@@ -6,9 +6,11 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { User } from 'src/entities/user.entity';
 import { saveImage } from 'src/util/story.util.saveImage';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { HttpExceptionFilter } from 'src/exception/http-exception.filter';
 
 @ApiBearerAuth()
 @ApiTags('auth')
+@UseFilters(HttpExceptionFilter)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -19,8 +21,9 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Access Token' })
   async signUp(@UploadedFile() image: Express.Multer.File, @Body() registerDto: RegisterDto): Promise<string> {
     let savedImagePaths = '';
+    const token = this.authService.signUp(registerDto.OAuthToken, registerDto.username, savedImagePaths);
     if (image) savedImagePaths = await saveImage('./images/profile', image.buffer);
-    return this.authService.signUp(registerDto.OAuthToken, registerDto.username, savedImagePaths);
+    return token;
   }
 
   @ApiResponse({
