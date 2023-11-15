@@ -5,7 +5,7 @@ import { User } from 'src/entities/user.entity';
 import { idDuplicatedException } from 'src/exception/cuntom.exception/id.duplicate.exception';
 import { profileImage } from 'src/entities/profileImage.entity';
 import { Repository } from 'typeorm';
-import { saveImage } from 'src/util/story.util.saveImage';
+import { saveImage } from 'src/util/util.generate.randomFileName';
 
 @Injectable()
 export class AuthService {

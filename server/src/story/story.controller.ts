@@ -3,7 +3,7 @@ import { Body, Controller, Get, Param, Post, UploadedFiles, UseGuards, UseInterc
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { saveImage } from '../util/story.util.saveImage';
+import { saveImage } from '../util/util.generate.randomFileName';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { Story } from '../entities/story.entity';
 import { StoryDetailViewData } from './type/story.detail.view.data';
