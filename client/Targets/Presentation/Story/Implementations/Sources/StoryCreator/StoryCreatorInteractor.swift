@@ -9,20 +9,20 @@
 import ModernRIBs
 
 public protocol StoryCreatorRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
+    func attachStoryEditor()
+    func detachStoryEditor()
 }
 
 public protocol StoryCreatorPresentable: Presentable {
     var listener: StoryCreatorPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
 public protocol StoryCreatorListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func storyCreatorDidComplete()
 }
 
 final class StoryCreatorInteractor: PresentableInteractor<StoryCreatorPresentable>, StoryCreatorInteractable, StoryCreatorPresentableListener {
-
+    
     weak var router: StoryCreatorRouting?
     weak var listener: StoryCreatorListener?
 
@@ -35,11 +35,20 @@ final class StoryCreatorInteractor: PresentableInteractor<StoryCreatorPresentabl
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
     }
+    
+    func viewDidAppear() {
+        router?.attachStoryEditor()
+    }
+    
+    func storyEditorDidTapClose() {
+        router?.detachStoryEditor()
+        listener?.storyCreatorDidComplete()
+    }
+    
+
 }

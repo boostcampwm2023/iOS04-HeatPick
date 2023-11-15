@@ -13,9 +13,7 @@ import ModernRIBs
 import DesignKit
 
 public protocol StoryCreatorPresentableListener: AnyObject {
-    // TODO: Declare properties and methods that the view controller can invoke to perform
-    // business logic, such as signIn(). This protocol is implemented by the corresponding
-    // interactor class.
+    func viewDidAppear()
 }
 
 final class StoryCreatorViewController: UIViewController, StoryCreatorPresentable, StoryCreatorViewControllable {
@@ -43,7 +41,7 @@ final class StoryCreatorViewController: UIViewController, StoryCreatorPresentabl
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
+        listener?.viewDidAppear()
     }
     
 }

@@ -8,20 +8,49 @@
 
 import ModernRIBs
 
-public protocol StoryCreatorInteractable: Interactable {
+import CoreKit
+
+public protocol StoryCreatorInteractable: Interactable,
+                                          StoryEditorListener {
     var router: StoryCreatorRouting? { get set }
     var listener: StoryCreatorListener? { get set }
 }
 
-public protocol StoryCreatorViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy.
+public protocol StoryCreatorViewControllable: ViewControllable {}
+
+public protocol StoryCreatorRouterDependency {
+    var storyEditorBuilder: StoryEditorBuildable { get }
 }
 
 final class StoryCreatorRouter: ViewableRouter<StoryCreatorInteractable, StoryCreatorViewControllable>, StoryCreatorRouting {
 
-    // TODO: Constructor inject child builder protocols to allow building children.
-    override init(interactor: StoryCreatorInteractable, viewController: StoryCreatorViewControllable) {
+    private let storyEditorBuilder: StoryEditorBuildable
+    private var storyEditorRouter: Routing?
+    
+    init(interactor: StoryCreatorInteractable,
+         viewController: StoryCreatorViewControllable,
+         dependency: StoryCreatorRouterDependency
+    ) {
+        self.storyEditorBuilder = dependency.storyEditorBuilder
+        
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
+    
+    func attachStoryEditor() {
+        guard storyEditorRouter == nil else { return }
+        let storyEditorRouting = storyEditorBuilder.build(withListener: interactor)
+        self.storyEditorRouter = storyEditorRouting
+        attachChild(storyEditorRouting)
+        let storyEditorViewController = NavigationControllable(viewControllable: storyEditorRouting.viewControllable)
+        viewController.present(storyEditorViewController, animated: true, isFullScreen: true)
+    }
+    
+    func detachStoryEditor() {
+        guard let router = storyEditorRouter else { return }
+        detachChild(router)
+        self.storyEditorRouter = nil
+        viewControllable.dismiss(animated: true)
+    }
+    
 }

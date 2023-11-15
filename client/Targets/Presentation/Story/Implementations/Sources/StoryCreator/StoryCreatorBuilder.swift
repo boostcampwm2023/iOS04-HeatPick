@@ -8,14 +8,15 @@
 
 import ModernRIBs
 
-public protocol StoryCreatorDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
-}
+public protocol StoryCreatorDependency: Dependency {}
 
-final class StoryCreatorComponent: Component<StoryCreatorDependency> {
+final class StoryCreatorComponent: Component<StoryCreatorDependency>,
+                                   StoryCreatorRouterDependency,
+                                   StoryEditorDependency {
 
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    lazy var storyEditorBuilder: StoryEditorBuildable = {
+        StoryEditorBuilder(dependency: self)
+    }()
 }
 
 // MARK: - Builder
@@ -35,6 +36,10 @@ public final class StoryCreatorBuilder: Builder<StoryCreatorDependency>, StoryCr
         let viewController = StoryCreatorViewController()
         let interactor = StoryCreatorInteractor(presenter: viewController)
         interactor.listener = listener
-        return StoryCreatorRouter(interactor: interactor, viewController: viewController)
+        
+        return StoryCreatorRouter(interactor: interactor,
+                                  viewController: viewController,
+                                  dependency: component)
     }
+    
 }

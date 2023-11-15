@@ -56,7 +56,8 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
         router?.attachTabs()
     }
     
-    func newStoryDidTapClose() {
+    // MARK: - Story Creator
+    func storyCreatorDidComplete() {
         router?.routeToHomeTab()
     }
 }
