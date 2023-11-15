@@ -27,8 +27,8 @@ public final class NaverLoginRepository: NSObject, NaverLoginRepositoryInterface
         instance?.isNaverAppOauthEnable = true
         instance?.isOnlyPortraitSupportedInIphone()
         instance?.appName = "heatpick"
-        instance?.consumerKey = "jVSHpqp9TC4MltNI4lVJ"
-        instance?.consumerSecret = ""
+        instance?.consumerKey = Secret.naverLoginConsumerKey.value
+        instance?.consumerSecret = Secret.naverLoginConsumerSecret.value
         instance?.serviceUrlScheme = "heatpick"
     }
     

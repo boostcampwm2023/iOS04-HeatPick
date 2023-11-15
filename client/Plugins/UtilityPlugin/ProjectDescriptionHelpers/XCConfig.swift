@@ -6,3 +6,10 @@
 //
 
 import Foundation
+import ProjectDescription
+
+public struct XCConfig {
+    
+    public static let secret: Path = .relativeToRoot("Tuist/Secret/Secret.xcconfig")
+    
+}
