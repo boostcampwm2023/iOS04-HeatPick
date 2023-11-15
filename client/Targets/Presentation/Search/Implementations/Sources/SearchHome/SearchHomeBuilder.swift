@@ -32,7 +32,6 @@ public protocol SearchHomeBuildable: Buildable {
 public final class SearchHomeBuilder: Builder<SearchHomeDependency>, SearchHomeBuildable {
     
     public override init(dependency: SearchHomeDependency) {
-        print(#function)
         super.init(dependency: dependency)
     }
     
