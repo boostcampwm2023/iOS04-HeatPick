@@ -21,9 +21,9 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Access Token' })
   async signUp(@UploadedFile() image: Express.Multer.File, @Body() registerDto: RegisterDto): Promise<string> {
     let savedImagePaths = '';
-    const token = this.authService.signUp(registerDto.OAuthToken, registerDto.username, savedImagePaths);
+    const token = await this.authService.signUp(registerDto.OAuthToken, registerDto.username, savedImagePaths);
     if (image) savedImagePaths = await saveImage('./images/profile', image.buffer);
-    return token;
+    return `{ accessToken: ${token}}`;
   }
 
   @ApiResponse({
@@ -33,6 +33,7 @@ export class AuthController {
   })
   @Post('signin')
   async signIn(@Body() authCredentialDto: AuthCredentialDto): Promise<string> {
-    return await this.authService.signIn(authCredentialDto.OAuthToken);
+    const token = await this.authService.signIn(authCredentialDto.OAuthToken);
+    return `{accessToken: ${token}}`;
   }
 }
