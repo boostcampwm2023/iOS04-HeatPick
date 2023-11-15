@@ -41,4 +41,10 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     override func willResignActive() {
         super.willResignActive()
     }
+    
+    // MARK: - Recommend
+    func recommendDashboardDidTapSeeAll() {
+        print("# Attach Recommend See All View")
+    }
+    
 }

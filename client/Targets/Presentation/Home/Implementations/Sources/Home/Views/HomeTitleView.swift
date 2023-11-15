@@ -9,12 +9,18 @@
 import UIKit
 import DesignKit
 
+protocol HomeTitleViewDelegate: AnyObject {
+    func homeTitleViewSeeAllDidTap()
+}
+
 struct HomeTitleViewModel {
     let title: String
     let isButtonEnabled: Bool
 }
 
 final class HomeTitleView: UIView {
+    
+    weak var delegate: HomeTitleViewDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -51,7 +57,7 @@ final class HomeTitleView: UIView {
 private extension HomeTitleView {
     
     @objc private func seeAllViewDidTap() {
-        
+        delegate?.homeTitleViewSeeAllDidTap()
     }
     
 }
