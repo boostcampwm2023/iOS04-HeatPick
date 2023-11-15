@@ -8,16 +8,16 @@
 
 import ModernRIBs
 
-protocol StoryCreatorRouting: ViewableRouting {
+public protocol StoryCreatorRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
 }
 
-protocol StoryCreatorPresentable: Presentable {
+public protocol StoryCreatorPresentable: Presentable {
     var listener: StoryCreatorPresentableListener? { get set }
     // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-protocol StoryCreatorListener: AnyObject {
+public protocol StoryCreatorListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 

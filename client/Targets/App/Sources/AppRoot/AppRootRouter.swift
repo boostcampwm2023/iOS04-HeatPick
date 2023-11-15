@@ -18,7 +18,7 @@ protocol AppRootInteractable: Interactable,
                               SignInListener,
                               SearchHomeListener,
                               HomeListener, 
-                              StoryEditorListener {
+                              StoryCreatorListener {
     var router: AppRootRouting? { get set }
     var listener: AppRootListener? { get set }
 }
@@ -32,7 +32,7 @@ protocol AppRootRouterDependency {
     var signInBuilder: SignInBuildable { get }
     var homeBuilder: HomeBuildable { get }
     var searchBuilder: SearchHomeBuildable { get }
-    var storyEditorBuilder: StoryEditorBuildable { get }
+    var storyCreatorBuilder: StoryCreatorBuildable { get }
 }
 
 
@@ -47,8 +47,8 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     private let searchHomeBuilder: SearchHomeBuildable
     private var searchHomeRouter: Routing?
     
-    private let storyEditorBuilder: StoryEditorBuildable
-    private var storyEditorRouter: Routing?
+    private let storyCreatorBuilder: StoryCreatorBuildable
+    private var storyCreatorRouter: Routing?
     
     init(
         interactor: AppRootInteractable,
@@ -58,7 +58,7 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         self.signInBuilder = dependency.signInBuilder
         self.homeBuilder = dependency.homeBuilder
         self.searchHomeBuilder = dependency.searchBuilder
-        self.storyEditorBuilder = dependency.storyEditorBuilder
+        self.storyCreatorBuilder = dependency.storyCreatorBuilder
         
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
@@ -94,14 +94,14 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         self.searchHomeRouter = searchHomeRouting
         attachChild(searchHomeRouting)
         
-        let storyEditorRouting = storyEditorBuilder.build(withListener: interactor)
-        self.storyEditorRouter = storyEditorRouting
-        attachChild(storyEditorRouting)
+        let storyCreatorRouting = storyCreatorBuilder.build(withListener: interactor)
+        self.storyCreatorRouter = storyCreatorRouting
+        attachChild(storyCreatorRouting)
         
         let viewControllers = [
             NavigationControllable(viewControllable: homeRouting.viewControllable),
             NavigationControllable(viewControllable: searchHomeRouting.viewControllable),
-            NavigationControllable(viewControllable: storyEditorRouting.viewControllable),
+            NavigationControllable(viewControllable: storyCreatorRouting.viewControllable),
         ]
         
         viewController.setViewControllers(viewControllers)

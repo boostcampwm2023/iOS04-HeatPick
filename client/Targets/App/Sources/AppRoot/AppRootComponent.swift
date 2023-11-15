@@ -25,7 +25,7 @@ final class AppRootComponent: Component<AppRootDependency>,
                               SignInDependency,
                               HomeDependency,
                               SearchHomeDependency, 
-                              StoryEditorDependency {
+                              StoryCreatorDependency {    
     
     let authUseCase: AuthUseCaseInterface
     let naverLoginRepository: NaverLoginRepositoryInterface
@@ -44,8 +44,8 @@ final class AppRootComponent: Component<AppRootDependency>,
         SearchHomeBuilder(dependency: self)
     }()
     
-    lazy var storyEditorBuilder: StoryEditorBuildable = {
-        StoryEditorBuilder(dependency: self)
+    lazy var storyCreatorBuilder: StoryCreatorBuildable = {
+        StoryCreatorBuilder(dependency: self)
     }()
     
     override init(dependency: AppRootDependency) {
