@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, UploadedFile, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, UploadedFile, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.credential.dto';
 import { RegisterDto } from './dto/auth.resgister.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/entities/user.entity';
 import { saveImage } from 'src/util/story.util.saveImage';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { HttpExceptionFilter } from 'src/exception/http-exception.filter';
@@ -18,7 +17,7 @@ export class AuthController {
   @Post('signup')
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({ status: 200, description: 'Access Token' })
+  @ApiResponse({ status: 201, description: 'Access Token' })
   async signUp(@UploadedFile() image: Express.Multer.File, @Body() registerDto: RegisterDto): Promise<string> {
     let savedImagePaths = '';
     const token = await this.authService.signUp(registerDto.OAuthToken, registerDto.username, savedImagePaths);
@@ -26,11 +25,8 @@ export class AuthController {
     return `{ accessToken: ${token}}`;
   }
 
-  @ApiResponse({
-    status: 200,
-    description: 'Access Token',
-    type: User,
-  })
+  @ApiOperation({ summary: 'Log in' })
+  @ApiResponse({ status: 201, description: 'Access Token' })
   @Post('signin')
   async signIn(@Body() authCredentialDto: AuthCredentialDto): Promise<string> {
     const token = await this.authService.signIn(authCredentialDto.OAuthToken);
