@@ -18,6 +18,7 @@ public final class HomeViewController: UIViewController, HomePresentable, HomeVi
         static let tabBarTitle = "홈"
         static let tabBarImage = "house"
         static let tabBarImageSelected = "house.fill"
+        static let contentInset: UIEdgeInsets = .init(top: 40, left: 0, bottom: 40, right: 0)
     }
     
     weak var listener: HomePresentableListener?
@@ -28,6 +29,7 @@ public final class HomeViewController: UIViewController, HomePresentable, HomeVi
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.contentInset = Constant.contentInset
         return scrollView
     }()
     
@@ -36,7 +38,7 @@ public final class HomeViewController: UIViewController, HomePresentable, HomeVi
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
-        stackView.spacing = 40
+        stackView.spacing = 60
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
