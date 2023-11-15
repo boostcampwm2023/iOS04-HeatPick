@@ -25,7 +25,5 @@ final class SearchResultRouter: ViewableRouter<SearchResultInteractable, SearchR
         interactor.router = self
     }
     
-    func detachSearchResult() {
-        
-    }
+
 }
