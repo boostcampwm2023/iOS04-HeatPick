@@ -6,4 +6,16 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+public extension UIView {
+    
+    @discardableResult
+    func addTapGesture(target: Any?, action: Selector?) -> UITapGestureRecognizer {
+        let tapGesture = UITapGestureRecognizer(target: target, action: action)
+        isUserInteractionEnabled = true
+        addGestureRecognizer(tapGesture)
+        return tapGesture
+    }
+    
+}
