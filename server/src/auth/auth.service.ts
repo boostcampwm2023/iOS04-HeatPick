@@ -3,6 +3,9 @@ import { UserRepository } from './../user/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
 import { idDuplicatedException } from 'src/exception/cuntom.exception/id.duplicate.exception';
+import { profileImage } from 'src/entities/profileImage.entity';
+import { Repository } from 'typeorm';
+import { saveImage } from 'src/util/story.util.saveImage';
 
 @Injectable()
 export class AuthService {
@@ -22,16 +25,23 @@ export class AuthService {
     return accessToken;
   }
 
-  async signUp(OAuthToken: string, username: string, imagePath: string): Promise<string> {
+  async signUp(image: Express.Multer.File, OAuthToken: string, username: string): Promise<string> {
+    const imagePath = await saveImage('./images/profile', image.buffer);
+
     const userId = await this.getId(OAuthToken);
 
     const userObj = new User();
     userObj.username = username;
     userObj.oauthId = userId;
-    userObj.profileImageURL = imagePath;
+
+    console.log('imagePath:', imagePath);
+    const profileObj = new profileImage();
+    profileObj.imageUrl = imagePath;
+    userObj.profileImage = profileObj;
     userObj.temperature = 0;
 
-    const user = this.userRepository.findOneById(userId);
+    const user = await this.userRepository.findOneById(userId);
+
     if (user) throw new idDuplicatedException();
 
     this.userRepository.createUser(userObj);

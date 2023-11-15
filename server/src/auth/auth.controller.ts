@@ -9,7 +9,6 @@ import { CustomExceptionFilter } from 'src/exception/custom-exception.filter';
 
 @ApiBearerAuth()
 @ApiTags('auth')
-@UseFilters(CustomExceptionFilter)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -19,9 +18,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: 201, description: 'Access Token' })
   async signUp(@UploadedFile() image: Express.Multer.File, @Body() registerDto: RegisterDto): Promise<string> {
-    let savedImagePaths = '';
-    const token = await this.authService.signUp(registerDto.OAuthToken, registerDto.username, savedImagePaths);
-    if (image) savedImagePaths = await saveImage('./images/profile', image.buffer);
+    const token = await this.authService.signUp(image, registerDto.OAuthToken, registerDto.username);
     return `{ accessToken: ${token}}`;
   }
 

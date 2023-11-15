@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { User } from './user.entity';
 import { Category } from './category.entity';
 
@@ -32,7 +25,9 @@ export class Story {
   @Column()
   createAt: Date;
 
-  @ManyToMany(() => Category)
+  @ManyToMany(() => Category, {
+    cascade: true,
+  })
   @JoinTable()
-  categories: Category[];
+  categories: Promise<Category[]>;
 }
