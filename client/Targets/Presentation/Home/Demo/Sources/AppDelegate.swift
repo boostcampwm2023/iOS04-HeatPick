@@ -1,4 +1,5 @@
 import UIKit
+import HomeImplementations
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -8,8 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
         let viewController = UIViewController()
-        viewController.view.backgroundColor = .systemPink
-        window.rootViewController = viewController
+        window.rootViewController = HomeViewController()
         window.makeKeyAndVisible()
         return true
     }
