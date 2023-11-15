@@ -24,8 +24,10 @@ extension Project {
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
                 dependencies: dependencies,
-                settings: .settings(configurations: [.debug(name: .debug)]
-                                   )
+                settings: .settings(configurations: [
+                    .debug(name: .debug, xcconfig: XCConfig.secret),
+                    .release(name: .release, xcconfig: XCConfig.secret)
+                ])
             )
             targets.append(target)
         }
@@ -41,8 +43,10 @@ extension Project {
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
                 dependencies: dependencies,
-                settings: .settings(configurations: [.release(name: .release)]
-                                   )
+                settings: .settings(configurations: [
+                    .debug(name: .debug, xcconfig: XCConfig.secret),
+                    .release(name: .release, xcconfig: XCConfig.secret),
+                ])
             )
             targets.append(target)
         }
