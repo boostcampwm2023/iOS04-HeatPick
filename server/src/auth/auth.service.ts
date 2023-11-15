@@ -34,7 +34,6 @@ export class AuthService {
     userObj.username = username;
     userObj.oauthId = userId;
 
-    console.log('imagePath:', imagePath);
     const profileObj = new profileImage();
     profileObj.imageUrl = imagePath;
     userObj.profileImage = profileObj;

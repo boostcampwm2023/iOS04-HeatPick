@@ -22,7 +22,6 @@ export class StoryService {
 
     const testobj = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
     const storyList = await testobj.stories;
-    console.log(storyList);
     storyList.push(story);
     this.userRepository.createUser(testobj);
     //return (await this.storyRepository.addStory(story)).storyId;
