@@ -15,22 +15,28 @@ export class SearchService implements OnModuleInit {
   ) {}
   async onModuleInit() {
     const everyHistory = await this.searchRepository.loadEveryHistory();
-    everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(this.graphemeSeparation(history.content)));
+    everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(this.graphemeSeperation(history.content)));
 
     const everyStory = await this.storyRepository.loadEveryStory();
-    everyStory.forEach((story) => this.storyTitleJasoTrie.insert(this.graphemeSeparation(story.title), story.storyId));
+
+    everyStory.forEach((story) => this.storyTitleJasoTrie.insert(this.graphemeSeperation(story.title), story.storyId));
   }
 
-  insertHistoryToTree(separatedStatement: string[]) {
-    this.searchHistoryJasoTrie.insert(separatedStatement);
+  insertHistoryToTree(seperatedStatement: string[]) {
+    this.searchHistoryJasoTrie.insert(seperatedStatement);
   }
 
-  searchHistoryTree(separatedStatement: string[]) {
-    const recommendedWords = this.searchHistoryJasoTrie.search(separatedStatement);
+  searchHistoryTree(seperatedStatement: string[]): string[] {
+    const recommendedWords = this.searchHistoryJasoTrie.search(seperatedStatement);
     return recommendedWords.map((word) => this.graphemeCombination(word));
   }
 
-  graphemeSeparation(text: string): string[] {
+  searchStoryTree(seperatedStatement: string[]): number[] {
+    console.log(seperatedStatement);
+    return this.storyTitleJasoTrie.search(seperatedStatement);
+  }
+
+  graphemeSeperation(text: string): string[] {
     return Hangul.disassemble(text);
   }
 

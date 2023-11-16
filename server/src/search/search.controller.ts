@@ -16,12 +16,13 @@ export class SearchController {
   @Get('story')
   async getStorySearchResult(@Query('searchText') searchText: string) {
     this.searchService.saveHistory(searchText);
+    return this.searchService.searchStoryTree(this.searchService.graphemeSeperation(searchText));
   }
 
   @ApiOperation({ summary: '검색어 추천 기능' })
   @ApiResponse({ status: 201, description: '입력된 글자를 바탕으로 자동 완성된 문장 배열을 리턴' })
   @Get('recommend')
   async recommendSearch(@Query('searchText') searchText: string): Promise<string[]> {
-    return this.searchService.searchHistoryTree(this.searchService.graphemeSeparation(searchText));
+    return this.searchService.searchHistoryTree(this.searchService.graphemeSeperation(searchText));
   }
 }

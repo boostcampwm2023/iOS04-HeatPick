@@ -30,11 +30,12 @@ export class StoryJasoTrie {
   getWordsWithPrefix(node: StoryTrieNode, currentPrefix: string[]): number[] {
     let results: number[] = [];
     if (node.isEndOfWord) {
-      results.concat(node.storyId);
+      results.push(...node.storyId);
     }
 
     for (const [jaso, childNode] of Object.entries(node.children)) {
       const childPrefix = [...currentPrefix, jaso];
+
       results = results.concat(this.getWordsWithPrefix(childNode, childPrefix));
     }
 
