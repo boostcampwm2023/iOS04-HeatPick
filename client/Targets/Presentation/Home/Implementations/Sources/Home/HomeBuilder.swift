@@ -15,7 +15,8 @@ final class HomeComponent: Component<HomeDependency>,
                            HomeHotPlaceDashboardDependency,
                            HomeFollowingDashboardDependency,
                            HomeFriendDashboardDependency,
-                           RecommendSeeAllDependency {
+                           RecommendSeeAllDependency,
+                           HotPlaceSeeAllDependency {
     
 }
 

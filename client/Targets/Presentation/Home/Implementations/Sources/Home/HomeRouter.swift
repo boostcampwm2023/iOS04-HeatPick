@@ -13,7 +13,8 @@ protocol HomeInteractable: Interactable,
                            HomeHotPlaceDashboardListener,
                            HomeFollowingDashboardListener,
                            HomeFriendDashboardListener,
-                           RecommendSeeAllListener {
+                           RecommendSeeAllListener,
+                           HotPlaceSeeAllListener {
     var router: HomeRouting? { get set }
     var listener: HomeListener? { get set }
 }
@@ -38,6 +39,7 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     // MARK: - SeeAll
     
     private var recommendSeeAllRouting: Routing?
+    private var hotPlaceSeeAllRouting: Routing?
     
     init(
         interactor: HomeInteractable,
@@ -104,6 +106,21 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
         guard let router = recommendSeeAllRouting else { return }
         viewController.popViewController(animated: true)
         self.recommendSeeAllRouting = nil
+        detachChild(router)
+    }
+    
+    func attachHotPlaceSeeAll() {
+        guard hotPlaceSeeAllRouting == nil else { return }
+        let router = dependency.seeAll.hotPlaceSeeAllBuilder.build(withListener: interactor)
+        viewController.pushViewController(router.viewControllable, animated: true)
+        self.hotPlaceSeeAllRouting = router
+        attachChild(router)
+    }
+    
+    func detachHotPlaceSeeAll() {
+        guard let router = hotPlaceSeeAllRouting else { return }
+        viewController.popViewController(animated: true)
+        self.hotPlaceSeeAllRouting = nil
         detachChild(router)
     }
     

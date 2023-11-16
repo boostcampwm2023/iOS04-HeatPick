@@ -39,9 +39,11 @@ final class HomeBaseRouterComponent: HomeBaseRouterDependency {
 final class HomeSeeAllRouterComponent: HomeSeeAllRouterDependency {
     
     let recommendSeeAllBuilder: RecommendSeeAllBuildable
+    let hotPlaceSeeAllBuilder: HotPlaceSeeAllBuildable
     
     init(component: HomeComponent) {
         self.recommendSeeAllBuilder = RecommendSeeAllBuilder(dependency: component)
+        self.hotPlaceSeeAllBuilder = HotPlaceSeeAllBuilder(dependency: component)
     }
     
 }
