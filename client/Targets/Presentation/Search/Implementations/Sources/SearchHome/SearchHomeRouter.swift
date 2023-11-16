@@ -67,17 +67,14 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         let router = searchResultBuilder.build(withListener: interactor)
         attachChild(router)
         searchResultRouter = router
+        viewController.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSearchResult() {
         guard let router = searchResultRouter else { return }
         detachChild(router)
         searchResultRouter = nil
+        viewController.popViewController(animated: true)
     }
     
-    func presentSearchResult() {
-        guard let searchResultRouter else { return }
-        viewController.present(searchResultRouter.viewControllable, animated: true)
-    }
-
 }

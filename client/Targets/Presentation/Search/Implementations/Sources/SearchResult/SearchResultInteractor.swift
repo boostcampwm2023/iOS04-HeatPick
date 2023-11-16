@@ -8,16 +8,16 @@
 
 import ModernRIBs
 
-protocol SearchResultRouting: ViewableRouting {
-    
-}
+protocol SearchResultRouting: ViewableRouting { }
 
 protocol SearchResultPresentable: Presentable {
     var listener: SearchResultPresentableListener? { get set }
     
 }
 
-protocol SearchResultListener: AnyObject { }
+protocol SearchResultListener: AnyObject { 
+    func detachSearchResult()
+}
 
 final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {
 
@@ -40,7 +40,7 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
         
     }
     
-    func naviagtionViewBackButtonDidTap() {
-        
+    func detachSearchResult() {
+        listener?.detachSearchResult()
     }
 }

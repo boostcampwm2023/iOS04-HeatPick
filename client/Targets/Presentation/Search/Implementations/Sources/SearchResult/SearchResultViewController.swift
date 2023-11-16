@@ -11,7 +11,7 @@ import DesignKit
 import ModernRIBs
 
 protocol SearchResultPresentableListener: AnyObject {
-    func naviagtionViewBackButtonDidTap()
+    func detachSearchResult()
 }
 
 final class SearchResultViewController: UIViewController, SearchResultPresentable, SearchResultViewControllable {
@@ -47,6 +47,6 @@ private extension SearchResultViewController {
 
 extension SearchResultViewController: SearchNavigationViewDelegate {
     func leftButtonDidTap() {
-        listener?.naviagtionViewBackButtonDidTap()
-    }   
+        listener?.detachSearchResult()
+    }
 }
