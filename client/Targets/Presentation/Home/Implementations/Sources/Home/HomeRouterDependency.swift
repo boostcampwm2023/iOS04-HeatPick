@@ -22,4 +22,5 @@ protocol HomeBaseRouterDependency: AnyObject {
 
 protocol HomeSeeAllRouterDependency: AnyObject {
     var recommendSeeAllBuilder: RecommendSeeAllBuildable { get }
+    var hotPlaceSeeAllBuilder: HotPlaceSeeAllBuildable { get }
 }

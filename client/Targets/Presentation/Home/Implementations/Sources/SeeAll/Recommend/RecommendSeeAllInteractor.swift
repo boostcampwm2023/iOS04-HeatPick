@@ -46,12 +46,7 @@ final class RecommendSeeAllInteractor: PresentableInteractor<RecommendSeeAllPres
     }
     
     func willDisplay(at indexPath: IndexPath) {
-        guard indexPath.row == models.count - 1 else { return }
-        loadMore()
-    }
-    
-    private func loadMore() {
-        // TODO: - LoadMore
+        
     }
     
 }

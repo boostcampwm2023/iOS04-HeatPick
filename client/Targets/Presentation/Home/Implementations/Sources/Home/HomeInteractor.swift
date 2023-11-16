@@ -16,6 +16,8 @@ protocol HomeRouting: ViewableRouting {
     func detachFriendDashboard()
     func attachRecommendSeeAll()
     func detachRecommendSeeAll()
+    func attachHotPlaceSeeAll()
+    func detachHotPlaceSeeAll()
 }
 
 protocol HomePresentable: Presentable {
@@ -57,7 +59,7 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     // MARK: - HotPlace
     
     func hotPlaceDashboardDidTapSeeAll() {
-        print("# Attach HotPlace See All View")
+        router?.attachHotPlaceSeeAll()
     }
     
     // MARK: - Following
@@ -70,6 +72,10 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     
     func recommendSeeAllDidTapClose() {
         router?.detachRecommendSeeAll()
+    }
+    
+    func hotPlaceSeeAllDidTapClose() {
+        router?.detachHotPlaceSeeAll()
     }
     
 }
