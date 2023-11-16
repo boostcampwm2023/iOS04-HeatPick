@@ -6,11 +6,7 @@ import { SearchService } from './search.service';
 import { SearchRepository } from './search.repository';
 import { HistoryJasoTrie } from './trie/historyTrie';
 import { SaveHistoryMiddleware } from './middleware/save.history.middleware';
-import { StoryService } from 'src/story/story.service';
-import { UserService } from 'src/user/user.service';
 import { StoryModule } from 'src/story/story.module';
-import { userProviders } from 'src/user/user.providers';
-import { UserRepository } from 'src/user/user.repository';
 import { UserModule } from 'src/user/user.module';
 
 @Module({

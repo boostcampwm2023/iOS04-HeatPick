@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SearchService } from './search.service';
 import { HistoryJasoTrie } from './trie/historyTrie';
-import { StoryJasoTrie } from './trie/storyTrie';
 import { SearchRepository } from './search.repository';
-import { UserJasoTrie } from './trie/userTrie';
 import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeModify';
 
 describe('Graphme Seperation & Combination Test', () => {
