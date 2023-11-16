@@ -12,5 +12,6 @@ import { ImageService } from '../image/image.service';
   imports: [DatabaseModule],
   controllers: [StoryController],
   providers: [...storyProvider, ...userProviders, StoryService, StoryRepository, UserRepository, ImageService],
+  exports: [StoryRepository],
 })
 export class StoryModule {}

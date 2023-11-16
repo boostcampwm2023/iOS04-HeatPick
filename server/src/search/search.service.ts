@@ -3,7 +3,7 @@ import * as Hangul from 'hangul-js';
 import { HistoryJasoTrie } from './trie/historyTrie';
 import { SearchRepository } from './search.repository';
 import { StoryJasoTrie } from './trie/storyTrie';
-import { StoryRepository } from 'src/story/story.repository';
+import { StoryRepository } from '../story/story.repository';
 
 @Injectable()
 export class SearchService implements OnModuleInit {
