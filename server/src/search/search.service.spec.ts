@@ -35,7 +35,7 @@ describe('Search Automation Test', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SearchService, StoryJasoTrie, HistoryJasoTrie, UserJasoTrie, { provide: SearchRepository, useFactory: () => ({ loadEveryHistory: jest.fn() }) }],
+      providers: [SearchService, HistoryJasoTrie, { provide: SearchRepository, useFactory: () => ({}) }],
     }).compile();
 
     service = module.get<SearchService>(SearchService);

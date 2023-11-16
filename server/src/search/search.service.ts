@@ -1,18 +1,18 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import * as Hangul from 'hangul-js';
 import { HistoryJasoTrie } from './trie/historyTrie';
 import { SearchRepository } from './search.repository';
 import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeModify';
 
 @Injectable()
-export class SearchService {
+export class SearchService implements OnModuleInit {
   constructor(
     private searchHistoryJasoTrie: HistoryJasoTrie,
     private searchRepository: SearchRepository,
-  ) {
-    this.searchRepository.loadEveryHistory().then((histories) => {
-      histories.forEach((history) => this.searchHistoryJasoTrie.insert(graphemeSeperation(history.content)));
-    });
+  ) {}
+
+  async onModuleInit() {
+    const everyHistory = await this.searchRepository.loadEveryHistory();
+    everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(graphemeSeperation(history.content)));
   }
 
   insertHistoryToTree(seperatedStatement: string[]) {
