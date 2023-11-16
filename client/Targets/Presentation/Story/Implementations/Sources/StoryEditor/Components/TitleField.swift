@@ -8,6 +8,8 @@
 
 import UIKit
 
+import DesignKit
+
 final class TitleField: UIView {
 
     var title: String? {
@@ -44,6 +46,7 @@ final class TitleField: UIView {
 }
 
 private extension TitleField {
+    
     func setupViews() {
         [label, textField].forEach(addSubview)
 
@@ -59,7 +62,7 @@ private extension TitleField {
         
         textField.layer.borderWidth = 1
         textField.layer.borderColor = UIColor.hpGray4.cgColor
-        textField.layer.cornerRadius = 16
-        
+        textField.layer.cornerRadius = Constants.cornerRadiusMedium
     }
+    
 }

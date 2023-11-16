@@ -8,6 +8,8 @@
 
 import UIKit
 
+import DesignKit
+
 final class DescriptionField: UIView {
 
     var title: String? {
@@ -49,6 +51,7 @@ final class DescriptionField: UIView {
 }
 
 private extension DescriptionField {
+    
     func setupViews() {
         [label, textField].forEach(addSubview)
 
@@ -65,7 +68,7 @@ private extension DescriptionField {
         
         textField.layer.borderWidth = 1
         textField.layer.borderColor = UIColor.hpGray4.cgColor
-        textField.layer.cornerRadius = 16
-        
+        textField.layer.cornerRadius = Constants.cornerRadiusMedium
     }
+    
 }
