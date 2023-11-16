@@ -15,8 +15,12 @@ export class SearchController {
   }
   @Get('story')
   async getStorySearchResult(@Query('searchText') searchText: string) {
-    this.searchService.saveHistory(searchText);
     return this.searchService.searchStoryTree(this.searchService.graphemeSeperation(searchText));
+  }
+
+  @Get('user')
+  async getUserSearchResult(@Query('searchText') searchText: string) {
+    return this.searchService.searchUserTree(this.searchService.graphemeSeperation(searchText));
   }
 
   @ApiOperation({ summary: '검색어 추천 기능' })

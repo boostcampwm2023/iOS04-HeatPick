@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { DatabaseModule } from 'src/db/database.module';
 import { SearchController } from './search.controller';
 import { SearchProvider } from './search.provider';
@@ -8,10 +8,18 @@ import { HistoryJasoTrie } from './trie/historyTrie';
 import { StoryJasoTrie } from './trie/storyTrie';
 import { StoryRepository } from 'src/story/story.repository';
 import { StoryModule } from 'src/story/story.module';
+import { userProviders } from 'src/user/user.providers';
+import { UserRepository } from 'src/user/user.repository';
+import { UserJasoTrie } from './trie/userTrie';
+import { SaveHistoryMiddleware } from './middleware/save.history.middleware';
 
 @Module({
   imports: [DatabaseModule, StoryModule],
   controllers: [SearchController],
-  providers: [...SearchProvider, SearchService, SearchRepository, HistoryJasoTrie, StoryJasoTrie],
+  providers: [...SearchProvider, ...userProviders, UserRepository, SearchService, SearchRepository, HistoryJasoTrie, StoryJasoTrie, UserJasoTrie],
 })
-export class SearchModule {}
+export class SearchModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SaveHistoryMiddleware).forRoutes('story', 'user');
+  }
+}

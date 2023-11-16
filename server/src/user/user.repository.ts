@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 
 @Injectable()
@@ -15,5 +15,17 @@ export class UserRepository {
 
   createUser(user: User) {
     this.userRepository.save(user);
+  }
+
+  async loadEveryUser() {
+    return this.userRepository.find();
+  }
+
+  async getStoriesByIds(ids: number[]) {
+    return await this.userRepository.find({
+      where: {
+        userId: In(ids),
+      },
+    });
   }
 }
