@@ -8,6 +8,8 @@ import { DatabaseModule } from 'src/db/database.module';
 import * as dotenv from 'dotenv';
 import { JwtStrategy } from './jwt.strategy';
 import { PassportModule } from '@nestjs/passport/dist';
+import { ImageModule } from '../image/image.module';
+import { ImageService } from '../image/image.service';
 
 dotenv.config();
 
@@ -23,6 +25,6 @@ dotenv.config();
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [...userProviders, AuthService, UserRepository, JwtStrategy],
+  providers: [...userProviders, AuthService, UserRepository, JwtStrategy, ImageService],
 })
 export class AuthModule {}

@@ -13,6 +13,6 @@ export class StoryRepository {
     return this.storyRepository.save(story);
   }
   findById(storyId: number): Promise<Story> {
-    return this.storyRepository.findOneBy({ storyId: storyId });
+    return this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['user'] });
   }
 }
