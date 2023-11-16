@@ -6,20 +6,21 @@ import { SearchRepository } from './search.repository';
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
-    private jasoTrie: JasoTrie,
+    private searchHistoryJasoTrie: JasoTrie,
+    private storyTitleJasoTrie: JasoTrie,
     private searchRepository: SearchRepository,
   ) {}
   async onModuleInit() {
     const everyHistory = await this.searchRepository.loadEveryHistory();
-    everyHistory.forEach((history) => this.jasoTrie.insert(this.graphemeSeparation(history.content)));
+    everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(this.graphemeSeparation(history.content)));
   }
 
-  insertTree(separatedStatement: string[]) {
-    this.jasoTrie.insert(separatedStatement);
+  insertHistoryToTree(separatedStatement: string[]) {
+    this.searchHistoryJasoTrie.insert(separatedStatement);
   }
 
-  searchTree(separatedStatement: string[]) {
-    const recommendedWords = this.jasoTrie.search(separatedStatement);
+  searchHistoryTree(separatedStatement: string[]) {
+    const recommendedWords = this.searchHistoryJasoTrie.search(separatedStatement);
     return recommendedWords.map((word) => this.graphemeCombination(word));
   }
 

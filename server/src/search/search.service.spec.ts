@@ -26,11 +26,11 @@ describe('SearchService', () => {
     expect(service.graphemeCombination(['ㅇ', 'ㅏ', 'ㄴ', 'ㄴ', 'ㅕ', 'ㅇ', ' ', 'ㅎ', 'ㅏ', 'ㅅ', 'ㅔ', 'ㅇ', 'ㅛ'])).toBe('안녕 하세요');
   });
   it('Search Automated Complete Test', () => {
-    service.insertTree(service.graphemeSeparation('안녕하세요'));
-    service.insertTree(service.graphemeSeparation('안녕하십니까'));
-    service.insertTree(service.graphemeSeparation('안녕'));
+    service.insertHistoryToTree(service.graphemeSeparation('안녕하세요'));
+    service.insertHistoryToTree(service.graphemeSeparation('안녕하십니까'));
+    service.insertHistoryToTree(service.graphemeSeparation('안녕'));
 
-    const recommendedWords = service.searchTree(service.graphemeSeparation('안녕하'));
+    const recommendedWords = service.searchHistoryTree(service.graphemeSeparation('안녕하'));
     expect(recommendedWords).toEqual(['안녕하세요', '안녕하십니까']);
   });
 });
