@@ -3,36 +3,22 @@ import { StoryRepository } from './story.repository';
 import { Story } from '../entities/story.entity';
 import { StoryDetailViewData } from './type/story.detail.view.data';
 import { userDataInStoryView } from './type/story.user.data';
-import { UserRepository } from './../user/user.repository';
-import { ImageService } from '../image/image.service';
-import { StoryImage } from 'src/entities/storyImage.entity';
+import { UserRepository } from '../user/user.repository';
+import { createStoryEntity } from '../util/util.create.story.entity';
 
 @Injectable()
 export class StoryService {
   constructor(
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
-    private imageService: ImageService,
   ) {}
 
   public async create({ title, content, images, date }): Promise<number> {
-    const savedImagePaths = await Promise.all(images.map(async (image) => await this.imageService.saveImage('../../uploads', image.buffer)));
-    const story = new Story();
-    story.title = title;
-    story.content = content;
-    const storyImageArr = await story.storyImages;
-    savedImagePaths.forEach((path) => {
-      const storyImageObj = new StoryImage();
-      storyImageObj.imageUrl = path;
-      storyImageArr.push(storyImageObj);
-    });
-    story.createAt = new Date();
-    story.likeCount = 0;
-
+    const story = await createStoryEntity({ title, content, images, date });
     const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
     const storyList = await user.stories;
     storyList.push(story);
-    this.userRepository.createUser(user);
+    await this.userRepository.createUser(user);
     //return (await this.storyRepository.addStory(story)).storyId;
     return 1;
   }
@@ -56,25 +42,14 @@ export class StoryService {
   }
 
   public async update({ storyId, title, content, images, date }): Promise<number> {
-    const savedImagePaths = await Promise.all(images.map(async (image) => await this.imageService.saveImage('../../uploads', image.buffer)));
-    const story = new Story();
-    story.title = title;
-    story.content = content;
-    const storyImageArr = await story.storyImages;
-    savedImagePaths.forEach((path) => {
-      const storyImageObj = new StoryImage();
-      storyImageObj.imageUrl = path;
-      storyImageArr.push(storyImageObj);
-    });
-    story.createAt = new Date();
-    story.likeCount = 0;
-
+    const story = await createStoryEntity({ title, content, images, date });
     const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
-    const storyList = await user.stories;
-    storyList.filter((story) => story.storyId !== storyId);
-    storyList.push(story);
-
-    this.userRepository.createUser(user);
+    const storyList = (await user.stories).map((userStory) => {
+      if (userStory.storyId === storyId) return story;
+      return userStory;
+    });
+    user.stories = Promise.resolve(storyList);
+    await this.userRepository.createUser(user);
     //return (await this.storyRepository.addStory(story)).storyId;
     return 1;
   }
