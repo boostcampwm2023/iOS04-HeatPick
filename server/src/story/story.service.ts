@@ -53,4 +53,12 @@ export class StoryService {
     //return (await this.storyRepository.addStory(story)).storyId;
     return 1;
   }
+
+  public async delete(storyId: number) {
+    const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
+    const storyList = (await user.stories).filter((story) => story.storyId !== parseInt(String(storyId), 10));
+    console.log(storyList);
+    user.stories = Promise.resolve(storyList);
+    await this.userRepository.createUser(user);
+  }
 }
