@@ -1,5 +1,5 @@
 import { StoryService } from './story.service';
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -23,5 +23,14 @@ export class StoryController {
   @ApiResponse({ status: 200, description: '{ story, isFollowed, recommendStoryList, author }' })
   async read(@Param('storyId') storyId: number): Promise<StoryDetailViewData> {
     return this.storyService.read(storyId);
+  }
+
+  @Patch('edit')
+  @UseInterceptors(FilesInterceptor('images', 3))
+  @ApiOperation({ summary: 'Update story' })
+  @ApiResponse({ status: 200, description: '{ }' })
+  async update(@UploadedFiles() images: Array<Express.Multer.File>, @Body() createStoryDto: CreateStoryDto) {
+    const { title, content, date } = createStoryDto;
+    return this.storyService.update({ title, content, images, date });
   }
 }
