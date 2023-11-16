@@ -3,8 +3,10 @@ import ProjectDescriptionHelpers
 import UtilityPlugin
 
 let proejct = Project.framework(
-    name: "NetworkAPIKit",
+    name: "ThirdPartyKit",
+    featureTargets: [.framework],
     dependencies: [
-        .Target.Core.ThirdPartyKit
+        .SPM.NaverLogin,
+        .SPM.NaverMap
     ]
 )
