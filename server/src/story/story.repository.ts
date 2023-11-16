@@ -15,4 +15,8 @@ export class StoryRepository {
   findById(storyId: number): Promise<Story> {
     return this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['user'] });
   }
+
+  loadEveryStory() {
+    return this.storyRepository.find();
+  }
 }

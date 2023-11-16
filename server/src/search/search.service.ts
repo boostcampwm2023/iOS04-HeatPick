@@ -1,18 +1,24 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as Hangul from 'hangul-js';
-import { JasoTrie } from './trie/trie';
+import { HistoryJasoTrie } from './trie/historyTrie';
 import { SearchRepository } from './search.repository';
+import { StoryJasoTrie } from './trie/storyTrie';
+import { StoryRepository } from 'src/story/story.repository';
 
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
-    private searchHistoryJasoTrie: JasoTrie,
-    private storyTitleJasoTrie: JasoTrie,
+    private searchHistoryJasoTrie: HistoryJasoTrie,
+    private storyTitleJasoTrie: StoryJasoTrie,
     private searchRepository: SearchRepository,
+    private storyRepository: StoryRepository,
   ) {}
   async onModuleInit() {
     const everyHistory = await this.searchRepository.loadEveryHistory();
     everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(this.graphemeSeparation(history.content)));
+
+    const everyStory = await this.storyRepository.loadEveryStory();
+    everyStory.forEach((story) => this.storyTitleJasoTrie.insert(this.graphemeSeparation(story.title), story.storyId));
   }
 
   insertHistoryToTree(separatedStatement: string[]) {

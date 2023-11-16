@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-
 import { SearchHistory } from 'src/entities/search.entity';
 
 @Injectable()

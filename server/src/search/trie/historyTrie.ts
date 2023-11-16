@@ -1,10 +1,8 @@
-class TrieNode {
-  children: { [key: string]: TrieNode } = {};
-  isEndOfWord: boolean = false;
-}
+import ITrieNode from './interface/ITrieNode';
+import TrieNode from './trieNode/historyTrieNode';
 
-export class JasoTrie {
-  root: TrieNode = new TrieNode();
+export class HistoryJasoTrie {
+  root: ITrieNode = new TrieNode();
 
   insert(jasoArray: string[]): void {
     let node = this.root;

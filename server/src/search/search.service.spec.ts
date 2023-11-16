@@ -1,13 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SearchService } from './search.service';
-import { JasoTrie } from './trie/trie';
+import { HistoryJasoTrie } from './trie/historyTrie';
+import { SearchRepository } from './search.repository';
+import { SearchProvider } from './search.provider';
+import { DatabaseModule } from 'src/db/database.module';
+import { SearchController } from './search.controller';
 
 describe('SearchService', () => {
   let service: SearchService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SearchService, JasoTrie],
+      providers: [SearchService],
     }).compile();
 
     service = module.get<SearchService>(SearchService);
