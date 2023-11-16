@@ -6,8 +6,7 @@ let project = Project.framework(
     name: "SearchInterfaces",
     featureTargets: [.staticLibrary],
     dependencies: [
-        .Target.Core.CoreKit,
-        .Target.Domain.Interfaces,
+        .Target.Presentation.BasePresentation.project,
         .SPM.NaverMap
     ]
 )

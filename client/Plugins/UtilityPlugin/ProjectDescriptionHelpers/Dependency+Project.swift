@@ -15,6 +15,7 @@ extension TargetDependency {
         public struct Data {}
         
         public struct Presentation {
+            public struct BasePresentation {}
             public struct Home {}
             public struct Auth {}
             public struct Story {}
