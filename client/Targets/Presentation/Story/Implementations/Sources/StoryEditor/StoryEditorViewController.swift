@@ -71,6 +71,13 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return imageField
     }()
     
+    private let descriptionField: DescriptionField = {
+        let descriptionField = DescriptionField()
+        
+        descriptionField.translatesAutoresizingMaskIntoConstraints = false
+        return descriptionField
+    }()
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -92,7 +99,7 @@ private extension StoryEditorViewController {
         view.backgroundColor = .hpWhite
         [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
-        [titleField, imageField].forEach(stackView.addArrangedSubview)
+        [titleField, imageField, descriptionField].forEach(stackView.addArrangedSubview)
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
