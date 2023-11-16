@@ -14,6 +14,14 @@ extension UICollectionViewCell {
     }
 }
 
+public protocol UICollectionReusableViewProtocol where Self: UICollectionReusableView {
+    static var id: String { get }
+    
+    // UICollectionView.elementKindSectionHeader
+    // UICollectionView.elementKindSectionFooter
+    static var kind: String { get }
+}
+
 public extension UICollectionView {
     
     func register<T: UICollectionViewCell>(_ cell: T.Type) {
@@ -25,6 +33,17 @@ public extension UICollectionView {
             fatalError("Not Register Cell")
         }
         return cell
+    }
+    
+    func register<T: UICollectionReusableViewProtocol>(_ view: T.Type) {
+        register(view, forSupplementaryViewOfKind: view.kind, withReuseIdentifier: view.id)
+    }
+    
+    func dequeue<T: UICollectionReusableViewProtocol>(_ view: T.Type, for indexPath: IndexPath) -> T {
+        guard let view = dequeueReusableSupplementaryView(ofKind: view.kind, withReuseIdentifier: view.id, for: indexPath) as? T else {
+            fatalError("Not Register ReusableView")
+        }
+        return view
     }
     
 }
