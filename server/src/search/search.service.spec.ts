@@ -4,13 +4,15 @@ import { HistoryJasoTrie } from './trie/historyTrie';
 import { StoryJasoTrie } from './trie/storyTrie';
 import { SearchRepository } from './search.repository';
 import { StoryRepository } from '../story/story.repository';
+import { UserRepository } from '../user/user.repository';
+import { UserJasoTrie } from './trie/userTrie';
 
 describe('SearchService', () => {
   let service: SearchService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SearchService, StoryJasoTrie, HistoryJasoTrie, { provide: SearchRepository, useFactory: () => ({}) }, { provide: StoryRepository, useFactory: () => ({}) }],
+      providers: [SearchService, StoryJasoTrie, HistoryJasoTrie, UserJasoTrie, { provide: SearchRepository, useFactory: () => ({}) }, { provide: StoryRepository, useFactory: () => ({}) }, { provide: UserRepository, useFactory: () => ({}) }],
     }).compile();
 
     service = module.get<SearchService>(SearchService);

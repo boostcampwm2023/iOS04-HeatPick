@@ -7,18 +7,16 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class SearchController {
   constructor(private searchService: SearchService) {}
 
-  @Get('')
-  @ApiOperation({ summary: '검색 기능' })
-  @ApiResponse({ status: 201 })
-  async getSearchResult(@Query('searchText') searchText: string) {
-    this.searchService.saveHistory(searchText);
-  }
   @Get('story')
+  @ApiOperation({ summary: '스토리 검색' })
+  @ApiResponse({ status: 201 })
   async getStorySearchResult(@Query('searchText') searchText: string) {
     return this.searchService.searchStoryTree(this.searchService.graphemeSeperation(searchText));
   }
 
   @Get('user')
+  @ApiOperation({ summary: '유저 검색' })
+  @ApiResponse({ status: 201 })
   async getUserSearchResult(@Query('searchText') searchText: string) {
     return this.searchService.searchUserTree(this.searchService.graphemeSeperation(searchText));
   }
