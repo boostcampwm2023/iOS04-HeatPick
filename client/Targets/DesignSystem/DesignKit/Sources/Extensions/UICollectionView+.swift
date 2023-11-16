@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UICollectionViewCell {
+extension UICollectionReusableView {
     static var id: String {
         return String(describing: self)
     }
@@ -25,6 +25,28 @@ public extension UICollectionView {
             fatalError("Not Register Cell")
         }
         return cell
+    }
+    
+    func registerHeader<T: UICollectionReusableView>(_ view: T.Type) {
+        register(view, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: view.id)
+    }
+    
+    func dequeueHeader<T: UICollectionReusableView>(_ view: T.Type, for indexPath: IndexPath) -> T {
+        guard let view = dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: view.id, for: indexPath) as? T else {
+            fatalError("Not Register ReusableView")
+        }
+        return view
+    }
+    
+    func registerFooter<T: UICollectionReusableView>(_ view: T.Type) {
+        register(view, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: view.id)
+    }
+    
+    func dequeueFooter<T: UICollectionReusableView>(_ view: T.Type, for indexPath: IndexPath) -> T {
+        guard let view = dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: view.id, for: indexPath) as? T else {
+            fatalError("Not Register ReusableView")
+        }
+        return view
     }
     
 }
