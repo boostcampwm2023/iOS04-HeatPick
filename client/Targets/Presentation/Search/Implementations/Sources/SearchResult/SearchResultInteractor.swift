@@ -17,9 +17,7 @@ protocol SearchResultPresentable: Presentable {
     
 }
 
-protocol SearchResultListener: AnyObject {
-    func detachSearchResult()
-}
+protocol SearchResultListener: AnyObject { }
 
 final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {
 
@@ -43,6 +41,6 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
     }
     
     func naviagtionViewBackButtonDidTap() {
-        listener?.detachSearchResult()
+        
     }
 }

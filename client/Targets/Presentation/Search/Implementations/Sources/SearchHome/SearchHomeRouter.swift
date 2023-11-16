@@ -16,9 +16,7 @@ protocol SearchHomeInteractable: Interactable,
     var listener: SearchHomeListener? { get set }
 }
 
-protocol SearchHomeViewControllable: ViewControllable { 
-    var searchListViewController: ViewControllable? { get set }
-}
+protocol SearchHomeViewControllable: ViewControllable {  }
 
 protocol SearchHomeRouterDependency {
     var searchHomeListBuilder: SearchHomeListBuildable { get }
@@ -28,10 +26,10 @@ protocol SearchHomeRouterDependency {
 final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeViewControllable>, SearchHomeRouting {
 
     private let searchHomeListBuilder: SearchHomeListBuildable
-    private var searchHomeListRouter: Routing?
+    private var searchHomeListRouter: SearchHomeListRouting?
     
     private let searchResultBuilder: SearchResultBuildable
-    private var searchResultRouter: Routing?
+    private var searchResultRouter: SearchResultRouting?
     
     init(
         interactor: SearchHomeInteractable,
@@ -51,18 +49,17 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         let router = searchHomeListBuilder.build(withListener: interactor)
         attachChild(router)
         searchHomeListRouter = router
-        
-        viewController.present(router.viewControllable, animated: true)
-        viewController.searchListViewController = router.viewControllable
     }
     
     func detachSearchHomeList() {
         guard let router = searchHomeListRouter else { return }
         detachChild(router)
         searchHomeListRouter = nil
-        
-        viewController.dismiss(animated: true)
-        viewController.searchListViewController = nil
+    }
+    
+    func presentSearchHomeList() {
+        guard let searchHomeListRouter else { return }
+        viewController.present(searchHomeListRouter.viewControllable, animated: true)
     }
 
     func attachSearchResult() {
@@ -70,13 +67,17 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         let router = searchResultBuilder.build(withListener: interactor)
         attachChild(router)
         searchResultRouter = router
-        viewControllable.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSearchResult() {
         guard let router = searchResultRouter else { return }
         detachChild(router)
         searchResultRouter = nil
-        viewControllable.popViewController(animated: true)
     }
+    
+    func presentSearchResult() {
+        guard let searchResultRouter else { return }
+        viewController.present(searchResultRouter.viewControllable, animated: true)
+    }
+
 }

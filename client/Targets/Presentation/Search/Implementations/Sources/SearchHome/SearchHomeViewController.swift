@@ -15,21 +15,29 @@ import NMapsMap
 import ModernRIBs
 
 protocol SearchHomePresentableListener: AnyObject {
-    func searchTextFieldDidTap()
-    func presentHomeListView()
-    func dismissHomeListView()
+    func presentHomeList()
+    func presentHomeResult()
 }
 
 public final class SearchHomeViewController: UIViewController, SearchHomePresentable, SearchHomeViewControllable {
     
-    var searchListViewController: ViewControllable?
-    
     private enum Constant {
-        static let tabBarTitle = "검색"
-        static let tabBarImage = "magnifyingglass"
-        static let tabBarImageSelected = "magnifyingglass"
-        static let searchTextFieldPlaceholder = "위치, 장소 검색"
-        static let searchTextFieldTopSpacing: CGFloat = 35
+        enum TabBar {
+            static let title = "검색"
+            static let image = "magnifyingglass"
+        }
+        
+        enum SearchTextField {
+            static let placeholder = "위치, 장소 검색"
+            static let topSpacing: CGFloat = 35
+        }
+        
+        enum ShowSearchHomeListButton {
+            static let image = "chevron.up"
+            static let length: CGFloat = 45
+            static let offset: CGFloat = -25
+        }
+        
     }
     
     weak var listener: SearchHomePresentableListener?
@@ -48,11 +56,25 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(searchTextFieldDidTap))
         textField.addGestureRecognizer(tapGesture)
         
-        textField.placeholder = Constant.searchTextFieldPlaceholder
+        textField.placeholder = Constant.SearchTextField.placeholder
         textField.clipsToBounds = true
         textField.layer.cornerRadius = Constants.cornerRadiusMedium
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
+    }()
+    
+    private lazy var showSearchHomeListButton: UIButton = {
+        let button = UIButton(configuration: .filled())
+        button.configuration?.image = UIImage(systemName: Constant.ShowSearchHomeListButton.image)
+        button.configuration?.baseForegroundColor = .hpBlue1
+        button.configuration?.baseBackgroundColor = .hpWhite
+        button.clipsToBounds = true
+        button.layer.cornerRadius = Constant.ShowSearchHomeListButton.length / 2
+        
+        button.addTarget(self, action: #selector(showSearchHomeListButtonDidTap), for: .touchUpInside)
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -70,10 +92,6 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         setupViews()
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        listener?.presentHomeListView()
-    }
 
 
 }
@@ -82,8 +100,8 @@ private extension SearchHomeViewController {
     func setupTabBar() {
         // TODO: tag 수정
         tabBarItem = .init(
-            title: Constant.tabBarTitle,
-            image: .init(systemName: Constant.tabBarImage),
+            title: Constant.TabBar.title,
+            image: .init(systemName: Constant.TabBar.image),
             tag: 1
         )
 
@@ -92,29 +110,29 @@ private extension SearchHomeViewController {
     func setupViews() {
         view = naverMap
         
-        [searchTextField].forEach { view.addSubview($0) }
+        [searchTextField, showSearchHomeListButton].forEach { view.addSubview($0) }
         NSLayoutConstraint.activate([
-            
-            searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.searchTextFieldTopSpacing),
+            searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
             searchTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             searchTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            searchTextField.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight)
+            searchTextField.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
+            
+            showSearchHomeListButton.widthAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
+            showSearchHomeListButton.heightAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
+            showSearchHomeListButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constant.ShowSearchHomeListButton.offset),
+            showSearchHomeListButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.ShowSearchHomeListButton.offset)
         ])
-    }
-    
-    func setupTabBar() {
-        tabBarItem = .init(
-            title: Constant.tabBarTitle,
-            image: UIImage(systemName: Constant.tabBarImage)?.withRenderingMode(.alwaysTemplate),
-            selectedImage: UIImage(systemName: Constant.tabBarImageSelected)?.withRenderingMode(.alwaysTemplate)
-        )
     }
     
 }
 
 private extension SearchHomeViewController {
+    
     @objc func searchTextFieldDidTap() {
-        listener?.dismissHomeListView()
-        listener?.searchTextFieldDidTap()
+        listener?.presentHomeResult()
+    }
+    
+    @objc func showSearchHomeListButtonDidTap() {
+        listener?.presentHomeList()
     }
 }

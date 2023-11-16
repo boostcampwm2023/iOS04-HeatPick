@@ -90,7 +90,7 @@ private extension StorySmallCommentView {
             commentLabel.topAnchor.constraint(equalTo: topAnchor),
             commentLabel.leadingAnchor.constraint(equalTo: commentImageView.trailingAnchor),
             commentLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-            commentLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
+            commentLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor)
         ])
     }
     
