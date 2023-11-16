@@ -84,7 +84,7 @@ final class SearchHomeListInteractor: PresentableInteractor<SearchHomeListPresen
         
     }
     
-    func didTapitem(model: SearchHomeListCellModel) {
+    func didTapItem(model: SearchHomeListCellModel) {
         
     }
     

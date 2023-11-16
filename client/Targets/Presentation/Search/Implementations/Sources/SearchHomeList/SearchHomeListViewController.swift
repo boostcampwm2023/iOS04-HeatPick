@@ -12,7 +12,7 @@ import ModernRIBs
 
 
 protocol SearchHomeListPresentableListener: AnyObject {
-    func didTapitem(model: SearchHomeListCellModel)
+    func didTapItem(model: SearchHomeListCellModel)
 }
 
 final class SearchHomeListViewController: UIViewController, SearchHomeListPresentable, SearchHomeListViewControllable {
@@ -105,7 +105,7 @@ extension SearchHomeListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let model = models[safe: indexPath.row] else { return }
-        listener?.didTapitem(model: model)
+        listener?.didTapItem(model: model)
     }
     
 }

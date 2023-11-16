@@ -15,13 +15,11 @@ import NMapsMap
 import ModernRIBs
 
 protocol SearchHomePresentableListener: AnyObject {
-    func searchTextFieldDidTap()
-    func presentHomeListView()
+    func presentHomeList()
+    func presentHomeResult()
 }
 
 public final class SearchHomeViewController: UIViewController, SearchHomePresentable, SearchHomeViewControllable {
-    
-    var searchListViewController: ViewControllable?
     
     private enum Constant {
         enum TabBar {
@@ -131,10 +129,10 @@ private extension SearchHomeViewController {
 private extension SearchHomeViewController {
     
     @objc func searchTextFieldDidTap() {
-        listener?.searchTextFieldDidTap()
+        listener?.presentHomeResult()
     }
     
     @objc func showSearchHomeListButtonDidTap() {
-        listener?.presentHomeListView()
+        listener?.presentHomeList()
     }
 }
