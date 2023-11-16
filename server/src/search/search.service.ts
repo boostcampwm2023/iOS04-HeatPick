@@ -5,10 +5,6 @@ import { JasoTrie } from './trie/trie';
 @Injectable()
 export class SearchService {
   constructor(private jasoTrie: JasoTrie) {}
-  // 구현중
-  async recommendSearch(): Promise<any> {
-    return 1;
-  }
 
   insertTree(separatedStatement: string[]) {
     this.jasoTrie.insert(separatedStatement);
