@@ -1,7 +1,7 @@
 import { StoryService } from './story.service';
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   Param,
   Patch,
@@ -43,5 +43,12 @@ export class StoryController {
   async update(@UploadedFiles() images: Array<Express.Multer.File>, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
     const { storyId, title, content, date } = updateStoryDto;
     return this.storyService.update({ storyId, title, images, content, date });
+  }
+
+  @Delete('delete/:storyId')
+  @ApiOperation({ summary: 'Delete Story' })
+  @ApiResponse({ status: 200, description: '{ }' })
+  async delete(@Param('storyId') storyId: number) {
+    return this.storyService.delete(storyId);
   }
 }
