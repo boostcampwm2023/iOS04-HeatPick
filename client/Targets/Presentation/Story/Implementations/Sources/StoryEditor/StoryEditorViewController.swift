@@ -34,7 +34,7 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     
     private lazy var navigationView: NavigationView = {
         let navigationView = NavigationView()
-        navigationView.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: []))
+        navigationView.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: [.none]))
         navigationView.delegate = self
         navigationView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -91,21 +91,22 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return button
     }()
     
-    private var attributes: [AttributeModel] = [.init(title: "카테고리", value: "없음"),
-                                                .init(title: "위치", value: "없음"),
-                                                .init(title: "날짜", value: "없음"),
-                                                .init(title: "칭호", value: "카페인 중독자")]
+    private var attributes: [AttributeType] = [.category("없음"), .location("없음"), .date(.now), .badge("없음")]
     
     private lazy var attributeField: AttributeField = {
         let tableView = AttributeField()
+        
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self)
-        tableView.isScrollEnabled = false
-        tableView.allowsSelection = false
-        tableView.rowHeight = 50
+        tableView.register(AttributeTableViewCell.self)
 
-        tableView.backgroundColor = .black
+        tableView.rowHeight = 50
+        tableView.isScrollEnabled = false
+        tableView.allowsSelection = true
+        tableView.allowsMultipleSelection = false
+        tableView.isUserInteractionEnabled = true
+
+        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -125,6 +126,8 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     
 }
 
+
+// MARK: - Setup Views
 private extension StoryEditorViewController {
     
     func setupViews() {
@@ -132,6 +135,7 @@ private extension StoryEditorViewController {
         [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
         [titleField, imageField, descriptionField, attributeField, saveButton].forEach(stackView.addArrangedSubview)
+        
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -151,20 +155,21 @@ private extension StoryEditorViewController {
         ])
         
         scrollView.contentInset = .init(top: 40, left: Constant.scrollViewInset, bottom: 0, right: Constant.scrollViewInset)
-        
-        saveButton.layer.cornerRadius = 16
+        saveButton.layer.cornerRadius = Constants.cornerRadiusMedium
     }
     
 }
 
+// MARK: - Navigation View Delegate
 extension StoryEditorViewController: NavigationViewDelegate {
     
-    func navigationViewButtonDidTap(_ view: DesignKit.NavigationView, type: DesignKit.NavigationViewButtonType) {
+    func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         listener?.didTapClose()
     }
 
 }
 
+// MARK: - Image Selector Delegate
 extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
     
     func addImageDidTap(with picker: PHPickerViewController) {
@@ -173,13 +178,15 @@ extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
 
 }
 
+// MARK: - Attribute TableView Delegate
 extension StoryEditorViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath) as? AttributeTableViewCell
+        cell?.presentPicker()
     }
-    
-}
 
+}
+    
 extension StoryEditorViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -187,21 +194,8 @@ extension StoryEditorViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(UITableViewCell.self, for: indexPath)
-        
-        var config = cell.defaultContentConfiguration()
-        
-        config.text = attributes[indexPath.row].title
-        config.textProperties.font = .bodyBold
-        config.textProperties.color = .hpBlack
-        
-        config.secondaryText = attributes[indexPath.row].value
-        config.secondaryTextProperties.font = .smallRegular
-        config.secondaryTextProperties.color = .hpGray1
-        config.prefersSideBySideTextAndSecondaryText = true
-        
-        cell.contentConfiguration = config
-        cell.accessoryType = .disclosureIndicator
+        let cell = tableView.dequeue(AttributeTableViewCell.self, for: indexPath)
+        cell.setup(type: attributes[indexPath.row])
         
         return cell
     }
