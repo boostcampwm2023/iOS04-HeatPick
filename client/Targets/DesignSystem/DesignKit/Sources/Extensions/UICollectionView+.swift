@@ -8,18 +8,10 @@
 
 import UIKit
 
-extension UICollectionViewCell {
+extension UICollectionReusableView {
     static var id: String {
         return String(describing: self)
     }
-}
-
-public protocol UICollectionReusableViewProtocol where Self: UICollectionReusableView {
-    static var id: String { get }
-    
-    // UICollectionView.elementKindSectionHeader
-    // UICollectionView.elementKindSectionFooter
-    static var kind: String { get }
 }
 
 public extension UICollectionView {
@@ -35,12 +27,23 @@ public extension UICollectionView {
         return cell
     }
     
-    func register<T: UICollectionReusableViewProtocol>(_ view: T.Type) {
-        register(view, forSupplementaryViewOfKind: view.kind, withReuseIdentifier: view.id)
+    func registerHeader<T: UICollectionReusableView>(_ view: T.Type) {
+        register(view, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: view.id)
     }
     
-    func dequeue<T: UICollectionReusableViewProtocol>(_ view: T.Type, for indexPath: IndexPath) -> T {
-        guard let view = dequeueReusableSupplementaryView(ofKind: view.kind, withReuseIdentifier: view.id, for: indexPath) as? T else {
+    func dequeueHeader<T: UICollectionReusableView>(_ view: T.Type, for indexPath: IndexPath) -> T {
+        guard let view = dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: view.id, for: indexPath) as? T else {
+            fatalError("Not Register ReusableView")
+        }
+        return view
+    }
+    
+    func registerFooter<T: UICollectionReusableView>(_ view: T.Type) {
+        register(view, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: view.id)
+    }
+    
+    func dequeueFooter<T: UICollectionReusableView>(_ view: T.Type, for indexPath: IndexPath) -> T {
+        guard let view = dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: view.id, for: indexPath) as? T else {
             fatalError("Not Register ReusableView")
         }
         return view

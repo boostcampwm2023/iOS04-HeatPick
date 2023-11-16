@@ -12,8 +12,7 @@ public protocol ShowAllTableHeaderViewDelegate: AnyObject {
     func showAllButtonDidTap()
 }
 
-public final class ShowAllTableHeaderView: UITableViewHeaderFooterView, UITableViewHeaderFooterViewProtocol {
-    public static let id: String = "ShowAllTableHeaderView"
+public final class ShowAllTableHeaderView: UITableViewHeaderFooterView {
     
     public weak var delegate: ShowAllTableHeaderViewDelegate?
     
