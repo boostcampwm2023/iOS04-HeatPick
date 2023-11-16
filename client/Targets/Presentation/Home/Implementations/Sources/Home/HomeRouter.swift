@@ -10,9 +10,10 @@ import ModernRIBs
 
 protocol HomeInteractable: Interactable,
                            HomeRecommendDashboardListener,
-                            HomeHotPlaceDashboardListener,
-                            HomeFollowingDashboardListener,
-                            HomeFriendDashboardListener {
+                           HomeHotPlaceDashboardListener,
+                           HomeFollowingDashboardListener,
+                           HomeFriendDashboardListener,
+                           RecommendSeeAllListener {
     var router: HomeRouting? { get set }
     var listener: HomeListener? { get set }
 }
@@ -25,37 +26,34 @@ protocol HomeViewControllable: ViewControllable {
 
 final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, HomeRouting {
     
-    private let recommendDashboardBuilder: HomeRecommendDashboardBuildable
+    private let dependency: HomeRouterDependency
+    
+    // MARK: - Base
+    
     private var recommendDashboardRouting: Routing?
-    
-    private let hotPlaceDashboardBuilder: HomeHotPlaceDashboardBuildable
     private var hotPlaceDashboardRouting: Routing?
-    
-    private let followingDashboardBuilder: HomeFollowingDashboardBuildable
     private var followingDashboardRouting: Routing?
-    
-    private let friendDashboardBuilder: HomeFriendDashboardBuildable
     private var friendDashboardRouting: ViewableRouting?
+    
+    // MARK: - SeeAll
+    
+    private var recommendSeeAllRouting: Routing?
     
     init(
         interactor: HomeInteractable,
         viewController: HomeViewControllable,
-        recommendDashboardBuilder: HomeRecommendDashboardBuildable,
-        hotPlaceDashboardBuilder: HomeHotPlaceDashboardBuildable,
-        followingDashboardBuilder: HomeFollowingDashboardBuildable,
-        friendDashboardBuilder: HomeFriendDashboardBuildable
+        dependency: HomeRouterDependency
     ) {
-        self.recommendDashboardBuilder = recommendDashboardBuilder
-        self.hotPlaceDashboardBuilder = hotPlaceDashboardBuilder
-        self.followingDashboardBuilder = followingDashboardBuilder
-        self.friendDashboardBuilder = friendDashboardBuilder
+        self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
+    // MARK: - Base
+    
     func attachRecommendDashboard() {
         guard recommendDashboardRouting == nil else { return }
-        let router = recommendDashboardBuilder.build(withListener: interactor)
+        let router = dependency.base.recommendDashboardBuilder.build(withListener: interactor)
         viewController.setDashboard(router.viewControllable)
         self.recommendDashboardRouting = router
         attachChild(router)
@@ -63,7 +61,7 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     func attachHotPlaceDashboard() {
         guard hotPlaceDashboardRouting == nil else { return }
-        let router = hotPlaceDashboardBuilder.build(withListener: interactor)
+        let router = dependency.base.hotPlaceDashboardBuilder.build(withListener: interactor)
         viewController.setDashboard(router.viewControllable)
         self.hotPlaceDashboardRouting = router
         attachChild(router)
@@ -71,7 +69,7 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     func attachFollowingDashboard() {
         guard followingDashboardRouting == nil else { return }
-        let router = followingDashboardBuilder.build(withListener: interactor)
+        let router = dependency.base.followingDashboardBuilder.build(withListener: interactor)
         viewController.setDashboard(router.viewControllable)
         self.followingDashboardRouting = router
         attachChild(router)
@@ -79,7 +77,7 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     func attachFriendDashboard() {
         guard friendDashboardRouting == nil else { return }
-        let router = friendDashboardBuilder.build(withListener: interactor)
+        let router = dependency.base.friendDashboardBuilder.build(withListener: interactor)
         viewController.insertDashboard(router.viewControllable, at: 2)
         self.friendDashboardRouting = router
         attachChild(router)
@@ -89,6 +87,23 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
         guard let router = friendDashboardRouting else { return }
         viewController.removeDashboard(router.viewControllable)
         self.friendDashboardRouting = nil
+        detachChild(router)
+    }
+    
+    // MARK: - SeeAll
+    
+    func attachRecommendSeeAll() {
+        guard recommendSeeAllRouting == nil else { return }
+        let router = dependency.seeAll.recommendSeeAllBuilder.build(withListener: interactor)
+        viewController.pushViewController(router.viewControllable, animated: true)
+        self.recommendSeeAllRouting = router
+        attachChild(router)
+    }
+    
+    func detachRecommendSeeAll() {
+        guard let router = recommendSeeAllRouting else { return }
+        viewController.popViewController(animated: true)
+        self.recommendSeeAllRouting = nil
         detachChild(router)
     }
     

@@ -14,7 +14,8 @@ final class HomeComponent: Component<HomeDependency>,
                            HomeRecommendDashboardDependency,
                            HomeHotPlaceDashboardDependency,
                            HomeFollowingDashboardDependency,
-                           HomeFriendDashboardDependency {
+                           HomeFriendDashboardDependency,
+                           RecommendSeeAllDependency {
     
 }
 
@@ -30,22 +31,15 @@ public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {
     
     public func build(withListener listener: HomeListener) -> ViewableRouting {
         let component = HomeComponent(dependency: dependency)
+        let routerComponent = HomeRouterComponent(component: component)
         let viewController = HomeViewController()
         let interactor = HomeInteractor(presenter: viewController)
         interactor.listener = listener
         
-        let recommendDashboardBuilder = HomeRecommendDashboardBuilder(dependency: component)
-        let hotPlaceDashboardBuilder = HomeHotPlaceDashboardBuilder(dependency: component)
-        let followingDashboardBuilder = HomeFollowingDashboardBuilder(dependency: component)
-        let friendDashboardBuilder = HomeFriendDashboardBuilder(dependency: component)
-        
         return HomeRouter(
             interactor: interactor,
             viewController: viewController,
-            recommendDashboardBuilder: recommendDashboardBuilder,
-            hotPlaceDashboardBuilder: hotPlaceDashboardBuilder,
-            followingDashboardBuilder: followingDashboardBuilder,
-            friendDashboardBuilder: friendDashboardBuilder
+            dependency: routerComponent
         )
     }
 }

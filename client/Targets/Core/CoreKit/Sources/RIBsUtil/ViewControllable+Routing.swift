@@ -24,6 +24,7 @@ public extension ViewControllable {
     }
     
     func pushViewController(_ viewControllable: ViewControllable, animated: Bool) {
+        viewControllable.uiviewController.hidesBottomBarWhenPushed = true
         if let navigationController = uiviewController as? UINavigationController {
             navigationController.pushViewController(viewControllable.uiviewController, animated: animated)
         } else {
