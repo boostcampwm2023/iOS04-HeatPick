@@ -5,6 +5,7 @@ import { User } from 'src/entities/user.entity';
 import { idDuplicatedException } from 'src/exception/cuntom.exception/id.duplicate.exception';
 import { profileImage } from 'src/entities/profileImage.entity';
 import { ImageService } from '../image/image.service';
+import { invalidTokenException } from 'src/exception/cuntom.exception/token.invalid.exception';
 
 @Injectable()
 export class AuthService {
@@ -53,14 +54,17 @@ export class AuthService {
   async getId(token: string): Promise<string> {
     const header = 'Bearer ' + token;
     const api_url = 'https://openapi.naver.com/v1/nid/me';
-
-    const response = await fetch(api_url, {
-      method: 'GET',
-      headers: {
-        Authorization: header,
-      },
-    });
-    const responseJson = await response.json();
-    return responseJson.response.id;
+    try {
+      const response = await fetch(api_url, {
+        method: 'GET',
+        headers: {
+          Authorization: header,
+        },
+      });
+      const responseJson = await response.json();
+      return responseJson.response.id;
+    } catch (error) {
+      throw new invalidTokenException();
+    }
   }
 }
