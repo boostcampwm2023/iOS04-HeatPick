@@ -17,7 +17,7 @@ protocol SearchHomeInteractable: Interactable,
 }
 
 protocol SearchHomeViewControllable: ViewControllable { 
-    func addDashboard(_ view: ViewControllable)
+    var searchListViewController: ViewControllable? { get set }
 }
 
 protocol SearchHomeRouterDependency {
@@ -48,13 +48,21 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
 
     func attachSearchHomeList() {
         guard searchHomeListRouter == nil else { return }
-        
         let router = searchHomeListBuilder.build(withListener: interactor)
-        let dashboard = router.viewControllable
-        viewController.addDashboard(dashboard)
-        
         attachChild(router)
         searchHomeListRouter = router
+        
+        viewController.present(router.viewControllable, animated: true)
+        viewController.searchListViewController = router.viewControllable
+    }
+    
+    func detachSearchHomeList() {
+        guard let router = searchHomeListRouter else { return }
+        detachChild(router)
+        searchHomeListRouter = nil
+        
+        viewController.dismiss(animated: true)
+        viewController.searchListViewController = nil
     }
 
     func attachSearchResult() {

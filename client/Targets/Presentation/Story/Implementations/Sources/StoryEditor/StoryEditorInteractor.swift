@@ -19,7 +19,7 @@ public protocol StoryEditorPresentable: Presentable {
 
 public protocol StoryEditorListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
-    func newStoryDidTapClose()
+    func storyEditorDidTapClose()
 }
 
 final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>, StoryEditorInteractable, StoryEditorPresentableListener {
@@ -45,6 +45,6 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     }
     
     func didTapClose() {
-        listener?.newStoryDidTapClose()
+        listener?.storyEditorDidTapClose()
     }
 }

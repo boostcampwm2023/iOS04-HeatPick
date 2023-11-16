@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.credential.dto';
 import { RegisterDto } from './dto/auth.resgister.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { saveImage } from 'src/util/story.util.saveImage';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomExceptionFilter } from 'src/exception/custom-exception.filter';
 

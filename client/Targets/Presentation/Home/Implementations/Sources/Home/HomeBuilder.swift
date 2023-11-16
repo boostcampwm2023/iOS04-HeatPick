@@ -13,7 +13,8 @@ public protocol HomeDependency: Dependency {}
 final class HomeComponent: Component<HomeDependency>,
                            HomeRecommendDashboardDependency,
                            HomeHotPlaceDashboardDependency,
-                           HomeFollowingDashboardDependency {
+                           HomeFollowingDashboardDependency,
+                           HomeFriendDashboardDependency {
     
 }
 
@@ -36,13 +37,15 @@ public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {
         let recommendDashboardBuilder = HomeRecommendDashboardBuilder(dependency: component)
         let hotPlaceDashboardBuilder = HomeHotPlaceDashboardBuilder(dependency: component)
         let followingDashboardBuilder = HomeFollowingDashboardBuilder(dependency: component)
+        let friendDashboardBuilder = HomeFriendDashboardBuilder(dependency: component)
         
         return HomeRouter(
             interactor: interactor,
             viewController: viewController,
             recommendDashboardBuilder: recommendDashboardBuilder,
             hotPlaceDashboardBuilder: hotPlaceDashboardBuilder,
-            followingDashboardBuilder: followingDashboardBuilder
+            followingDashboardBuilder: followingDashboardBuilder,
+            friendDashboardBuilder: friendDashboardBuilder
         )
     }
 }

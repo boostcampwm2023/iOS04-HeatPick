@@ -4,15 +4,18 @@ import { Story } from '../entities/story.entity';
 import { StoryDetailViewData } from './type/story.detail.view.data';
 import { userDataInStoryView } from './type/story.user.data';
 import { UserRepository } from './../user/user.repository';
+import { ImageService } from '../image/image.service';
 
 @Injectable()
 export class StoryService {
   constructor(
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
+    private imageService: ImageService,
   ) {}
 
-  public async create({ title, content, savedImagePaths, date }): Promise<number> {
+  public async create({ title, content, images, date }): Promise<number> {
+    const savedImagePaths = await Promise.all(images.map(async (image) => await this.imageService.saveImage('../../uploads', image.buffer)));
     const story = new Story();
     story.title = title;
     story.content = content;
@@ -20,20 +23,23 @@ export class StoryService {
     story.createAt = new Date();
     story.likeCount = 0;
 
-    const testobj = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
-    const storyList = await testobj.stories;
+    const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
+    const storyList = await user.stories;
     storyList.push(story);
-    this.userRepository.createUser(testobj);
+    this.userRepository.createUser(user);
     //return (await this.storyRepository.addStory(story)).storyId;
     return 1;
   }
 
   public async read(storyId: number): Promise<StoryDetailViewData> {
     const story: Story = await this.storyRepository.findById(storyId);
+    const user = story.user;
+    delete story.user;
+
     const userData: userDataInStoryView = {
-      userId: story.user.userId,
-      username: story.user.username,
-      profileImageURL: story.user.profileImage.imageUrl,
+      userId: user.userId,
+      username: user.username,
+      //profileImageURL: story.user.profileImage.imageUrl,
       //badge: story.user.badge
     };
 

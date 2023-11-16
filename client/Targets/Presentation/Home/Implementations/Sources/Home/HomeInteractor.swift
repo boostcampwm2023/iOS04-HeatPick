@@ -12,11 +12,15 @@ protocol HomeRouting: ViewableRouting {
     func attachRecommendDashboard()
     func attachHotPlaceDashboard()
     func attachFollowingDashboard()
+    func attachFriendDashboard()
+    func detachFriendDashboard()
 }
 
 protocol HomePresentable: Presentable {
     var listener: HomePresentableListener? { get set }
     func setDashboard(_ viewControllable: ViewControllable)
+    func insertDashboard(_ viewControllable: ViewControllable, at index: Int)
+    func removeDashboard(_ viewControllable: ViewControllable)
 }
 
 public protocol HomeListener: AnyObject {}
@@ -43,8 +47,22 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     }
     
     // MARK: - Recommend
+    
     func recommendDashboardDidTapSeeAll() {
         print("# Attach Recommend See All View")
+    }
+    
+    // MARK: - HotPlace
+    
+    func hotPlaceDashboardDidTapSeeAll() {
+        print("# Attach HotPlace See All View")
+        router?.attachFriendDashboard()
+    }
+    
+    // MARK: - Following
+    
+    func followingDashboardDidTapSeeAll() {
+        print("# Attach Following See All View")
     }
     
 }

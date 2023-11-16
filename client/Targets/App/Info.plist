@@ -2,6 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NaverLoginConsumerKey</key>
+	<string>$(NAVER_LOGIN_CONSUMER_KEY)</string>
+	<key>NaverLoginConsumerSecret</key>
+	<string>$(NAVER_LOGIN_CONSUMER_SECRET)</string>
+	<key>NaverMapClientID</key>
+	<string>$(NAVER_MAP_CLIENT_ID)</string>
+	<key>NaverMapSecret</key>
+	<string>$(NAVER_MAP_SECRET)</string>
+	<key>BaseURL</key>
+	<string>$(BASE_URL)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

@@ -18,11 +18,8 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
     
     weak var listener: SearchResultPresentableListener?
     
-    // TODO: SearchController로 변경
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        let model = NavigationViewModel(title: "검색", leftButtonType: .back, rightButtonTypes: [])
-        navigationView.setup(model: model)
+    private lazy var searchNavigationView: SearchNavigationView = {
+        let navigationView = SearchNavigationView()
         navigationView.delegate = self
         navigationView.translatesAutoresizingMaskIntoConstraints = false
         return navigationView
@@ -30,7 +27,6 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .hpGray3
         setupViews()
     }
 }
@@ -38,21 +34,19 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
 private extension SearchResultViewController {
     func setupViews() {
         
-        view.addSubview(navigationView)
+        view.addSubview(searchNavigationView)
         NSLayoutConstraint.activate([
-            navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight)
+            searchNavigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            searchNavigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            searchNavigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            searchNavigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight)
         ])
         
     }
 }
 
-extension SearchResultViewController: NavigationViewDelegate {
-    func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
+extension SearchResultViewController: SearchNavigationViewDelegate {
+    func leftButtonDidTap() {
         listener?.naviagtionViewBackButtonDidTap()
-    }
-    
-    
+    }   
 }
