@@ -6,7 +6,6 @@ let project = Project.framework(
     name: "{{ name }}Implementations",
     featureTargets: [.staticLibrary],
     dependencies: [
-        .Target.DesignSystem.DesignKit,
         .Target.Presentation.{{ name }}.Interfaces,
     ]
 )
