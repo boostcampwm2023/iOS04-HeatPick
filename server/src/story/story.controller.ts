@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { StoryDetailViewData } from './type/story.detail.view.data';
+import { UpdateStoryDto } from './dto/story.update.dto';
 
 @Controller('story')
 export class StoryController {
@@ -29,8 +30,8 @@ export class StoryController {
   @UseInterceptors(FilesInterceptor('images', 3))
   @ApiOperation({ summary: 'Update story' })
   @ApiResponse({ status: 200, description: '{ }' })
-  async update(@UploadedFiles() images: Array<Express.Multer.File>, @Body() createStoryDto: CreateStoryDto) {
-    const { title, content, date } = createStoryDto;
-    return this.storyService.update({ title, content, images, date });
+  async update(@UploadedFiles() images: Array<Express.Multer.File>, @Body() updateStoryDto: UpdateStoryDto) {
+    const { storyId, title, content, date } = updateStoryDto;
+    return this.storyService.update({ storyId, title, content, date });
   }
 }

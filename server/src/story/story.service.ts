@@ -54,4 +54,28 @@ export class StoryService {
       author: userData,
     };
   }
+
+  public async update({ storyId, title, content, images, date }): Promise<number> {
+    const savedImagePaths = await Promise.all(images.map(async (image) => await this.imageService.saveImage('../../uploads', image.buffer)));
+    const story = new Story();
+    story.title = title;
+    story.content = content;
+    const storyImageArr = await story.storyImages;
+    savedImagePaths.forEach((path) => {
+      const storyImageObj = new StoryImage();
+      storyImageObj.imageUrl = path;
+      storyImageArr.push(storyImageObj);
+    });
+    story.createAt = new Date();
+    story.likeCount = 0;
+
+    const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
+    const storyList = await user.stories;
+    storyList.filter((story) => story.storyId !== storyId);
+    storyList.push(story);
+
+    this.userRepository.createUser(user);
+    //return (await this.storyRepository.addStory(story)).storyId;
+    return 1;
+  }
 }

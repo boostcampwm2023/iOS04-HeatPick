@@ -13,7 +13,7 @@ export class UserRepository {
     return await this.userRepository.findOne({ where: { oauthId: id } });
   }
 
-  createUser(user: User) {
-    this.userRepository.save(user);
+  async createUser(user: User) {
+    await this.userRepository.save(user);
   }
 }
