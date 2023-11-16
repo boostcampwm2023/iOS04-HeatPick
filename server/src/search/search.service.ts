@@ -20,13 +20,10 @@ export class SearchService implements OnModuleInit {
     private userRepository: UserRepository,
   ) {}
   async onModuleInit() {
-    const everyHistory = await this.searchRepository.loadEveryHistory();
+    const [everyHistory, everyStory, everyUser] = await Promise.all([this.searchRepository.loadEveryHistory(), this.storyRepository.loadEveryStory(), this.userRepository.loadEveryUser()]);
+
     everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(this.graphemeSeperation(history.content)));
-
-    const everyStory = await this.storyRepository.loadEveryStory();
     everyStory.forEach((story) => this.storyTitleJasoTrie.insert(this.graphemeSeperation(story.title), story.storyId));
-
-    const everyUser = await this.userRepository.loadEveryUser();
     everyUser.forEach((user) => this.userJasoTrie.insert(this.graphemeSeperation(user.username), user.userId));
   }
 
