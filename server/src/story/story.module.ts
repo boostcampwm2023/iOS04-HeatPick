@@ -7,11 +7,12 @@ import { StoryController } from './story.controller';
 import { UserRepository } from 'src/user/user.repository';
 import { userProviders } from 'src/user/user.providers';
 import { ImageService } from '../image/image.service';
+import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 
 @Module({
   imports: [DatabaseModule],
   controllers: [StoryController],
-  providers: [...storyProvider, ...userProviders, StoryService, StoryRepository, UserRepository, ImageService],
-  exports: [StoryRepository],
+  providers: [...storyProvider, ...userProviders, StoryService, StoryRepository, UserRepository, ImageService, StoryJasoTrie],
+  exports: [StoryRepository, StoryService],
 })
 export class StoryModule {}

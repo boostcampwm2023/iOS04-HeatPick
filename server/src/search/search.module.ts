@@ -5,18 +5,18 @@ import { SearchProvider } from './search.provider';
 import { SearchService } from './search.service';
 import { SearchRepository } from './search.repository';
 import { HistoryJasoTrie } from './trie/historyTrie';
-import { StoryJasoTrie } from './trie/storyTrie';
-import { StoryRepository } from 'src/story/story.repository';
+import { SaveHistoryMiddleware } from './middleware/save.history.middleware';
+import { StoryService } from 'src/story/story.service';
+import { UserService } from 'src/user/user.service';
 import { StoryModule } from 'src/story/story.module';
 import { userProviders } from 'src/user/user.providers';
 import { UserRepository } from 'src/user/user.repository';
-import { UserJasoTrie } from './trie/userTrie';
-import { SaveHistoryMiddleware } from './middleware/save.history.middleware';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [DatabaseModule, StoryModule],
+  imports: [DatabaseModule, StoryModule, UserModule],
   controllers: [SearchController],
-  providers: [...SearchProvider, ...userProviders, UserRepository, SearchService, SearchRepository, HistoryJasoTrie, StoryJasoTrie, UserJasoTrie],
+  providers: [...SearchProvider, SearchService, SearchRepository, HistoryJasoTrie],
 })
 export class SearchModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

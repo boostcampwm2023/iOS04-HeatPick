@@ -2,29 +2,17 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as Hangul from 'hangul-js';
 import { HistoryJasoTrie } from './trie/historyTrie';
 import { SearchRepository } from './search.repository';
-import { StoryJasoTrie } from './trie/storyTrie';
-import { StoryRepository } from '../story/story.repository';
-import { Story } from 'src/entities/story.entity';
-import { UserRepository } from './../user/user.repository';
-import { UserJasoTrie } from './trie/userTrie';
-import { User } from 'src/entities/user.entity';
+import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeModify';
 
 @Injectable()
-export class SearchService implements OnModuleInit {
+export class SearchService {
   constructor(
     private searchHistoryJasoTrie: HistoryJasoTrie,
-    private storyTitleJasoTrie: StoryJasoTrie,
-    private userJasoTrie: UserJasoTrie,
     private searchRepository: SearchRepository,
-    private storyRepository: StoryRepository,
-    private userRepository: UserRepository,
-  ) {}
-  async onModuleInit() {
-    const [everyHistory, everyStory, everyUser] = await Promise.all([this.searchRepository.loadEveryHistory(), this.storyRepository.loadEveryStory(), this.userRepository.loadEveryUser()]);
-
-    everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(this.graphemeSeperation(history.content)));
-    everyStory.forEach((story) => this.storyTitleJasoTrie.insert(this.graphemeSeperation(story.title), story.storyId));
-    everyUser.forEach((user) => this.userJasoTrie.insert(this.graphemeSeperation(user.username), user.userId));
+  ) {
+    this.searchRepository.loadEveryHistory().then((histories) => {
+      histories.forEach((history) => this.searchHistoryJasoTrie.insert(graphemeSeperation(history.content)));
+    });
   }
 
   insertHistoryToTree(seperatedStatement: string[]) {
@@ -33,27 +21,7 @@ export class SearchService implements OnModuleInit {
 
   searchHistoryTree(seperatedStatement: string[]): string[] {
     const recommendedWords = this.searchHistoryJasoTrie.search(seperatedStatement);
-    return recommendedWords.map((word) => this.graphemeCombination(word));
-  }
-
-  async searchStoryTree(seperatedStatement: string[]): Promise<Story[]> {
-    const ids = this.storyTitleJasoTrie.search(seperatedStatement);
-    const stories = await this.storyRepository.getStoriesByIds(ids);
-    return stories;
-  }
-
-  async searchUserTree(seperatedStatement: string[]): Promise<User[]> {
-    const ids = this.userJasoTrie.search(seperatedStatement);
-    const users = await this.userRepository.getStoriesByIds(ids);
-    return users;
-  }
-
-  graphemeSeperation(text: string): string[] {
-    return Hangul.disassemble(text);
-  }
-
-  graphemeCombination(separatedStatement: string[]): string {
-    return Hangul.assemble(separatedStatement);
+    return recommendedWords.map((word) => graphemeCombination(word));
   }
 
   saveHistory(searchText: string) {

@@ -6,6 +6,8 @@ import { userDataInStoryView } from './type/story.user.data';
 import { UserRepository } from './../user/user.repository';
 import { ImageService } from '../image/image.service';
 import { StoryImage } from 'src/entities/storyImage.entity';
+import { StoryJasoTrie } from 'src/search/trie/storyTrie';
+import { graphemeSeperation } from 'src/util/util.graphmeModify';
 
 @Injectable()
 export class StoryService {
@@ -13,7 +15,12 @@ export class StoryService {
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
     private imageService: ImageService,
-  ) {}
+    private storyTitleJasoTrie: StoryJasoTrie,
+  ) {
+    this.storyRepository.loadEveryStory().then((everyStory) => {
+      everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
+    });
+  }
 
   public async create({ title, content, images, date }): Promise<number> {
     const savedImagePaths = await Promise.all(images.map(async (image) => await this.imageService.saveImage('../../uploads', image.buffer)));
@@ -53,5 +60,11 @@ export class StoryService {
       story: story,
       author: userData,
     };
+  }
+
+  async getStoriesFromTrie(seperatedStatement: string[]) {
+    const ids = this.storyTitleJasoTrie.search(seperatedStatement);
+    const stories = await this.storyRepository.getStoriesByIds(ids);
+    return stories;
   }
 }
