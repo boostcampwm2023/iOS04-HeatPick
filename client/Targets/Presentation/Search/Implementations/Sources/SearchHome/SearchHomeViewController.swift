@@ -17,7 +17,6 @@ import ModernRIBs
 protocol SearchHomePresentableListener: AnyObject {
     func searchTextFieldDidTap()
     func presentHomeListView()
-    func dismissHomeListView()
 }
 
 public final class SearchHomeViewController: UIViewController, SearchHomePresentable, SearchHomeViewControllable {
@@ -37,6 +36,8 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         
         enum ShowSearchHomeListButton {
             static let image = "chevron.up"
+            static let length: CGFloat = 45
+            static let offset: CGFloat = -25
         }
         
     }
@@ -69,6 +70,8 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         button.configuration?.image = UIImage(systemName: Constant.ShowSearchHomeListButton.image)
         button.configuration?.baseForegroundColor = .hpBlue1
         button.configuration?.baseBackgroundColor = .hpWhite
+        button.clipsToBounds = true
+        button.layer.cornerRadius = Constant.ShowSearchHomeListButton.length / 2
         
         button.addTarget(self, action: #selector(showSearchHomeListButtonDidTap), for: .touchUpInside)
         
@@ -109,13 +112,17 @@ private extension SearchHomeViewController {
     func setupViews() {
         view = naverMap
         
-        [searchTextField].forEach { view.addSubview($0) }
+        [searchTextField, showSearchHomeListButton].forEach { view.addSubview($0) }
         NSLayoutConstraint.activate([
-            
             searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
             searchTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             searchTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            searchTextField.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight)
+            searchTextField.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
+            
+            showSearchHomeListButton.widthAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
+            showSearchHomeListButton.heightAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
+            showSearchHomeListButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constant.ShowSearchHomeListButton.offset),
+            showSearchHomeListButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.ShowSearchHomeListButton.offset)
         ])
     }
     

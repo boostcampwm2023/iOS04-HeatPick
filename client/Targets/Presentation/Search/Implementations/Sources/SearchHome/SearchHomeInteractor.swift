@@ -10,8 +10,11 @@ import ModernRIBs
 
 protocol SearchHomeRouting: ViewableRouting {
     func attachSearchHomeList()
+    func detachSearchHomeList()
     func attachSearchResult()
     func detachSearchResult()
+    
+    func presentSearchHomeList()
 }
 
 protocol SearchHomePresentable: Presentable {
@@ -35,11 +38,12 @@ final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>,
 
     override func didBecomeActive() {
         super.didBecomeActive()
+        router?.attachSearchHomeList()
     }
 
     override func willResignActive() {
         super.willResignActive()
-        
+        router?.detachSearchHomeList()
     }
     
     func searchTextFieldDidTap() {
@@ -51,11 +55,7 @@ final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>,
     }
     
     func presentHomeListView() {
-        router?.attachSearchHomeList()
-    }
-    
-    func dismissHomeListView() {
-        router?.detachSearchResult()
+        router?.presentSearchHomeList()
     }
     
 }

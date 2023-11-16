@@ -28,7 +28,7 @@ protocol SearchHomeRouterDependency {
 final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeViewControllable>, SearchHomeRouting {
 
     private let searchHomeListBuilder: SearchHomeListBuildable
-    private var searchHomeListRouter: Routing?
+    private var searchHomeListRouter: SearchHomeListRouting?
     
     private let searchResultBuilder: SearchResultBuildable
     private var searchResultRouter: Routing?
@@ -51,9 +51,6 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         let router = searchHomeListBuilder.build(withListener: interactor)
         attachChild(router)
         searchHomeListRouter = router
-        
-        viewController.present(router.viewControllable, animated: true)
-        viewController.searchListViewController = router.viewControllable
     }
     
     func detachSearchHomeList() {
@@ -78,5 +75,11 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         detachChild(router)
         searchResultRouter = nil
         viewControllable.popViewController(animated: true)
+    }
+    
+    func presentSearchHomeList() {
+        guard let searchHomeListRouter else { return }
+        viewController.present(searchHomeListRouter.viewControllable, animated: true)
+        viewController.searchListViewController = searchHomeListRouter.viewControllable
     }
 }
