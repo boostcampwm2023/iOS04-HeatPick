@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { User } from './user.entity';
 import { Category } from './category.entity';
+import { StoryImage } from './storyImage.entity';
 
 @Entity()
 export class Story {
@@ -16,8 +17,8 @@ export class Story {
   @Column('text')
   content: string;
 
-  @Column()
-  storyImageURL: string;
+  @OneToMany(() => StoryImage, (storyImage) => storyImage.story, { cascade: true })
+  storyImages: Promise<StoryImage[]>;
 
   @Column()
   likeCount: number;

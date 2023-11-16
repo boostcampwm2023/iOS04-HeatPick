@@ -10,7 +10,6 @@ export class SearchRepository {
     private searchRepository: Repository<SearchHistory>,
   ) {}
   async save(searchText: string) {
-    console.log(searchText);
     const existingHistory = await this.searchRepository.findOne({ where: { content: searchText } });
     if (existingHistory) {
       existingHistory.count += 1;

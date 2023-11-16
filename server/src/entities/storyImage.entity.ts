@@ -2,7 +2,7 @@ import { Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn } from 'ty
 import { Story } from './story.entity';
 
 @Entity()
-export class storyImage {
+export class StoryImage {
   @PrimaryGeneratedColumn()
   imageId: number;
 

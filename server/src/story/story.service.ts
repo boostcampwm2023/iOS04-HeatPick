@@ -5,6 +5,7 @@ import { StoryDetailViewData } from './type/story.detail.view.data';
 import { userDataInStoryView } from './type/story.user.data';
 import { UserRepository } from './../user/user.repository';
 import { ImageService } from '../image/image.service';
+import { StoryImage } from 'src/entities/storyImage.entity';
 
 @Injectable()
 export class StoryService {
@@ -19,7 +20,12 @@ export class StoryService {
     const story = new Story();
     story.title = title;
     story.content = content;
-    story.storyImageURL = JSON.stringify(savedImagePaths);
+    const storyImageArr = await story.storyImages;
+    savedImagePaths.forEach((path) => {
+      const storyImageObj = new StoryImage();
+      storyImageObj.imageUrl = path;
+      storyImageArr.push(storyImageObj);
+    });
     story.createAt = new Date();
     story.likeCount = 0;
 
