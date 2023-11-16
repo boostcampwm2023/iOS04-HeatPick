@@ -4,6 +4,7 @@ import { HistoryJasoTrie } from './trie/historyTrie';
 import { SearchRepository } from './search.repository';
 import { StoryJasoTrie } from './trie/storyTrie';
 import { StoryRepository } from '../story/story.repository';
+import { Story } from 'src/entities/story.entity';
 
 @Injectable()
 export class SearchService implements OnModuleInit {
@@ -31,9 +32,10 @@ export class SearchService implements OnModuleInit {
     return recommendedWords.map((word) => this.graphemeCombination(word));
   }
 
-  searchStoryTree(seperatedStatement: string[]): number[] {
-    console.log(seperatedStatement);
-    return this.storyTitleJasoTrie.search(seperatedStatement);
+  async searchStoryTree(seperatedStatement: string[]): Promise<Story[]> {
+    const ids = this.storyTitleJasoTrie.search(seperatedStatement);
+    const stories = await this.storyRepository.getStoriesByIds(ids);
+    return stories;
   }
 
   graphemeSeperation(text: string): string[] {

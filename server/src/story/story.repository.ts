@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Story } from 'src/entities/story.entity';
 
 @Injectable()
@@ -18,5 +18,13 @@ export class StoryRepository {
 
   loadEveryStory() {
     return this.storyRepository.find();
+  }
+
+  async getStoriesByIds(ids: number[]) {
+    return await this.storyRepository.find({
+      where: {
+        storyId: In(ids),
+      },
+    });
   }
 }
