@@ -14,6 +14,12 @@ extension UITableViewCell {
     }
 }
 
+extension UITableViewHeaderFooterView {
+    static var id: String {
+        return String(describing: self)
+    }
+}
+
 public extension UITableView {
     
     func register<T: UITableViewCell>(_ cell: T.Type) {
@@ -27,4 +33,15 @@ public extension UITableView {
         return cell
     }
     
+    func register<T: UITableViewHeaderFooterView>(_ view: T.Type) {
+        register(view, forHeaderFooterViewReuseIdentifier: view.id)
+    }
+    
+    func dequeue<T: UITableViewHeaderFooterView>(_ view: T.Type) -> T {
+        guard let view = dequeueReusableHeaderFooterView(withIdentifier: view.id) as? T else {
+            fatalError("Not Register HeaderFooterView")
+        }
+        return view
+    }
+        
 }
