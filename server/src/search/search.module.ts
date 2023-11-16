@@ -20,6 +20,6 @@ import { SaveHistoryMiddleware } from './middleware/save.history.middleware';
 })
 export class SearchModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SaveHistoryMiddleware).forRoutes('story', 'user');
+    consumer.apply(SaveHistoryMiddleware).forRoutes('search/story', 'search/user');
   }
 }

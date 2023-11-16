@@ -7,7 +7,7 @@ import { StoryRepository } from '../story/story.repository';
 import { UserRepository } from '../user/user.repository';
 import { UserJasoTrie } from './trie/userTrie';
 
-describe('SearchService', () => {
+describe('Graphme Seperation & Combination Test', () => {
   let service: SearchService;
 
   beforeEach(async () => {
@@ -18,18 +18,34 @@ describe('SearchService', () => {
     service = module.get<SearchService>(SearchService);
   });
 
-  it('Graphme Separation Test', () => {
+  it('Graphme Seperation Test', () => {
     expect(service.graphemeSeperation('안녕하세요')).toStrictEqual(['ㅇ', 'ㅏ', 'ㄴ', 'ㄴ', 'ㅕ', 'ㅇ', 'ㅎ', 'ㅏ', 'ㅅ', 'ㅔ', 'ㅇ', 'ㅛ']);
   });
-  it('Graphme Separation Test Including blank', () => {
+
+  it('Graphme Seperation Test Including blank', () => {
     expect(service.graphemeSeperation('안녕 하세요')).toStrictEqual(['ㅇ', 'ㅏ', 'ㄴ', 'ㄴ', 'ㅕ', 'ㅇ', ' ', 'ㅎ', 'ㅏ', 'ㅅ', 'ㅔ', 'ㅇ', 'ㅛ']);
   });
+
   it('Graphme Combination Test', () => {
     expect(service.graphemeCombination(['ㅇ', 'ㅏ', 'ㄴ', 'ㄴ', 'ㅕ', 'ㅇ', 'ㅎ', 'ㅏ', 'ㅅ', 'ㅔ', 'ㅇ', 'ㅛ'])).toBe('안녕하세요');
   });
+
   it('Graphme Combination Test Including blank', () => {
     expect(service.graphemeCombination(['ㅇ', 'ㅏ', 'ㄴ', 'ㄴ', 'ㅕ', 'ㅇ', ' ', 'ㅎ', 'ㅏ', 'ㅅ', 'ㅔ', 'ㅇ', 'ㅛ'])).toBe('안녕 하세요');
   });
+});
+
+describe('Search History Automation Test', () => {
+  let service: SearchService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [SearchService, StoryJasoTrie, HistoryJasoTrie, UserJasoTrie, { provide: SearchRepository, useFactory: () => ({}) }, { provide: StoryRepository, useFactory: () => ({}) }, { provide: UserRepository, useFactory: () => ({}) }],
+    }).compile();
+
+    service = module.get<SearchService>(SearchService);
+  });
+
   it('Search Automated Complete Test', () => {
     service.insertHistoryToTree(service.graphemeSeperation('안녕하세요'));
     service.insertHistoryToTree(service.graphemeSeperation('안녕하십니까'));
