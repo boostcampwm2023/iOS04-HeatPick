@@ -13,6 +13,11 @@ import ModernRIBs
 
 import DesignKit
 
+struct AttributeModel {
+    let title: String
+    var value: String
+}
+
 public protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
 }
@@ -78,6 +83,33 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return descriptionField
     }()
     
+    private let saveButton: ActionButton = {
+        let button = ActionButton()
+        button.setTitle("저장하기", for: .normal)
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private var attributes: [AttributeModel] = [.init(title: "카테고리", value: "없음"),
+                                                .init(title: "위치", value: "없음"),
+                                                .init(title: "날짜", value: "없음"),
+                                                .init(title: "칭호", value: "카페인 중독자")]
+    
+    private lazy var attributeField: AttributeField = {
+        let tableView = AttributeField()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(UITableViewCell.self)
+        tableView.isScrollEnabled = false
+        tableView.allowsSelection = false
+        tableView.rowHeight = 50
+
+        tableView.backgroundColor = .black
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -99,7 +131,7 @@ private extension StoryEditorViewController {
         view.backgroundColor = .hpWhite
         [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
-        [titleField, imageField, descriptionField].forEach(stackView.addArrangedSubview)
+        [titleField, imageField, descriptionField, attributeField, saveButton].forEach(stackView.addArrangedSubview)
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -113,10 +145,14 @@ private extension StoryEditorViewController {
             scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1, constant: Constant.scrollViewInset * 2),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
+            saveButton.heightAnchor.constraint(equalToConstant: 50)
         ])
         
         scrollView.contentInset = .init(top: 40, left: Constant.scrollViewInset, bottom: 0, right: Constant.scrollViewInset)
+        
+        saveButton.layer.cornerRadius = 16
     }
     
 }
@@ -135,4 +171,39 @@ extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
         present(picker, animated: true)
     }
 
+}
+
+extension StoryEditorViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    }
+    
+}
+
+extension StoryEditorViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return attributes.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeue(UITableViewCell.self, for: indexPath)
+        
+        var config = cell.defaultContentConfiguration()
+        
+        config.text = attributes[indexPath.row].title
+        config.textProperties.font = .bodyBold
+        config.textProperties.color = .hpBlack
+        
+        config.secondaryText = attributes[indexPath.row].value
+        config.secondaryTextProperties.font = .smallRegular
+        config.secondaryTextProperties.color = .hpGray1
+        config.prefersSideBySideTextAndSecondaryText = true
+        
+        cell.contentConfiguration = config
+        cell.accessoryType = .disclosureIndicator
+        
+        return cell
+    }
+    
 }
