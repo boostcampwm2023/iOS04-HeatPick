@@ -35,7 +35,7 @@ describe('Graphme Seperation & Combination Test', () => {
   });
 });
 
-describe('Search History Automation Test', () => {
+describe('Search Automation Test', () => {
   let service: SearchService;
 
   beforeEach(async () => {
