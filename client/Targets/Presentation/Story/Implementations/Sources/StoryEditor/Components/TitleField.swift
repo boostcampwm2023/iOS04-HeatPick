@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TitleField: UIView {
+final class TitleField: UIView {
 
     var title: String? {
         textField.text

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PhotosUI
 
 import ModernRIBs
 
@@ -62,6 +63,14 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return titleField
     }()
     
+    private lazy var imageField: ImageField = {
+        let imageField = ImageField()
+        imageField.presenterDelegate = self
+        
+        imageField.translatesAutoresizingMaskIntoConstraints = false
+        return imageField
+    }()
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -83,7 +92,7 @@ private extension StoryEditorViewController {
         view.backgroundColor = .hpWhite
         [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
-        [titleField].forEach(stackView.addArrangedSubview)
+        [titleField, imageField].forEach(stackView.addArrangedSubview)
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -109,6 +118,14 @@ extension StoryEditorViewController: NavigationViewDelegate {
     
     func navigationViewButtonDidTap(_ view: DesignKit.NavigationView, type: DesignKit.NavigationViewButtonType) {
         listener?.didTapClose()
+    }
+
+}
+
+extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
+    
+    func addImageDidTap(with picker: PHPickerViewController) {
+        present(picker, animated: true)
     }
 
 }
