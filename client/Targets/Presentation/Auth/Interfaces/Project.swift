@@ -7,6 +7,5 @@ let project = Project.framework(
     featureTargets: [.staticLibrary],
     dependencies: [
         .Target.Presentation.BasePresentation.project,
-        .SPM.NaverLogin
     ]
 )

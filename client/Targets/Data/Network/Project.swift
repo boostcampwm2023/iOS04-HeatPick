@@ -6,6 +6,6 @@ let project = Project.framework(
     name: "DataNetwork",
     featureTargets: [.staticLibrary],
     dependencies: [
-        .Target.Core.CoreKit
+        .Target.Domain.Entities,
     ]
 )
