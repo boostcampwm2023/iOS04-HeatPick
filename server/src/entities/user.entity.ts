@@ -1,10 +1,12 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Story } from './story.entity';
 import { profileImage } from './profileImage.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ description: 'User Column을 식별하기 위한 userId' })
   userId: number;
 
   @OneToMany(() => Story, (story) => story.user, {
@@ -13,9 +15,11 @@ export class User {
   stories: Promise<Story[]>;
 
   @Column({ unique: true })
+  @ApiProperty({ description: 'User의 nickname' })
   username: string;
 
   @Column({ unique: true })
+  @ApiProperty({ description: 'User가 로그인 시 사용했던 OAuth Token을 사용하여 얻어온 Id' })
   oauthId: string;
 
   @OneToOne(() => profileImage, {
@@ -25,11 +29,14 @@ export class User {
   profileImage: profileImage;
 
   @Column()
+  @ApiProperty({ description: 'User의 온도(레벨)' })
   temperature: number;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @ApiProperty({ description: 'User의 회원 가입 시간' })
   createAt: Date;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @ApiProperty({ description: 'User의 최근 활동 시간' })
   recentActive: Date;
 }
