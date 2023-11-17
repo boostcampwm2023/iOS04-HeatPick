@@ -13,9 +13,28 @@
 
 ![image](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/74225754/0362fbd9-e89f-4900-9d31-bef8f353c59e)
 
+# 기술 선택 과정
+## 🍎 iOS
+- 모듈화
+- RIBs
+- 클린 아키텍처
+- Tuist
+
+[자세히 보기](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/iOS-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD)
+
+## 🌐 Backend
+- RDB
+- TypeORM
+- Docker
+- GitHub Action
+- DB서버와 서비스 서버 분리
+
+[자세히 보기](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EB%B0%B1%EC%97%94%EB%93%9C-%ED%9A%8C%EC%9D%98%EB%A1%9D)
+
 
 # 📔 문서
 - 🏝️ [그라운드 룰](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%F0%9F%8F%9D%EF%B8%8F-%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)
 - 🎨 [앱 디자인](https://www.figma.com/file/sKuM4zMuSVKnHoZzEppqOV/%EB%B6%80%EC%8A%A4%ED%8A%B8%EC%BA%A0%ED%94%84-%EA%B7%B8%EB%A3%B9-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&node-id=0%3A1&mode=design&t=SIloOfX3kCUMJh6u-1)
 - 📇 [템플릿](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%F0%9F%93%87-%ED%85%9C%ED%94%8C%EB%A6%BF)
 - 📝 [API](https://junbok97.notion.site/junbok97/HeatPick-API-5773319977624e3f898bc3952ed6080e)
+
