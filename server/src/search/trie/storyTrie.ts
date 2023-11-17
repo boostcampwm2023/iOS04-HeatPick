@@ -1,23 +1,21 @@
-class TrieNode {
-  children: { [key: string]: TrieNode } = {};
-  isEndOfWord: boolean = false;
-}
+import StoryTrieNode from './trieNode/storyTrieNode';
 
-export class JasoTrie {
-  root: TrieNode = new TrieNode();
+export class StoryJasoTrie {
+  root: StoryTrieNode = new StoryTrieNode();
 
-  insert(jasoArray: string[]): void {
+  insert(jasoArray: string[], storyId: number): void {
     let node = this.root;
     for (const jaso of jasoArray) {
       if (!node.children[jaso]) {
-        node.children[jaso] = new TrieNode();
+        node.children[jaso] = new StoryTrieNode();
       }
       node = node.children[jaso];
     }
     node.isEndOfWord = true;
+    node.storyId.push(storyId);
   }
 
-  search(prefix: string[]): string[][] {
+  search(prefix: string[]): number[] {
     let node = this.root;
     for (const jaso of prefix) {
       if (!node.children[jaso]) {
@@ -29,14 +27,15 @@ export class JasoTrie {
     return this.getWordsWithPrefix(node, prefix);
   }
 
-  getWordsWithPrefix(node: TrieNode, currentPrefix: string[]): string[][] {
-    let results: string[][] = [];
+  getWordsWithPrefix(node: StoryTrieNode, currentPrefix: string[]): number[] {
+    let results: number[] = [];
     if (node.isEndOfWord) {
-      results.push(currentPrefix);
+      results.push(...node.storyId);
     }
 
     for (const [jaso, childNode] of Object.entries(node.children)) {
       const childPrefix = [...currentPrefix, jaso];
+
       results = results.concat(this.getWordsWithPrefix(childNode, childPrefix));
     }
 

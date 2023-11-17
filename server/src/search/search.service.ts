@@ -1,34 +1,27 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import * as Hangul from 'hangul-js';
-import { JasoTrie } from './trie/trie';
+import { HistoryJasoTrie } from './trie/historyTrie';
 import { SearchRepository } from './search.repository';
+import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeModify';
 
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
-    private jasoTrie: JasoTrie,
+    private searchHistoryJasoTrie: HistoryJasoTrie,
     private searchRepository: SearchRepository,
   ) {}
+
   async onModuleInit() {
     const everyHistory = await this.searchRepository.loadEveryHistory();
-    everyHistory.forEach((history) => this.jasoTrie.insert(this.graphemeSeparation(history.content)));
+    everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(graphemeSeperation(history.content)));
   }
 
-  insertTree(separatedStatement: string[]) {
-    this.jasoTrie.insert(separatedStatement);
+  insertHistoryToTree(seperatedStatement: string[]) {
+    this.searchHistoryJasoTrie.insert(seperatedStatement);
   }
 
-  searchTree(separatedStatement: string[]) {
-    const recommendedWords = this.jasoTrie.search(separatedStatement);
-    return recommendedWords.map((word) => this.graphemeCombination(word));
-  }
-
-  graphemeSeparation(text: string): string[] {
-    return Hangul.disassemble(text);
-  }
-
-  graphemeCombination(separatedStatement: string[]): string {
-    return Hangul.assemble(separatedStatement);
+  searchHistoryTree(seperatedStatement: string[]): string[] {
+    const recommendedWords = this.searchHistoryJasoTrie.search(seperatedStatement);
+    return recommendedWords.map((word) => graphemeCombination(word));
   }
 
   saveHistory(searchText: string) {

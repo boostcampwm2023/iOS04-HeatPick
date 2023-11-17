@@ -1,0 +1,44 @@
+import UserTrieNode from './trieNode/userTrieNode';
+
+export class UserJasoTrie {
+  root: UserTrieNode = new UserTrieNode();
+
+  insert(jasoArray: string[], storyId: number): void {
+    let node = this.root;
+    for (const jaso of jasoArray) {
+      if (!node.children[jaso]) {
+        node.children[jaso] = new UserTrieNode();
+      }
+      node = node.children[jaso];
+    }
+    node.isEndOfWord = true;
+    node.userId.push(storyId);
+  }
+
+  search(prefix: string[]): number[] {
+    let node = this.root;
+    for (const jaso of prefix) {
+      if (!node.children[jaso]) {
+        return [];
+      }
+      node = node.children[jaso];
+    }
+
+    return this.getWordsWithPrefix(node, prefix);
+  }
+
+  getWordsWithPrefix(node: UserTrieNode, currentPrefix: string[]): number[] {
+    let results: number[] = [];
+    if (node.isEndOfWord) {
+      results.push(...node.userId);
+    }
+
+    for (const [jaso, childNode] of Object.entries(node.children)) {
+      const childPrefix = [...currentPrefix, jaso];
+
+      results = results.concat(this.getWordsWithPrefix(childNode, childPrefix));
+    }
+
+    return results;
+  }
+}
