@@ -14,22 +14,21 @@
 ![image](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/74225754/0362fbd9-e89f-4900-9d31-bef8f353c59e)
 
 # 기술 선택 과정
-## 🍎 iOS
+## 🍎 iOS ([자세히 보기](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/iOS-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD))
 - 모듈화
 - RIBs
 - 클린 아키텍처
 - Tuist
 
-[자세히 보기](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/iOS-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD)
 
-## 🌐 Backend
+## 🌐 Backend ([자세히 보기](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EB%B0%B1%EC%97%94%EB%93%9C-%ED%9A%8C%EC%9D%98%EB%A1%9D))
 - RDB
 - TypeORM
 - Docker
 - GitHub Action
 - DB서버와 서비스 서버 분리
 
-[자세히 보기](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EB%B0%B1%EC%97%94%EB%93%9C-%ED%9A%8C%EC%9D%98%EB%A1%9D)
+
 
 
 # 📔 문서
