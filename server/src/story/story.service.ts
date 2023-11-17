@@ -8,6 +8,7 @@ import { ImageService } from '../image/image.service';
 import { StoryImage } from 'src/entities/storyImage.entity';
 import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
+import { createStoryEntity } from '../util/util.create.story.entity';
 
 @Injectable()
 export class StoryService {
@@ -23,23 +24,11 @@ export class StoryService {
   }
 
   public async create({ title, content, images, date }): Promise<number> {
-    const savedImagePaths = await Promise.all(images.map(async (image) => await this.imageService.saveImage('../../uploads', image.buffer)));
-    const story = new Story();
-    story.title = title;
-    story.content = content;
-    const storyImageArr = await story.storyImages;
-    savedImagePaths.forEach((path) => {
-      const storyImageObj = new StoryImage();
-      storyImageObj.imageUrl = path;
-      storyImageArr.push(storyImageObj);
-    });
-    story.createAt = new Date();
-    story.likeCount = 0;
-
+    const story = await createStoryEntity({ title, content, images, date });
     const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
     const storyList = await user.stories;
     storyList.push(story);
-    this.userRepository.createUser(user);
+    await this.userRepository.createUser(user);
     //return (await this.storyRepository.addStory(story)).storyId;
     return 1;
   }
@@ -62,9 +51,31 @@ export class StoryService {
     };
   }
 
+
   async getStoriesFromTrie(seperatedStatement: string[]) {
     const ids = this.storyTitleJasoTrie.search(seperatedStatement);
     const stories = await this.storyRepository.getStoriesByIds(ids);
     return stories;
+  }
+  
+  public async update({ storyId, title, content, images, date }): Promise<number> {
+    const story = await createStoryEntity({ title, content, images, date });
+    const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
+    const storyList = (await user.stories).map((userStory) => {
+      if (userStory.storyId === storyId) return story;
+      return userStory;
+    });
+    user.stories = Promise.resolve(storyList);
+    await this.userRepository.createUser(user);
+    //return (await this.storyRepository.addStory(story)).storyId;
+    return 1;
+  }
+
+  public async delete(storyId: number) {
+    const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
+    const storyList = (await user.stories).filter((story) => story.storyId !== parseInt(String(storyId), 10));
+    console.log(storyList);
+    user.stories = Promise.resolve(storyList);
+    await this.userRepository.createUser(user);
   }
 }

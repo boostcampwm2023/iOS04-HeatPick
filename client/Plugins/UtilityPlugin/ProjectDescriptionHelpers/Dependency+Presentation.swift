@@ -8,6 +8,13 @@
 import Foundation
 import ProjectDescription
 
+public extension TargetDependency.Target.Presentation.BasePresentation {
+    static let project: TargetDependency = .project(
+        target: "BasePresentation",
+        path: .relativeToRoot("Targets/Presentation/BasePresentation")
+    )
+}
+
 public extension TargetDependency.Target.Presentation.Home {
     static let group = "Home"
     static func project(name: String) -> TargetDependency {

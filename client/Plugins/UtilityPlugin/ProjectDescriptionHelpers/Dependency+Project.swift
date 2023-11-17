@@ -15,6 +15,7 @@ extension TargetDependency {
         public struct Data {}
         
         public struct Presentation {
+            public struct BasePresentation {}
             public struct Home {}
             public struct Auth {}
             public struct Story {}
@@ -50,6 +51,7 @@ public extension TargetDependency.Target.Core {
         )
     }
     static let CoreKit = project(name: "CoreKit")
+    static let ThirdPartyKit = project(name: "ThirdPartyKit")
 }
 
 // MARK: - Core + Network

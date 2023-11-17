@@ -9,10 +9,10 @@
 | [junbok97](https://github.com/junbok97) | [jungmin-lim](https://github.com/jungmin-lim) | [hogumachu](https://github.com/hogumachu) | [JeongSH1](https://github.com/JeongSH1) | [cgg7777](https://github.com/cgg7777) |
 
 
-
-
-
 # 🔨 프로젝트 소개
+
+![image](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/74225754/0362fbd9-e89f-4900-9d31-bef8f353c59e)
+
 
 # 📔 문서
 - 🏝️ [그라운드 룰](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%F0%9F%8F%9D%EF%B8%8F-%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)

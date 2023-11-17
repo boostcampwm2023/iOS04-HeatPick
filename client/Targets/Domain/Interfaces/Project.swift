@@ -6,6 +6,7 @@ let project = Project.framework(
     name: "DomainInterfaces",
     featureTargets: [.staticLibrary],
     dependencies: [
-        .Target.Domain.Entities
+        .Target.Domain.Entities,
+        .Target.Core.CoreKit,
     ]
 )
