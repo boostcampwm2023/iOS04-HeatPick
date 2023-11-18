@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from 'src/user/user.service';
 import { StoryService } from './../story/story.service';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
+import { PlaceService } from './../place/place.service';
 
 @ApiTags('search')
 @Controller('search')
@@ -14,6 +15,8 @@ export class SearchController {
     private storyService: StoryService,
     @Inject(UserService)
     private userService: UserService,
+    @Inject(PlaceService)
+    private placeService: PlaceService,
   ) {}
 
   @Get('story')
@@ -28,6 +31,13 @@ export class SearchController {
   @ApiResponse({ status: 201 })
   async getUserSearchResult(@Query('searchText') searchText: string) {
     return this.userService.getUsersFromTrie(graphemeSeperation(searchText));
+  }
+
+  @Get('place')
+  @ApiOperation({ summary: '장소 검색' })
+  @ApiResponse({ status: 201 })
+  async getPlaceSearchResult(@Query('searchText') searchText: string) {
+    return this.placeService.getPlaceFromTrie(graphemeSeperation(searchText));
   }
 
   @ApiOperation({ summary: '검색어 추천 기능' })
