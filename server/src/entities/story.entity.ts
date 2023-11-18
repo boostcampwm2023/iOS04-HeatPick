@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany, OneToOne } from 'typeorm';
 import { User } from './user.entity';
 import { Category } from './category.entity';
 import { StoryImage } from './storyImage.entity';
+import { Place } from './place.entity';
 
 @Entity()
 export class Story {
@@ -31,4 +32,7 @@ export class Story {
   })
   @JoinTable()
   categories: Promise<Category[]>;
+
+  @OneToOne(() => Place, { cascade: true })
+  place: Promise<Place>;
 }
