@@ -3,6 +3,8 @@ import { Place } from 'src/entities/place.entity';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { In, Repository } from 'typeorm';
 import { PlaceJasoTrie } from './../search/trie/placeTrie';
+import { LocationDTO } from './dto/location.dto';
+import { calculateDistance } from 'src/util/util.haversine';
 
 @Injectable()
 export class PlaceService {
@@ -19,6 +21,20 @@ export class PlaceService {
   async getPlaceFromTrie(seperatedStatement: string[]) {
     const ids = this.placeJasoTrie.search(seperatedStatement);
     const places = await this.placeRepository.find({ where: { placeId: In(ids) } });
+    return places;
+  }
+
+  async getPlaceByPosition(locationDto: LocationDTO) {
+    const userLatitude = locationDto.latitude;
+    const userLongitude = locationDto.longitude;
+    const radius = 2;
+
+    const allPlaces = await this.placeRepository.find();
+    const places = allPlaces.filter((place) => {
+      const placeDistance = calculateDistance(userLatitude, userLongitude, place.latitude, place.longitude);
+      return placeDistance <= radius;
+    });
+
     return places;
   }
 }
