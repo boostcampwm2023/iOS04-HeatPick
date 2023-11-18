@@ -5,6 +5,7 @@ import { In, Repository } from 'typeorm';
 import { PlaceJasoTrie } from './../search/trie/placeTrie';
 import { LocationDTO } from './dto/location.dto';
 import { calculateDistance } from 'src/util/util.haversine';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class PlaceService {
@@ -13,6 +14,11 @@ export class PlaceService {
     private placeRepository: Repository<Place>,
     private placeJasoTrie: PlaceJasoTrie,
   ) {
+    this.loadPlaceTrie();
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  loadPlaceTrie() {
     this.placeRepository.find().then((everyPlace) => {
       everyPlace.forEach((place) => this.placeJasoTrie.insert(graphemeSeperation(place.title), place.placeId));
     });

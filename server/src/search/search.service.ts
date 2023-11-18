@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { HistoryJasoTrie } from './trie/historyTrie';
 import { SearchRepository } from './search.repository';
 import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeModify';
-
+import { Cron, CronExpression } from '@nestjs/schedule';
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
@@ -11,6 +11,11 @@ export class SearchService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    await this.loadSearchHistoryTrie();
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  async loadSearchHistoryTrie() {
     const everyHistory = await this.searchRepository.loadEveryHistory();
     everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(graphemeSeperation(history.content)));
   }

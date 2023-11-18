@@ -9,6 +9,7 @@ import { StoryImage } from 'src/entities/storyImage.entity';
 import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { createStoryEntity } from '../util/util.create.story.entity';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class StoryService {
@@ -18,6 +19,11 @@ export class StoryService {
     private imageService: ImageService,
     private storyTitleJasoTrie: StoryJasoTrie,
   ) {
+    this.loadSearchHistoryTrie();
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  async loadSearchHistoryTrie() {
     this.storyRepository.loadEveryStory().then((everyStory) => {
       everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
     });
@@ -51,13 +57,12 @@ export class StoryService {
     };
   }
 
-
   async getStoriesFromTrie(seperatedStatement: string[]) {
     const ids = this.storyTitleJasoTrie.search(seperatedStatement);
     const stories = await this.storyRepository.getStoriesByIds(ids);
     return stories;
   }
-  
+
   public async update({ storyId, title, content, images, date }): Promise<number> {
     const story = await createStoryEntity({ title, content, images, date });
     const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
