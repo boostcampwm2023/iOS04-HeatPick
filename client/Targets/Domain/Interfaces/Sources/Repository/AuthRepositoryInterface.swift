@@ -6,13 +6,12 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import Combine
 import Foundation
 import DomainEntities
 
 public protocol AuthRepositoryInterface: AnyObject {
     
-    func requestSignIn(token: String) -> AnyPublisher<AuthToken, Error>
-    func requestSignUp(token: String, userName: String) -> AnyPublisher<AuthToken, Error>
+    func requestSignIn(token: String) async -> Result<AuthToken, Error>
+    func requestSignUp(token: String, userName: String) async -> Result<AuthToken, Error>
     
 }

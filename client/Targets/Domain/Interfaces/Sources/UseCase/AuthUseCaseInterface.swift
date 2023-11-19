@@ -14,7 +14,7 @@ public protocol AuthUseCaseInterface: AnyObject {
     
     var naverToken: AnyPublisher<String, Never> { get }
     func requestNaverSignIn()
-    func requestSignIn(token: String) -> AnyPublisher<AuthToken, Error>
-    func requestSignUp(userName: String) -> AnyPublisher<AuthToken, Error>
+    func requestSignIn(token: String) async -> Result<AuthToken, Error>
+    func requestSignUp(userName: String) async -> Result<AuthToken, Error>
     
 }

@@ -10,7 +10,7 @@ import Combine
 import Foundation
 
 import ModernRIBs
-
+import CoreKit
 import DomainInterfaces
 
 protocol SignInRouting: ViewableRouting {
@@ -58,9 +58,8 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
     }
@@ -74,17 +73,15 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     }
     
     private func requestSignIn(token: String) {
-        dependency.authUseCase
-            .requestSignIn(token: token)
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { _ in }, 
-                receiveValue: { [weak self] token in
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.authUseCase
+                .requestSignIn(token: token)
+                .onSuccess(on: .main, with: self) { this, token in
                     print(token)
-                    self?.router?.attachSignUp()
+                    this.router?.attachSignUp()
                 }
-            )
-            .store(in: &cancellables)
+        }
     }
     
     // MARK: - SignUp

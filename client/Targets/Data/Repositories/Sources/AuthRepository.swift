@@ -22,22 +22,18 @@ public final class AuthRepository: AuthRepositoryInterface {
         self.session = session
     }
     
-    public func requestSignIn(token: String) -> AnyPublisher<AuthToken, Error> {
+    public func requestSignIn(token: String) async -> Result<AuthToken, Error> {
         let requestDTO = SignInRequestDTO(OAuthToken: token)
         let target = SignInTarget(task: .json(requestDTO))
-        let request: AnyPublisher<SignInResponseDTO, Error> = session.request(target)
-        return request
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
+        let request: Result<SignInResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
     }
     
-    public func requestSignUp(token: String, userName: String) -> AnyPublisher<AuthToken, Error> {
+    public func requestSignUp(token: String, userName: String) async -> Result<AuthToken, Error> {
         let requestDTO = SignUpRequestDTO(OAuthToken: token, username: userName)
         let target = SignUpTarget(task: .json(requestDTO))
-        let request: AnyPublisher<SignUpResponseDTO, Error> = session.request(target)
-        return request
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
+        let request: Result<SignUpResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
     }
     
 }
