@@ -22,7 +22,7 @@ public final class NetworkProvider: Network {
         self.session = session
     }
     
-    public func request<T: Decodable>(_ target: Target) -> AnyPublisher<T, Error> {
+    public func request<T: Decodable>(_ target: Target) async -> Result<T, Error> {
         let isMultipartFormData: Bool = {
             switch target.task {
             case .multipart: return true
@@ -34,38 +34,28 @@ public final class NetworkProvider: Network {
             let networkRequest = try makeRequest(target, isMultipartFormData: isMultipartFormData)
             switch networkRequest {
             case .request(let request):
-                return makeRequestPublisher(target, request: request)
+                return try await executeRequest(request)
+                
             case .upload(let request, let body):
-                return makeUploadPublisher(target, request: request, body: body)
+                return try await executeUpload(request, from: body)
             }
         } catch {
-            return Fail(error: error).eraseToAnyPublisher()
+            return .failure(error)
         }
     }
     
-    private func makeRequestPublisher<T: Decodable>(_ target: Target, request: URLRequest) -> AnyPublisher<T, Error> {
-        return session.dataTaskPublisher(for: request)
-            .tryMap { data, _ in
-                return try JSONDecoder().decode(T.self, from: data)
-            }
-            .eraseToAnyPublisher()
+    private func executeRequest<T: Decodable>(_ request: URLRequest) async throws -> Result<T, Error> {
+        let (data, _) = try await session.data(for: request)
+        let response =  try JSONDecoder().decode(T.self, from: data)
+        return .success(response)
     }
     
-    private func makeUploadPublisher<T: Decodable>(_ target: Target, request: URLRequest, body: Data) -> AnyPublisher<T, Error>  {
-        let subject = PassthroughSubject<T, Error>()
-        _Concurrency.Task {
-            do {
-                let (data, _) = try await session.upload(for: request, from: body)
-                let dataResponse = try JSONDecoder().decode(T.self, from: data)
-                subject.send(dataResponse)
-                subject.send(completion: .finished)
-            } catch {
-                subject.send(completion: .failure(error))
-            }
-        }
-        return subject.eraseToAnyPublisher()
+    private func executeUpload<T: Decodable>(_ request: URLRequest, from body: Data) async throws -> Result<T, Error> {
+        let (data, _) = try await session.upload(for: request, from: body)
+        let response = try JSONDecoder().decode(T.self, from: data)
+        return .success(response)
     }
-    
+        
     private func makeRequest(_ target: Target, isMultipartFormData: Bool = false) throws -> NetworkRequest {
         let boundary = UUID().uuidString
         let components: URLComponents? = {
