@@ -27,7 +27,7 @@ export class AuthController {
   })
   async signUp(@UploadedFile() image: Express.Multer.File, @Body() registerDto: RegisterDto): Promise<string> {
     const token = await this.authService.signUp(image, registerDto.OAuthToken, registerDto.username);
-    return `{ accessToken: ${token}}`;
+    return `{ "accessToken": ${token}}`;
   }
 
   @ApiOperation({ summary: 'Log in' })
@@ -44,6 +44,6 @@ export class AuthController {
   @Post('signin')
   async signIn(@Body() authCredentialDto: AuthCredentialDto): Promise<string> {
     const token = await this.authService.signIn(authCredentialDto.OAuthToken);
-    return `{accessToken: ${token}}`;
+    return `{"accessToken": ${token}}`;
   }
 }
