@@ -27,7 +27,8 @@ export class AuthService {
   }
 
   async signUp(image: Express.Multer.File, OAuthToken: string, username: string): Promise<string> {
-    const imagePath = await this.imageService.saveImage('./images/profile', image.buffer);
+    let imagePath = '';
+    if (image) imagePath = await this.imageService.saveImage('./images/profile', image.buffer);
 
     const userId = await this.getId(OAuthToken);
 
