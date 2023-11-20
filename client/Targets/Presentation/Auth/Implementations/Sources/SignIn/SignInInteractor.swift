@@ -77,9 +77,15 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
             guard let self else { return }
             await dependency.authUseCase
                 .requestSignIn(token: token)
-                .onSuccess(on: .main, with: self) { this, token in
-                    print(token)
-                    this.router?.attachSignUp()
+                .onSuccess(on: .main, with: self) { this, authToken in
+                    if authToken.token.isEmpty {
+                        this.router?.attachSignUp()
+                    } else {
+                        this.router?.attachLocationAuthority()
+                    }
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
                 }
         }
     }
