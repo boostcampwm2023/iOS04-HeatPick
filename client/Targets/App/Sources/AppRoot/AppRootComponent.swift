@@ -16,6 +16,7 @@ import DomainUseCases
 import DomainInterfaces
 import DataRepositories
 import AuthImplementations
+import HomeInterfaces
 import HomeImplementations
 import SearchImplementations
 import StoryImplementations
