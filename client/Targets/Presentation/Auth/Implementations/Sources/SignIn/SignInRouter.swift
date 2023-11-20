@@ -8,6 +8,7 @@
 
 import ModernRIBs
 import CoreKit
+import AuthInterfaces
 
 protocol SignInInteractable: Interactable, SignUpListener, SignUpSuccessListener, LocationAuthorityListener {
     var router: SignInRouting? { get set }

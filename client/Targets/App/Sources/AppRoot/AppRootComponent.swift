@@ -15,6 +15,7 @@ import NetworkAPIAuth
 import DomainUseCases
 import DomainInterfaces
 import DataRepositories
+import AuthInterfaces
 import AuthImplementations
 import HomeInterfaces
 import HomeImplementations
