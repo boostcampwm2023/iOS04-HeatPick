@@ -9,6 +9,8 @@ import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { createStoryEntity } from '../util/util.create.story.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { JwtService } from '@nestjs/jwt';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class StoryService {
@@ -17,6 +19,7 @@ export class StoryService {
     private userRepository: UserRepository,
     private imageService: ImageService,
     private storyTitleJasoTrie: StoryJasoTrie,
+    private jwtService: JwtService,
   ) {
     this.loadSearchHistoryTrie();
   }
@@ -28,25 +31,25 @@ export class StoryService {
     });
   }
 
-  public async create({ title, content, images, date }): Promise<number> {
-    const story = await createStoryEntity({ title, content, images, date });
-    const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
-    const storyList = await user.stories;
-    storyList.push(story);
+  public async create(accessToken: string, { title, content, category, place, images, date }): Promise<number> {
+    const story: Story = await createStoryEntity({ title, content, category, place, images, date });
+    const decodedToken = this.jwtService.verify(accessToken);
+    const userId = decodedToken.userId;
+    const user: User = await this.userRepository.findOneById(userId);
+    user.stories = Promise.resolve([...(await user.stories), story]);
     await this.userRepository.createUser(user);
-    //return (await this.storyRepository.addStory(story)).storyId;
-    return 1;
+    return story.storyId;
   }
 
   public async read(storyId: number): Promise<StoryDetailViewData> {
     const story: Story = await this.storyRepository.findById(storyId);
-    const user = story.user;
+    const user: User = story.user;
     delete story.user;
 
     const userData: userDataInStoryView = {
       userId: user.userId,
       username: user.username,
-      //profileImageURL: story.user.profileImage.imageUrl,
+      storyImageURL: (await story.storyImages).map((storyImage) => storyImage.imageUrl),
       //badge: story.user.badge
     };
 
@@ -62,23 +65,27 @@ export class StoryService {
     return stories;
   }
 
-  public async update({ storyId, title, content, images, date }): Promise<number> {
-    const story = await createStoryEntity({ title, content, images, date });
-    const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
-    const storyList = (await user.stories).map((userStory) => {
-      if (userStory.storyId === storyId) return story;
-      return userStory;
-    });
-    user.stories = Promise.resolve(storyList);
+  public async update(accessToken: string, { storyId, title, content, category, place, images, date }): Promise<number> {
+    const newStory = await createStoryEntity({ title, content, category, place, images, date });
+    const decodedToken = this.jwtService.verify(accessToken);
+    const userId = decodedToken.userId;
+    const user = await this.userRepository.findOneById(userId);
+
+    user.stories = Promise.resolve(
+      (await user.stories).map((story: Story): Story => {
+        if (story.storyId === storyId) return newStory;
+        return story;
+      }),
+    );
     await this.userRepository.createUser(user);
-    //return (await this.storyRepository.addStory(story)).storyId;
-    return 1;
+    return newStory.storyId;
   }
 
-  public async delete(storyId: number) {
-    const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
-    const storyList = (await user.stories).filter((story) => story.storyId !== parseInt(String(storyId), 10));
-    user.stories = Promise.resolve(storyList);
+  public async delete(accessToken: string, storyId: number) {
+    const decodedToken = this.jwtService.verify(accessToken);
+    const userId = decodedToken.userId;
+    const user: User = await this.userRepository.findOneById(userId);
+    user.stories = Promise.resolve((await user.stories).filter((story) => story.storyId !== storyId));
     await this.userRepository.createUser(user);
   }
 }

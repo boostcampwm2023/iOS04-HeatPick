@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsISO8601, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 type Place = {
   lat: number;
@@ -36,16 +37,16 @@ export class CreateStoryDto {
     description: 'Where the story was created',
   })
   @IsNotEmpty({ message: 'place 필수입니다.' })
-  @IsObject()
+  @Transform(({ value }): object => JSON.parse(value))
   place: Place;
 
   @ApiProperty({
-    example: `2023-11-14 13:00:00 +0000`,
+    example: `"2023-11-20T14:30:00Z"`,
     description: 'When the story was created',
   })
   @IsNotEmpty({ message: 'date 필수입니다.' })
   @IsISO8601()
-  date: Date;
+  date: string;
 
   @ApiProperty({
     example: `3`,

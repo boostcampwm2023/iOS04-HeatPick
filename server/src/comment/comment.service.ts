@@ -33,7 +33,7 @@ export class CommentService {
   public async delete({ storyId, commentId }) {
     console.log(storyId);
     const story = await this.storyRepository.findById(storyId);
-    story.comments = Promise.resolve((await story.comments).filter((comment) => comment.commentId !== parseInt(String(commentId), 10)));
+    story.comments = Promise.resolve((await story.comments).filter((comment) => comment.commentId !== commentId));
 
     await this.storyRepository.addStory(story);
     return commentId;
