@@ -8,9 +8,10 @@ import { HistoryJasoTrie } from './trie/historyTrie';
 import { SaveHistoryMiddleware } from './middleware/save.history.middleware';
 import { StoryModule } from 'src/story/story.module';
 import { UserModule } from 'src/user/user.module';
+import { PlaceModule } from 'src/place/place.module';
 
 @Module({
-  imports: [DatabaseModule, StoryModule, UserModule],
+  imports: [DatabaseModule, StoryModule, UserModule, PlaceModule],
   controllers: [SearchController],
   providers: [...SearchProvider, SearchService, SearchRepository, HistoryJasoTrie],
 })
