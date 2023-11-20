@@ -46,7 +46,7 @@ public final class NavigationView: UIView {
         stackView.axis = .horizontal
         stackView.distribution = .equalSpacing
         stackView.alignment = .trailing
-        stackView.spacing = 10
+        stackView.spacing = 3
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -105,10 +105,10 @@ private extension NavigationView {
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            leftButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            leftButton.leadingAnchor.constraint(equalTo: leadingAnchor),
             leftButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            rightButtonStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
+            rightButtonStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             rightButtonStackView.centerYAnchor.constraint(equalTo: centerYAnchor),
             
             separator.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -124,6 +124,7 @@ private extension NavigationView {
         button.contentMode = .center
         button.addTarget(self, action: action, for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.widthAnchor.constraint(equalToConstant: Constants.navigationViewButtonWidth).isActive = true
         return button
     }
     
