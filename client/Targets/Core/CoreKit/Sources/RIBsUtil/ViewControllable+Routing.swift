@@ -41,15 +41,30 @@ public extension ViewControllable {
     }
     
     func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
+        uiviewController.resign()
         uiviewController.dismiss(animated: animated, completion: completion)
     }
     
     func popViewController(animated: Bool) {
         if let navigationController = uiviewController as? UINavigationController {
+            navigationController.topViewController?.resign()
             navigationController.popViewController(animated: animated)
         } else {
+            uiviewController.navigationController?.topViewController?.resign()
             uiviewController.navigationController?.popViewController(animated: animated)
         }
+    }
+    
+}
+
+private extension UIViewController {
+    
+    /// 'resign'은 RIBs Keyboard Memory Leak 을 해결하기 위한 메소드 입니다.
+    ///
+    /// 'resign'은 ViewController가 pop 또는 dismiss 되기 전에 호출하여 Keyboard에 대한 소유권을 잃게 합니다.
+    /// 연관 링크: https://github.com/boostcampwm2023/iOS04-HeatPick/issues/149
+    func resign() {
+        view.endEditing(true)
     }
     
 }
