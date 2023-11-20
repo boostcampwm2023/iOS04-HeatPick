@@ -1,11 +1,12 @@
 import { StoryService } from './story.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { StoryDetailViewData } from './type/story.detail.view.data';
 import { UpdateStoryDto } from './dto/story.update.dto';
 
+@ApiTags('story')
 @Controller('story')
 export class StoryController {
   constructor(private storyService: StoryService) {}
