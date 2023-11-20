@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Patch, Post, Query, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCommentDto } from './dto/commnet.create.dto';
 import { CommentService } from './comment.service';
@@ -24,5 +24,12 @@ export class CommentController {
     const { storyId, commentId, content } = updateCommentDto;
 
     return this.commentService.update({ storyId, commentId, content });
+  }
+
+  @Delete('delete')
+  @ApiOperation({ summary: '댓글 삭제 API' })
+  @ApiResponse({ status: 201 })
+  async delete(@Query() storyId: number, @Query() commentId: number) {
+    return this.commentService.delete({ storyId, commentId });
   }
 }
