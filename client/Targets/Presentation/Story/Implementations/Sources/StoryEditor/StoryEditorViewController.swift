@@ -45,6 +45,7 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
         scrollView.showsHorizontalScrollIndicator = false
+        scrollView.keyboardDismissMode = .onDrag
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
