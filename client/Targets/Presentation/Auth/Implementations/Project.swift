@@ -4,7 +4,7 @@ import UtilityPlugin
 
 let project = Project.framework(
     name: "AuthImplementations",
-    featureTargets: [.staticLibrary],
+    featureTargets: [.staticLibrary, .tests],
     dependencies: [
         .Target.Presentation.Auth.Interfaces,
         .Target.Domain.UseCases

@@ -4,7 +4,7 @@ import UtilityPlugin
 
 let project = Project.framework(
     name: "DataRepositories",
-    featureTargets: [.staticLibrary],
+    featureTargets: [.staticLibrary, .tests],
     dependencies: [
         .Target.Domain.Interfaces,
         .Target.Data.Network

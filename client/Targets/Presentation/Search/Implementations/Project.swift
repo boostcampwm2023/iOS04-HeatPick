@@ -4,7 +4,7 @@ import UtilityPlugin
 
 let project = Project.framework(
     name: "SearchImplementations",
-    featureTargets: [.staticLibrary],
+    featureTargets: [.staticLibrary, .tests],
     dependencies: [
         .Target.Presentation.Search.Interfaces,
     ]

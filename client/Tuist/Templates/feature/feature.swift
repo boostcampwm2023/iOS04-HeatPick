@@ -64,6 +64,10 @@ let implementationItems:  [ProjectDescription.Template.Item] = [
         path: "\(nameAttribute)/Implementations/Resources/dummy.txt",
         contents: "dummy"
     ),
+    .string(
+        path: "\(nameAttribute)/Implementations/Tests/Sources/\(nameAttribute)Tests.swift",
+        contents: "//\(nameAttribute)Tests.swift"
+    )
 ]
 
 let template = Template(
