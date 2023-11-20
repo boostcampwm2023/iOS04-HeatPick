@@ -6,6 +6,7 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Foundation
 import Combine
 import Foundation
 import DomainEntities
@@ -36,20 +37,18 @@ public final class AuthUseCase: AuthUseCaseInterface {
         signInUseCase.requestNaverLogin()
     }
     
-    public func requestSignIn(token: String) -> AnyPublisher<AuthToken, Error> {
-        return repository
+    public func requestSignIn(token: String) async -> Result<AuthToken, Error> {
+        return await repository
             .requestSignIn(token: token)
-            .eraseToAnyPublisher()
     }
     
-    public func requestSignUp(userName: String) -> AnyPublisher<AuthToken, Error> {
+    public func requestSignUp(userName: String) async -> Result<AuthToken, Error> {
         guard let token = currentToken.value else {
             let error = NetworkError.unknown("Empty Token")
-            return Fail(error: error).eraseToAnyPublisher()
+            return .failure(error)
         }
-        return repository
+        return await repository
             .requestSignUp(token: token, userName: userName)
-            .eraseToAnyPublisher()
     }
     
     private func receiveNaverToken() {

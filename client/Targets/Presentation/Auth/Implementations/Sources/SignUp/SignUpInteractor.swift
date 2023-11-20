@@ -9,6 +9,7 @@
 import Combine
 import Foundation
 
+import CoreKit
 import ModernRIBs
 import DomainInterfaces
 
@@ -56,21 +57,18 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
     func profileImageViewDidChange(_ imageData: Data) {}
     
     func signUpButtonDidTap() {
-        dependency.authUseCase
-            .requestSignUp(userName: userNameSubject.value)
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] result in
-                    switch result {
-                    case .finished:
-                        self?.listener?.signUpDidComplete()
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                    }
-                },
-                receiveValue: { _ in }
-            )
-            .store(in: &cancellables)
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.authUseCase
+                .requestSignUp(userName: userNameSubject.value)
+                .onSuccess(on: .main, with: self, { this, token in
+                    this.listener?.signUpDidComplete()
+                })
+                .onFailure { error in
+                    print(error.localizedDescription)
+                }
+            
+        }
     }
     
     func nicknameDidChange(_ nickname: String) {
