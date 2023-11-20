@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn
 import { Story } from './story.entity';
 import { profileImage } from './profileImage.entity';
 import { ApiProperty } from '@nestjs/swagger';
-
+import { Comment } from './comment.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -39,4 +39,7 @@ export class User {
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   @ApiProperty({ description: 'User의 최근 활동 시간' })
   recentActive: Date;
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment;
 }

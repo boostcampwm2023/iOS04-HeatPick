@@ -4,7 +4,7 @@ import { Category } from './category.entity';
 import { StoryImage } from './storyImage.entity';
 import { Place } from './place.entity';
 import { ApiProperty } from '@nestjs/swagger';
-
+import { Comment } from './comment.entity';
 @Entity()
 export class Story {
   @PrimaryGeneratedColumn()
@@ -42,4 +42,7 @@ export class Story {
 
   @OneToOne(() => Place, { cascade: true })
   place: Promise<Place>;
+
+  @OneToMany(() => Comment, (comment) => comment.story)
+  comments: Promise<Comment[]>;
 }
