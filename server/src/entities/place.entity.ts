@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Story } from './story.entity';
 
 @Entity()
 export class Place {
@@ -16,4 +17,7 @@ export class Place {
 
   @Column({ type: 'float' })
   longitude: number;
+
+  @OneToOne(() => Story, (story) => story.place)
+  story: Promise<Story>;
 }

@@ -1,10 +1,11 @@
 import { StoryService } from './story.service';
-import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Query, Post, UploadedFiles, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { StoryDetailViewData } from './type/story.detail.view.data';
 import { UpdateStoryDto } from './dto/story.update.dto';
+import { LocationDTO } from 'src/place/dto/location.dto';
 
 @Controller('story')
 export class StoryController {
@@ -40,5 +41,11 @@ export class StoryController {
   @ApiResponse({ status: 200, description: '{ }' })
   async delete(@Param('storyId') storyId: number) {
     return this.storyService.delete(storyId);
+  }
+
+  @Get('recommend')
+  async recommendStory(@Query() locationDto: LocationDTO) {
+    const recommededStory = await this.storyService.getRecommendStory(locationDto);
+    return { recommededStory: recommededStory };
   }
 }

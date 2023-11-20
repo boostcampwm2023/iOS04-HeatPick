@@ -10,6 +10,10 @@ import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { createStoryEntity } from '../util/util.create.story.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { FindManyOptions, MoreThan } from 'typeorm';
+import { LocationDTO } from 'src/place/dto/location.dto';
+import { calculateDistance } from 'src/util/util.haversine';
+import { Place } from 'src/entities/place.entity';
 
 @Injectable()
 export class StoryService {
@@ -61,6 +65,29 @@ export class StoryService {
     const ids = this.storyTitleJasoTrie.search(seperatedStatement);
     const stories = await this.storyRepository.getStoriesByIds(ids);
     return stories;
+  }
+
+  async getRecommendStory(locationDto: LocationDTO) {
+    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) } });
+
+    const userLatitude = locationDto.latitude;
+    const userLongitude = locationDto.longitude;
+
+    const radius = 2;
+
+    const results = await Promise.all(
+      stories.map(async (story) => {
+        const place = await story.place;
+
+        if (place) {
+          const placeDistance = calculateDistance(userLatitude, userLongitude, place.latitude, place.longitude);
+          return placeDistance <= radius ? story : null;
+        }
+        return null;
+      }),
+    );
+
+    return results.filter((result) => result !== null);
   }
 
   public async update({ storyId, title, content, images, date }): Promise<number> {
