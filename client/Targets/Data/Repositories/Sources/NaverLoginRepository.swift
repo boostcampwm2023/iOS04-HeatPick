@@ -33,12 +33,8 @@ public final class NaverLoginRepository: NSObject, NaverLoginRepositoryInterface
     }
     
     public func requestLogin() {
-        guard let token = instance?.accessToken else {
-            instance?.delegate = self
-            instance?.requestThirdPartyLogin()
-            return
-        }
-        accessTokenCurrentValue.send(token)
+        instance?.delegate = self
+        instance?.requestThirdPartyLogin()
     }
     
 }
@@ -51,6 +47,8 @@ extension NaverLoginRepository: NaverThirdPartyLoginConnectionDelegate {
     }
     
     public func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
+        guard let token = instance?.accessToken else { return }
+        accessTokenCurrentValue.send(token)
         
     }
     
