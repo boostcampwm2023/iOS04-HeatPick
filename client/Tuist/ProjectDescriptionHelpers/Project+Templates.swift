@@ -73,6 +73,7 @@ extension Project {
         dependencies: [TargetDependency] = []
     ) -> Project {
         var targets: [Target] = []
+        let bundleIDPrefix = "kr.\(organizationName).boostcamp8.heatpick"
         
         if featureTargets.isDynamic {
             let setting: SettingsDictionary = ["OTHER_LDFLAGS" : "$(inherited) -all_load"]
@@ -80,7 +81,7 @@ extension Project {
                 name: name,
                 platform: .iOS,
                 product: .framework,
-                bundleId: "kr.\(organizationName).boostcamp8.heatpick.\(name)",
+                bundleId: bundleIDPrefix + ".\(name)",
                 deploymentTarget: deploymentTarget,
                 infoPlist: .default,
                 sources: ["Sources/**"],
@@ -95,7 +96,7 @@ extension Project {
                 name: name,
                 platform: .iOS,
                 product: .staticLibrary,
-                bundleId: "kr.\(organizationName).boostcamp8.heatpick.\(name)",
+                bundleId: bundleIDPrefix + ".\(name)",
                 deploymentTarget: deploymentTarget,
                 infoPlist: .default,
                 sources: ["Sources/**"],
@@ -105,6 +106,38 @@ extension Project {
             )
             targets.append(target)
         }
+        
+        if featureTargets.contains(.tests) {
+            let dependencies: [TargetDependency] = featureTargets.isDynamic ? [.target(name: name)] : []
+            let target = Target(
+                name: "\(name)Tests",
+                platform: .iOS,
+                product: .unitTests,
+                bundleId: bundleIDPrefix + ".\(name)Tests",
+                deploymentTarget: deploymentTarget,
+                infoPlist: .default,
+                sources: ["Tests/Sources/**"],
+                resources: [],
+                dependencies: dependencies,
+                settings: .settings(configurations: [], defaultSettings: .recommended)
+            )
+            targets.append(target)
+        }
+        
+        let schemes: [Scheme] = {
+            guard featureTargets.contains(.tests) else { return [] }
+            return [
+                Scheme(
+                    name: name,
+                    shared: true,
+                    buildAction: .buildAction(targets: ["\(name)"]),
+                    testAction: .targets(
+                        [TestableTarget(target: "\(name)Tests", parallelizable: true)],
+                        options: .options(coverage: true, codeCoverageTargets: ["\(name)"])
+                    )
+                )
+            ]
+        }()
         
         return Project(
             name: name,
@@ -117,7 +150,8 @@ extension Project {
             ),
             packages: packages,
             settings: .settings(),
-            targets: targets
+            targets: targets,
+            schemes: schemes
         )
     }
     

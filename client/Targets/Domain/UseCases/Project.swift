@@ -4,7 +4,7 @@ import UtilityPlugin
 
 let project = Project.framework(
     name: "DomainUseCases",
-    featureTargets: [.staticLibrary],
+    featureTargets: [.staticLibrary, .tests],
     dependencies: [
         .Target.Domain.Interfaces,
     ]
