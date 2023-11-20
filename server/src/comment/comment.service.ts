@@ -12,6 +12,6 @@ export class CommentService {
 
     story.comments = Promise.resolve([...(await story.comments), comment]);
     await this.storyRepository.addStory(story);
-    return comment;
+    return comment.commentId;
   }
 }
