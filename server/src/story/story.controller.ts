@@ -50,7 +50,7 @@ export class StoryController {
   @ApiResponse({ status: 201, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: RecommendStoryDto, isArray: true })
   async recommendStoryByLocation(@Query() locationDto: LocationDTO) {
     const recommededStory = await this.storyService.getRecommendByLocationStory(locationDto);
-    return { recommededStory: recommededStory };
+    return { recommededStories: recommededStory };
   }
 
   @Get('recommend')
@@ -58,6 +58,6 @@ export class StoryController {
   @ApiResponse({ status: 201, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: RecommendStoryDto, isArray: true })
   async recommendStory() {
     const recommededStory = await this.storyService.getRecommendedStory();
-    return { recommededStory: recommededStory };
+    return { recommededStories: recommededStory };
   }
 }
