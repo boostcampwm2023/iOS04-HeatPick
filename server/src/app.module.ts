@@ -11,6 +11,7 @@ import { SearchController } from './search/search.controller';
 import { SearchService } from './search/search.service';
 import { SearchModule } from './search/search.module';
 import { ImageModule } from './image/image.module';
+import { CommentModule } from './comment/comment.module';
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
@@ -30,7 +31,7 @@ export class AppLoggerMiddleware implements NestMiddleware {
   }
 }
 @Module({
-  imports: [DatabaseModule, AuthModule, StoryModule, SearchModule, ImageModule],
+  imports: [DatabaseModule, AuthModule, StoryModule, SearchModule, ImageModule, CommentModule],
   controllers: [AppController],
   providers: [AppService],
 })
