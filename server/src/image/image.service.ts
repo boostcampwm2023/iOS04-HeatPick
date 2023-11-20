@@ -20,6 +20,10 @@ export class ImageService {
 
   public async saveImage(path: string, imageBuffer: Buffer): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+    }
+
     const pipeline = promisify(require('stream').pipeline);
     const folderPath = path;
     const fileName = generateRandomFileName();
