@@ -68,7 +68,7 @@ export class StoryService {
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO) {
-    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) } });
+    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10 });
 
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;
