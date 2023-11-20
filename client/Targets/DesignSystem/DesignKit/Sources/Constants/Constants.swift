@@ -19,6 +19,7 @@ public extension Constants {
     
     static let actionButtonHeight: CGFloat = 50
     static let navigationViewHeight: CGFloat = 40
+    static let navigationViewButtonWidth: CGFloat = 40
     
     static let imageWidthMedium: CGFloat = 180
     static let imageHegihtMedium: CGFloat = imageWidthMedium
