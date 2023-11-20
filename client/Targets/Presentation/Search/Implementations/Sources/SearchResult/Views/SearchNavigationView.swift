@@ -7,10 +7,14 @@
 //
 
 import UIKit
+import CoreKit
 import DesignKit
 
 public protocol SearchNavigationViewDelegate: AnyObject {
     func leftButtonDidTap()
+    func showBeginEditingTextDashboard()
+    func showEditingTextDashboard()
+    func showEndEditingTextDashboard(_ text: String)
 }
 
 public final class SearchNavigationView: UIView {
@@ -37,10 +41,12 @@ public final class SearchNavigationView: UIView {
     
     private lazy var searchTextField: SearchTextField = {
         let textField = SearchTextField()
-        textField.setContentHuggingPriority(.init(200), for: .horizontal)
         textField.placeholder = Constant.searchTextFieldPlaceholder
+        textField.delegate = self
+        textField.returnKeyType = .done
         textField.clipsToBounds = true
         textField.layer.cornerRadius = Constants.cornerRadiusMedium
+        textField.setContentHuggingPriority(.init(200), for: .horizontal)
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -58,6 +64,7 @@ public final class SearchNavigationView: UIView {
 }
 
 private extension SearchNavigationView {
+    
     func setupViews() {
         backgroundColor = .white
         [leftButton, searchTextField].forEach(addSubview)
@@ -72,10 +79,35 @@ private extension SearchNavigationView {
             searchTextField.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
+    
 }
 
 private extension SearchNavigationView {
+    
     @objc func leftButtonDidTap() {
         delegate?.leftButtonDidTap()
     }
+    
+}
+
+extension SearchNavigationView: UITextFieldDelegate {
+    
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        delegate?.showEditingTextDashboard()
+    }
+    
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+        let text = textField.text ?? ""
+        if text.isEmpty {
+            delegate?.showBeginEditingTextDashboard()
+        } else {
+            delegate?.showEndEditingTextDashboard(text)
+        }
+    }
+    
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
 }

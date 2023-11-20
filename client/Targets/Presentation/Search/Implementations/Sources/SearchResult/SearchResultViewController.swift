@@ -15,7 +15,7 @@ protocol SearchResultPresentableListener: AnyObject {
 }
 
 final class SearchResultViewController: UIViewController, SearchResultPresentable, SearchResultViewControllable {
-    
+
     weak var listener: SearchResultPresentableListener?
     
     private lazy var searchNavigationView: SearchNavigationView = {
@@ -25,27 +25,68 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
         return navigationView
     }()
     
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
+    
+    func attachDashboard(_ viewControllable: ViewControllable) {
+        let viewController = viewControllable.uiviewController
+        addChild(viewController)
+        stackView.addArrangedSubview(viewController.view)
+        viewController.didMove(toParent: self)
+    }
+    
+    func detachDashboard(_ viewControllable: ViewControllable) {
+        let viewController = viewControllable.uiviewController
+        stackView.removeArrangedSubview(viewController.view)
+        viewController.removeFromParent()
+    }
+    
 }
 
 private extension SearchResultViewController {
     func setupViews() {
         
-        view.addSubview(searchNavigationView)
+        [searchNavigationView, stackView].forEach { view.addSubview($0) }
+        
         NSLayoutConstraint.activate([
             searchNavigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             searchNavigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             searchNavigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            searchNavigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight)
+            searchNavigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
+            stackView.topAnchor.constraint(equalTo: searchNavigationView.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
     }
 }
 
 extension SearchResultViewController: SearchNavigationViewDelegate {
+    func showBeginEditingTextDashboard() {
+        
+    }
+    
+    func showEditingTextDashboard() {
+        
+    }
+    
+    func showEndEditingTextDashboard(_ text: String) {
+        
+    }
+    
     func leftButtonDidTap() {
         listener?.detachSearchResult()
     }
