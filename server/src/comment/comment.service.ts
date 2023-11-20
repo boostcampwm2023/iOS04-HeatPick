@@ -14,4 +14,19 @@ export class CommentService {
     await this.storyRepository.addStory(story);
     return comment.commentId;
   }
+
+  public async update({ storyId, commentId, content }) {
+    const story = await this.storyRepository.findById(storyId);
+    const newComment = createCommentEntity(content);
+
+    story.comments = Promise.resolve(
+      (await story.comments).map((comment) => {
+        if (comment.commentId === commentId) return newComment;
+        return comment;
+      }),
+    );
+
+    await this.storyRepository.addStory(story);
+    return newComment.commentId;
+  }
 }
