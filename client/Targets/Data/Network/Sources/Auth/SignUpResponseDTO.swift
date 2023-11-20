@@ -11,14 +11,14 @@ import DomainEntities
 
 public struct SignUpResponseDTO: Decodable {
     
-    public let token: String
+    public let accessToken: String
     
 }
 
 public extension SignUpResponseDTO {
     
     func toDomain() -> AuthToken {
-        return AuthToken(token: token)
+        return AuthToken(token: accessToken)
     }
     
 }

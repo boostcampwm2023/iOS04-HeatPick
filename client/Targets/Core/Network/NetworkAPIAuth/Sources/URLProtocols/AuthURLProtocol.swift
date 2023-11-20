@@ -40,14 +40,14 @@ public final class AuthURLProtocol: URLProtocol {
     
     private func signInResponseMock() -> Data {
         let parameters: [String: Any] = [
-            "token": "signInResponseMock"
+            "accessToken": "signInResponseMock"
         ]
         return makeMock(paramters: parameters)
     }
     
     private func signUpResponseMock() -> Data {
         let parameters: [String: Any] = [
-            "token": "signUpResponseMock"
+            "accessToken": "signUpResponseMock"
         ]
         return makeMock(paramters: parameters)
     }
