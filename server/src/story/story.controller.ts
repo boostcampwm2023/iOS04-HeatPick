@@ -43,9 +43,15 @@ export class StoryController {
     return this.storyService.delete(storyId);
   }
 
+  @Get('recommend/location')
+  async recommendStoryByLocation(@Query() locationDto: LocationDTO) {
+    const recommededStory = await this.storyService.getRecommendByLocationStory(locationDto);
+    return { recommededStory: recommededStory };
+  }
+
   @Get('recommend')
-  async recommendStory(@Query() locationDto: LocationDTO) {
-    const recommededStory = await this.storyService.getRecommendStory(locationDto);
+  async recommendStory() {
+    const recommededStory = await this.storyService.getRecommendedStory();
     return { recommededStory: recommededStory };
   }
 }

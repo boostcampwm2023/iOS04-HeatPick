@@ -67,7 +67,7 @@ export class StoryService {
     return stories;
   }
 
-  async getRecommendStory(locationDto: LocationDTO) {
+  async getRecommendByLocationStory(locationDto: LocationDTO) {
     const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) } });
 
     const userLatitude = locationDto.latitude;
@@ -88,6 +88,20 @@ export class StoryService {
     );
 
     return results.filter((result) => result !== null);
+  }
+
+  async getRecommendedStory() {
+    try {
+      const stories = await this.storyRepository.getStoryByCondition({
+        order: {
+          likeCount: 'DESC',
+        },
+        take: 10,
+      });
+      return stories;
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async update({ storyId, title, content, images, date }): Promise<number> {
