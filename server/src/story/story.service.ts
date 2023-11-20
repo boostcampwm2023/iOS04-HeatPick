@@ -51,13 +51,12 @@ export class StoryService {
     };
   }
 
-
   async getStoriesFromTrie(seperatedStatement: string[]) {
     const ids = this.storyTitleJasoTrie.search(seperatedStatement);
     const stories = await this.storyRepository.getStoriesByIds(ids);
     return stories;
   }
-  
+
   public async update({ storyId, title, content, images, date }): Promise<number> {
     const story = await createStoryEntity({ title, content, images, date });
     const user = await this.userRepository.findOneById('zzvyrNHaS1sLw1VeMFwf3tVU3IZLlSVAHQBbETi8DIc');
