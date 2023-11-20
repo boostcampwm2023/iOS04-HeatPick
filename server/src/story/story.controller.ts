@@ -1,11 +1,12 @@
 import { StoryService } from './story.service';
 import { Body, Controller, Delete, Get, Param, Patch, Query, Post, UploadedFiles, UseInterceptors, ValidationPipe } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { StoryDetailViewData } from './type/story.detail.view.data';
 import { UpdateStoryDto } from './dto/story.update.dto';
 import { LocationDTO } from 'src/place/dto/location.dto';
+import { Story } from 'src/entities/story.entity';
 
 @Controller('story')
 export class StoryController {
@@ -44,12 +45,14 @@ export class StoryController {
   }
 
   @Get('recommend/location')
+  @ApiResponse({ status: 201, description: '현재 위치를 기반으로 추천 장소를 가져옵니다.', type: Story, isArray: true })
   async recommendStoryByLocation(@Query() locationDto: LocationDTO) {
     const recommededStory = await this.storyService.getRecommendByLocationStory(locationDto);
     return { recommededStory: recommededStory };
   }
 
   @Get('recommend')
+  @ApiResponse({ status: 201, description: '위치와 관계 없이, 추천 장소를 가져옵니다.', type: Story, isArray: true })
   async recommendStory() {
     const recommededStory = await this.storyService.getRecommendedStory();
     return { recommededStory: recommededStory };
