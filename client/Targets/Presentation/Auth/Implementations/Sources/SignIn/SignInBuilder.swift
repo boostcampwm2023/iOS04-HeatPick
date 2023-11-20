@@ -7,7 +7,7 @@
 //
 
 import ModernRIBs
-
+import AuthInterfaces
 import DomainInterfaces
 
 public protocol SignInDependency: Dependency {
@@ -22,12 +22,6 @@ final class SignInComponent: Component<SignInDependency>,
                              LocationAuthorityDependency {
     var authUseCase: AuthUseCaseInterface { dependency.authUseCase }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
-}
-
-// MARK: - Builder
-
-public protocol SignInBuildable: Buildable {
-    func build(withListener listener: SignInListener) -> ViewableRouting
 }
 
 public final class SignInBuilder: Builder<SignInDependency>, SignInBuildable {

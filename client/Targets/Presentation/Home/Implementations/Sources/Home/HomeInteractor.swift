@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import HomeInterfaces
 
 protocol HomeRouting: ViewableRouting {
     func attachRecommendDashboard()
@@ -27,7 +28,6 @@ protocol HomePresentable: Presentable {
     func removeDashboard(_ viewControllable: ViewControllable)
 }
 
-public protocol HomeListener: AnyObject {}
 
 final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteractable, HomePresentableListener {
     

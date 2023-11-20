@@ -9,8 +9,8 @@
 import ModernRIBs
 
 import CoreKit
-import AuthImplementations
-import HomeImplementations
+import AuthInterfaces
+import HomeInterfaces
 import SearchImplementations
 import StoryImplementations
 
