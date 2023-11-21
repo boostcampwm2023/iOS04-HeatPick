@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Patch, Post, Query, Headers } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
 import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
+import { UserUpdateDto } from './dto/user.update.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('user')
 @Controller('user')
@@ -33,9 +35,11 @@ export class UserController {
   }
 
   @Patch('update')
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: `Update user's info` })
   @ApiResponse({ status: 201, description: '사용자의 정보를 성공적으로 수정했습니다.' })
-  async update(@Headers('accessToken') accessToken: string) {
-    return this.userService.update(accessToken);
+  async update(@Headers('accessToken') accessToken: string, @UploadedFile() image: Express.Multer.File, @Body() updateUserDto: UserUpdateDto) {
+    const { username, mainBadge } = updateUserDto;
+    return this.userService.update(accessToken, image, { username, mainBadge });
   }
 }
