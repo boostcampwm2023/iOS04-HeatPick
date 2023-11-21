@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
@@ -14,4 +14,7 @@ export class UserController {
   async addBadge(@Body() addBadgeDto: AddBadgeDto) {
     return this.userService.addNewBadge(addBadgeDto);
   }
+
+  @Put('badge')
+  async setBadge(@Body() addBadgeDto: AddBadgeDto) {}
 }
