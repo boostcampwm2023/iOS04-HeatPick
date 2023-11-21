@@ -7,6 +7,9 @@
 //
 
 import ModernRIBs
+import CoreKit
+import DomainEntities
+import DomainInterfaces
 
 protocol HomeHotPlaceDashboardRouting: ViewableRouting {}
 
@@ -19,66 +22,31 @@ protocol HomeHotPlaceDashboardListener: AnyObject {
     func hotPlaceDashboardDidTapSeeAll()
 }
 
+protocol HomeHotPlaceDashboardInteractorDependency: AnyObject {
+    var hotPlaceUseCase: HotPlaceUseCaseInterface { get }
+}
+
 final class HomeHotPlaceDashboardInteractor: PresentableInteractor<HomeHotPlaceDashboardPresentable>, HomeHotPlaceDashboardInteractable, HomeHotPlaceDashboardPresentableListener {
 
     weak var router: HomeHotPlaceDashboardRouting?
     weak var listener: HomeHotPlaceDashboardListener?
     
-    override init(presenter: HomeHotPlaceDashboardPresentable) {
+    private let dependency: HomeHotPlaceDashboardInteractorDependency
+    
+    init(
+        presenter: HomeHotPlaceDashboardPresentable, 
+        dependency: HomeHotPlaceDashboardInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(model: .init(
-            contentList: [
-                .init(
-                    thumbnailImageURL: "https://picsum.photos/id/1/300/300",
-                    title: "경북궁 야간 관람 다녀왔어요 다녀왔어요 다녀왔어요 다녀왔어요",
-                    nickname: "hogumachu1",
-                    profileImageURL: "https://picsum.photos/id/2/300/300"
-                ),
-                .init(
-                    thumbnailImageURL: "https://picsum.photos/id/3/300/300",
-                    title: "경북궁 야간 관람 다녀왔어요",
-                    nickname: "hogumachu2",
-                    profileImageURL: "https://picsum.photos/id/4/300/300"
-                ),
-                .init(
-                    thumbnailImageURL: "https://picsum.photos/id/5/300/300",
-                    title: "경북궁",
-                    nickname: "hogumachu3",
-                    profileImageURL: nil
-                ),
-                .init(
-                    thumbnailImageURL: "https://picsum.photos/id/7/300/300",
-                    title: "경북궁 야간 관람 다녀왔어요 다녀왔어요 다녀왔어요 다녀왔어요",
-                    nickname: "hogumachu4 hogumachu4 hogumachu4 hogumachu4 hogumachu4 hogumachu4",
-                    profileImageURL: "https://picsum.photos/id/8/300/300"
-                ),
-                .init(
-                    thumbnailImageURL: "https://picsum.photos/id/9/300/300",
-                    title: "경북궁 야간 관람 다녀왔어요 다녀왔어요 다녀왔어요 다녀왔어요",
-                    nickname: "h5",
-                    profileImageURL: "https://picsum.photos/id/10/300/300"
-                ),
-                .init(
-                    thumbnailImageURL: "https://picsum.photos/id/11/300/300",
-                    title: "경북궁 야간 관람 다녀왔어요 다녀왔어요 다녀왔어요 다녀왔어요",
-                    nickname: "hogu6",
-                    profileImageURL: "https://picsum.photos/id/12/300/300"
-                ),
-                .init(
-                    thumbnailImageURL: "https://picsum.photos/id/13/300/300",
-                    title: "경북궁 야간 관람 다녀왔어요 다녀왔어요 다녀왔어요 다녀왔어요",
-                    nickname: "hogumachu7",
-                    profileImageURL: "https://picsum.photos/id/14/300/300"
-                )
-            ]
-        ))
+        fetchHotPlace()
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
     }
@@ -87,4 +55,37 @@ final class HomeHotPlaceDashboardInteractor: PresentableInteractor<HomeHotPlaceD
         listener?.hotPlaceDashboardDidTapSeeAll()
     }
     
+    private func fetchHotPlace() {
+        Task {
+            await dependency.hotPlaceUseCase.fetchHotPlace()
+                .onSuccess(on: .main, with: self) { this, stories in
+                    this.performAfterFetchingHotPlace(stories: stories)
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                }
+        }
+    }
+    
+    private func performAfterFetchingHotPlace(stories: [RecommendStory]) {
+        let model = makeModels(stories: stories)
+        presenter.setup(model: model)
+    }
+    
+    private func makeModels(stories: [RecommendStory]) -> HomeHotPlaceDashboardViewModel {
+        return .init(contentList: stories.map(\.toModel))
+    }
+    
+}
+
+private extension RecommendStory {
+    
+    var toModel: HomeHotPlaceContentViewModel {
+        return .init(
+            thumbnailImageURL: imageURLs.first ?? "",
+            title: title,
+            nickname: "추후 추가 예정",
+            profileImageURL: nil // 추후 추가 예정
+        )
+    }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
@@ -14,8 +14,8 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post('badge')
-  @ApiOperation({ summary: 'Add a new badge to a user' })
-  @ApiResponse({ status: 201, description: 'Badge가 성공적으로 추가되었습니다.' })
+  @ApiOperation({ summary: '유제 객체에 새로운 뱃지를 추가합니다.' })
+  @ApiResponse({ status: 200, description: 'Badge가 성공적으로 추가되었습니다.' })
   async addBadge(@Body() addBadgeDto: AddBadgeDto) {
     return this.userService.addNewBadge(addBadgeDto);
   }
@@ -25,6 +25,13 @@ export class UserController {
   @ApiResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: Promise<userProfileDetailDataType> })
   async getProfile(@Query() userId: number): Promise<userProfileDetailDataType> {
     return this.userService.getProfile(userId);
+
+  @Put('badge')
+  @ApiOperation({ summary: '유저 객체의 대표 뱃지를 설정합니다.' })
+  @ApiResponse({ status: 200, description: '대표 뱃지가 성공적으로 변경되었습니다.' })
+  async setRepresentatvieBadge(@Body() setBadgeDto: AddBadgeDto) {
+    return this.userService.setRepresentatvieBadge(setBadgeDto);
+
   }
 
   @Get('story')

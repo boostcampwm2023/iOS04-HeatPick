@@ -5,11 +5,15 @@ import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
+
 import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
 import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entities/user.entity';
 import { ImageService } from '../image/image.service';
+
+import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
+
 
 @Injectable()
 export class UserService {
@@ -47,6 +51,7 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
+
   async getProfile(userId: number): Promise<userProfileDetailDataType> {
     const user = await this.userRepository.findOneByUserId(userId);
     const userBadges = await user.badges;
@@ -61,6 +66,21 @@ export class UserService {
       badge: userBadges,
       storyList: stories,
     };
+
+  async setRepresentatvieBadge(setBadgeDto: AddBadgeDto) {
+    const userId = setBadgeDto.userId;
+    const badgeName = setBadgeDto.badgeName;
+
+    const userObject = await this.userRepository.findByOption({ where: { userId: userId } });
+    if (userObject.length <= 0) throw new InvalidIdException();
+
+    const badgeList = await userObject[0].badges;
+    const targetbadge = badgeList.find((badge) => badge.badgeName === badgeName);
+    if (!targetbadge) throw new InvalidBadgeException();
+
+    userObject[0].representativeBadge = targetbadge;
+    this.userRepository.save(userObject[0]);
+
   }
 
   async getStoryList(userId: number): Promise<Story[]> {

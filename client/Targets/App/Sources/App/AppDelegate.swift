@@ -1,6 +1,9 @@
 import UIKit
 import ModernRIBs
 
+import CoreKit
+import NMapsMap
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -16,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.launchRouter = router
         
         launchRouter?.launch(from: window)
+        
+        NMFAuthManager.shared().clientId = Secret.naverMapClientID.value
         return true
     }
     
