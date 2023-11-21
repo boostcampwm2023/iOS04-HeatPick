@@ -22,15 +22,13 @@ public final class AuthRepository: AuthRepositoryInterface {
     }
     
     public func requestSignIn(token: String) async -> Result<AuthToken, Error> {
-        let requestDTO = SignInRequestDTO(OAuthToken: token)
-        let target = SignInTarget(task: .json(requestDTO))
+        let target = AuthAPI.signIn(token: token)
         let request: Result<SignInResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
     public func requestSignUp(token: String, userName: String) async -> Result<AuthToken, Error> {
-        let requestDTO = SignUpRequestDTO(OAuthToken: token, username: userName)
-        let target = SignUpTarget(task: .json(requestDTO))
+        let target = AuthAPI.signUp(token: token, username: userName)
         let request: Result<SignUpResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
