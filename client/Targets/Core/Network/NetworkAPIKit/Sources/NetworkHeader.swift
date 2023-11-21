@@ -23,8 +23,8 @@ public class NetworkHeader {
     }
     
     @discardableResult
-    public func authToken(_ value: String) -> Self {
-        headers["Auth-Token"] = value
+    public func accessToken(_ value: String) -> Self {
+        headers["accessToken"] = value
         return self
     }
     
