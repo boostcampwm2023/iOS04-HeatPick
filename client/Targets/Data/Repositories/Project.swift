@@ -7,6 +7,6 @@ let project = Project.framework(
     featureTargets: [.staticLibrary, .tests],
     dependencies: [
         .Target.Domain.Interfaces,
-        .Target.Data.Network
+        .Target.Data.API.NetworkAPIs
     ]
 )

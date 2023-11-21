@@ -3,10 +3,9 @@ import ProjectDescriptionHelpers
 import UtilityPlugin
 
 let project = Project.framework(
-    name: "CoreKit",
-    featureTargets: [.framework],
+    name: "SearchAPI",
+    featureTargets: [.staticLibrary, .tests],
     dependencies: [
-        .Target.Core.Network.NetworkAPIKit,
-        .SPM.ModernRIBs
+        .Target.Data.API.Base
     ]
 )
