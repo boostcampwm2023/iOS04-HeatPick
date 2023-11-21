@@ -12,6 +12,12 @@ import ModernRIBs
 
 protocol SearchResultPresentableListener: AnyObject {
     func detachSearchResult()
+    func showBeginEditingTextDashboard()
+    func hideBeginEditingTextDashboard()
+    func showEditingTextDashboard()
+    func hideEditingTextDashboard()
+    func showEndEditingTextDashboard()
+    func hideEndEditingTextDashboard()
 }
 
 final class SearchResultViewController: UIViewController, SearchResultPresentable, SearchResultViewControllable {
@@ -37,6 +43,7 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        listener?.showBeginEditingTextDashboard()
     }
     
     func attachDashboard(_ viewControllable: ViewControllable) {
@@ -55,8 +62,8 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
 }
 
 private extension SearchResultViewController {
+    
     func setupViews() {
-        
         [searchNavigationView, stackView].forEach { view.addSubview($0) }
         
         NSLayoutConstraint.activate([
@@ -70,24 +77,29 @@ private extension SearchResultViewController {
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-        
     }
+    
 }
 
 extension SearchResultViewController: SearchNavigationViewDelegate {
+    
     func showBeginEditingTextDashboard() {
-        
+        listener?.hideEditingTextDashboard()
+        listener?.showBeginEditingTextDashboard()
     }
     
     func showEditingTextDashboard() {
-        
+        listener?.hideBeginEditingTextDashboard()
+        listener?.showEditingTextDashboard()
     }
     
     func showEndEditingTextDashboard(_ text: String) {
-        
+        listener?.hideEditingTextDashboard()
+        listener?.showEndEditingTextDashboard()
     }
     
     func leftButtonDidTap() {
         listener?.detachSearchResult()
     }
+    
 }

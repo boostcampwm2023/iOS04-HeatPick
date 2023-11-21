@@ -43,7 +43,6 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         interactor.router = self
     }
     
-
     func attachSearchHomeList() {
         guard searchHomeListRouter == nil else { return }
         let router = searchHomeListBuilder.build(withListener: interactor)
