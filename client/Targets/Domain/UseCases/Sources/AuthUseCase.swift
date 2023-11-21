@@ -20,6 +20,14 @@ public final class AuthUseCase: AuthUseCaseInterface {
         return signInUseCase.naverAcessToken
     }
     
+    public var isAuthorized: Bool {
+        guard let data = SecretManager.read(type: .accessToken),
+              let token = String(data: data, encoding: .utf8) else {
+            return false
+        }
+        return !token.isEmpty
+    }
+    
     private let repository: AuthRepositoryInterface
     private let signInUseCase: SignInUseCaseInterface
     private var currentToken = CurrentValueSubject<String?, Never>(nil)

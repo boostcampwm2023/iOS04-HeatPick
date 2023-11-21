@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
 protocol AppRootRouting: ViewableRouting {
     func attachSignIn()
@@ -23,22 +24,29 @@ protocol AppRootListener: AnyObject {
     
 }
 
+protocol AppRootInteractorDependency: AnyObject {
+    var authUseCase: AuthUseCaseInterface { get }
+}
+
 final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRootInteractable, AppRootPresentableListener {
 
     weak var router: AppRootRouting?
     weak var listener: AppRootListener?
     
-    // TODO: - 인증 서비스에서 판단하기
-    private var isUserAuthorized: Bool = false
+    private let dependency: AppRootInteractorDependency
     
-    override init(presenter: AppRootPresentable) {
+    init(
+        presenter: AppRootPresentable,
+        dependency: AppRootInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        if isUserAuthorized {
+        if dependency.authUseCase.isAuthorized {
             router?.attachTabs()
         } else {
             router?.attachSignIn()

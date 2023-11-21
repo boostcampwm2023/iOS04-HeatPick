@@ -30,7 +30,7 @@ final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
         
         let component = AppRootComponent(dependency: dependency)
         let tabBarController = AppRootTabBarController()
-        let interactor = AppRootInteractor(presenter: tabBarController)
+        let interactor = AppRootInteractor(presenter: tabBarController, dependency: component)
         
         return AppRootRouter(
             interactor: interactor,

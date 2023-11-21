@@ -24,6 +24,7 @@ import StoryImplementations
 
 final class AppRootComponent: Component<AppRootDependency>,
                               AppRootRouterDependency,
+                              AppRootInteractorDependency,
                               SignInDependency,
                               HomeDependency,
                               SearchHomeDependency, 
