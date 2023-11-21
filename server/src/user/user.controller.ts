@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  Headers,
+  UseInterceptors,
+  UploadedFile,
+  Delete,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
@@ -41,5 +52,12 @@ export class UserController {
   async update(@Headers('accessToken') accessToken: string, @UploadedFile() image: Express.Multer.File, @Body() updateUserDto: UserUpdateDto) {
     const { username, mainBadge } = updateUserDto;
     return this.userService.update(accessToken, image, { username, mainBadge });
+  }
+
+  @Delete('resign')
+  @ApiOperation({ summary: `resign user` })
+  @ApiResponse({ status: 201, description: '회원 탈퇴 되었습니다.' })
+  async resign(@Headers('accessToken') accessToken: string, @Body() message: string) {
+    return this.userService.resign(accessToken, message);
   }
 }
