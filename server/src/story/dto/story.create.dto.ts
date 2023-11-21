@@ -22,7 +22,7 @@ export class CreateStoryDto {
     example: '[...(stringBuffer)]',
     description: 'ImageList in Story',
   })
-  imageList: Array<Express.Multer.File>;
+  images: Array<Express.Multer.File>;
 
   @ApiProperty({
     example: `커피`,

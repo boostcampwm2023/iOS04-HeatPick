@@ -51,7 +51,6 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
-
   async getProfile(userId: number): Promise<userProfileDetailDataType> {
     const user = await this.userRepository.findOneByUserId(userId);
     const userBadges = await user.badges;
@@ -66,6 +65,7 @@ export class UserService {
       badge: userBadges,
       storyList: stories,
     };
+  }
 
   async setRepresentatvieBadge(setBadgeDto: AddBadgeDto) {
     const userId = setBadgeDto.userId;
