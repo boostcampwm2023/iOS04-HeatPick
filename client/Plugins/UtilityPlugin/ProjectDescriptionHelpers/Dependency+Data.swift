@@ -17,6 +17,27 @@ public extension TargetDependency.Target.Data {
         )
     }
     static let Repositories = project(name: "Repositories")
-    static let Network = project(name: "Network")
     static let Storages = project(name: "Storages")
+}
+
+public extension TargetDependency.Target.Data.API {
+    static let group = "API"
+    static func project(name: String) -> TargetDependency {
+        return .project(
+            target: "\(name)\(group)",
+            path: .relativeToRoot("Targets/Data/Network/\(name)")
+        )
+    }
+    static let Base = project(name: "Base")
+    static let Home = project(name: "Home")
+    static let Auth = project(name: "Auth")
+    static let Story = project(name: "Story")
+    static let Search = project(name: "Search")
+}
+
+public extension TargetDependency.Target.Data.API {
+    static let NetworkAPIs: TargetDependency = .project(
+        target: "NetworkAPIs",
+        path: .relativeToRoot("Targets/Data/Network/NetworkAPIs")
+    )
 }

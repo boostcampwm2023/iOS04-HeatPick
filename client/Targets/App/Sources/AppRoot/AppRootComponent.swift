@@ -10,8 +10,8 @@ import Foundation
 
 import ModernRIBs
 
+import AuthAPI
 import NetworkAPIKit
-import NetworkAPIAuth
 import DomainUseCases
 import DomainInterfaces
 import DataRepositories

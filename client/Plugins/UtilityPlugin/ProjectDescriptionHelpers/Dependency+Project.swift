@@ -12,7 +12,9 @@ extension TargetDependency {
     public struct Target {
         public struct App {}
         public struct Domain {}
-        public struct Data {}
+        public struct Data {
+            public struct API {}
+        }
         
         public struct Presentation {
             public struct BasePresentation {}
@@ -64,9 +66,6 @@ public extension TargetDependency.Target.Core.Network {
         )
     }
     static let NetworkAPIKit = project(name: "NetworkAPIKit")
-    static let NetworkAPIHome = project(name: "NetworkAPIHome")
-    static let NetworkAPIAuth = project(name: "NetworkAPIAuth")
-    static let NetworkAPIs = project(name: "NetworkAPIs")
 }
 
 // MARK: - DesignSystem

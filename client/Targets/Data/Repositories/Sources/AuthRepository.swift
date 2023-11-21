@@ -8,9 +8,8 @@
 
 import Combine
 import Foundation
-import DataNetwork
+import AuthAPI
 import NetworkAPIKit
-import NetworkAPIAuth
 import DomainEntities
 import DomainInterfaces
 
