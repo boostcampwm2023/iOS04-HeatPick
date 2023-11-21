@@ -22,7 +22,7 @@ export class CreateStoryDto {
     example: '[...(stringBuffer)]',
     description: 'ImageList in Story',
   })
-  imageList: Array<Express.Multer.File>;
+  images: Array<Express.Multer.File>;
 
   @ApiProperty({
     example: `커피`,
@@ -33,7 +33,7 @@ export class CreateStoryDto {
   category: string;
 
   @ApiProperty({
-    example: `{ lat: 1.2345, lng: 6.7890 }`,
+    example: `{ latitude: 1.2345, longitude: 6.7890, title: '장소 이름', address: '주소명' }`,
     description: 'Where the story was created',
   })
   @IsNotEmpty({ message: 'place 필수입니다.' })
