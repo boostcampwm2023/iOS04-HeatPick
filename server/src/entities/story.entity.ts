@@ -34,16 +34,16 @@ export class Story {
   @ApiProperty({ description: 'Story가 작성된 날짜' })
   createAt: Date;
 
-  @ManyToMany(() => Category, {
+  @OneToOne(() => Category, {
     cascade: true,
   })
-  @JoinTable()
-  categories: Promise<Category[]>;
+  @JoinColumn()
+  category: Category;
 
   @OneToOne(() => Place, (place) => place.story, { cascade: true })
   @JoinColumn()
   place: Promise<Place>;
 
-  @OneToMany(() => Comment, (comment) => comment.story)
+  @OneToMany(() => Comment, (comment) => comment.story, { cascade: true })
   comments: Promise<Comment[]>;
 }

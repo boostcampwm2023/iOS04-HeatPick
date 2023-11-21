@@ -4,7 +4,7 @@ import UtilityPlugin
 
 let project = Project.framework(
     name: "StoryImplementations",
-    featureTargets: [.staticLibrary],
+    featureTargets: [.staticLibrary, .tests],
     dependencies: [
         .Target.Presentation.Story.Interfaces,
     ]

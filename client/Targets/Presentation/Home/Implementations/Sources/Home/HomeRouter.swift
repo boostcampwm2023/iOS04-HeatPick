@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import HomeInterfaces
 
 protocol HomeInteractable: Interactable,
                            HomeRecommendDashboardListener,

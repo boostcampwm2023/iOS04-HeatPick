@@ -11,6 +11,7 @@ import Foundation
 
 import ModernRIBs
 import CoreKit
+import AuthInterfaces
 import DomainInterfaces
 
 protocol SignInRouting: ViewableRouting {
@@ -24,10 +25,6 @@ protocol SignInRouting: ViewableRouting {
 
 protocol SignInPresentable: Presentable {
     var listener: SignInPresentableListener? { get set }
-}
-
-public protocol SignInListener: AnyObject {
-    func signInDidComplete()
 }
 
 public protocol SignInInteractorDependency: AnyObject {

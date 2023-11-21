@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import HomeInterfaces
 
 public protocol HomeDependency: Dependency {}
 
@@ -18,10 +19,6 @@ final class HomeComponent: Component<HomeDependency>,
                            RecommendSeeAllDependency,
                            HotPlaceSeeAllDependency {
     
-}
-
-public protocol HomeBuildable: Buildable {
-    func build(withListener listener: HomeListener) -> ViewableRouting
 }
 
 public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {

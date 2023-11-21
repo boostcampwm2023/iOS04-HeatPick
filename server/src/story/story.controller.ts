@@ -1,6 +1,21 @@
 import { StoryService } from './story.service';
 import { Body, Controller, Delete, Get, Param, Patch, Query, Post, UploadedFiles, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Headers,
+  Param,
+  Patch,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+  ValidationPipe,
+  Query,
+} from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { StoryDetailViewData } from './type/story.detail.view.data';
@@ -9,6 +24,7 @@ import { LocationDTO } from 'src/place/dto/location.dto';
 import { Story } from 'src/entities/story.entity';
 import { RecommendStoryDto } from './dto/story.recommend.response.dto';
 
+@ApiTags('story')
 @Controller('story')
 export class StoryController {
   constructor(private storyService: StoryService) {}
@@ -17,9 +33,9 @@ export class StoryController {
   @UseInterceptors(FilesInterceptor('images', 3))
   @ApiOperation({ summary: 'Create story' })
   @ApiResponse({ status: 200, description: 'storyId' })
-  async create(@UploadedFiles() images: Array<Express.Multer.File>, @Body() createStoryDto: CreateStoryDto) {
-    const { title, content, date } = createStoryDto;
-    return this.storyService.create({ title, content, images, date });
+  async create(@UploadedFiles() images: Array<Express.Multer.File>, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) createStoryDto: CreateStoryDto) {
+    const { title, content, category, place, date } = createStoryDto;
+    return this.storyService.create(accessToken, { title, content, category, place, images, date });
   }
 
   @Get('detail/:storyId')
@@ -33,16 +49,16 @@ export class StoryController {
   @UseInterceptors(FilesInterceptor('images', 3))
   @ApiOperation({ summary: 'Update story' })
   @ApiResponse({ status: 200, description: '{ }' })
-  async update(@UploadedFiles() images: Array<Express.Multer.File>, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
-    const { storyId, title, content, date } = updateStoryDto;
-    return this.storyService.update({ storyId, title, images, content, date });
+  async update(@UploadedFiles() images: Array<Express.Multer.File>, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
+    const { storyId, title, content, category, place, date } = updateStoryDto;
+    return this.storyService.update(accessToken, { storyId, title, content, category, place, images, date });
   }
 
   @Delete('delete/:storyId')
   @ApiOperation({ summary: 'Delete Story' })
   @ApiResponse({ status: 200, description: '{ }' })
-  async delete(@Param('storyId') storyId: number) {
-    return this.storyService.delete(storyId);
+  async delete(@Headers('accessToken') accessToken: string, @Param('storyId') storyId: number) {
+    return this.storyService.delete(accessToken, storyId);
   }
 
   @Get('recommend/location')
