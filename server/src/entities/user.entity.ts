@@ -3,6 +3,7 @@ import { Story } from './story.entity';
 import { profileImage } from './profileImage.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Comment } from './comment.entity';
+import { Badge } from './badge.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -42,4 +43,7 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment;
+
+  @OneToMany(() => Badge, (badge) => badge.user, { cascade: true })
+  badges: Badge[];
 }
