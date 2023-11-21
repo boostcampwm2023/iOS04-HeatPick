@@ -20,6 +20,12 @@ public final class HomeRepository: HomeRepositoryInterface {
         self.session = session
     }
     
+    public func fetchRecommendPlace(lat: Double, lon: Double) async -> Result<[RecommendStory], Error> {
+        let target = HomeAPI.recommendLocation(lat: lat, lon: lon)
+        let request: Result<RecommendLocationResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
     public func fetchHotPlace() async -> Result<[RecommendStory], Error> {
         let target = HomeAPI.recommend
         let request: Result<RecommendResponseDTO, Error> = await session.request(target)

@@ -19,6 +19,10 @@ public final class HomeUseCase: HomeUseCaseInterface {
         self.repository = repository
     }
     
+    public func fetchRecommendPlace(lat: Double, lon: Double) async -> Result<[RecommendStory], Error> {
+        return await repository.fetchRecommendPlace(lat: lat, lon: lon)
+    }
+    
     public func fetchHotPlace() async -> Result<[RecommendStory], Error> {
         return await repository.fetchHotPlace()
     }

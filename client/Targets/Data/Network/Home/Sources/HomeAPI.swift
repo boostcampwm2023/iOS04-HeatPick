@@ -12,6 +12,7 @@ import NetworkAPIKit
 
 public enum HomeAPI {
     case recommend
+    case recommendLocation(lat: Double, lon: Double)
 }
 
 extension HomeAPI: Target {
@@ -23,12 +24,14 @@ extension HomeAPI: Target {
     public var path: String {
         switch self {
         case .recommend: return "/story/recommend"
+        case .recommendLocation: return "/story/recommend/location"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
         case .recommend: return .get
+        case .recommendLocation: return .get
         }
     }
     
@@ -38,7 +41,12 @@ extension HomeAPI: Target {
     
     public var task: Task {
         switch self {
-        case .recommend: return .plain
+        case .recommend: 
+            return .plain
+            
+        case .recommendLocation(let lat, let lon):
+            let request = RecommendLocationRequestDTO(latitude: lat, longitude: lon)
+            return .url(parameters: request.parameters())
         }
     }
     
