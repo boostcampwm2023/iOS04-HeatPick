@@ -18,4 +18,9 @@ protocol EditingTextDashboardPresentableListener: AnyObject {
 final class EditingTextDashboardViewController: UIViewController, EditingTextDashboardPresentable, EditingTextDashboardViewControllable {
 
     weak var listener: EditingTextDashboardPresentableListener?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .red
+    }
 }
