@@ -10,11 +10,13 @@ import UIKit
 
 import DesignKit
 
+protocol TitleFieldDelegate: AnyObject {
+    func titleDidChange(_ title: String)
+}
+
 final class TitleField: UIView {
 
-    var title: String? {
-        textField.text
-    }
+    weak var delegate: TitleFieldDelegate?
     
     private let label: UILabel = {
         let label = UILabel()
@@ -26,9 +28,10 @@ final class TitleField: UIView {
         return label
     }()
     
-    private let textField: TextFieldWithPadding = {
+    private lazy var textField: TextFieldWithPadding = {
         let textField = TextFieldWithPadding()
         textField.placeholder = "제목을 입력하세요"
+        textField.delegate = self
         
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -63,6 +66,14 @@ private extension TitleField {
         textField.layer.borderWidth = 1
         textField.layer.borderColor = UIColor.hpGray4.cgColor
         textField.layer.cornerRadius = Constants.cornerRadiusMedium
+    }
+    
+}
+
+extension TitleField: UITextFieldDelegate {
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        delegate?.titleDidChange(textField.text ?? "")
     }
     
 }
