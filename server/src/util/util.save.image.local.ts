@@ -10,6 +10,10 @@ export const saveImageToLocal = async (path: string, imageBuffer: Buffer): Promi
   const folderPath = path;
   const fileName = generateRandomFileName();
 
+  if (!fs.existsSync(folderPath)) {
+    fs.mkdirSync(folderPath, { recursive: true });
+  }
+
   const readableImage = new Readable();
   readableImage.push(imageBuffer);
   readableImage.push(null);
