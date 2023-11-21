@@ -7,6 +7,7 @@ import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
 
 import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
+import { Story } from '../entities/story.entity';
 
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
 
@@ -75,5 +76,10 @@ export class UserService {
     userObject[0].representativeBadge = targetbadge;
     this.userRepository.save(userObject[0]);
 
+  }
+
+  async getStoryList(userId: number): Promise<Story[]> {
+    const user = await this.userRepository.findOneByUserId(userId);
+    return await user.stories;
   }
 }
