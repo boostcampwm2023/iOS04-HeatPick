@@ -12,12 +12,12 @@ import ModernRIBs
 
 protocol SearchResultPresentableListener: AnyObject {
     func detachSearchResult()
-    func showBeginEditingTextDashboard()
-    func hideBeginEditingTextDashboard()
-    func showEditingTextDashboard()
-    func hideEditingTextDashboard()
-    func showEndEditingTextDashboard()
-    func hideEndEditingTextDashboard()
+    func showSearchBeforeDashboard()
+    func hideSearchBeforeDashboard()
+    func showSearchingDashboard()
+    func hideSearchingDashboard()
+    func showSearchAfterDashboard()
+    func hideSearchAfterDashboard()
 }
 
 final class SearchResultViewController: UIViewController, SearchResultPresentable, SearchResultViewControllable {
@@ -43,10 +43,10 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        listener?.showBeginEditingTextDashboard()
+        listener?.showSearchBeforeDashboard()
     }
     
-    func attachDashboard(_ viewControllable: ViewControllable) {
+    func insertDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
         
         if let view = stackView.arrangedSubviews.filter({ $0 == viewController.view }).first {
@@ -58,7 +58,7 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
         }
     }
     
-    func detachDashboard(_ viewControllable: ViewControllable) {
+    func removeDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
         guard let view = stackView.arrangedSubviews.filter({ $0 == viewController.view }).first else { return }
         view.isHidden = true
@@ -89,19 +89,19 @@ private extension SearchResultViewController {
 extension SearchResultViewController: SearchNavigationViewDelegate {
     
     func showBeginEditingTextDashboard() {
-        listener?.hideEditingTextDashboard()
-        listener?.showBeginEditingTextDashboard()
+        listener?.hideSearchingDashboard()
+        listener?.showSearchBeforeDashboard()
     }
     
     func showEditingTextDashboard() {
-        listener?.hideEndEditingTextDashboard()
-        listener?.hideBeginEditingTextDashboard()
-        listener?.showEditingTextDashboard()
+        listener?.hideSearchAfterDashboard()
+        listener?.hideSearchBeforeDashboard()
+        listener?.showSearchingDashboard()
     }
     
     func showEndEditingTextDashboard(_ text: String) {
-        listener?.hideEditingTextDashboard()
-        listener?.showEndEditingTextDashboard()
+        listener?.hideSearchingDashboard()
+        listener?.showSearchAfterDashboard()
     }
     
     func leftButtonDidTap() {
