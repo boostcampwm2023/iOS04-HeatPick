@@ -47,6 +47,8 @@ public final class SearchNavigationView: UIView {
         textField.clipsToBounds = true
         textField.layer.cornerRadius = Constants.cornerRadiusMedium
         textField.setContentHuggingPriority(.init(200), for: .horizontal)
+        textField.autocorrectionType = .no
+        textField.spellCheckingType = .no
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -109,5 +111,5 @@ extension SearchNavigationView: UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
-    
+
 }
