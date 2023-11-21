@@ -12,6 +12,9 @@ export class Badge {
   @Column()
   badgeExp: number;
 
+  @Column()
+  emoji: string;
+
   @ManyToOne(() => User, (user) => user.badges)
   user: User;
 }
