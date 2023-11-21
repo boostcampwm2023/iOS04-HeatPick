@@ -17,6 +17,9 @@ protocol TitleFieldDelegate: AnyObject {
 final class TitleField: UIView {
 
     weak var delegate: TitleFieldDelegate?
+    var text: String {
+        textField.text ?? ""
+    }
     
     private let label: UILabel = {
         let label = UILabel()

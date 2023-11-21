@@ -17,6 +17,9 @@ protocol DescriptionFieldDelegate: AnyObject {
 final class DescriptionField: UIView {
 
     weak var delegate: DescriptionFieldDelegate?
+    var text: String {
+        textField.text ?? ""
+    }
     
     private let label: UILabel = {
         let label = UILabel()

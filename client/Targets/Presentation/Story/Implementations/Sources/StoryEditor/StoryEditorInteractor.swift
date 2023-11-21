@@ -6,7 +6,11 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+
 import ModernRIBs
+
+import DomainEntities
 
 public protocol StoryEditorRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
@@ -14,7 +18,7 @@ public protocol StoryEditorRouting: ViewableRouting {
 
 public protocol StoryEditorPresentable: Presentable {
     var listener: StoryEditorPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    func setSaveButton(_ enabled: Bool)
 }
 
 public protocol StoryEditorListener: AnyObject {
@@ -23,12 +27,13 @@ public protocol StoryEditorListener: AnyObject {
 }
 
 final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>, StoryEditorInteractable, StoryEditorPresentableListener {
-
+    
     weak var router: StoryEditorRouting?
     weak var listener: StoryEditorListener?
-
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
+    
+    private var title: String = ""
+    private var description: String = ""
+    
     override init(presenter: StoryEditorPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
@@ -46,5 +51,23 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     
     func didTapClose() {
         listener?.storyEditorDidTapClose()
+    }
+    
+    func titleDidChange(_ title: String) {
+        self.title = title
+        presenter.setSaveButton(isButtonEnabled)
+    }
+    
+    func descriptionDidChange(_ description: String) {
+        self.description = description
+        presenter.setSaveButton(isButtonEnabled)
+    }
+    
+    func didTapSave(content: StoryContent) {
+        
+    }
+    
+    private var isButtonEnabled: Bool {
+        !title.isEmpty && !description.isEmpty
     }
 }

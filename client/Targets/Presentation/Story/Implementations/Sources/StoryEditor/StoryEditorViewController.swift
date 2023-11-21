@@ -12,9 +12,13 @@ import PhotosUI
 import ModernRIBs
 
 import DesignKit
+import DomainEntities
 
 public protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
+    func titleDidChange(_ title: String)
+    func descriptionDidChange(_ description: String)
+    func didTapSave(content: StoryContent)
 }
 
 final class StoryEditorViewController: UIViewController, StoryEditorPresentable, StoryEditorViewControllable {
@@ -58,6 +62,7 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     
     private lazy var titleField: TitleField = {
         let titleField = TitleField()
+        titleField.delegate = self
         
         titleField.translatesAutoresizingMaskIntoConstraints = false
         return titleField
@@ -71,8 +76,9 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return imageField
     }()
     
-    private let descriptionField: DescriptionField = {
+    private lazy var descriptionField: DescriptionField = {
         let descriptionField = DescriptionField()
+        descriptionField.delegate = self
         
         descriptionField.translatesAutoresizingMaskIntoConstraints = false
         return descriptionField
@@ -85,9 +91,11 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return attributeField
     }()
     
-    private let saveButton: ActionButton = {
+    private lazy var saveButton: ActionButton = {
         let button = ActionButton()
         button.setTitle("저장하기", for: .normal)
+        button.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
+        button.isEnabled = false
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -104,6 +112,10 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+    }
+    
+    func setSaveButton(_ enabled: Bool) {
+        saveButton.isEnabled = enabled
     }
     
 }
@@ -145,6 +157,16 @@ private extension StoryEditorViewController {
         view.endEditing(true)
     }
     
+    @objc func didTapSave() {
+        listener?.didTapSave(content: StoryContent(title: titleField.text,
+                                                   content: descriptionField.text,
+                                                   date: attributeField.date,
+                                                   images: imageField.images,
+                                                   category: StoryCategory.allCases[attributeField.categoryIndex],
+                                                   place: attributeField.location,
+                                                   badge: Badge.allCases[attributeField.badgeIndex]))
+    }
+    
 }
 
 // MARK: - Navigation View Delegate
@@ -156,6 +178,15 @@ extension StoryEditorViewController: NavigationViewDelegate {
 
 }
 
+// MARK: - TitleField Delegate
+extension StoryEditorViewController: TitleFieldDelegate {
+    
+    func titleDidChange(_ title: String) {
+        listener?.titleDidChange(title)
+    }
+    
+}
+
 // MARK: - Image Selector Delegate
 extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
     
@@ -163,4 +194,13 @@ extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
         present(picker, animated: true)
     }
 
+}
+
+// MARK: - DescriptionField Delegate
+extension StoryEditorViewController: DescriptionFieldDelegate {
+    
+    func descriptionDidChange(_ description: String) {
+        listener?.descriptionDidChange(description)
+    }
+    
 }

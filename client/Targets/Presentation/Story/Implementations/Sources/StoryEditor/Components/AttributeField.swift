@@ -8,10 +8,14 @@
 
 import UIKit
 
+import DomainEntities
+
 final class AttributeField: UIView {
 
     var categoryIndex: Int { categoryPicker.selectedIndex }
     var badgeIndex: Int { badgePicker.selectedIndex }
+    var date: Date { datePicker.selectedDate }
+    var location: Location? { locationPicker.selectedLocation }
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
