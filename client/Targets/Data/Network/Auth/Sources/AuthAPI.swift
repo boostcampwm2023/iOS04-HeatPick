@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import BaseAPI
 import NetworkAPIKit
 
 public enum AuthAPI {
