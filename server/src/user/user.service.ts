@@ -8,6 +8,9 @@ import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.e
 
 import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
 import { Story } from '../entities/story.entity';
+import { JwtService } from '@nestjs/jwt';
+import { User } from '../entities/user.entity';
+import { ImageService } from '../image/image.service';
 
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
 
@@ -17,6 +20,8 @@ export class UserService {
   constructor(
     private userRepository: UserRepository,
     private userJasoTrie: UserJasoTrie,
+    private jwtService: JwtService,
+    private imageService: ImageService,
   ) {
     this.userRepository.loadEveryUser().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));
@@ -81,5 +86,11 @@ export class UserService {
   async getStoryList(userId: number): Promise<Story[]> {
     const user = await this.userRepository.findOneByUserId(userId);
     return await user.stories;
+  }
+
+  async update(accessToken: string, image: Express.Multer.File, { username, mainBadge }) {
+    const decodedToken = this.jwtService.verify(accessToken);
+    const userId = decodedToken.userId;
+    return await this.userRepository.update({ oauthId: userId }, { username: username });
   }
 }
