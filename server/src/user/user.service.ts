@@ -8,6 +8,7 @@ import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
+import { strToEmoji } from 'src/util/util.string.to.emoji';
 
 @Injectable()
 export class UserService {
@@ -38,6 +39,7 @@ export class UserService {
     const newBadge = new Badge();
     newBadge.badgeExp = 0;
     newBadge.badgeName = badgeName;
+    newBadge.emoji = strToEmoji[badgeName];
 
     userBadges.push(newBadge);
     this.userRepository.save(userObject[0]);
