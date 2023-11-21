@@ -5,7 +5,6 @@ import { StoryDetailViewData } from './type/story.detail.view.data';
 import { userDataInStoryView } from './type/story.user.data';
 import { UserRepository } from './../user/user.repository';
 import { ImageService } from '../image/image.service';
-import { StoryImage } from 'src/entities/storyImage.entity';
 import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { createStoryEntity } from '../util/util.create.story.entity';

@@ -43,6 +43,6 @@ export class Story {
   @OneToOne(() => Place, { cascade: true })
   place: Promise<Place>;
 
-  @OneToMany(() => Comment, (comment) => comment.story)
+  @OneToMany(() => Comment, (comment) => comment.story, { cascade: true })
   comments: Promise<Comment[]>;
 }
