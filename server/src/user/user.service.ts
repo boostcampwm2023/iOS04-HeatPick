@@ -71,10 +71,9 @@ export class UserService {
 
     const badgeList = await userObject[0].badges;
     const targetbadge = badgeList.find((badge) => badge.badgeName === badgeName);
+    if (!targetbadge) throw new InvalidBadgeException();
 
     targetbadge.badgeExp += exp;
-    console.log(typeof exp);
-    console.log(typeof targetbadge.badgeExp);
 
     if (targetbadge.badgeExp >= 100 && nextBadge[targetbadge.badgeName]) {
       targetbadge.badgeName = nextBadge[targetbadge.badgeName];
