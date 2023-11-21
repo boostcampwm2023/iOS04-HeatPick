@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from './../user/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
-import { idDuplicatedException } from 'src/exception/cuntom.exception/id.duplicate.exception';
+import { idDuplicatedException } from 'src/exception/custom.exception/id.duplicate.exception';
 import { profileImage } from 'src/entities/profileImage.entity';
 import { ImageService } from '../image/image.service';
-import { invalidTokenException } from 'src/exception/cuntom.exception/token.invalid.exception';
+import { invalidTokenException } from 'src/exception/custom.exception/token.invalid.exception';
 
 @Injectable()
 export class AuthService {
