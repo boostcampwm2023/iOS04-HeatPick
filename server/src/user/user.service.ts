@@ -73,4 +73,11 @@ export class UserService {
     const userId = decodedToken.userId;
     return await this.userRepository.update({ oauthId: userId }, { username: username });
   }
+
+  async resign(accessToken: string, message: string) {
+    const decodedToken = this.jwtService.verify(accessToken);
+    const userId = decodedToken.userId;
+    const user = await this.userRepository.findOneByUserId(userId);
+    return await this.userRepository.delete(user);
+  }
 }

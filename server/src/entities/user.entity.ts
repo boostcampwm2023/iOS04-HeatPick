@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Story } from './story.entity';
 import { profileImage } from './profileImage.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -36,6 +36,10 @@ export class User {
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   @ApiProperty({ description: 'User의 회원 가입 시간' })
   createAt: Date;
+
+  @DeleteDateColumn({ name: 'deletedAt' }) // Soft Delete를 위한 삭제 날짜 칼럼 추가
+  @ApiProperty({ description: 'User의 회원 탈퇴 시간' })
+  deletedAt: Date;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   @ApiProperty({ description: 'User의 최근 활동 시간' })
