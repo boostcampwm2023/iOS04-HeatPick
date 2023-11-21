@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { SearchService } from './../search/search.service';
 import { UserJasoTrie } from './../search/trie/userTrie';
 import { UserRepository } from './user.repository';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
-import { User } from 'src/entities/user.entity';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
+
+import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
+
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
+
 
 @Injectable()
 export class UserService {
@@ -43,6 +45,22 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
+
+  async getProfile(userId: number): Promise<userProfileDetailDataType> {
+    const user = await this.userRepository.findOneByUserId(userId);
+    const userBadges = await user.badges;
+    const stories = await user.stories;
+    return {
+      username: user.username,
+      profileURL: user.profileImage.imageUrl,
+      followerCount: 0,
+      storyCount: (await user.stories).length,
+      experience: 0,
+      maxExperience: 999,
+      badge: userBadges,
+      storyList: stories,
+    };
+
   async setRepresentatvieBadge(setBadgeDto: AddBadgeDto) {
     const userId = setBadgeDto.userId;
     const badgeName = setBadgeDto.badgeName;
@@ -56,5 +74,6 @@ export class UserService {
 
     userObject[0].representativeBadge = targetbadge;
     this.userRepository.save(userObject[0]);
+
   }
 }

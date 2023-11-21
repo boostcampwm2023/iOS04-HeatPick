@@ -36,4 +36,8 @@ export class UserRepository {
       },
     });
   }
+
+  async findOneByUserId(userId: number) {
+    return await this.userRepository.findOne({ where: { userId: userId }, relations: ['profileImage', 'stories', 'stories.storyImages', 'stories.comments'] });
+  }
 }

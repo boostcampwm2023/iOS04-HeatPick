@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query,Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
@@ -15,10 +15,17 @@ export class UserController {
     return this.userService.addNewBadge(addBadgeDto);
   }
 
+  @Get('profile')
+  @ApiOperation({ summary: 'Get a profile' })
+  @ApiResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.' })
+  async getProfile(@Query() userId: number) {
+    return this.userService.getProfile(userId);
+
   @Put('badge')
   @ApiOperation({ summary: '유저 객체의 대표 뱃지를 설정합니다.' })
   @ApiResponse({ status: 200, description: '대표 뱃지가 성공적으로 변경되었습니다.' })
   async setRepresentatvieBadge(@Body() setBadgeDto: AddBadgeDto) {
     return this.userService.setRepresentatvieBadge(setBadgeDto);
+
   }
 }
