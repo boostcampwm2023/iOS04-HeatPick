@@ -8,8 +8,11 @@
 
 import ModernRIBs
 import HomeInterfaces
+import DomainInterfaces
 
-public protocol HomeDependency: Dependency {}
+public protocol HomeDependency: Dependency {
+    var homeUseCase: HomeUseCaseInterface { get }
+}
 
 final class HomeComponent: Component<HomeDependency>,
                            HomeRecommendDashboardDependency,
@@ -18,7 +21,7 @@ final class HomeComponent: Component<HomeDependency>,
                            HomeFriendDashboardDependency,
                            RecommendSeeAllDependency,
                            HotPlaceSeeAllDependency {
-    
+    var hotPlaceUseCase: HotPlaceUseCaseInterface { dependency.homeUseCase }
 }
 
 public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {

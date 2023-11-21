@@ -9,8 +9,4 @@
 import Foundation
 import DomainEntities
 
-public protocol HomeUseCaseInterface: AnyObject {
-    
-    func fetchHotPlace() async -> Result<[RecommendStory], Error>
-    
-}
+public protocol HomeUseCaseInterface: HotPlaceUseCaseInterface {}
