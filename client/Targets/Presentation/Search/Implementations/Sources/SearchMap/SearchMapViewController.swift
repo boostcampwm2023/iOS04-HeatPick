@@ -6,16 +6,39 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import ModernRIBs
+
 import UIKit
 
+import ModernRIBs
+import NMapsMap
+
 protocol SearchMapPresentableListener: AnyObject {
-    // TODO: Declare properties and methods that the view controller can invoke to perform
-    // business logic, such as signIn(). This protocol is implemented by the corresponding
-    // interactor class.
+    
 }
 
 final class SearchMapViewController: UIViewController, SearchMapPresentable, SearchMapViewControllable {
 
     weak var listener: SearchMapPresentableListener?
+    
+    private lazy var naverMap: NMFNaverMapView = {
+        let map = NMFNaverMapView(frame: view.frame)
+        map.backgroundColor = .hpWhite
+        map.showLocationButton = true
+        map.mapView.translatesAutoresizingMaskIntoConstraints = false
+        return map
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupViews()
+    }
+    
+}
+
+private extension SearchMapViewController {
+
+    func setupViews() {
+        view = naverMap
+    }
+    
 }
