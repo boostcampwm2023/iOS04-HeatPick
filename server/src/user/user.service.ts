@@ -6,6 +6,7 @@ import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
 import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
+import { Story } from '../entities/story.entity';
 
 @Injectable()
 export class UserService {
@@ -55,5 +56,10 @@ export class UserService {
       badge: userBadges,
       storyList: stories,
     };
+  }
+
+  async getStoryList(userId: number): Promise<Story[]> {
+    const user = await this.userRepository.findOneByUserId(userId);
+    return await user.stories;
   }
 }

@@ -26,8 +26,8 @@ export class UserController {
 
   @Get('story')
   @ApiOperation({ summary: `Get All user's storyList` })
-  @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: Promise<Story> })
-  async getStoryList(@Query() userId: number): Promise<Story> {
+  @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [Story] })
+  async getStoryList(@Query() userId: number): Promise<Story[]> {
     return this.userService.getStoryList(userId);
   }
 }
