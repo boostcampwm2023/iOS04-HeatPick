@@ -8,7 +8,8 @@ import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
-import { strToEmoji } from 'src/util/util.string.to.emoji';
+import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
+import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 
 @Injectable()
 export class UserService {
@@ -57,6 +58,29 @@ export class UserService {
     if (!targetbadge) throw new InvalidBadgeException();
 
     userObject[0].representativeBadge = targetbadge;
+    this.userRepository.save(userObject[0]);
+  }
+
+  async addBadgeExp(addBadgeExpDto: AddBadgeExpDto) {
+    const userId = addBadgeExpDto.userId;
+    const badgeName = addBadgeExpDto.badgeName;
+    const exp = addBadgeExpDto.exp;
+
+    const userObject = await this.userRepository.findByOption({ where: { userId: userId } });
+    if (userObject.length <= 0) throw new InvalidIdException();
+
+    const badgeList = await userObject[0].badges;
+    const targetbadge = badgeList.find((badge) => badge.badgeName === badgeName);
+
+    targetbadge.badgeExp += exp;
+    console.log(typeof exp);
+    console.log(typeof targetbadge.badgeExp);
+
+    if (targetbadge.badgeExp >= 100 && nextBadge[targetbadge.badgeName]) {
+      targetbadge.badgeName = nextBadge[targetbadge.badgeName];
+      targetbadge.emoji = strToEmoji[targetbadge.badgeName];
+      targetbadge.badgeExp = 0;
+    }
     this.userRepository.save(userObject[0]);
   }
 }
