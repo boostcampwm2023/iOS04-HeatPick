@@ -7,6 +7,7 @@ import { User } from 'src/entities/user.entity';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
+import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
 
 @Injectable()
 export class UserService {
@@ -51,8 +52,9 @@ export class UserService {
 
     const badgeList = await userObject[0].badges;
     const targetbadge = badgeList.find((badge) => badge.badgeName === badgeName);
-    userObject[0].representativeBadge = targetbadge;
+    if (!targetbadge) throw new InvalidBadgeException();
 
+    userObject[0].representativeBadge = targetbadge;
     this.userRepository.save(userObject[0]);
   }
 }
