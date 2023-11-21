@@ -21,6 +21,7 @@ final class HomeComponent: Component<HomeDependency>,
                            HomeFriendDashboardDependency,
                            RecommendSeeAllDependency,
                            HotPlaceSeeAllDependency {
+    var recommendUseCase: RecommendUseCaseInterface { dependency.homeUseCase }
     var hotPlaceUseCase: HotPlaceUseCaseInterface { dependency.homeUseCase }
 }
 
