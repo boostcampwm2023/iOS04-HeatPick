@@ -10,10 +10,15 @@ import UIKit
 
 import DesignKit
 
+protocol DescriptionFieldDelegate: AnyObject {
+    func descriptionDidChange(_ description: String)
+}
+
 final class DescriptionField: UIView {
 
-    var title: String? {
-        textField.text
+    weak var delegate: DescriptionFieldDelegate?
+    var text: String {
+        textField.text ?? ""
     }
     
     private let label: UILabel = {
@@ -26,14 +31,15 @@ final class DescriptionField: UIView {
         return label
     }()
     
-    private let textField: UITextView = {
+    private lazy var textField: UITextView = {
         let textField = UITextView()
         textField.isEditable = true
         textField.font = .captionRegular
         textField.textAlignment = .natural
         textField.isScrollEnabled = false
         textField.isUserInteractionEnabled = true
-        textField.textContainerInset = .init(top: 10, left: 20, bottom: 10, right: 20)
+        textField.textContainerInset = .init(top: 20, left: 20, bottom: 20, right: 20)
+        textField.delegate = self
         
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -71,4 +77,10 @@ private extension DescriptionField {
         textField.layer.cornerRadius = Constants.cornerRadiusMedium
     }
     
+}
+
+extension DescriptionField: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        delegate?.descriptionDidChange(textView.text ?? "")
+    }
 }

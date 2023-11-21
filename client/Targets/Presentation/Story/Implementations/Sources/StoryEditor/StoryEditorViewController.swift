@@ -12,14 +12,13 @@ import PhotosUI
 import ModernRIBs
 
 import DesignKit
-
-struct AttributeModel {
-    let title: String
-    var value: String
-}
+import DomainEntities
 
 public protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
+    func titleDidChange(_ title: String)
+    func descriptionDidChange(_ description: String)
+    func didTapSave(content: StoryContent)
 }
 
 final class StoryEditorViewController: UIViewController, StoryEditorPresentable, StoryEditorViewControllable {
@@ -45,7 +44,6 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
         scrollView.showsHorizontalScrollIndicator = false
-        scrollView.keyboardDismissMode = .onDrag
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
@@ -64,6 +62,7 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     
     private lazy var titleField: TitleField = {
         let titleField = TitleField()
+        titleField.delegate = self
         
         titleField.translatesAutoresizingMaskIntoConstraints = false
         return titleField
@@ -77,39 +76,29 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return imageField
     }()
     
-    private let descriptionField: DescriptionField = {
+    private lazy var descriptionField: DescriptionField = {
         let descriptionField = DescriptionField()
+        descriptionField.delegate = self
         
         descriptionField.translatesAutoresizingMaskIntoConstraints = false
         return descriptionField
     }()
     
-    private let saveButton: ActionButton = {
+    private let attributeField: AttributeField = {
+        let attributeField = AttributeField()
+        
+        attributeField.translatesAutoresizingMaskIntoConstraints = false
+        return attributeField
+    }()
+    
+    private lazy var saveButton: ActionButton = {
         let button = ActionButton()
         button.setTitle("저장하기", for: .normal)
+        button.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
+        button.isEnabled = false
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
-    }()
-    
-    private var attributes: [AttributeType] = [.category("없음"), .location("없음"), .date(.now), .badge("없음")]
-    
-    private lazy var attributeField: AttributeField = {
-        let tableView = AttributeField()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(AttributeTableViewCell.self)
-
-        tableView.rowHeight = 50
-        tableView.isScrollEnabled = false
-        tableView.allowsSelection = true
-        tableView.allowsMultipleSelection = false
-        tableView.isUserInteractionEnabled = true
-
-        
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
     }()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -125,8 +114,11 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         setupViews()
     }
     
+    func setSaveButton(_ enabled: Bool) {
+        saveButton.isEnabled = enabled
+    }
+    
 }
-
 
 // MARK: - Setup Views
 private extension StoryEditorViewController {
@@ -146,7 +138,7 @@ private extension StoryEditorViewController {
             scrollView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -10),
             scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1, constant: Constant.scrollViewInset * 2),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
@@ -157,6 +149,22 @@ private extension StoryEditorViewController {
         
         scrollView.contentInset = .init(top: 40, left: Constant.scrollViewInset, bottom: 0, right: Constant.scrollViewInset)
         saveButton.layer.cornerRadius = Constants.cornerRadiusMedium
+        
+        view.addTapGesture(target: self, action: #selector(dismissKeyboard))
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @objc func didTapSave() {
+        listener?.didTapSave(content: StoryContent(title: titleField.text,
+                                                   content: descriptionField.text,
+                                                   date: attributeField.date,
+                                                   images: imageField.images,
+                                                   category: StoryCategory.allCases[attributeField.categoryIndex],
+                                                   place: attributeField.location,
+                                                   badge: Badge.allCases[attributeField.badgeIndex]))
     }
     
 }
@@ -170,6 +178,15 @@ extension StoryEditorViewController: NavigationViewDelegate {
 
 }
 
+// MARK: - TitleField Delegate
+extension StoryEditorViewController: TitleFieldDelegate {
+    
+    func titleDidChange(_ title: String) {
+        listener?.titleDidChange(title)
+    }
+    
+}
+
 // MARK: - Image Selector Delegate
 extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
     
@@ -179,26 +196,11 @@ extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
 
 }
 
-// MARK: - Attribute TableView Delegate
-extension StoryEditorViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as? AttributeTableViewCell
-        cell?.presentPicker()
-    }
-
-}
+// MARK: - DescriptionField Delegate
+extension StoryEditorViewController: DescriptionFieldDelegate {
     
-extension StoryEditorViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return attributes.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(AttributeTableViewCell.self, for: indexPath)
-        cell.setup(type: attributes[indexPath.row])
-        
-        return cell
+    func descriptionDidChange(_ description: String) {
+        listener?.descriptionDidChange(description)
     }
     
 }
