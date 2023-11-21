@@ -41,4 +41,18 @@ export class UserService {
     userBadges.push(newBadge);
     this.userRepository.save(userObject[0]);
   }
+
+  async setRepresentatvieBadge(setBadgeDto: AddBadgeDto) {
+    const userId = setBadgeDto.userId;
+    const badgeName = setBadgeDto.badgeName;
+
+    const userObject = await this.userRepository.findByOption({ where: { userId: userId } });
+    if (userObject.length <= 0) throw new InvalidIdException();
+
+    const badgeList = await userObject[0].badges;
+    const targetbadge = badgeList.find((badge) => badge.badgeName === badgeName);
+    userObject[0].representativeBadge = targetbadge;
+
+    this.userRepository.save(userObject[0]);
+  }
 }

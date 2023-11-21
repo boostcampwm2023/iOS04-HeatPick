@@ -16,5 +16,7 @@ export class UserController {
   }
 
   @Put('badge')
-  async setBadge(@Body() addBadgeDto: AddBadgeDto) {}
+  async setRepresentatvieBadge(@Body() setBadgeDto: AddBadgeDto) {
+    return this.userService.setRepresentatvieBadge(setBadgeDto);
+  }
 }
