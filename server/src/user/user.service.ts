@@ -6,6 +6,7 @@ import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { User } from 'src/entities/user.entity';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
+import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
 
 @Injectable()
 export class UserService {
@@ -29,6 +30,7 @@ export class UserService {
     const badgeName = addBadgeDto.badgeName;
 
     const userObject = await this.userRepository.findByOption({ where: { userId: userId } });
+    if (userObject.length <= 0) throw new InvalidIdException();
 
     const userBadges = await userObject[0].badges;
 
