@@ -10,6 +10,12 @@ import UIKit
 
 open class ActionButton: UIButton {
     
+    private enum Constant {
+        static let animationKey = "ActionButtonLoading"
+        static let loadingImageWidth: CGFloat = 25
+        static let loadingImageHeight: CGFloat = 25
+    }
+    
     public var style: ActionButtonStyle = .normal {
         didSet { updateStyle() }
     }
@@ -30,6 +36,15 @@ open class ActionButton: UIButton {
         return view
     }()
     
+    private let loadingImageView: UIImageView = {
+        let imageView = UIImageView(frame: .zero)
+        imageView.backgroundColor = .clear
+        imageView.isHidden = true
+        imageView.image = .spinner.withRenderingMode(.alwaysTemplate)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -38,6 +53,21 @@ open class ActionButton: UIButton {
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
+    }
+    
+    public func startLoading() {
+        isUserInteractionEnabled = false
+        setTitleColor(.clear, for: .normal)
+        setTitleColor(.clear, for: .disabled)
+        loadingImageView.isHidden = false
+        loadingImageView.rotate(animationKey: Constant.animationKey)
+    }
+    
+    public func stopLoading() {
+        isUserInteractionEnabled = true
+        updateStyle()
+        loadingImageView.isHidden = true
+        loadingImageView.removeCALayerAnimation(forKey: Constant.animationKey)
     }
     
 }
@@ -49,12 +79,18 @@ private extension ActionButton {
         updateStyle()
         
         addSubview(pressedView)
+        addSubview(loadingImageView)
         
         NSLayoutConstraint.activate([
             pressedView.topAnchor.constraint(equalTo: topAnchor),
             pressedView.leadingAnchor.constraint(equalTo: leadingAnchor),
             pressedView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            pressedView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            pressedView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            loadingImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            loadingImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            loadingImageView.widthAnchor.constraint(equalToConstant: Constant.loadingImageWidth),
+            loadingImageView.heightAnchor.constraint(equalToConstant: Constant.loadingImageHeight),
         ])
     }
     
@@ -63,6 +99,7 @@ private extension ActionButton {
         updateTextColor()
         updateBackgroundColor()
         updateBorder()
+        updateLoading()
     }
     
     func updateFont() {
@@ -82,6 +119,10 @@ private extension ActionButton {
     func updateBorder() {
         layer.borderWidth = style.borderWidh
         layer.borderColor = style.borderColor.cgColor
+    }
+    
+    func updateLoading() {
+        loadingImageView.tintColor = isEnabled ? style.textColor : style.disabledTextColor
     }
     
 }
