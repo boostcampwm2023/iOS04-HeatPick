@@ -1,16 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  Post,
-  Query,
-  Headers,
-  UseInterceptors,
-  UploadedFile,
-  Delete,
-  Put
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put } from '@nestjs/common';
 
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
@@ -55,6 +43,7 @@ export class UserController {
   async addBadgeExp(@Body() addBadgeExpDto: AddBadgeExpDto) {
     const transformedDto = plainToClass(AddBadgeExpDto, addBadgeExpDto);
     return this.userService.addBadgeExp(transformedDto);
+  }
   @Get('story')
   @ApiOperation({ summary: `Get All user's storyList` })
   @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [Story] })
