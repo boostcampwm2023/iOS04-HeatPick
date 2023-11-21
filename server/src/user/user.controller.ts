@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Headers } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
 import { Story } from '../entities/story.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('user')
 @Controller('user')
@@ -29,5 +30,12 @@ export class UserController {
   @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [Story] })
   async getStoryList(@Query() userId: number): Promise<Story[]> {
     return this.userService.getStoryList(userId);
+  }
+
+  @Patch('update')
+  @ApiOperation({ summary: `Update user's info` })
+  @ApiResponse({ status: 201, description: '사용자의 정보를 성공적으로 수정했습니다.' })
+  async update(@Headers('accessToken') accessToken: string) {
+    return this.userService.update(accessToken);
   }
 }
