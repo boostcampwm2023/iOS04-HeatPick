@@ -44,4 +44,8 @@ export class UserRepository {
   async update(where: object, elem: object) {
     return await this.userRepository.update(where, elem);
   }
+
+  async delete(user: User) {
+    return await this.userRepository.remove(user);
+  }
 }
