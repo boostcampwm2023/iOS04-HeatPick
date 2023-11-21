@@ -16,7 +16,7 @@ import ModernRIBs
 
 protocol SearchHomePresentableListener: AnyObject {
     func presentHomeList()
-    func presentHomeResult()
+    func attachSearchResult()
 }
 
 public final class SearchHomeViewController: UIViewController, SearchHomePresentable, SearchHomeViewControllable {
@@ -129,7 +129,7 @@ private extension SearchHomeViewController {
 private extension SearchHomeViewController {
     
     @objc func searchTextFieldDidTap() {
-        listener?.presentHomeResult()
+        listener?.attachSearchResult()
     }
     
     @objc func showSearchHomeListButtonDidTap() {

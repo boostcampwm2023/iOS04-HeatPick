@@ -9,7 +9,20 @@
 import ModernRIBs
 
 protocol SearchResultRouting: ViewableRouting {
+    func attachBeginEditingTextDashboard()
+    func detachBeginEditingTextDashboard()
+    func showBeginEditingTextDashboard()
+    func hideBeginEditingTextDashboard()
     
+    func attachEditingTextDashboard()
+    func detachEditingTextDashboard()
+    func showEditingTextDashboard()
+    func hideEditingTextDashboard()
+    
+    func attachEndEditingTextDashboard()
+    func detachEndEditingTextDashboard()
+    func showEndEditingTextDashboard()
+    func hideEndEditingTextDashboard()
 }
 
 protocol SearchResultPresentable: Presentable {
@@ -17,7 +30,9 @@ protocol SearchResultPresentable: Presentable {
     
 }
 
-protocol SearchResultListener: AnyObject { }
+protocol SearchResultListener: AnyObject { 
+    func detachSearchResult()
+}
 
 final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {
 
@@ -32,15 +47,43 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        
+        router?.attachBeginEditingTextDashboard()
+        router?.attachEditingTextDashboard()
+        router?.attachEndEditingTextDashboard()
     }
 
     override func willResignActive() {
         super.willResignActive()
-        
+        router?.detachBeginEditingTextDashboard()
+        router?.detachEditingTextDashboard()
+        router?.detachEndEditingTextDashboard()
     }
     
-    func naviagtionViewBackButtonDidTap() {
-        
+    func detachSearchResult() {
+        listener?.detachSearchResult()
+    }
+    
+    func showBeginEditingTextDashboard() {
+        router?.showBeginEditingTextDashboard()
+    }
+    
+    func hideBeginEditingTextDashboard() {
+        router?.hideBeginEditingTextDashboard()
+    }
+    
+    func showEditingTextDashboard() {
+        router?.showEditingTextDashboard()
+    }
+    
+    func hideEditingTextDashboard() {
+        router?.hideEditingTextDashboard()
+    }
+    
+    func showEndEditingTextDashboard() {
+        router?.showEndEditingTextDashboard()
+    }
+    
+    func hideEndEditingTextDashboard() {
+        router?.hideEndEditingTextDashboard()
     }
 }

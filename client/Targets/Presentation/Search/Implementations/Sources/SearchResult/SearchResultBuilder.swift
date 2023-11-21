@@ -8,12 +8,27 @@
 
 import ModernRIBs
 
-protocol SearchResultDependency: Dependency {
-    
+protocol SearchResultDependency: Dependency { }
+
+final class SearchResultComponent: Component<SearchResultDependency>,
+                                    BeginEditingTextDashboardDependency,
+                                    EditingTextDashboardDependency,
+                                    EndEditingTextDashboardDependency {
+
 }
 
-final class SearchResultComponent: Component<SearchResultDependency> {
+final class SearchResultRouterComponent: SearchResultRouterDependency {
+    
+    let beginEditingTextDashboardBuilder: BeginEditingTextDashboardBuildable
+    let editingTextDashboardBuilder: EditingTextDashboardBuildable
+    let endEditingTextDashboardBuilder: EndEditingTextDashboardBuildable
 
+    init(component: SearchResultComponent) {
+        self.beginEditingTextDashboardBuilder = BeginEditingTextDashboardBuilder(dependency: component)
+        self.editingTextDashboardBuilder = EditingTextDashboardBuilder(dependency: component)
+        self.endEditingTextDashboardBuilder = EndEditingTextDashboardBuilder(dependency: component)
+    }
+    
 }
 
 // MARK: - Builder
@@ -30,12 +45,14 @@ final class SearchResultBuilder: Builder<SearchResultDependency>, SearchResultBu
 
     func build(withListener listener: SearchResultListener) -> SearchResultRouting {
         let component = SearchResultComponent(dependency: dependency)
+        let routerComponent = SearchResultRouterComponent(component: component)
         let viewController = SearchResultViewController()
         let interactor = SearchResultInteractor(presenter: viewController)
         interactor.listener = listener
         return SearchResultRouter(
             interactor: interactor,
-            viewController: viewController
+            viewController: viewController,
+            dependency: routerComponent
         )
     }
 }

@@ -15,8 +15,6 @@ protocol SearchHomeRouting: ViewableRouting {
     
     func attachSearchResult()
     func detachSearchResult()
-    func presentSearchResult()
-    
 }
 
 protocol SearchHomePresentable: Presentable {
@@ -41,21 +39,23 @@ final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>,
     override func didBecomeActive() {
         super.didBecomeActive()
         router?.attachSearchHomeList()
-        router?.attachSearchResult()
     }
     
     override func willResignActive() {
         super.willResignActive()
         router?.detachSearchHomeList()
-        router?.detachSearchResult()
     }
     
     func presentHomeList() {
         router?.presentSearchHomeList()
     }
     
-    func presentHomeResult() {
-        router?.presentSearchResult()
+    func attachSearchResult() {
+        router?.attachSearchResult()
     }
     
+    func detachSearchResult() {
+        router?.detachSearchResult()
+    }
+
 }
