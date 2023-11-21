@@ -9,9 +9,9 @@
 import Foundation
 import DomainEntities
 
-public struct RecommendResponseDTO {
+public struct RecommendResponseDTO: Decodable {
     
-    public struct RecommendStoryResponse {
+    public struct RecommendStoryResponse: Decodable {
         public let storyId: Int
         public let title: String
         public let content: String
