@@ -18,7 +18,6 @@ protocol SearchHomeListPresentable: Presentable {
     func updateLocation(_ location: String)
     func setup(models: [SearchHomeListCellModel])
     func append(models: [SearchHomeListCellModel])
-    
 }
 
 protocol SearchHomeListListener: AnyObject { }

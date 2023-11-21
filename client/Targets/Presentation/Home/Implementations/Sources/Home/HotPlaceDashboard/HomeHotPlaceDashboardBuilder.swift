@@ -7,10 +7,15 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol HomeHotPlaceDashboardDependency: Dependency {}
+protocol HomeHotPlaceDashboardDependency: Dependency {
+    var hotPlaceUseCase: HotPlaceUseCaseInterface { get }
+}
 
-final class HomeHotPlaceDashboardComponent: Component<HomeHotPlaceDashboardDependency> {}
+final class HomeHotPlaceDashboardComponent: Component<HomeHotPlaceDashboardDependency>, HomeHotPlaceDashboardInteractorDependency {
+    var hotPlaceUseCase: HotPlaceUseCaseInterface { dependency.hotPlaceUseCase }
+}
 
 protocol HomeHotPlaceDashboardBuildable: Buildable {
     func build(withListener listener: HomeHotPlaceDashboardListener) -> HomeHotPlaceDashboardRouting
@@ -25,7 +30,7 @@ final class HomeHotPlaceDashboardBuilder: Builder<HomeHotPlaceDashboardDependenc
     func build(withListener listener: HomeHotPlaceDashboardListener) -> HomeHotPlaceDashboardRouting {
         let component = HomeHotPlaceDashboardComponent(dependency: dependency)
         let viewController = HomeHotPlaceDashboardViewController()
-        let interactor = HomeHotPlaceDashboardInteractor(presenter: viewController)
+        let interactor = HomeHotPlaceDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return HomeHotPlaceDashboardRouter(interactor: interactor, viewController: viewController)
     }

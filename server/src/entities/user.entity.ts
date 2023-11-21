@@ -46,4 +46,8 @@ export class User {
 
   @OneToMany(() => Badge, (badge) => badge.user, { cascade: true })
   badges: Promise<Badge[]>;
+
+  @OneToOne(() => Badge)
+  @JoinColumn()
+  representativeBadge: Badge;
 }

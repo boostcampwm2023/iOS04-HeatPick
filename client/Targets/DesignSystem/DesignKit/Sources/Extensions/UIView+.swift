@@ -18,4 +18,17 @@ public extension UIView {
         return tapGesture
     }
     
+    func rotate(animationKey key: String, duration: CFTimeInterval = 1) {
+        let rotation: CABasicAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotation.toValue = NSNumber(value: Double.pi * 2)
+        rotation.duration = duration
+        rotation.isCumulative = true
+        rotation.repeatCount = Float.greatestFiniteMagnitude
+        layer.add(rotation, forKey: key)
+    }
+    
+    func removeCALayerAnimation(forKey key: String) {
+        layer.removeAnimation(forKey: key)
+    }
+    
 }

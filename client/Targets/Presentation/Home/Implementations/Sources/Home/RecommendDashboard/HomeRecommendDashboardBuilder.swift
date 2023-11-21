@@ -7,10 +7,15 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol HomeRecommendDashboardDependency: Dependency {}
+protocol HomeRecommendDashboardDependency: Dependency {
+    var recommendUseCase: RecommendUseCaseInterface { get }
+}
 
-final class HomeRecommendDashboardComponent: Component<HomeRecommendDashboardDependency> {}
+final class HomeRecommendDashboardComponent: Component<HomeRecommendDashboardDependency>, HomeRecommendDashboardInteractorDependency {
+    var recommendUseCase: RecommendUseCaseInterface { dependency.recommendUseCase }
+}
 
 protocol HomeRecommendDashboardBuildable: Buildable {
     func build(withListener listener: HomeRecommendDashboardListener) -> ViewableRouting
@@ -23,8 +28,9 @@ final class HomeRecommendDashboardBuilder: Builder<HomeRecommendDashboardDepende
     }
     
     func build(withListener listener: HomeRecommendDashboardListener) -> ViewableRouting {
+        let component = HomeRecommendDashboardComponent(dependency: dependency)
         let viewController = HomeRecommendDashboardViewController()
-        let interactor = HomeRecommendDashboardInteractor(presenter: viewController)
+        let interactor = HomeRecommendDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return HomeRecommendDashboardRouter(interactor: interactor, viewController: viewController)
     }
