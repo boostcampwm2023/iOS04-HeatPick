@@ -15,6 +15,8 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
+import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
+import { plainToClass } from 'class-transformer';
 import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
 import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -47,6 +49,12 @@ export class UserController {
     return this.userService.setRepresentatvieBadge(setBadgeDto);
   }
 
+  @Put('badge/exp')
+  @ApiOperation({ summary: '유저 객체의 뱃지 경험치를 증가시킵니다.' })
+  @ApiResponse({ status: 200, description: '뱃지에 경험치가 성공적으로 반영되었습니다..' })
+  async addBadgeExp(@Body() addBadgeExpDto: AddBadgeExpDto) {
+    const transformedDto = plainToClass(AddBadgeExpDto, addBadgeExpDto);
+    return this.userService.addBadgeExp(transformedDto);
   @Get('story')
   @ApiOperation({ summary: `Get All user's storyList` })
   @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [Story] })

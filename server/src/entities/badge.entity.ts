@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
+import { Transform } from 'class-transformer';
 
 @Entity()
 export class Badge {
@@ -10,6 +11,7 @@ export class Badge {
   badgeName: string;
 
   @Column()
+  @Transform(({ value }) => parseInt(value, 10))
   badgeExp: number;
 
   @Column()
