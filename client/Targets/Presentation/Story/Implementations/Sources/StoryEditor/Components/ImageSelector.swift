@@ -30,6 +30,10 @@ final class ImageSelector: UIView {
         imageView.image != nil
     }
     
+    var image: Data? {
+        imageView.image?.pngData()
+    }
+    
     private lazy var plusImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .init(systemName: "plus.circle.fill")

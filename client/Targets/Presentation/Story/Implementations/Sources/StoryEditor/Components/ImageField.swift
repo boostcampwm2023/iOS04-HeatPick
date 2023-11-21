@@ -11,6 +11,10 @@ import PhotosUI
 
 final class ImageField: UIView {
     
+    var images: [Data] {
+        stackView.arrangedSubviews.compactMap { ($0 as? ImageSelector)?.image }
+    }
+    
     weak var presenterDelegate: ImageSelectorPickerPresenterDelegate? {
         didSet {
             setPresenter()
