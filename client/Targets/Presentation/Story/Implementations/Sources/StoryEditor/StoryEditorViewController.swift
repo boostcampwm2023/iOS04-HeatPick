@@ -13,11 +13,6 @@ import ModernRIBs
 
 import DesignKit
 
-struct AttributeModel {
-    let title: String
-    var value: String
-}
-
 public protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
 }
@@ -45,7 +40,6 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
         scrollView.showsHorizontalScrollIndicator = false
-        scrollView.keyboardDismissMode = .onDrag
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
@@ -84,32 +78,19 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return descriptionField
     }()
     
+    private let attributeField: AttributeField = {
+        let attributeField = AttributeField()
+        
+        attributeField.translatesAutoresizingMaskIntoConstraints = false
+        return attributeField
+    }()
+    
     private let saveButton: ActionButton = {
         let button = ActionButton()
         button.setTitle("저장하기", for: .normal)
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
-    }()
-    
-    private var attributes: [AttributeType] = [.category("없음"), .location("없음"), .date(.now), .badge("없음")]
-    
-    private lazy var attributeField: AttributeField = {
-        let tableView = AttributeField()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(AttributeTableViewCell.self)
-
-        tableView.rowHeight = 50
-        tableView.isScrollEnabled = false
-        tableView.allowsSelection = true
-        tableView.allowsMultipleSelection = false
-        tableView.isUserInteractionEnabled = true
-
-        
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
     }()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -126,7 +107,6 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     }
     
 }
-
 
 // MARK: - Setup Views
 private extension StoryEditorViewController {
@@ -146,7 +126,7 @@ private extension StoryEditorViewController {
             scrollView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -10),
             scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1, constant: Constant.scrollViewInset * 2),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
@@ -157,6 +137,12 @@ private extension StoryEditorViewController {
         
         scrollView.contentInset = .init(top: 40, left: Constant.scrollViewInset, bottom: 0, right: Constant.scrollViewInset)
         saveButton.layer.cornerRadius = Constants.cornerRadiusMedium
+        
+        view.addTapGesture(target: self, action: #selector(dismissKeyboard))
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
     
 }
@@ -177,28 +163,4 @@ extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
         present(picker, animated: true)
     }
 
-}
-
-// MARK: - Attribute TableView Delegate
-extension StoryEditorViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as? AttributeTableViewCell
-        cell?.presentPicker()
-    }
-
-}
-    
-extension StoryEditorViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return attributes.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(AttributeTableViewCell.self, for: indexPath)
-        cell.setup(type: attributes[indexPath.row])
-        
-        return cell
-    }
-    
 }
