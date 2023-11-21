@@ -14,12 +14,11 @@ protocol SearchingDashboardInteractable: Interactable {
 }
 
 protocol SearchingDashboardViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy.
+    
 }
 
 final class SearchingDashboardRouter: ViewableRouter<SearchingDashboardInteractable, SearchingDashboardViewControllable>, SearchingDashboardRouting {
 
-    // TODO: Constructor inject child builder protocols to allow building children.
     override init(interactor: SearchingDashboardInteractable, viewController: SearchingDashboardViewControllable) {
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
