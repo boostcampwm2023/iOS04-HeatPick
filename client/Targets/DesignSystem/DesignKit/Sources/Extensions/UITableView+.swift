@@ -1,5 +1,5 @@
 //
-//  UITableViewCell+.swift
+//  UITableView+.swift
 //  DesignKit
 //
 //  Created by 홍성준 on 11/14/23.

@@ -69,9 +69,8 @@ export class StoryService {
     return stories;
   }
 
-
   async getRecommendByLocationStory(locationDto: LocationDTO) {
-    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10 });
+    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10, relations: ['user'] });
 
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;
@@ -100,6 +99,7 @@ export class StoryService {
           likeCount: 'DESC',
         },
         take: 10,
+        relations: ['user'],
       });
       return stories;
     } catch (error) {
@@ -107,7 +107,6 @@ export class StoryService {
     }
   }
 
-  
   public async update(accessToken: string, { storyId, title, content, category, place, images, date }): Promise<number> {
     const newStory = await createStoryEntity({ title, content, category, place, images, date });
     const decodedToken = this.jwtService.verify(accessToken);

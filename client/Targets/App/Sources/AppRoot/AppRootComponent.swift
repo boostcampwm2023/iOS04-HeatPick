@@ -28,12 +28,13 @@ final class AppRootComponent: Component<AppRootDependency>,
                               SignInDependency,
                               HomeDependency,
                               SearchHomeDependency, 
-                              StoryCreatorDependency {    
+                                StoryCreatorDependency {
     
     let authUseCase: AuthUseCaseInterface
-    let naverLoginRepository: NaverLoginRepositoryInterface
-    
+    let homeUseCase: HomeUseCaseInterface
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
+    
+    let naverLoginRepository: NaverLoginRepositoryInterface
     
     lazy var signInBuilder: SignInBuildable = {
         SignInBuilder(dependency: self)
@@ -58,19 +59,26 @@ final class AppRootComponent: Component<AppRootDependency>,
             return repository
         }()
         self.naverLoginRepository = naverLoginRepository
-        let network: Network = {
-//            let configuration = URLSessionConfiguration.default
-            let configuration = URLSessionConfiguration.ephemeral
-            configuration.protocolClasses = [AuthURLProtocol.self]
-            let provider = NetworkProvider(session: URLSession(configuration: configuration))
-            return provider
-        }()
+        let authNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [AuthURLProtocol.self])
         self.authUseCase = AuthUseCase(
-            repository: AuthRepository(session: network),
+            repository: AuthRepository(session: authNetworkProvider),
             signInUseCase: SignInUseCase(naverLoginRepository: naverLoginRepository)
         )
+        
+        let homeNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [])
+        self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider))
         self.locationAuthorityUseCase = LocationAuthorityUseCase(service: LocationService())
         super.init(dependency: dependency)
+    }
+    
+    static func generateNetworkProvider(isDebug: Bool, protocols: [AnyClass]) -> Network {
+        if isDebug {
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.protocolClasses = protocols
+            return NetworkProvider(session: URLSession(configuration: configuration))
+        } else {
+            return NetworkProvider(session: URLSession.shared)
+        }
     }
     
 }
