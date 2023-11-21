@@ -42,7 +42,6 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -67,10 +66,14 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
 }
 
 private extension CategoryCollectionViewCell {
-    
+
     func setupView() {
-        [titleLabel, descriptionLabel].forEach { contentView.addSubview($0) }
+        contentView.clipsToBounds = true
+        contentView.layer.cornerRadius = Constants.cornerRadiusMedium
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = UIColor.lightGray.cgColor
         
+        [titleLabel, descriptionLabel].forEach { contentView.addSubview($0) }
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: Constant.topOffset),

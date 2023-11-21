@@ -86,14 +86,14 @@ private extension BeginEditingTextDashboardViewController {
     
     func makeCollectionViewLayout() -> UICollectionViewCompositionalLayout {
         
-        let layout = UICollectionViewCompositionalLayout { [weak self] section, collectionLayoutEnvironment in
+        let layout = UICollectionViewCompositionalLayout { [weak self] section, collectionLayoutEnvironment -> NSCollectionLayoutSection? in
             guard let self = self,
                   let section = Section(rawValue: section) else { return nil }
             switch section {
             case .recentSearchText:
-                return makeRecentSearchSection()
+                return self.makeRecentSearchSection()
             case .category:
-                return makeCategorySection()
+                return self.makeCategorySection()
             }
         }
 
@@ -124,9 +124,12 @@ private extension BeginEditingTextDashboardViewController {
     }
     
     func makeCategorySection() -> NSCollectionLayoutSection {
-        let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(50))
-        let item = NSCollectionLayoutItem(layoutSize: size)
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: size, subitems: [item])
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(50))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        group.interItemSpacing = .fixed(10)
+        group.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
         
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
@@ -147,6 +150,7 @@ private extension BeginEditingTextDashboardViewController {
     
 }
 
+// TODO: Snapshow으로 변경 예정
 extension BeginEditingTextDashboardViewController: UICollectionViewDataSource {
     
     private enum Section: Int, CaseIterable {
@@ -178,7 +182,6 @@ extension BeginEditingTextDashboardViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print(#function)
         guard let section = Section(rawValue: indexPath.section) else { return .init() }
 
         switch section {
@@ -189,7 +192,6 @@ extension BeginEditingTextDashboardViewController: UICollectionViewDataSource {
             return cell
         case .category:
             guard let model = categoryModels[safe: indexPath.row] else { return .init() }
-            print(model)
             let cell = collectionView.dequeue(CategoryCollectionViewCell.self, for: indexPath)
             cell.updateCategory(model)
             return cell

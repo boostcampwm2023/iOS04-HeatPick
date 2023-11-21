@@ -48,15 +48,20 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
     
     func attachDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
-        addChild(viewController)
-        stackView.addArrangedSubview(viewController.view)
-        viewController.didMove(toParent: self)
+        
+        if let view = stackView.arrangedSubviews.filter({ $0 == viewController.view }).first {
+            view.isHidden = false
+        } else {
+            addChild(viewController)
+            stackView.addArrangedSubview(viewController.view)
+            viewController.didMove(toParent: self)
+        }
     }
     
     func detachDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
-        stackView.removeArrangedSubview(viewController.view)
-        viewController.removeFromParent()
+        guard let view = stackView.arrangedSubviews.filter({ $0 == viewController.view }).first else { return }
+        view.isHidden = true
     }
     
 }
@@ -89,6 +94,7 @@ extension SearchResultViewController: SearchNavigationViewDelegate {
     }
     
     func showEditingTextDashboard() {
+        listener?.hideEndEditingTextDashboard()
         listener?.hideBeginEditingTextDashboard()
         listener?.showEditingTextDashboard()
     }
