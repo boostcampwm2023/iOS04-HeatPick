@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { In, Repository } from 'typeorm';
+import { FindManyOptions, In, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 
 @Injectable()
@@ -8,6 +8,14 @@ export class UserRepository {
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
   ) {}
+
+  async save(user: User) {
+    this.userRepository.save(user);
+  }
+
+  async findByOption(findManyOptions: FindManyOptions) {
+    return await this.userRepository.find(findManyOptions);
+  }
 
   async findOneById(id: string): Promise<User> {
     return await this.userRepository.findOne({ where: { oauthId: id } });

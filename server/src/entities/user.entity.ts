@@ -45,5 +45,5 @@ export class User {
   comments: Comment;
 
   @OneToMany(() => Badge, (badge) => badge.user, { cascade: true })
-  badges: Badge[];
+  badges: Promise<Badge[]>;
 }

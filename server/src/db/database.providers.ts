@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { establishSSHconnection } from './dbConnection';
 import * as dotenv from 'dotenv';
+import { query } from 'express';
 
 dotenv.config();
 
