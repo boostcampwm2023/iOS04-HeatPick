@@ -10,27 +10,48 @@ import Foundation
 
 public struct MultipartFormData {
     
-    public let data: Data
-    public let name: String
-    public let fileName: String
-    public let mimeType: String
+    public let data: Encodable
+    public let mediaList: [Media]
     
-    public init(data: Data, name: String, fileName: String, mimeType: String) {
+    public init(data: Encodable, mediaList: [Media]) {
         self.data = data
-        self.name = name
-        self.fileName = fileName
-        self.mimeType = mimeType
+        self.mediaList = mediaList
+    }
+
+    public func makeData(boundary: String) -> Data {
+        let lineBreak = "\r\n"
+        var body = Data()
+        
+        let parameters = data.dataParameters()
+        for (key, value) in parameters {
+            guard let stringValue = String(data: value, encoding: .utf8) else { continue }
+            body.append("--\(boundary + lineBreak)")
+            body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)")
+            body.append(stringValue)
+            body.append(lineBreak)
+        }
+        
+        for media in mediaList {
+            body.append("--\(boundary + lineBreak)")
+            body.append("Content-Disposition: form-data; name=\"\(media.key)\"; filename=\"\(media.filename)\"\(lineBreak)")
+            body.append("Content-Type: \(media.mimeType + lineBreak + lineBreak)")
+            body.append(media.data)
+            body.append(lineBreak)
+        }
+        
+        body.append("--\(boundary)--\(lineBreak)")
+        
+        return body
     }
     
-    public func makeData(boundary: String) -> Data {
-        var body = Data()
-        body.append("--\(boundary)\r\n".utf8)
-        body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n".utf8)
-        body.append("Content-Type: \(mimeType)\r\n\r\n".utf8)
-        body.append(data)
-        body.append("\r\n".utf8)
-        body.append("--\(boundary)--\r\n".utf8)
-        return body
+}
+
+fileprivate extension Data {
+    
+    mutating func append(_ string: String) {
+        if let data = string.data(using: .utf8) {
+            append(data)
+        }
     }
     
 }

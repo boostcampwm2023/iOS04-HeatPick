@@ -23,4 +23,31 @@ extension Encodable {
         return parameters ?? [:]
     }
     
+    func dataParameters()-> [String: Data] {
+        let mirror = Mirror(reflecting: self)
+        var result: [String: Data] = [:]
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        encoder.dateEncodingStrategy = .iso8601
+        
+        for case let (label?, value) in mirror.children {
+            guard let encodableValue = value as? Encodable,
+                  let data = try? encoder.encode(encodableValue)
+            else { continue }
+            
+            result[label] = removeQuotes(from: data)
+        }
+        
+        return result
+    }
+    
+    private func removeQuotes(from data: Data) -> Data {
+        guard let stringData = String(data: data, encoding: .utf8),
+                stringData.hasPrefix("\""),
+                stringData.hasSuffix("\"")
+        else { return data }
+        
+        return Data(String(stringData.dropFirst().dropLast()).utf8)
+    }
 }
