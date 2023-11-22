@@ -83,7 +83,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
         Task { [weak self] in
             guard let self else { return }
             await dependency.storyUseCase
-                .requestNewStory(storyContent: content)
+                .requestCreateStory(storyContent: content)
                 .onSuccess(on: .main, with: self, { this, sotryId in
                     print("didTapSaveRequestNewStorySuccess on storyEditorInteractor")
                 })

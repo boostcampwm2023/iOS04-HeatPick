@@ -21,7 +21,7 @@ public final class StoryRepository: StoryRepositoryInterface {
         self.session = session
     }
     
-    public func requestNewStory(storyContent: StoryContent) async -> Result<Story, Error> {
+    public func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error> {
         let target = StoryAPI.newStory(storyContent)
         let request: Result<NewStoryResponseDTO, Error> = await session.request(target)
         

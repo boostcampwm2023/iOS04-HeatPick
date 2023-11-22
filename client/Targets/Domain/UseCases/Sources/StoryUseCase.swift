@@ -22,7 +22,7 @@ public final class StoryUseCase: StoryUseCaseInterface {
         self.repository = repository
     }
     
-    public func requestNewStory(storyContent: StoryContent) async -> Result<Story, Error> {
-        return await repository.requestNewStory(storyContent: storyContent)
+    public func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error> {
+        return await repository.requestCreateStory(storyContent: storyContent)
     }
 }

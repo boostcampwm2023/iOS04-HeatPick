@@ -12,6 +12,6 @@ import DomainEntities
 
 public protocol StoryRepositoryInterface: AnyObject {
     
-    func requestNewStory(storyContent: StoryContent) async -> Result<Story, Error>
+    func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error>
     
 }

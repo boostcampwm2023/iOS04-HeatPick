@@ -13,6 +13,6 @@ import DomainEntities
 
 public protocol StoryUseCaseInterface: AnyObject {
     
-    func requestNewStory(storyContent: StoryContent) async -> Result<Story, Error>
+    func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error>
     
 }
