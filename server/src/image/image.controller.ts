@@ -6,10 +6,19 @@ import { ImageService } from './image.service';
 export class ImageController {
   constructor(private imageService: ImageService) {}
 
-  @Get()
-  @ApiOperation({ summary: 'Get Image' })
+  @Get('story')
+  @ApiOperation({ summary: 'Get Story Image' })
   @ApiResponse({ status: 200, description: 'Profile Image or Story Image' })
-  async requestImage(@Query('path') path: string): Promise<Buffer> {
-    return await this.imageService.readImage(path);
+  async requestStoryImage(@Query('name') name: string): Promise<Buffer> {
+    const storyImagePath = './images/story';
+    return await this.imageService.readImage(`${storyImagePath}/${name}`);
+  }
+
+  @Get('profile')
+  @ApiOperation({ summary: 'Get Profile Image' })
+  @ApiResponse({ status: 200, description: 'Profile Image or Story Image' })
+  async requestProfileImage(@Query('name') name: string): Promise<Buffer> {
+    const storyImagePath = './images/profile';
+    return await this.imageService.readImage(`${storyImagePath}/${name}`);
   }
 }
