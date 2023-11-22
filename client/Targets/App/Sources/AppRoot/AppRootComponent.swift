@@ -33,9 +33,11 @@ final class AppRootComponent: Component<AppRootDependency>,
                               StoryCreatorDependency,
                               MyPageDependency {
     
+    
     let authUseCase: AuthUseCaseInterface
     let homeUseCase: HomeUseCaseInterface
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
+    let storyUseCase: StoryUseCaseInterface
     
     let naverLoginRepository: NaverLoginRepositoryInterface
     
@@ -75,6 +77,10 @@ final class AppRootComponent: Component<AppRootDependency>,
         let homeNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [])
         self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider))
         self.locationAuthorityUseCase = LocationAuthorityUseCase(service: LocationService())
+        
+        let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [])
+        self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider))
+        
         super.init(dependency: dependency)
     }
     
