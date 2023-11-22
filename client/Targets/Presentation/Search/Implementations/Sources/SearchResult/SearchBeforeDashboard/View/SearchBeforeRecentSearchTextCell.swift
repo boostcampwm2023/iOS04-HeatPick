@@ -48,8 +48,8 @@ final class SearchBeforeRecentSearchTextCell: UICollectionViewCell {
         reset()
     }
     
-    func updateRecentSearchText(_ receentSearchText: ReceentSearchTextModel) {
-        titleLabel.text = receentSearchText.text
+    func setup(_ model: ReceentSearchTextModel) {
+        titleLabel.text = model.text
     }
     
 }

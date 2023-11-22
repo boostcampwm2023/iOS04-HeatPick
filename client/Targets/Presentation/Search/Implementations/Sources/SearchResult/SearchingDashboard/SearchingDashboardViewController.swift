@@ -67,7 +67,7 @@ extension SearchingDashboardViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let model = models[safe: indexPath.row] else { return .init() }
         let cell = tableView.dequeue(SearchingRecommendCell.self, for: indexPath)
-        cell.update(searchingRecommendCellModel: model)
+        cell.setup(model: model)
         return cell
     }
     

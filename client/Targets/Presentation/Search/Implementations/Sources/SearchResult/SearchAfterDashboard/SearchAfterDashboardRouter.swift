@@ -14,13 +14,30 @@ protocol SearchAfterDashboardInteractable: Interactable {
 }
 
 protocol SearchAfterDashboardViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy.
+    func insertDashboard(_ viewControllable: ViewControllable)
+    func removeDashboard(_ viewControllable: ViewControllable)
+}
+
+protocol SearchAfterDashboardRouterDependency {
+    var searchAfterStoryDashboardBuilder: SearchAfterStoryDashboardBuildable { get }
+    var searchAfterUserDashboardBuilder: SearchAfterUserDashboardBuildable { get }
 }
 
 final class SearchAfterDashboardRouter: ViewableRouter<SearchAfterDashboardInteractable, SearchAfterDashboardViewControllable>, SearchAfterDashboardRouting {
 
-    // TODO: Constructor inject child builder protocols to allow building children.
-    override init(interactor: SearchAfterDashboardInteractable, viewController: SearchAfterDashboardViewControllable) {
+    private let searchAfterStoryDashboardBuilder: SearchAfterStoryDashboardBuildable
+    private var SearchAfterStoryDashboardRouter: SearchAfterStoryDashboardRouting?
+    
+    private let searchAfterUserDashboardBuilder: SearchAfterUserDashboardBuildable
+    private var searchAfterUserDashboardRouter: SearchAfterUserDashboardRouting?
+    
+    init(
+        interactor: SearchAfterDashboardInteractable,
+        viewController: SearchAfterDashboardViewControllable,
+        dependency: SearchAfterDashboardRouterDependency
+    ) {
+        self.searchAfterStoryDashboardBuilder = dependency.searchAfterStoryDashboardBuilder
+        self.searchAfterUserDashboardBuilder = dependency.searchAfterUserDashboardBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }

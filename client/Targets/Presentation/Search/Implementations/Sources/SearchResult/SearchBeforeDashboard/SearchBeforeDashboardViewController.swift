@@ -185,12 +185,12 @@ extension SearchBeforeDashboardViewController: UICollectionViewDataSource {
         case .recentSearchText:
             guard let model = recentSearchTextModels[safe: indexPath.row] else { return .init() }
             let cell = collectionView.dequeue(SearchBeforeRecentSearchTextCell.self, for: indexPath)
-            cell.updateRecentSearchText(model)
+            cell.setup(model)
             return cell
         case .category:
             guard let model = categoryModels[safe: indexPath.row] else { return .init() }
             let cell = collectionView.dequeue(SearchBeforeCategoryCell.self, for: indexPath)
-            cell.updateCategory(model)
+            cell.setup(model)
             return cell
         }
     }
@@ -199,7 +199,7 @@ extension SearchBeforeDashboardViewController: UICollectionViewDataSource {
         if kind == UICollectionView.elementKindSectionHeader,
            let section = Section(rawValue: indexPath.section) {
             let headerView = collectionView.dequeueHeader(SearchBeforeHeaderView.self, for: indexPath)
-            headerView.updateTitle(section.title)
+            headerView.setupTitle(section.title)
             return headerView
         }
         

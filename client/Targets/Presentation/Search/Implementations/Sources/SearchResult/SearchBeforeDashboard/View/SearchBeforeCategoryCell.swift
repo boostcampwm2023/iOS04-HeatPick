@@ -57,9 +57,9 @@ final class SearchBeforeCategoryCell: UICollectionViewCell {
         reset()
     }
     
-    func updateCategory(_ category: CategoryModel) {
-        titleLabel.text = category.title
-        descriptionLabel.text = category.description
+    func setup(_ model: CategoryModel) {
+        titleLabel.text = model.title
+        descriptionLabel.text = model.description
     }
     
 }
