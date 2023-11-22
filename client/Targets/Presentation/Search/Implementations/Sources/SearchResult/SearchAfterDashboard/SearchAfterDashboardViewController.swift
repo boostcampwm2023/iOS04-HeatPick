@@ -42,9 +42,8 @@ final class SearchAfterDashboardViewController: UIViewController, SearchAfterDas
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
     
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
