@@ -6,7 +6,6 @@ let project = Project.framework(
     name: "AuthImplementations",
     featureTargets: [.staticLibrary, .tests],
     dependencies: [
-        .Target.Presentation.Auth.Interfaces,
-        .Target.Domain.UseCases
+        .Target.Presentation.Auth.Interfaces
     ]
 )

@@ -10,6 +10,7 @@ let project = Project.app(
     dependencies: [
         .Target.Domain.Interfaces,
         .Target.Data.Repositories,
+        .Target.Domain.UseCases,
         .Target.Presentation.Home.Interfaces,
         .Target.Presentation.Home.Implementations,
         .Target.Presentation.Auth.Interfaces,
