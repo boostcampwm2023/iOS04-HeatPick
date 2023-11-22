@@ -21,7 +21,7 @@ final class SearchAfterDashboardViewController: UIViewController, SearchAfterDas
     weak var listener: SearchAfterDashboardPresentableListener?
     
     private enum Constant {
-        static let contentInset: UIEdgeInsets = .init(top: 40, left: 0, bottom: 40, right: 0)
+        
     }
     
     private let scrollView: UIScrollView = {
@@ -30,7 +30,6 @@ final class SearchAfterDashboardViewController: UIViewController, SearchAfterDas
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.contentInset = Constant.contentInset
         return scrollView
     }()
     

@@ -8,26 +8,19 @@
 
 import ModernRIBs
 
-protocol SearchAfterStoryDashboardRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
-}
+protocol SearchAfterStoryDashboardRouting: ViewableRouting { }
 
 protocol SearchAfterStoryDashboardPresentable: Presentable {
     var listener: SearchAfterStoryDashboardPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-protocol SearchAfterStoryDashboardListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
-}
+protocol SearchAfterStoryDashboardListener: AnyObject { }
 
 final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAfterStoryDashboardPresentable>, SearchAfterStoryDashboardInteractable, SearchAfterStoryDashboardPresentableListener {
 
     weak var router: SearchAfterStoryDashboardRouting?
     weak var listener: SearchAfterStoryDashboardListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
     override init(presenter: SearchAfterStoryDashboardPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
@@ -35,11 +28,15 @@ final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAft
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
+
+    }
+    
+    func didTapSeeAll() {
+        
     }
 }

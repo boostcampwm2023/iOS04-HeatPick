@@ -8,15 +8,9 @@
 
 import ModernRIBs
 
-protocol SearchAfterStoryDashboardDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
-}
+protocol SearchAfterStoryDashboardDependency: Dependency { }
 
-final class SearchAfterStoryDashboardComponent: Component<SearchAfterStoryDashboardDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
-}
+final class SearchAfterStoryDashboardComponent: Component<SearchAfterStoryDashboardDependency> { }
 
 // MARK: - Builder
 
