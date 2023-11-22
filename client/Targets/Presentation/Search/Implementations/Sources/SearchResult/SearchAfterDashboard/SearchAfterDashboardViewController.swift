@@ -49,17 +49,10 @@ final class SearchAfterDashboardViewController: UIViewController, SearchAfterDas
         setupViews()
     }
     
-    func setDashboard(_ viewControllable: ViewControllable) {
+    func insertDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
         addChild(viewController)
         stackView.addArrangedSubview(viewController.view)
-        viewController.didMove(toParent: self)
-    }
-    
-    func insertDashboard(_ viewControllable: ViewControllable, at index: Int) {
-        let viewController = viewControllable.uiviewController
-        addChild(viewController)
-        stackView.insertArrangedSubview(viewController.view, at: index)
         viewController.didMove(toParent: self)
     }
     
