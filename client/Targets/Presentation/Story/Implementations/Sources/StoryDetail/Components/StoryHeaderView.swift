@@ -12,8 +12,6 @@ import DesignKit
 
 final class StoryHeaderView: UIView {
     
-    private var listener: StoryDetailPresentableListener?
-
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .largeBold
@@ -41,7 +39,7 @@ final class StoryHeaderView: UIView {
     }()
     
     private lazy var storyLikesCommentsView: StoryLikesCommentsView = {
-        let likesCommentsView = StoryLikesCommentsView(listener: listener)
+        let likesCommentsView = StoryLikesCommentsView()
         
         likesCommentsView.translatesAutoresizingMaskIntoConstraints = false
         return likesCommentsView
@@ -55,11 +53,6 @@ final class StoryHeaderView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
-    }
-    
-    convenience init(listener: StoryDetailPresentableListener?) {
-        self.init()
-        self.listener = listener
     }
     
 }
