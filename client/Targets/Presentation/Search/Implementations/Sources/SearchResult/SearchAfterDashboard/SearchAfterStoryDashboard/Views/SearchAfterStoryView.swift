@@ -22,9 +22,10 @@ struct SearchAfterStoryViewModel {
 final class SearchAfterStoryView: UIView {
     
     private enum Constant {
+        static let offset: CGFloat = 10
+        
         enum ImageView {
-            static let width: CGFloat = 100
-            static let height: CGFloat = 100
+            static let Constants: CGFloat = 100
         }
         
         enum StackView {
@@ -88,8 +89,8 @@ final class SearchAfterStoryView: UIView {
     }
     
     func setup(model: SearchAfterStoryViewModel) {
-        titleLabel.text = model.title
         imageView.load(from: model.thumbnailImage)
+        titleLabel.text = model.title
         addressLabel.text = model.address
         commentView.setup(likes: model.likeCount, comments: model.commentCount)
     }
@@ -102,13 +103,13 @@ private extension SearchAfterStoryView {
     func setupViews() {
         [imageView, stackView].forEach { addSubview($0) }
         NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: Constant.ImageView.height),
-            imageView.widthAnchor.constraint(equalToConstant: Constant.ImageView.width),
+            imageView.heightAnchor.constraint(equalToConstant: Constant.ImageView.Constants),
+            imageView.widthAnchor.constraint(equalToConstant: Constant.ImageView.Constants),
             imageView.topAnchor.constraint(equalTo: topAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
             
-            stackView.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 10),
+            stackView.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: Constant.offset),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
