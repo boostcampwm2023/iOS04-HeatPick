@@ -8,17 +8,15 @@
 
 import ModernRIBs
 
-protocol StoryDetailRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
+public protocol StoryDetailRouting: ViewableRouting {
 }
 
 protocol StoryDetailPresentable: Presentable {
     var listener: StoryDetailPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-protocol StoryDetailListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+public protocol StoryDetailListener: AnyObject {
+    func storyDetailDidTapClose()
 }
 
 final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>, StoryDetailInteractable, StoryDetailPresentableListener {
@@ -41,5 +39,9 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    func storyDetailDidTapClose() {
+        listener?.storyDetailDidTapClose()
     }
 }

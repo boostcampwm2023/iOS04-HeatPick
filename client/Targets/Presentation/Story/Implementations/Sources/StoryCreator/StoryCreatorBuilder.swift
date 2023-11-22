@@ -19,7 +19,9 @@ public protocol StoryCreatorDependency: Dependency {}
 
 final class StoryCreatorComponent: Component<StoryCreatorDependency>,
                                    StoryCreatorRouterDependency,
-                                   StoryEditorDependency {
+                                   StoryEditorDependency,
+                                   StoryDetailDependency {
+    
     
     let network: Network = {
         let configuration = URLSessionConfiguration.default
@@ -32,6 +34,10 @@ final class StoryCreatorComponent: Component<StoryCreatorDependency>,
     lazy var storyUseCase: StoryUseCaseInterface = StoryUseCase(repository: StoryRepository(session: network))
     lazy var storyEditorBuilder: StoryEditorBuildable = {
         StoryEditorBuilder(dependency: self)
+    }()
+    
+    lazy var storyDetailBuilder: StoryDetailBuildable = {
+        StoryDetailBuilder(dependency: self)
     }()
 }
 

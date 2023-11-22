@@ -8,9 +8,16 @@
 
 import ModernRIBs
 
+import DomainEntities
+
 public protocol StoryCreatorRouting: ViewableRouting {
     func attachStoryEditor()
     func detachStoryEditor()
+    
+    func attachStoryDetail(_ story: Story)
+    func detachStoryDetail()
+    
+    func routeToDetail(of story: Story)
 }
 
 public protocol StoryCreatorPresentable: Presentable {
@@ -26,8 +33,6 @@ final class StoryCreatorInteractor: PresentableInteractor<StoryCreatorPresentabl
     weak var router: StoryCreatorRouting?
     weak var listener: StoryCreatorListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
     override init(presenter: StoryCreatorPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
@@ -50,5 +55,13 @@ final class StoryCreatorInteractor: PresentableInteractor<StoryCreatorPresentabl
         listener?.storyCreatorDidComplete()
     }
     
-
+    func storyDidCreate(_ story: Story) {
+        router?.routeToDetail(of: story)
+    }
+    
+    func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
+        listener?.storyCreatorDidComplete()
+    }
+    
 }
