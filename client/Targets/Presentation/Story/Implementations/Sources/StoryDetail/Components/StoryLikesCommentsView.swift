@@ -10,17 +10,12 @@ import Combine
 import UIKit
 
 final class StoryLikesCommentsView: UIView {
-   
-    private var listener: StoryDetailPresentableListener?
-    
+       
     private lazy var likesImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "heart")
         imageView.contentMode = .scaleAspectFill
         imageView.tintColor = .hpBlack
-        
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(likesButtonDidTap))
-        imageView.addGestureRecognizer(gesture)
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -41,9 +36,6 @@ final class StoryLikesCommentsView: UIView {
         imageView.image = UIImage(systemName: "bubble")
         imageView.contentMode = .scaleAspectFill
         imageView.tintColor = .hpBlack
-        
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(commentsButtonDidTap))
-        imageView.addGestureRecognizer(gesture)
          
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -67,11 +59,6 @@ final class StoryLikesCommentsView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
-    }
-    
-    convenience init(listener: StoryDetailPresentableListener?) {
-        self.init()
-        self.listener = listener
     }
     
 }
@@ -104,33 +91,6 @@ private extension StoryLikesCommentsView {
             commentsCountLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             commentsCountLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
-    }
-    
-//    TODO: bind isLiked & likesCount
-//    func bind() {
-//        listener?.isLiked
-//            .sink { isLiked in
-//                likesImage.image = isLiked ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
-//            }.store(in: &cancellables)
-    
-//        listener?.likesCount
-//            .sink { count in
-//                likesCountLabel.text = "\(count)"
-//            }.store(in: &cancellables)
-//    }
-}
-
-// MARK: objc
-private extension StoryLikesCommentsView {
-    
-    @objc func likesButtonDidTap() {
-//        TODO: add listener function
-//        listener?.likesButtonDidTap()
-    }
-    
-    @objc func commentsButtonDidTap() {
-//        TODO: add listener function
-//        listener?.commentsButtonDidTap()
     }
     
 }

@@ -120,6 +120,11 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         saveButton.isEnabled = enabled
     }
     
+    func showFailure(_ error: Error) {
+        let alert = UIAlertController(title: "스토리 생성 실패", message: "\(error.localizedDescription)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .default))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Setup Views

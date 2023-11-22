@@ -20,11 +20,17 @@ public protocol StoryCreatorDependency: Dependency {
 
 final class StoryCreatorComponent: Component<StoryCreatorDependency>,
                                    StoryCreatorRouterDependency,
-                                   StoryEditorDependency {
+                                   StoryEditorDependency,
+                                   StoryDetailDependency {
+    
     
     var storyUseCase: StoryUseCaseInterface { dependency.storyUseCase }
     lazy var storyEditorBuilder: StoryEditorBuildable = {
         StoryEditorBuilder(dependency: self)
+    }()
+    
+    lazy var storyDetailBuilder: StoryDetailBuildable = {
+        StoryDetailBuilder(dependency: self)
     }()
 }
 

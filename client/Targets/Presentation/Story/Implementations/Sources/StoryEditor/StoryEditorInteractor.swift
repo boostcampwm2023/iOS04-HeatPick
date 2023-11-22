@@ -10,6 +10,7 @@ import Combine
 
 import ModernRIBs
 
+import CoreKit
 import DomainEntities
 import DomainInterfaces
 
@@ -20,11 +21,13 @@ public protocol StoryEditorRouting: ViewableRouting {
 public protocol StoryEditorPresentable: Presentable {
     var listener: StoryEditorPresentableListener? { get set }
     func setSaveButton(_ enabled: Bool)
+    func showFailure(_ error: Error)
 }
 
 public protocol StoryEditorListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
     func storyEditorDidTapClose()
+    func storyDidCreate(_ story: Story)
 }
 
 protocol StoryEditorInteractorDependency: AnyObject {
@@ -84,11 +87,12 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
             guard let self else { return }
             await dependency.storyUseCase
                 .requestCreateStory(storyContent: content)
-                .onSuccess(on: .main, with: self, { this, sotryId in
-                    print("didTapSaveRequestNewStorySuccess on storyEditorInteractor")
+                .onSuccess(on: .main, with: self, { this, story in
+                    this.listener?.storyDidCreate(story)
                 })
-                .onFailure { error in
-                    print(error.localizedDescription)
+                .onFailure { [weak self] error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                    self?.presenter.showFailure(error)
                 }
         }
     }

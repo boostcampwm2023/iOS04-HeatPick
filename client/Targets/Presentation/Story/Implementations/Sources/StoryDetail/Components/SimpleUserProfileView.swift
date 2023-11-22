@@ -47,7 +47,6 @@ extension UserStatus {
 
 final class SimpleUserProfileView: UIView {
     
-    private var listener: StoryDetailPresentableListener?
     private var cancellables = Set<AnyCancellable>()
     
     private let padding: CGFloat = 10
@@ -127,11 +126,6 @@ final class SimpleUserProfileView: UIView {
         setupViews()
     }
     
-    convenience init(listener: StoryDetailPresentableListener?) {
-        self.init()
-        self.listener = listener
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         profileImage.layer.cornerRadius = 20
@@ -168,23 +162,12 @@ private extension SimpleUserProfileView {
             followButton.heightAnchor.constraint(equalToConstant: followButtonHeight)
         ])
     }
-    
-//    TODO: bind following button
-//    func bind() {
-//        listener?.userStatus
-//            .sink { status in
-//                followButton.image = status.image
-//            }.store(in: &cancellables)
-//    }
-    
+
 }
 
 // MARK: objc
 private extension SimpleUserProfileView {
     
-    @objc func followButtonDidTap() {
-//        TODO: add interactor function
-//        listener?.followButtonDidTap()
-    }
+    @objc func followButtonDidTap() { }
     
 }

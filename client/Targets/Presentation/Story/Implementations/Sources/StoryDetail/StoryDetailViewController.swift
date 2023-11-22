@@ -13,15 +13,28 @@ import ModernRIBs
 
 import DesignKit
 
-protocol StoryDetailPresentableListener: AnyObject {
-    // TODO: Declare properties and methods that the view controller can invoke to perform
-    // business logic, such as signIn(). This protocol is implemented by the corresponding
-    // interactor class.
+public protocol StoryDetailPresentableListener: AnyObject {
+    func storyDetailDidTapClose()
 }
 
 public final class StoryDetailViewController: UIViewController, StoryDetailPresentable, StoryDetailViewControllable {
     
+    private enum Constant {
+        static let navBarTitle = ""
+        static let scrollViewInset: CGFloat = 20
+        static let stackViewSpacing: CGFloat = 30
+    }
+    
     weak var listener: StoryDetailPresentableListener?
+    
+    private lazy var navigationView: NavigationView = {
+        let navigationView = NavigationView()
+        navigationView.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: [.none]))
+        navigationView.delegate = self
+        
+        navigationView.translatesAutoresizingMaskIntoConstraints = false
+        return navigationView
+    }()
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -44,7 +57,7 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
     }()
     
     private lazy var simpleUserProfileView: SimpleUserProfileView = {
-        let profileView = SimpleUserProfileView(listener: listener)
+        let profileView = SimpleUserProfileView()
         
         profileView.translatesAutoresizingMaskIntoConstraints = false
         return profileView
@@ -58,7 +71,7 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
     }()
 
     private lazy var storyHeaderView: StoryHeaderView = {
-        let subtitleView = StoryHeaderView(listener: listener)
+        let subtitleView = StoryHeaderView()
         
         subtitleView.translatesAutoresizingMaskIntoConstraints = false
         return subtitleView
@@ -73,6 +86,7 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
         textView.isUserInteractionEnabled = false
         textView.textContainerInset = .init(top: 0, left: 20, bottom: 0, right: 20)
         
+        textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
     
@@ -85,15 +99,21 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
 private extension StoryDetailViewController {
     func setupViews() {
         view.backgroundColor = .hpWhite
-        view.addSubview(scrollView)
+        [navigationView, scrollView].forEach(view.addSubview)
+        
         scrollView.addSubview(stackView)
         [simpleUserProfileView, storyImagesView, storyHeaderView, bodyView].forEach(stackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
+            scrollView.topAnchor.constraint(equalTo: navigationView.bottomAnchor, constant: Constant.scrollViewInset),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
@@ -106,4 +126,12 @@ private extension StoryDetailViewController {
         
         bodyView.layoutIfNeeded()
     }
+}
+
+extension StoryDetailViewController: NavigationViewDelegate {
+   
+    public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
+        listener?.storyDetailDidTapClose()
+    }
+
 }
