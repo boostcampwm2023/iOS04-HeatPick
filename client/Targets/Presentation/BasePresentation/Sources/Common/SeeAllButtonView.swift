@@ -1,15 +1,15 @@
 //
-//  HomeSeeAllView.swift
-//  HomeImplementations
+//  SeeAllButtonView.swift
+//  BasePresentation
 //
-//  Created by 홍성준 on 11/14/23.
+//  Created by 홍성준 on 11/22/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
 import UIKit
 import DesignKit
 
-final class HomeSeeAllView: UIView {
+open class SeeAllButtonView: UIView {
     
     private enum Constant {
         static let title = "모두 보기"
@@ -36,19 +36,19 @@ final class HomeSeeAllView: UIView {
         return imageView
     }()
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
     }
     
 }
 
-private extension HomeSeeAllView {
+private extension SeeAllButtonView {
     
     func setupViews() {
         addSubview(titleLabel)

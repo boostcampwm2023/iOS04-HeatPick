@@ -12,6 +12,8 @@ import MyInterfaces
 protocol MyPageRouting: ViewableRouting {
     func attachUserDashboard()
     func detachUserDashboard()
+    func attachStoryDashboard()
+    func detachStoryDashboard()
 }
 
 protocol MyPagePresentable: Presentable {
@@ -31,6 +33,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     override func didBecomeActive() {
         super.didBecomeActive()
         router?.attachUserDashboard()
+        router?.attachStoryDashboard()
     }
     
     override func willResignActive() {
