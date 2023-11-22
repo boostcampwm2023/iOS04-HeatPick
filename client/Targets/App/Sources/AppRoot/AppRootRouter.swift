@@ -13,12 +13,14 @@ import AuthInterfaces
 import HomeInterfaces
 import SearchImplementations
 import StoryImplementations
+import MyInterfaces
 
 protocol AppRootInteractable: Interactable,
                               SignInListener,
                               SearchHomeListener,
-                              HomeListener, 
-                              StoryCreatorListener {
+                              HomeListener,
+                              StoryCreatorListener,
+                              MyPageListener {
     var router: AppRootRouting? { get set }
     var listener: AppRootListener? { get set }
 }
@@ -28,45 +30,38 @@ protocol AppRootViewControllable: ViewControllable {
     func selectPreviousTab()
 }
 
-protocol AppRootRouterDependency {
+protocol AppRootRouterDependency: AnyObject {
     var signInBuilder: SignInBuildable { get }
     var homeBuilder: HomeBuildable { get }
     var searchBuilder: SearchHomeBuildable { get }
     var storyCreatorBuilder: StoryCreatorBuildable { get }
+    var myPageBuilder: MyPageBuildable { get }
 }
 
 
 final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControllable>, AppRootRouting {
     
-    private let signInBuilder: SignInBuildable
+    private let dependency: AppRootRouterDependency
+    
     private var signInRouter: Routing?
-    
-    private let homeBuilder: HomeBuildable
     private var homeRouter: Routing?
-    
-    private let searchHomeBuilder: SearchHomeBuildable
     private var searchHomeRouter: Routing?
-    
-    private let storyCreatorBuilder: StoryCreatorBuildable
     private var storyCreatorRouter: Routing?
+    private var myPageRouter: Routing?
     
     init(
         interactor: AppRootInteractable,
         viewController: AppRootViewControllable,
         dependency: AppRootRouterDependency
     ) {
-        self.signInBuilder = dependency.signInBuilder
-        self.homeBuilder = dependency.homeBuilder
-        self.searchHomeBuilder = dependency.searchBuilder
-        self.storyCreatorBuilder = dependency.storyCreatorBuilder
-        
+        self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
     func attachSignIn() {
         guard signInRouter == nil else { return }
-        let signInRouting = signInBuilder.build(withListener: interactor)
+        let signInRouting = dependency.signInBuilder.build(withListener: interactor)
         self.signInRouter = signInRouting
         attachChild(signInRouting)
         let signInViewController = NavigationControllable(viewControllable: signInRouting.viewControllable)
@@ -81,27 +76,35 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     }
     
     func attachTabs() {
-        guard homeRouter == nil,
-              searchHomeRouter == nil
-        else {
+        guard [
+            homeRouter,
+            searchHomeRouter,
+            storyCreatorRouter,
+            myPageRouter
+        ].allSatisfy({ $0 == nil }) else {
             return
         }
-        let homeRouting = homeBuilder.build(withListener: interactor)
+        let homeRouting = dependency.homeBuilder.build(withListener: interactor)
         self.homeRouter = homeRouting
         attachChild(homeRouting)
         
-        let searchHomeRouting = searchHomeBuilder.build(withListener: interactor)
+        let searchHomeRouting = dependency.searchBuilder.build(withListener: interactor)
         self.searchHomeRouter = searchHomeRouting
         attachChild(searchHomeRouting)
         
-        let storyCreatorRouting = storyCreatorBuilder.build(withListener: interactor)
+        let storyCreatorRouting = dependency.storyCreatorBuilder.build(withListener: interactor)
         self.storyCreatorRouter = storyCreatorRouting
         attachChild(storyCreatorRouting)
+        
+        let myPageRouting = dependency.myPageBuilder.build(withListener: interactor)
+        self.myPageRouter = myPageRouting
+        attachChild(myPageRouting)
         
         let viewControllers = [
             NavigationControllable(viewControllable: homeRouting.viewControllable),
             NavigationControllable(viewControllable: searchHomeRouting.viewControllable),
             NavigationControllable(viewControllable: storyCreatorRouting.viewControllable),
+            NavigationControllable(viewControllable: myPageRouting.viewControllable)
         ]
         
         viewController.setViewControllers(viewControllers)

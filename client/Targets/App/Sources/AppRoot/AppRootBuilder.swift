@@ -27,7 +27,6 @@ final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
     }
 
     func build() -> LaunchRouting {
-        
         let component = AppRootComponent(dependency: dependency)
         let tabBarController = AppRootTabBarController()
         let interactor = AppRootInteractor(presenter: tabBarController, dependency: component)
