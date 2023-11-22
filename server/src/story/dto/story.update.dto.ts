@@ -45,7 +45,7 @@ export class UpdateStoryDto {
     description: 'Where the story was created',
   })
   @IsNotEmpty({ message: 'place 필수입니다.' })
-  @IsObject()
+  @Transform(({ value }): object => JSON.parse(value))
   place: Place;
 
   @ApiProperty({

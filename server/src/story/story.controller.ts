@@ -1,5 +1,19 @@
 import { StoryService } from './story.service';
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Headers,
+  Param,
+  Patch,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+  ValidationPipe,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -29,7 +43,8 @@ export class StoryController {
   })
   async create(@UploadedFiles() images: Array<Express.Multer.File>, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) createStoryDto: CreateStoryDto) {
     const { title, content, category, place, date } = createStoryDto;
-    return this.storyService.create(accessToken, { title, content, category, place, images, date });
+    const storyId = await this.storyService.create(accessToken, { title, content, category, place, images, date });
+    return { storyId: storyId };
   }
 
   @Get('detail')
@@ -64,7 +79,8 @@ export class StoryController {
   })
   async update(@UploadedFiles() images: Array<Express.Multer.File>, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
     const { storyId, title, content, category, place, date } = updateStoryDto;
-    return this.storyService.update(accessToken, { storyId, title, content, category, place, images, date });
+    const newStoryId = await this.storyService.update(accessToken, { storyId, title, content, category, place, images, date });
+    return { storyId: newStoryId };
   }
 
   @Delete('delete')
@@ -79,8 +95,9 @@ export class StoryController {
       },
     },
   })
-  async delete(@Headers('accessToken') accessToken: string, @Query('storyId') storyId: number) {
-    return this.storyService.delete(accessToken, storyId);
+  async delete(@Headers('accessToken') accessToken: string, @Query('storyId', ParseIntPipe) storyId: number) {
+    await this.storyService.delete(accessToken, storyId);
+    return { storyId: storyId };
   }
 
   @Get('recommend/location')
