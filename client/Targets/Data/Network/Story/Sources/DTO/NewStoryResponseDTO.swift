@@ -10,7 +10,7 @@ import Foundation
 
 import DomainEntities
 
-public struct NewStoryResponseDTO: Codable {
+public struct NewStoryResponseDTO: Decodable {
     
     let storyId: Int
     

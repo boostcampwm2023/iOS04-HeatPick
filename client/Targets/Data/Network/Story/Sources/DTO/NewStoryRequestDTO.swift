@@ -9,16 +9,16 @@
 import Foundation
 import DomainEntities
 
-public struct NewStoryRequestDTO: Codable {
+public struct NewStoryRequestDTO: Encodable {
     
     let title: String
     let content: String
     let category: String
-    let place: PlaceDTO?
+    let place: PlaceDTO
     let date: Date
     let badgeId: Int
     
-    public init(title: String, content: String, category: String, place: PlaceDTO?, date: Date, badgeId: Int) {
+    public init(title: String, content: String, category: String, place: PlaceDTO, date: Date, badgeId: Int) {
         self.title = title
         self.content = content
         self.category = category
