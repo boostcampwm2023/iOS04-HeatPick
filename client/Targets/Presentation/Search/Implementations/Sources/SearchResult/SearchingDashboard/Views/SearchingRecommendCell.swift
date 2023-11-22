@@ -61,8 +61,8 @@ final class SearchingRecommendCell: UITableViewCell {
         reset()
     }
     
-    func update(searchingRecommendCellModel: SearchingRecommendCellModel) {
-        recommendLabel.text = searchingRecommendCellModel.recommendText
+    func setup(model: SearchingRecommendCellModel) {
+        recommendLabel.text = model.recommendText
     }
     
 }

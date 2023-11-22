@@ -42,8 +42,12 @@ final class SearchAfterTitleView: UIView {
         setupViews()
     }
     
-    func setup(title: String) {
+    func setupTitle(_ title: String) {
         titleLabel.text = title
+    }
+    
+    func isHiddenSeeAllView(_ isHidden: Bool) {
+        seeAllView.isHidden = isHidden
     }
     
 }

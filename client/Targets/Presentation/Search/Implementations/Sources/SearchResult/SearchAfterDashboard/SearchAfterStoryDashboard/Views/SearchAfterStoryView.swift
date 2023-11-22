@@ -13,10 +13,10 @@ import BasePresentation
 struct SearchAfterStoryViewModel {
     let stroyId: Int
     let title: String
-    let content: String
-    let storyImages: [String]
+    let address: String
+    let thumbnailImage: String
     let likeCount: Int
-    let createAt: String
+    let commentCount: Int
 }
 
 final class SearchAfterStoryView: UIView {
@@ -87,11 +87,11 @@ final class SearchAfterStoryView: UIView {
         setupViews()
     }
     
-    func update(model: SearchAfterStoryViewModel) {
+    func setup(model: SearchAfterStoryViewModel) {
         titleLabel.text = model.title
-        imageView.load(from: model.storyImages.first)
-        addressLabel.text = model.content
-        commentView.setup(likes: model.likeCount, comments: 0)
+        imageView.load(from: model.thumbnailImage)
+        addressLabel.text = model.address
+        commentView.setup(likes: model.likeCount, comments: model.commentCount)
     }
     
 }

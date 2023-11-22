@@ -36,7 +36,7 @@ final class SearchBeforeHeaderView: UICollectionReusableView {
         setupViews()
     }
     
-    func updateTitle(_ title: String) {
+    func setupTitle(_ title: String) {
         titleLabel.text = title
     }
     
