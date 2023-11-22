@@ -11,9 +11,9 @@ import Foundation
 public struct Story {
     
     public let id: Int
-    public let storyContent: StoryContent
+    public let storyContent: StoryContent?
     
-    public init(id: Int, storyContent: StoryContent) {
+    public init(id: Int, storyContent: StoryContent?) {
         self.id = id
         self.storyContent = storyContent
     }

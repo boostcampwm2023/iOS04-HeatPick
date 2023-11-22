@@ -7,15 +7,16 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
 public protocol StoryEditorDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var storyUseCase: StoryUseCaseInterface { get }
 }
 
-final class StoryEditorComponent: Component<StoryEditorDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+final class StoryEditorComponent: Component<StoryEditorDependency>, StoryEditorInteractorDependency {
+    var storyUseCase: StoryUseCaseInterface {
+        dependency.storyUseCase
+    }
 }
 
 // MARK: - Builder
@@ -33,7 +34,10 @@ public final class StoryEditorBuilder: Builder<StoryEditorDependency>, StoryEdit
     public func build(withListener listener: StoryEditorListener) -> StoryEditorRouting {
         let component = StoryEditorComponent(dependency: dependency)
         let viewController = StoryEditorViewController()
-        let interactor = StoryEditorInteractor(presenter: viewController)
+        let interactor = StoryEditorInteractor(
+            presenter: viewController,
+            dependency: component
+        )
         interactor.listener = listener
         return StoryEditorRouter(interactor: interactor, viewController: viewController)
     }

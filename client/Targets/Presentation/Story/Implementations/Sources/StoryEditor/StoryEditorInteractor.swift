@@ -11,6 +11,7 @@ import Combine
 import ModernRIBs
 
 import DomainEntities
+import DomainInterfaces
 
 public protocol StoryEditorRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
@@ -26,15 +27,25 @@ public protocol StoryEditorListener: AnyObject {
     func storyEditorDidTapClose()
 }
 
+protocol StoryEditorInteractorDependency: AnyObject {
+    var storyUseCase: StoryUseCaseInterface { get }
+}
+
 final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>, StoryEditorInteractable, StoryEditorPresentableListener {
     
     weak var router: StoryEditorRouting?
     weak var listener: StoryEditorListener?
+    private var dependency: StoryEditorInteractorDependency
     
     private var title: String = ""
     private var description: String = ""
+    private var location: Location?
     
-    override init(presenter: StoryEditorPresentable) {
+    init(
+        presenter: StoryEditorPresentable,
+        dependency: StoryEditorInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -63,11 +74,26 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
         presenter.setSaveButton(isButtonEnabled)
     }
     
+    func locationDidChange(_ location: Location?) {
+        self.location = location
+        presenter.setSaveButton(isButtonEnabled)
+    }
+    
     func didTapSave(content: StoryContent) {
-        
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestCreateStory(storyContent: content)
+                .onSuccess(on: .main, with: self, { this, sotryId in
+                    print("didTapSaveRequestNewStorySuccess on storyEditorInteractor")
+                })
+                .onFailure { error in
+                    print(error.localizedDescription)
+                }
+        }
     }
     
     private var isButtonEnabled: Bool {
-        !title.isEmpty && !description.isEmpty
+        !title.isEmpty && !description.isEmpty && location != nil
     }
 }

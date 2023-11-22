@@ -18,6 +18,7 @@ public protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
     func titleDidChange(_ title: String)
     func descriptionDidChange(_ description: String)
+    func locationDidChange(_ location: Location?)
     func didTapSave(content: StoryContent)
 }
 
@@ -84,8 +85,9 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         return descriptionField
     }()
     
-    private let attributeField: AttributeField = {
+    private lazy var attributeField: AttributeField = {
         let attributeField = AttributeField()
+        attributeField.delegate = self
         
         attributeField.translatesAutoresizingMaskIntoConstraints = false
         return attributeField
@@ -158,13 +160,15 @@ private extension StoryEditorViewController {
     }
     
     @objc func didTapSave() {
+        guard let location = attributeField.location else { return }
+        
         listener?.didTapSave(content: StoryContent(title: titleField.text,
                                                    content: descriptionField.text,
                                                    date: attributeField.date,
                                                    images: imageField.images,
                                                    category: StoryCategory.allCases[attributeField.categoryIndex],
-                                                   place: attributeField.location,
-                                                   badge: Badge.allCases[attributeField.badgeIndex]))
+                                                   place: location,
+                                                   badgeId: attributeField.badgeIndex))
     }
     
 }
@@ -201,6 +205,15 @@ extension StoryEditorViewController: DescriptionFieldDelegate {
     
     func descriptionDidChange(_ description: String) {
         listener?.descriptionDidChange(description)
+    }
+    
+}
+
+// MARK: - LocationPicker Delegate
+extension StoryEditorViewController: AttributeFieldDelegate {
+    
+    func locationDidChange(_ location: Location?) {
+        listener?.locationDidChange(location)
     }
     
 }
