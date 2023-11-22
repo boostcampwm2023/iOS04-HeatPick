@@ -89,6 +89,10 @@ public final class StorySmallView: UIView {
         setupViews()
     }
     
+    deinit {
+        thumbnailImageView.cancel()
+    }
+    
     public func setup(model: StorySmallTableViewCellModel) {
         thumbnailImageView.load(from: model.thumbnailImageURL)
         titleLabel.text = model.title
