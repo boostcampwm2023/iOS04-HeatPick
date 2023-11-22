@@ -9,114 +9,126 @@
 import ModernRIBs
 
 protocol SearchResultInteractable: Interactable,
-                                   BeginEditingTextDashboardListener,
-                                   EditingTextDashboardListener,
-                                    EndEditingTextDashboardListener {
+                                   SearchBeforeDashboardListener,
+                                   SearchingDashboardListener,
+                                   SearchAfterDashboardListener {
     var router: SearchResultRouting? { get set }
     var listener: SearchResultListener? { get set }
 }
 
 protocol SearchResultViewControllable: ViewControllable {
-    func attachDashboard(_ viewControllable: ViewControllable)
-    func detachDashboard(_ viewControllable: ViewControllable)
+    func insertDashboard(_ viewControllable: ViewControllable)
+    func removeDashboard(_ viewControllable: ViewControllable)
 }
 
 protocol SearchResultRouterDependency {
-    var beginEditingTextDashboardBuilder: BeginEditingTextDashboardBuildable { get }
-    var editingTextDashboardBuilder: EditingTextDashboardBuildable { get }
-    var endEditingTextDashboardBuilder: EndEditingTextDashboardBuildable { get }
+    var searchBeforeDashboardBuilder: SearchBeforeDashboardBuildable { get }
+    var searchingDashboardBuilder: SearchingDashboardBuildable { get }
+    var searchAfterDashboardBuilder: SearchAfterDashboardBuildable { get }
 }
 
 final class SearchResultRouter: ViewableRouter<SearchResultInteractable, SearchResultViewControllable>, SearchResultRouting {
     
-    private let beginEditingTextDashboardBuilder: BeginEditingTextDashboardBuildable
-    private var beginEditingTextDasboardRouter: BeginEditingTextDashboardRouting?
+    private let searchBeforeDashboardBuilder: SearchBeforeDashboardBuildable
+    private var searchBeforeDashboardRouter: SearchBeforeDashboardRouting?
     
-    private let editingTextDashboardBuilder: EditingTextDashboardBuildable
-    private var editingTextDashboardRouter: EditingTextDashboardRouting?
+    private let searchingDashboardBuilder: SearchingDashboardBuildable
+    private var searchingDashboardRouter: SearchingDashboardRouting?
     
-    private let endEditingTextDashboardBuilder: EndEditingTextDashboardBuildable
-    private var endEditingTextDashboardRouter: EndEditingTextDashboardRouting?
-    
+    private let searchAfterDashboardBuilder: SearchAfterDashboardBuildable
+    private var searchAfterDashboardRouter: SearchAfterDashboardRouting?
+ 
     init(
         interactor: SearchResultInteractable,
         viewController: SearchResultViewControllable,
         dependency: SearchResultRouterDependency
     ) {
-        self.beginEditingTextDashboardBuilder = dependency.beginEditingTextDashboardBuilder
-        self.editingTextDashboardBuilder = dependency.editingTextDashboardBuilder
-        self.endEditingTextDashboardBuilder = dependency.endEditingTextDashboardBuilder
+        self.searchBeforeDashboardBuilder = dependency.searchBeforeDashboardBuilder
+        self.searchingDashboardBuilder = dependency.searchingDashboardBuilder
+        self.searchAfterDashboardBuilder = dependency.searchAfterDashboardBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
-    func attachBeginEditingTextDashboard() {
-        guard beginEditingTextDasboardRouter == nil else { return }
-        let router = beginEditingTextDashboardBuilder.build(withListener: interactor)
+}
+
+extension SearchResultRouter {
+    
+    func attachSearchBeforeDashboard() {
+        guard searchBeforeDashboardRouter == nil else { return }
+        let router = searchBeforeDashboardBuilder.build(withListener: interactor)
         attachChild(router)
-        beginEditingTextDasboardRouter = router
+        searchBeforeDashboardRouter = router
     }
     
-    func detachBeginEditingTextDashboard() {
-        guard let router = beginEditingTextDasboardRouter else { return }
+    func detachSearchBeforeDashboard() {
+        guard let router = searchBeforeDashboardRouter else { return }
         detachChild(router)
-        beginEditingTextDasboardRouter = nil
+        searchBeforeDashboardRouter = nil
     }
     
-    func attachEditingTextDashboard() {
-        guard editingTextDashboardRouter == nil else { return }
-        let router = editingTextDashboardBuilder.build(withListener: interactor)
+    func showSearchBeforeDashboard() {
+        guard let searchBeforeDashboardRouter else { return }
+        viewController.insertDashboard(searchBeforeDashboardRouter.viewControllable)
+    }
+    
+    func hideSearchBeforeDashboard() {
+        guard let searchBeforeDashboardRouter else { return }
+        viewController.removeDashboard(searchBeforeDashboardRouter.viewControllable)
+    }
+    
+}
+
+extension SearchResultRouter {
+    
+    func attachSearchingDashboard() {
+        guard searchingDashboardRouter == nil else { return }
+        let router = searchingDashboardBuilder.build(withListener: interactor)
         attachChild(router)
-        editingTextDashboardRouter = router
+        searchingDashboardRouter = router
     }
     
-    func detachEditingTextDashboard() {
-        guard let router = editingTextDashboardRouter else { return }
+    func detachSearchingDashboard() {
+        guard let router = searchingDashboardRouter else { return }
         detachChild(router)
-        editingTextDashboardRouter = nil
+        searchingDashboardRouter = nil
     }
     
-    func attachEndEditingTextDashboard() {
-        guard endEditingTextDashboardRouter == nil else { return }
-        let router = endEditingTextDashboardBuilder.build(withListener: interactor)
+    func showSearchingDashboard() {
+        guard let searchingDashboardRouter else { return }
+        viewController.insertDashboard(searchingDashboardRouter.viewControllable)
+    }
+    
+    func hideSearchingDashboard() {
+        guard let searchingDashboardRouter else { return }
+        viewController.removeDashboard(searchingDashboardRouter.viewControllable)
+    }
+    
+}
+
+extension SearchResultRouter {
+    
+    func attachSearchAfterDashboard() {
+        guard searchAfterDashboardRouter == nil else { return }
+        let router = searchAfterDashboardBuilder.build(withListener: interactor)
         attachChild(router)
-        endEditingTextDashboardRouter = router
+        searchAfterDashboardRouter = router
     }
     
-    func detachEndEditingTextDashboard() {
-        guard let router = endEditingTextDashboardRouter else { return }
+    func detachSearchAfterDashboard() {
+        guard let router = searchAfterDashboardRouter else { return }
         detachChild(router)
-        endEditingTextDashboardRouter = nil
+        searchAfterDashboardRouter = nil
     }
     
-    func showBeginEditingTextDashboard() {
-        guard let beginEditingTextDasboardRouter else { return }
-        viewController.attachDashboard(beginEditingTextDasboardRouter.viewControllable)
+    func showSearchAfterDashboard() {
+        guard let searchAfterDashboardRouter else { return }
+        viewController.insertDashboard(searchAfterDashboardRouter.viewControllable)
     }
     
-    func hideBeginEditingTextDashboard() {
-        guard let beginEditingTextDasboardRouter else { return }
-        viewController.detachDashboard(beginEditingTextDasboardRouter.viewControllable)
-    }
-    
-    func showEditingTextDashboard() {
-        guard let editingTextDashboardRouter else { return }
-        viewController.attachDashboard(editingTextDashboardRouter.viewControllable)
-    }
-    
-    func hideEditingTextDashboard() {
-        guard let editingTextDashboardRouter else { return }
-        viewController.detachDashboard(editingTextDashboardRouter.viewControllable)
-    }
-    
-    func showEndEditingTextDashboard() {
-        guard let endEditingTextDashboardRouter else { return }
-        viewController.attachDashboard(endEditingTextDashboardRouter.viewControllable)
-    }
-    
-    func hideEndEditingTextDashboard() {
-        guard let endEditingTextDashboardRouter else { return }
-        viewController.detachDashboard(endEditingTextDashboardRouter.viewControllable)
+    func hideSearchAfterDashboard() {
+        guard let searchAfterDashboardRouter else { return }
+        viewController.removeDashboard(searchAfterDashboardRouter.viewControllable)
     }
     
 }

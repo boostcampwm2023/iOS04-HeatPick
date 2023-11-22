@@ -1,23 +1,22 @@
 //
-//  BeginEditingTextDashboardViewController.swift
+//  SearchBeforeDashboardViewController.swift
 //  SearchImplementations
 //
-//  Created by 이준복 on 11/16/23.
+//  Created by 이준복 on 11/21/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-
+import ModernRIBs
 import UIKit
 
-import ModernRIBs
-import DesignKit
-
-protocol BeginEditingTextDashboardPresentableListener: AnyObject {
+protocol SearchBeforeDashboardPresentableListener: AnyObject {
     func didTapCategoryItem()
     func didTapRecentSearchTextItem()
 }
 
-final class BeginEditingTextDashboardViewController: UIViewController, BeginEditingTextDashboardPresentable, BeginEditingTextDashboardViewControllable {
+final class SearchBeforeDashboardViewController: UIViewController, SearchBeforeDashboardPresentable, SearchBeforeDashboardViewControllable {
+
+    weak var listener: SearchBeforeDashboardPresentableListener?
     
     private enum Constant {
         static let inset: CGFloat = 20
@@ -26,17 +25,15 @@ final class BeginEditingTextDashboardViewController: UIViewController, BeginEdit
             static let categoryTitle = "카테고리"
         }
     }
-
-    weak var listener: BeginEditingTextDashboardPresentableListener?
     
     private var categoryModels: [CategoryModel] = []
     private var recentSearchTextModels: [ReceentSearchTextModel] = []
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: makeCollectionViewLayout())
-        collectionView.register(RecentSearchTextCollectionViewCell.self)
-        collectionView.register(CategoryCollectionViewCell.self)
-        collectionView.registerHeader(BeginEditingCollectionHeaderView.self)
+        collectionView.register(SearchBeforeRecentSearchTextCell.self)
+        collectionView.register(SearchBeforeCategoryCell.self)
+        collectionView.registerHeader(SearchBeforeHeaderView.self)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -71,7 +68,7 @@ final class BeginEditingTextDashboardViewController: UIViewController, BeginEdit
 }
 
 
-private extension BeginEditingTextDashboardViewController {
+private extension SearchBeforeDashboardViewController {
     
     func setupViews() {
         view.addSubview(collectionView)
@@ -151,7 +148,7 @@ private extension BeginEditingTextDashboardViewController {
 }
 
 // TODO: Snapshow으로 변경 예정
-extension BeginEditingTextDashboardViewController: UICollectionViewDataSource {
+extension SearchBeforeDashboardViewController: UICollectionViewDataSource {
     
     private enum Section: Int, CaseIterable {
         case recentSearchText
@@ -187,12 +184,12 @@ extension BeginEditingTextDashboardViewController: UICollectionViewDataSource {
         switch section {
         case .recentSearchText:
             guard let model = recentSearchTextModels[safe: indexPath.row] else { return .init() }
-            let cell = collectionView.dequeue(RecentSearchTextCollectionViewCell.self, for: indexPath)
+            let cell = collectionView.dequeue(SearchBeforeRecentSearchTextCell.self, for: indexPath)
             cell.updateRecentSearchText(model)
             return cell
         case .category:
             guard let model = categoryModels[safe: indexPath.row] else { return .init() }
-            let cell = collectionView.dequeue(CategoryCollectionViewCell.self, for: indexPath)
+            let cell = collectionView.dequeue(SearchBeforeCategoryCell.self, for: indexPath)
             cell.updateCategory(model)
             return cell
         }
@@ -201,7 +198,7 @@ extension BeginEditingTextDashboardViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader,
            let section = Section(rawValue: indexPath.section) {
-            let headerView = collectionView.dequeueHeader(BeginEditingCollectionHeaderView.self, for: indexPath)
+            let headerView = collectionView.dequeueHeader(SearchBeforeHeaderView.self, for: indexPath)
             headerView.updateTitle(section.title)
             return headerView
         }
@@ -211,6 +208,8 @@ extension BeginEditingTextDashboardViewController: UICollectionViewDataSource {
     
 }
 
-extension BeginEditingTextDashboardViewController: UICollectionViewDelegate {
+extension SearchBeforeDashboardViewController: UICollectionViewDelegate {
     
 }
+
+

@@ -1,5 +1,5 @@
 //
-//  CategoryCollectionViewCell.swift
+//  SearchBeforeCategoryCell.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 11/21/23.
@@ -14,7 +14,7 @@ struct CategoryModel: Decodable {
     let description: String
 }
 
-final class CategoryCollectionViewCell: UICollectionViewCell {
+final class SearchBeforeCategoryCell: UICollectionViewCell {
     
     private enum Constant {
         static let spacing: CGFloat = 6
@@ -65,7 +65,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     
 }
 
-private extension CategoryCollectionViewCell {
+private extension SearchBeforeCategoryCell {
 
     func setupView() {
         contentView.clipsToBounds = true

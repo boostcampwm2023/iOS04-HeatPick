@@ -1,5 +1,5 @@
 //
-//  BeginEditingCollectionHeaderView.swift
+//  SearchBeforeCollectionHeaderView.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 11/21/23.
@@ -9,7 +9,7 @@
 import UIKit
 import DesignKit
 
-final class BeginEditingCollectionHeaderView: UICollectionReusableView {
+final class SearchBeforeHeaderView: UICollectionReusableView {
     
     private enum Constant {
         static let topOffset: CGFloat = Constants.leadingOffset
@@ -42,7 +42,7 @@ final class BeginEditingCollectionHeaderView: UICollectionReusableView {
     
 }
 
-private extension BeginEditingCollectionHeaderView {
+private extension SearchBeforeHeaderView {
     
     func setupViews() {
         addSubview(titleLabel)

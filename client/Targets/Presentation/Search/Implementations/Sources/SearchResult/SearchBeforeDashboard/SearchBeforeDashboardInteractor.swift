@@ -1,17 +1,17 @@
 //
-//  BeginEditingTextDashboardInteractor.swift
+//  SearchBeforeDashboardInteractor.swift
 //  SearchImplementations
 //
-//  Created by 이준복 on 11/16/23.
+//  Created by 이준복 on 11/21/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
 import ModernRIBs
 
-protocol BeginEditingTextDashboardRouting: ViewableRouting { }
+protocol SearchBeforeDashboardRouting: ViewableRouting { }
 
-protocol BeginEditingTextDashboardPresentable: Presentable {
-    var listener: BeginEditingTextDashboardPresentableListener? { get set }
+protocol SearchBeforeDashboardPresentable: Presentable {
+    var listener: SearchBeforeDashboardPresentableListener? { get set }
     
     func setup(categoryModels: [CategoryModel])
     func append(categoryModels: [CategoryModel])
@@ -19,14 +19,14 @@ protocol BeginEditingTextDashboardPresentable: Presentable {
     func append(recentSearchTextModels: [ReceentSearchTextModel])
 }
 
-protocol BeginEditingTextDashboardListener: AnyObject { }
+protocol SearchBeforeDashboardListener: AnyObject { }
 
-final class BeginEditingTextDashboardInteractor: PresentableInteractor<BeginEditingTextDashboardPresentable>, BeginEditingTextDashboardInteractable, BeginEditingTextDashboardPresentableListener {
+final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeDashboardPresentable>, SearchBeforeDashboardInteractable, SearchBeforeDashboardPresentableListener {
 
-    weak var router: BeginEditingTextDashboardRouting?
-    weak var listener: BeginEditingTextDashboardListener?
+    weak var router: SearchBeforeDashboardRouting?
+    weak var listener: SearchBeforeDashboardListener?
 
-    override init(presenter: BeginEditingTextDashboardPresentable) {
+    override init(presenter: SearchBeforeDashboardPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -68,5 +68,4 @@ final class BeginEditingTextDashboardInteractor: PresentableInteractor<BeginEdit
     func didTapRecentSearchTextItem() {
         
     }
-    
 }

@@ -1,5 +1,5 @@
 //
-//  SearchRecentCollectionViewCell.swift
+//  SearchBeforeRecentSearchTextCell.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 11/20/23.
@@ -13,7 +13,7 @@ struct ReceentSearchTextModel: Decodable {
     let text: String
 }
 
-final class RecentSearchTextCollectionViewCell: UICollectionViewCell {
+final class SearchBeforeRecentSearchTextCell: UICollectionViewCell {
     
     private enum Constant {
         static let topOffset: CGFloat = 5
@@ -54,7 +54,7 @@ final class RecentSearchTextCollectionViewCell: UICollectionViewCell {
     
 }
 
-private extension RecentSearchTextCollectionViewCell {
+private extension SearchBeforeRecentSearchTextCell {
     
     func setupView() {
         contentView.backgroundColor = .hpGray3
