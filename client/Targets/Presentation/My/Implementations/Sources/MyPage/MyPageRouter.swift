@@ -9,7 +9,7 @@
 import ModernRIBs
 import MyInterfaces
 
-protocol MyPageInteractable: Interactable, MyPageUserDashboardListener {
+protocol MyPageInteractable: Interactable, MyPageUserDashboardListener, MyPageStoryDashboardListener {
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }
@@ -24,12 +24,17 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     private let userDashboardBuilder: MyPageUserDashboardBuildable
     private var userDashboardRouting: ViewableRouting?
     
+    private let storyDashboardBuilder: MyPageStoryDashboardBuildable
+    private var storyDashboardRouting: ViewableRouting?
+    
     init(
         interactor: MyPageInteractable,
         viewController: MyPageViewControllable,
-        userDashboardBuilder: MyPageUserDashboardBuildable
+        userDashboardBuilder: MyPageUserDashboardBuildable,
+        storyDashboardBuilder: MyPageStoryDashboardBuildable
     ) {
         self.userDashboardBuilder = userDashboardBuilder
+        self.storyDashboardBuilder = storyDashboardBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -46,6 +51,21 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         guard let router = userDashboardRouting else { return }
         viewController.removeDashboard(router.viewControllable)
         self.userDashboardRouting = nil
+        detachChild(router)
+    }
+    
+    func attachStoryDashboard() {
+        guard storyDashboardRouting == nil else { return }
+        let router = storyDashboardBuilder.build(withListener: interactor)
+        viewController.setDashboard(router.viewControllable)
+        self.storyDashboardRouting = router
+        attachChild(router)
+    }
+    
+    func detachStoryDashboard() {
+        guard let router = storyDashboardRouting else { return }
+        viewController.removeDashboard(router.viewControllable)
+        self.storyDashboardRouting = nil
         detachChild(router)
     }
     

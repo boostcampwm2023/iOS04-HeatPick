@@ -11,10 +11,12 @@ import MyInterfaces
 
 public protocol MyPageDependency: Dependency {}
 
-final class MyPageComponent: Component<MyPageDependency>, MyPageUserDashboardDependency {}
+final class MyPageComponent: Component<MyPageDependency>,
+                             MyPageUserDashboardDependency,
+                             MyPageStoryDashboardDependency {}
 
 public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
-
+    
     public override init(dependency: MyPageDependency) {
         super.init(dependency: dependency)
     }
@@ -24,10 +26,12 @@ public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
         let viewController = MyPageViewController()
         let interactor = MyPageInteractor(presenter: viewController)
         interactor.listener = listener
+        
         return MyPageRouter(
             interactor: interactor,
             viewController: viewController,
-            userDashboardBuilder: MyPageUserDashboardBuilder(dependency: component)
+            userDashboardBuilder: MyPageUserDashboardBuilder(dependency: component),
+            storyDashboardBuilder: MyPageStoryDashboardBuilder(dependency: component)
         )
     }
     
