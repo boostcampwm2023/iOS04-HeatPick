@@ -10,12 +10,12 @@ import UIKit
 import DesignKit
 import ModernRIBs
 
-struct SearchAfterStoryDashboardModel {
-    let contentList: [SearchAfterStoryViewModel]
-}
-
 protocol SearchAfterStoryDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
+}
+
+struct SearchAfterStoryDashboardModel {
+    let contentList: [SearchAfterStoryViewModel]
 }
 
 final class SearchAfterStoryDashboardViewController: UIViewController, SearchAfterStoryDashboardPresentable, SearchAfterStoryDashboardViewControllable {
@@ -28,7 +28,7 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
         }
         
         enum EmptyView {
-            static let title = "스토리가 없어요"
+            static let title = "검색어에 해당하는 스토리가 없어요"
             static let subTitle = "해당 키워드로 첫 스토리를 작성해보세요"
         }
         

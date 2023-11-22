@@ -13,13 +13,10 @@ protocol SearchAfterStoryDashboardInteractable: Interactable {
     var listener: SearchAfterStoryDashboardListener? { get set }
 }
 
-protocol SearchAfterStoryDashboardViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy.
-}
+protocol SearchAfterStoryDashboardViewControllable: ViewControllable { }
 
 final class SearchAfterStoryDashboardRouter: ViewableRouter<SearchAfterStoryDashboardInteractable, SearchAfterStoryDashboardViewControllable>, SearchAfterStoryDashboardRouting {
 
-    // TODO: Constructor inject child builder protocols to allow building children.
     override init(interactor: SearchAfterStoryDashboardInteractable, viewController: SearchAfterStoryDashboardViewControllable) {
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
