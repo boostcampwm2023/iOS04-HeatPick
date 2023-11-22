@@ -9,6 +9,7 @@
 import ModernRIBs
 import UIKit
 import DesignKit
+import BasePresentation
 
 struct HomeHotPlaceDashboardViewModel {
     let contentList: [HomeHotPlaceContentViewModel]
@@ -30,8 +31,8 @@ final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceD
         static let contentSpacing: CGFloat = 10
     }
     
-    private lazy var titleView: HomeTitleView = {
-        let titleView = HomeTitleView()
+    private lazy var titleView: SeeAllView = {
+        let titleView = SeeAllView()
         titleView.setup(model: .init(
             title: Constant.title,
             isButtonEnabled: false
@@ -93,9 +94,9 @@ final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceD
     
 }
 
-extension HomeHotPlaceDashboardViewController: HomeTitleViewDelegate {
+extension HomeHotPlaceDashboardViewController: SeeAllViewDelegate {
     
-    func homeTitleViewSeeAllDidTap() {
+    func seeAllViewDidTapSeeAll() {
         listener?.didTapSeeAll()
     }
     

@@ -9,6 +9,7 @@
 import ModernRIBs
 import UIKit
 import DesignKit
+import BasePresentation
 
 struct HomeRecommendDashboardViewModel {
     let title: String
@@ -30,8 +31,8 @@ final class HomeRecommendDashboardViewController: UIViewController, HomeRecommen
         static let contentSpacing: CGFloat = 10
     }
     
-    private lazy var titleView: HomeTitleView = {
-        let titleView = HomeTitleView()
+    private lazy var titleView: SeeAllView = {
+        let titleView = SeeAllView()
         titleView.setup(model: .init(
             title: "추천 장소",
             isButtonEnabled: false
@@ -93,9 +94,9 @@ final class HomeRecommendDashboardViewController: UIViewController, HomeRecommen
     
 }
 
-extension HomeRecommendDashboardViewController: HomeTitleViewDelegate {
+extension HomeRecommendDashboardViewController: SeeAllViewDelegate {
     
-    func homeTitleViewSeeAllDidTap() {
+    func seeAllViewDidTapSeeAll() {
         listener?.didTapSeeAll()
     }
     

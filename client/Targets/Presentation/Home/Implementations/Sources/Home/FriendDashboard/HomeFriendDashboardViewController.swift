@@ -9,6 +9,7 @@
 import ModernRIBs
 import UIKit
 import DesignKit
+import BasePresentation
 
 struct HomeFriendDashboardViewModel {
     let contentList: [HomeFriendContentViewModel]
@@ -25,8 +26,8 @@ final class HomeFriendDashboardViewController: UIViewController, HomeFriendDashb
         static let contentSpacing: CGFloat = 25
     }
     
-    private lazy var titleView: HomeTitleView = {
-        let titleView = HomeTitleView()
+    private lazy var titleView: SeeAllView = {
+        let titleView = SeeAllView()
         titleView.setup(model: .init(
             title: "친구 추천",
             isButtonEnabled: false
