@@ -14,7 +14,7 @@ struct SearchAfterEmptyViewModel {
     let subtitle: String
 }
 
-final class SearchAfterEmptyView: UIView {
+final class SearchResultEmptyView: UIView {
     
     private enum Constant {
         static let topOffset: CGFloat = 20
@@ -71,7 +71,7 @@ final class SearchAfterEmptyView: UIView {
     
 }
 
-private extension SearchAfterEmptyView {
+private extension SearchResultEmptyView {
     
     func setupViews() {
         backgroundColor = .hpWhite
