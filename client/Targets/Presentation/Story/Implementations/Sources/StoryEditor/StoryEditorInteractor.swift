@@ -87,8 +87,8 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
             guard let self else { return }
             await dependency.storyUseCase
                 .requestCreateStory(storyContent: content)
-                .onSuccess(on: .main, with: self, { [weak self] this, story in
-                    self?.listener?.storyDidCreate(story)
+                .onSuccess(on: .main, with: self, { this, story in
+                    this.listener?.storyDidCreate(story)
                 })
                 .onFailure { [weak self] error in
                     Log.make(message: error.localizedDescription, log: .interactor)
