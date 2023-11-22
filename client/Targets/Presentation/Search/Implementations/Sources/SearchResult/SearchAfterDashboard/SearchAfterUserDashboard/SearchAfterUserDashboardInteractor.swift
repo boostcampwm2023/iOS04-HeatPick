@@ -9,37 +9,47 @@
 import ModernRIBs
 
 protocol SearchAfterUserDashboardRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
+    
 }
 
 protocol SearchAfterUserDashboardPresentable: Presentable {
     var listener: SearchAfterUserDashboardPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    func setup(model: SearchAfterUserDashboardViewModel)
 }
 
 protocol SearchAfterUserDashboardListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    
 }
 
 final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfterUserDashboardPresentable>, SearchAfterUserDashboardInteractable, SearchAfterUserDashboardPresentableListener {
-
+    
     weak var router: SearchAfterUserDashboardRouting?
     weak var listener: SearchAfterUserDashboardListener?
-
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
+    
     override init(presenter: SearchAfterUserDashboardPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        presenter.setup(model: .init(
+            contentList: [
+                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
+                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
+                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
+                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
+                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
+            ]
+        ))
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
+        
+    }
+    
+    func didTapSeeAll() {
+        // TODO: 성준님이 만드신 뷰와 연결
     }
 }

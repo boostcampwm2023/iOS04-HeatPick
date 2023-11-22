@@ -10,7 +10,7 @@ import UIKit
 import CoreKit
 import DesignKit
 
-struct HomeFollwoingProfileViewModel {
+struct SearchAfterUserViewModel {
     let profileImageURL: String?
     let nickname: String
     let badge: String
@@ -74,7 +74,7 @@ final class SearchAfterUserView: UIView {
         setupViews()
     }
     
-    func setup(model: HomeFollwoingProfileViewModel) {
+    func setup(model: SearchAfterUserViewModel) {
         profileImageView.load(from: model.profileImageURL)
         nicknameLabel.text = model.nickname
         badgeLabel.text = model.badge
