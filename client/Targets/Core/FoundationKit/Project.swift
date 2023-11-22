@@ -3,9 +3,9 @@ import ProjectDescriptionHelpers
 import UtilityPlugin
 
 let proejct = Project.framework(
-    name: "NetworkAPIKit",
+    name: "FoundationKit",
+    featureTargets: [.framework],
     dependencies: [
-        .Target.Core.ThirdPartyKit,
-        .Target.Core.FoundationKit
+        .Target.Core.Foundation.UtilityKit
     ]
 )
