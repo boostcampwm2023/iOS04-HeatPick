@@ -14,7 +14,7 @@ protocol SearchAfterDashboardInteractable: Interactable {
 }
 
 protocol SearchAfterDashboardViewControllable: ViewControllable {
-    func insertDashboard(_ viewControllable: ViewControllable)
+    func appendDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
 }
 

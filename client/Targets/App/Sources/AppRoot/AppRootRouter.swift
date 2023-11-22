@@ -60,12 +60,13 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     }
     
     func attachSignIn() {
-        guard signInRouter == nil else { return }
-        let signInRouting = dependency.signInBuilder.build(withListener: interactor)
-        self.signInRouter = signInRouting
-        attachChild(signInRouting)
-        let signInViewController = NavigationControllable(viewControllable: signInRouting.viewControllable)
-        viewController.present(signInViewController, animated: true, isFullScreen: true)
+        attachTabs()
+//        guard signInRouter == nil else { return }
+//        let signInRouting = dependency.signInBuilder.build(withListener: interactor)
+//        self.signInRouter = signInRouting
+//        attachChild(signInRouting)
+//        let signInViewController = NavigationControllable(viewControllable: signInRouting.viewControllable)
+//        viewController.present(signInViewController, animated: true, isFullScreen: true)
     }
     
     func detachSignIn() {

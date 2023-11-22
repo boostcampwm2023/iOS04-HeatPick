@@ -17,7 +17,7 @@ protocol SearchResultInteractable: Interactable,
 }
 
 protocol SearchResultViewControllable: ViewControllable {
-    func insertDashboard(_ viewControllable: ViewControllable)
+    func appendDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
 }
 
@@ -69,7 +69,7 @@ extension SearchResultRouter {
     
     func showSearchBeforeDashboard() {
         guard let searchBeforeDashboardRouter else { return }
-        viewController.insertDashboard(searchBeforeDashboardRouter.viewControllable)
+        viewController.appendDashboard(searchBeforeDashboardRouter.viewControllable)
     }
     
     func hideSearchBeforeDashboard() {
@@ -96,7 +96,7 @@ extension SearchResultRouter {
     
     func showSearchingDashboard() {
         guard let searchingDashboardRouter else { return }
-        viewController.insertDashboard(searchingDashboardRouter.viewControllable)
+        viewController.appendDashboard(searchingDashboardRouter.viewControllable)
     }
     
     func hideSearchingDashboard() {
@@ -123,7 +123,7 @@ extension SearchResultRouter {
     
     func showSearchAfterDashboard() {
         guard let searchAfterDashboardRouter else { return }
-        viewController.insertDashboard(searchAfterDashboardRouter.viewControllable)
+        viewController.appendDashboard(searchAfterDashboardRouter.viewControllable)
     }
     
     func hideSearchAfterDashboard() {

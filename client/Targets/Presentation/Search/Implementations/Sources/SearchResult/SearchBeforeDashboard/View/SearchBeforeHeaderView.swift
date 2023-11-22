@@ -9,7 +9,7 @@
 import UIKit
 import DesignKit
 
-final class SearchBeforeHeaderView: UICollectionReusableView {
+final class SearchBeforeHeaderView: UIView {
     
     private enum Constant {
         static let topOffset: CGFloat = Constants.leadingOffset

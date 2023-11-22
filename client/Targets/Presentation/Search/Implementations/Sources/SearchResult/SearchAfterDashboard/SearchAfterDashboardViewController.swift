@@ -8,13 +8,10 @@
 
 
 import UIKit
-
 import DesignKit
 import ModernRIBs
 
-protocol SearchAfterDashboardPresentableListener: AnyObject {
-    
-}
+protocol SearchAfterDashboardPresentableListener: AnyObject { }
 
 final class SearchAfterDashboardViewController: UIViewController, SearchAfterDashboardPresentable, SearchAfterDashboardViewControllable {
 
@@ -48,7 +45,7 @@ final class SearchAfterDashboardViewController: UIViewController, SearchAfterDas
         setupViews()
     }
     
-    func insertDashboard(_ viewControllable: ViewControllable) {
+    func appendDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
         addChild(viewController)
         stackView.addArrangedSubview(viewController.view)

@@ -46,7 +46,7 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
         listener?.showSearchBeforeDashboard()
     }
     
-    func insertDashboard(_ viewControllable: ViewControllable) {
+    func appendDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
         
         if let view = stackView.arrangedSubviews.filter({ $0 == viewController.view }).first {
