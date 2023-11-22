@@ -25,7 +25,7 @@ public struct Media {
     let type: MediaType
     let key: String
     let data: Data
-    var file: String
+    let file: String
 
     var mimeType: String {
         "\(key)/\(type.mimeType)"
