@@ -10,8 +10,14 @@ import UIKit
 
 import DomainEntities
 
+protocol AttributeFieldDelegate: AnyObject {
+    func locationDidChange(_ location: Location?)
+}
+
 final class AttributeField: UIView {
 
+    weak var delegate: AttributeFieldDelegate?
+    
     var categoryIndex: Int { categoryPicker.selectedIndex }
     var badgeIndex: Int { badgePicker.selectedIndex }
     var date: Date { datePicker.selectedDate }
@@ -43,8 +49,9 @@ final class AttributeField: UIView {
         return datePicker
     }()
     
-    private let locationPicker: LocationPicker = {
+    private lazy var locationPicker: LocationPicker = {
         let locationPicker = LocationPicker()
+        locationPicker.delegate = self
         
         locationPicker.translatesAutoresizingMaskIntoConstraints = false
         return locationPicker
@@ -80,6 +87,14 @@ private extension AttributeField {
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+    
+}
+
+extension AttributeField: LocationPickerDelegate {
+    
+    func locationDidChange(_ location: Location?) {
+        delegate?.locationDidChange(location)
     }
     
 }

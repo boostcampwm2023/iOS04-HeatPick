@@ -21,14 +21,17 @@ import HomeInterfaces
 import HomeImplementations
 import SearchImplementations
 import StoryImplementations
+import MyInterfaces
+import MyImplementations
 
 final class AppRootComponent: Component<AppRootDependency>,
                               AppRootRouterDependency,
                               AppRootInteractorDependency,
                               SignInDependency,
                               HomeDependency,
-                              SearchHomeDependency, 
-                                StoryCreatorDependency {
+                              SearchHomeDependency,
+                              StoryCreatorDependency,
+                              MyPageDependency {
     
     let authUseCase: AuthUseCaseInterface
     let homeUseCase: HomeUseCaseInterface
@@ -50,6 +53,10 @@ final class AppRootComponent: Component<AppRootDependency>,
     
     lazy var storyCreatorBuilder: StoryCreatorBuildable = {
         StoryCreatorBuilder(dependency: self)
+    }()
+    
+    lazy var myPageBuilder: MyPageBuildable = {
+        MyPageBuilder(dependency: self)
     }()
     
     override init(dependency: AppRootDependency) {

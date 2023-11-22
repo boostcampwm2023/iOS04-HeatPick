@@ -11,22 +11,22 @@ import ModernRIBs
 protocol SearchResultDependency: Dependency { }
 
 final class SearchResultComponent: Component<SearchResultDependency>,
-                                    BeginEditingTextDashboardDependency,
-                                    EditingTextDashboardDependency,
-                                    EndEditingTextDashboardDependency {
+                                   SearchBeforeDashboardDependency,
+                                   SearchingDashboardDependency,
+                                   SearchAfterDashboardDependency {
 
 }
 
 final class SearchResultRouterComponent: SearchResultRouterDependency {
     
-    let beginEditingTextDashboardBuilder: BeginEditingTextDashboardBuildable
-    let editingTextDashboardBuilder: EditingTextDashboardBuildable
-    let endEditingTextDashboardBuilder: EndEditingTextDashboardBuildable
+    let searchBeforeDashboardBuilder: SearchBeforeDashboardBuildable
+    let searchingDashboardBuilder: SearchingDashboardBuildable
+    let searchAfterDashboardBuilder: SearchAfterDashboardBuildable
 
     init(component: SearchResultComponent) {
-        self.beginEditingTextDashboardBuilder = BeginEditingTextDashboardBuilder(dependency: component)
-        self.editingTextDashboardBuilder = EditingTextDashboardBuilder(dependency: component)
-        self.endEditingTextDashboardBuilder = EndEditingTextDashboardBuilder(dependency: component)
+        self.searchBeforeDashboardBuilder = SearchBeforeDashboardBuilder(dependency: component)
+        self.searchingDashboardBuilder = SearchingDashboardBuilder(dependency: component)
+        self.searchAfterDashboardBuilder = SearchAfterDashboardBuilder(dependency: component)
     }
     
 }

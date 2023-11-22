@@ -9,6 +9,7 @@ let project = Project.framework(
         .Target.Data.API.Home,
         .Target.Data.API.Auth,
         .Target.Data.API.Story,
-        .Target.Data.API.Search
+        .Target.Data.API.Search,
+        .Target.Data.API.My
     ]
 )

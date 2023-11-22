@@ -74,11 +74,11 @@ public final class NetworkProvider: Network {
         let request: URLRequest = {
             var request = URLRequest(url: url)
             if isMultipartFormData {
-                target.header.withMultipartFormData(boundary: boundary)
+                request.setHeader(target.header.withMultipartFormData(boundary: boundary))
             } else {
                 request.httpBody = makeBody(target)
+                request.setHeader(target.header)
             }
-            request.setHeader(target.header)
             request.httpMethod = target.method.rawValue
             
             return request

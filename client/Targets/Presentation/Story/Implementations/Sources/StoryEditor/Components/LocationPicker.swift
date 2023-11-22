@@ -17,8 +17,13 @@ fileprivate extension Location {
     }
 }
 
+protocol LocationPickerDelegate: AnyObject {
+    func locationDidChange(_ location: Location?)
+}
+
 final class LocationPicker: UIView {
 
+    weak var delegate: LocationPickerDelegate?
     private(set) var selectedLocation: Location? {
         didSet {
             valueLabel.text = selectedLocation?.toString ?? "없음"
@@ -108,6 +113,7 @@ private extension LocationPicker {
     
     @objc func cancelPicker() {
         selectedLocation = nil
+        delegate?.locationDidChange(selectedLocation)
         dismissPicker()
     }
     
@@ -117,10 +123,12 @@ private extension LocationPicker {
     
 }
 
+
 extension LocationPicker: LocationPickerViewDelegate {
     
     func locationDidChange(_ picker: LocationPickerView, to location: Location) {
         selectedLocation = location
+        delegate?.locationDidChange(selectedLocation)
     }
     
 }

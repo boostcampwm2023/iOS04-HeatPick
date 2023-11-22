@@ -44,3 +44,4 @@ jobs:
                       docker stop heatpick-container || true
                       docker rm heatpick-container || true
                       docker run -e SSH_HOST=${{ secrets.SSH_HOST }} -e SSH_PORT=${{ secrets.SSH_PORT }} -e SSH_USER=${{ secrets.SSH_USER }} -e SSH_PASSWORD=${{ secrets.SSH_PASSWORD }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e DB_NAME=${{ secrets.DB_NAME }} -e DB_HOST=${{ secrets.DB_HOST }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} -e SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL}} -v /images:/usr/src/app/images -d -p 3000:3000 --name heatpick-container geomgichoi/heatpick
+

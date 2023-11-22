@@ -9,20 +9,20 @@
 import ModernRIBs
 
 protocol SearchResultRouting: ViewableRouting {
-    func attachBeginEditingTextDashboard()
-    func detachBeginEditingTextDashboard()
-    func showBeginEditingTextDashboard()
-    func hideBeginEditingTextDashboard()
+    func attachSearchBeforeDashboard()
+    func detachSearchBeforeDashboard()
+    func showSearchBeforeDashboard()
+    func hideSearchBeforeDashboard()
     
-    func attachEditingTextDashboard()
-    func detachEditingTextDashboard()
-    func showEditingTextDashboard()
-    func hideEditingTextDashboard()
+    func attachSearchingDashboard()
+    func detachSearchingDashboard()
+    func showSearchingDashboard()
+    func hideSearchingDashboard()
     
-    func attachEndEditingTextDashboard()
-    func detachEndEditingTextDashboard()
-    func showEndEditingTextDashboard()
-    func hideEndEditingTextDashboard()
+    func attachSearchAfterDashboard()
+    func detachSearchAfterDashboard()
+    func showSearchAfterDashboard()
+    func hideSearchAfterDashboard()
 }
 
 protocol SearchResultPresentable: Presentable {
@@ -47,43 +47,43 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        router?.attachBeginEditingTextDashboard()
-        router?.attachEditingTextDashboard()
-        router?.attachEndEditingTextDashboard()
+        router?.attachSearchBeforeDashboard()
+        router?.attachSearchingDashboard()
+        router?.attachSearchAfterDashboard()
     }
 
     override func willResignActive() {
         super.willResignActive()
-        router?.detachBeginEditingTextDashboard()
-        router?.detachEditingTextDashboard()
-        router?.detachEndEditingTextDashboard()
+        router?.detachSearchBeforeDashboard()
+        router?.detachSearchingDashboard()
+        router?.detachSearchAfterDashboard()
     }
     
     func detachSearchResult() {
         listener?.detachSearchResult()
     }
     
-    func showBeginEditingTextDashboard() {
-        router?.showBeginEditingTextDashboard()
+    func showSearchBeforeDashboard() {
+        router?.showSearchBeforeDashboard()
     }
     
-    func hideBeginEditingTextDashboard() {
-        router?.hideBeginEditingTextDashboard()
+    func hideSearchBeforeDashboard() {
+        router?.hideSearchBeforeDashboard()
     }
     
-    func showEditingTextDashboard() {
-        router?.showEditingTextDashboard()
+    func showSearchingDashboard() {
+        router?.showSearchingDashboard()
     }
     
-    func hideEditingTextDashboard() {
-        router?.hideEditingTextDashboard()
+    func hideSearchingDashboard() {
+        router?.hideSearchingDashboard()
     }
     
-    func showEndEditingTextDashboard() {
-        router?.showEndEditingTextDashboard()
+    func showSearchAfterDashboard() {
+        router?.showSearchAfterDashboard()
     }
     
-    func hideEndEditingTextDashboard() {
-        router?.hideEndEditingTextDashboard()
+    func hideSearchAfterDashboard() {
+        router?.hideSearchAfterDashboard()
     }
 }
