@@ -10,26 +10,19 @@ import Foundation
 
 import ModernRIBs
 
-import DataRepositories
 import DomainInterfaces
-import DomainUseCases
 import NetworkAPIKit
 
-public protocol StoryCreatorDependency: Dependency {}
+public protocol StoryCreatorDependency: Dependency {
+    
+    var storyUseCase: StoryUseCaseInterface { get }
+}
 
 final class StoryCreatorComponent: Component<StoryCreatorDependency>,
                                    StoryCreatorRouterDependency,
                                    StoryEditorDependency {
     
-    let network: Network = {
-        let configuration = URLSessionConfiguration.default
-//        let configuration = URLSessionConfiguration.ephemeral
-//        configuration.protocolClasses = [AuthURLProtocol.self]
-        let provider = NetworkProvider(session: URLSession(configuration: configuration))
-        return provider
-    }()
-    
-    lazy var storyUseCase: StoryUseCaseInterface = StoryUseCase(repository: StoryRepository(session: network))
+    var storyUseCase: StoryUseCaseInterface { dependency.storyUseCase }
     lazy var storyEditorBuilder: StoryEditorBuildable = {
         StoryEditorBuilder(dependency: self)
     }()
