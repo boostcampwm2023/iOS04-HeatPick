@@ -10,7 +10,9 @@ import ModernRIBs
 import UIKit
 import DesignKit
 
-protocol MyPagePresentableListener: AnyObject {}
+protocol MyPagePresentableListener: AnyObject {
+    func didTapSetting()
+}
 
 public final class MyPageViewController: UIViewController, MyPagePresentable, MyPageViewControllable {
     
@@ -89,7 +91,7 @@ extension MyPageViewController: NavigationViewDelegate {
     
     public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         guard case .setting = type else { return }
-        print("# Setting Button Did Tap")
+        listener?.didTapSetting()
     }
     
 }

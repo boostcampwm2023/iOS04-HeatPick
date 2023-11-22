@@ -12,9 +12,12 @@ protocol MyPageUserDashboardRouting: ViewableRouting {}
 
 protocol MyPageUserDashboardPresentable: Presentable {
     var listener: MyPageUserDashboardPresentableListener? { get set }
+    func setup(model: MyPageUserDashboardViewControllerModel)
 }
 
-protocol MyPageUserDashboardListener: AnyObject {}
+protocol MyPageUserDashboardListener: AnyObject {
+    func userDashboardDidTapProfile()
+}
 
 final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashboardPresentable>, MyPageUserDashboardInteractable, MyPageUserDashboardPresentableListener {
 
@@ -28,10 +31,25 @@ final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashb
 
     override func didBecomeActive() {
         super.didBecomeActive()
+        presenter.setup(model: .init(
+            userName: "호구마츄",
+            profileImageURL: "https://avatars.githubusercontent.com/u/74225754?v=4",
+            follower: "10K",
+            storyCount: "13",
+            experience: "50%",
+            temperatureTitle: "🔥 따뜻해요",
+            temperature: "30℃",
+            badgeTitle: "🍼️ 뉴비",
+            badgeContent: "저는 아무 것도 모르는 뉴비에요"
+        ))
     }
 
     override func willResignActive() {
         super.willResignActive()
+    }
+    
+    func didTapProfile() {
+        listener?.userDashboardDidTapProfile()
     }
     
 }

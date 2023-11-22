@@ -43,8 +43,9 @@ final class MyPageUserView: UIView {
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .profileDefault
-        imageView.addTapGesture(target: self, action: #selector(profileDidTap))
+        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constant.profileImageViewWidth / 2
+        imageView.addTapGesture(target: self, action: #selector(profileDidTap))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
