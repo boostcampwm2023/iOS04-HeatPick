@@ -54,8 +54,7 @@ final class SearchBeforeCategoryCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        titleLabel.text = ""
-        descriptionLabel.text = ""
+        reset()
     }
     
     func updateCategory(_ category: CategoryModel) {
@@ -87,4 +86,8 @@ private extension SearchBeforeCategoryCell {
         ])
     }
     
+    func reset() {
+        titleLabel.text = ""
+        descriptionLabel.text = ""
+    }
 }

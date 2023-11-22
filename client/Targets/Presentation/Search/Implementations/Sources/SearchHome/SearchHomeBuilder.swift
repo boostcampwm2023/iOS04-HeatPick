@@ -11,17 +11,19 @@ import ModernRIBs
 public protocol SearchHomeDependency: Dependency { }
 
 final class SearchHomeComponent: Component<SearchHomeDependency>,
+                                 SearchMapDependency,
                                  SearchHomeListDependency,
                                  SearchResultDependency {
-    
 }
 
 final class SearchHomeRouterComponent: SearchHomeRouterDependency {
     
+    let searchMapBuilder: SearchMapBuildable
     let searchHomeListBuilder: SearchHomeListBuildable
     let searchResultBuilder: SearchResultBuildable
     
     init(component: SearchHomeComponent) {
+        self.searchMapBuilder = SearchMapBuilder(dependency: component)
         self.searchHomeListBuilder = SearchHomeListBuilder(dependency: component)
         self.searchResultBuilder = SearchResultBuilder(dependency: component)
     }

@@ -20,7 +20,7 @@ protocol SearchHomePresentableListener: AnyObject {
 }
 
 public final class SearchHomeViewController: UIViewController, SearchHomePresentable, SearchHomeViewControllable {
-    
+
     private enum Constant {
         enum TabBar {
             static let title = "검색"
@@ -42,12 +42,13 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
     
     weak var listener: SearchHomePresentableListener?
     
-    private lazy var naverMap: NMFNaverMapView = {
-        let map = NMFNaverMapView(frame: view.frame)
-        map.backgroundColor = .hpWhite
-        map.showLocationButton = true
-        map.mapView.translatesAutoresizingMaskIntoConstraints = false
-        return map
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private lazy var searchTextField: SearchTextField = {
@@ -92,7 +93,18 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         setupViews()
     }
     
-
+    func insertDashboard(_ viewControllable: ViewControllable) {
+        let viewController = viewControllable.uiviewController
+        addChild(viewController)
+        stackView.addArrangedSubview(viewController.view)
+        viewController.didMove(toParent: self)
+    }
+    
+    func removeDashboard(_ viewControllable: ViewControllable) {
+        let viewController = viewControllable.uiviewController
+        stackView.removeArrangedSubview(viewController.view)
+        viewController.removeFromParent()
+    }
 
 }
 
@@ -104,14 +116,16 @@ private extension SearchHomeViewController {
             image: .init(systemName: Constant.TabBar.image),
             tag: 1
         )
-
     }
     
     func setupViews() {
-        view = naverMap
-        
-        [searchTextField, showSearchHomeListButton].forEach { view.addSubview($0) }
+        [stackView, searchTextField, showSearchHomeListButton].forEach { view.addSubview($0) }
         NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: view.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
             searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
             searchTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             searchTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
@@ -135,4 +149,5 @@ private extension SearchHomeViewController {
     @objc func showSearchHomeListButtonDidTap() {
         listener?.presentHomeList()
     }
+    
 }

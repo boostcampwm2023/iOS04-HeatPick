@@ -45,7 +45,7 @@ final class SearchBeforeRecentSearchTextCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        titleLabel.text = ""
+        reset()
     }
     
     func updateRecentSearchText(_ receentSearchText: ReceentSearchTextModel) {
@@ -70,4 +70,7 @@ private extension SearchBeforeRecentSearchTextCell {
         ])
     }
     
+    func reset() {
+        titleLabel.text = ""
+    }
 }

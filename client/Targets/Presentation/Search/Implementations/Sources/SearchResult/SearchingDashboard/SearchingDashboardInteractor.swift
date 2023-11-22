@@ -12,6 +12,9 @@ protocol SearchingDashboardRouting: ViewableRouting { }
 
 protocol SearchingDashboardPresentable: Presentable {
     var listener: SearchingDashboardPresentableListener? { get set }
+    
+    func setup(searchingRecommendCellModels: [SearchingRecommendCellModel])
+    func append(searchingRecommendCellModels: [SearchingRecommendCellModel])
 }
 
 protocol SearchingDashboardListener: AnyObject { }
@@ -21,8 +24,6 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     weak var router: SearchingDashboardRouting?
     weak var listener: SearchingDashboardListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
     override init(presenter: SearchingDashboardPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
@@ -30,11 +31,26 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        presenter.setup(searchingRecommendCellModels: [
+            .init(recommendText: "서울 맛집"),
+            .init(recommendText: "서울 맛집"),
+            .init(recommendText: "서울 맛집"),
+            .init(recommendText: "서울 맛집"),
+            .init(recommendText: "서울 맛집"),
+            .init(recommendText: "서울 맛집"),
+            .init(recommendText: "서울 맛집"),
+            .init(recommendText: "서울 맛집"),
+            .init(recommendText: "서울 맛집을 소개해드릴게요 네이버 부스트캠프 iOS04팀의 Github 저장소가 아주 맛집입니다."),
+        ])
+        
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
+        
+    }
+    
+    func didTapItem(_ item: SearchingRecommendCellModel) {
+        
     }
 }
