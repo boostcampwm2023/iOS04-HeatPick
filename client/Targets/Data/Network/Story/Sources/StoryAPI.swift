@@ -29,17 +29,17 @@ extension StoryAPI: Target {
         }
     }
     
-    public var method: NetworkAPIKit.HTTPMethod {
+    public var method: HTTPMethod {
         switch self {
         case .newStory: return .post
         }
     }
     
-    public var header: NetworkAPIKit.NetworkHeader {
+    public var header: NetworkHeader {
         return .authorized
     }
     
-    public var task: NetworkAPIKit.Task {
+    public var task: Task {
         switch self {
         case .newStory(let content):
             let request = NewStoryRequestDTO(storyContent: content)
