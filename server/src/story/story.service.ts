@@ -37,7 +37,7 @@ export class StoryService {
 
   public async create(accessToken: string, { title, content, category, place, images, date }): Promise<number> {
     const story: Story = await createStoryEntity({ title, content, category, place, images, date });
-    const decodedToken = this.jwtService.verify(accessToken);
+    const decodedToken = this.jwtService.decode(accessToken);
     const userId = decodedToken.userId;
     const user: User = await this.userRepository.findOneById(userId);
     user.stories = Promise.resolve([...(await user.stories), story]);
@@ -109,7 +109,7 @@ export class StoryService {
 
   public async update(accessToken: string, { storyId, title, content, category, place, images, date }): Promise<number> {
     const newStory = await createStoryEntity({ title, content, category, place, images, date });
-    const decodedToken = this.jwtService.verify(accessToken);
+    const decodedToken = this.jwtService.decode(accessToken);
     const userId = decodedToken.userId;
     const user = await this.userRepository.findOneById(userId);
 
@@ -124,7 +124,7 @@ export class StoryService {
   }
 
   public async delete(accessToken: string, storyId: number) {
-    const decodedToken = this.jwtService.verify(accessToken);
+    const decodedToken = this.jwtService.decode(accessToken);
     const userId = decodedToken.userId;
     const user: User = await this.userRepository.findOneById(userId);
     user.stories = Promise.resolve((await user.stories).filter((story) => story.storyId !== storyId));
