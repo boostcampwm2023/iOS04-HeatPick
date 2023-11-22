@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 @Entity()
 export class Badge {
