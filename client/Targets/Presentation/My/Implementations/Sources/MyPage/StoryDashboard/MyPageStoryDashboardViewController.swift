@@ -38,6 +38,8 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
         return seeAllView
     }()
     
+    private let emptyView = MyPageStoryEmptyView()
+    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -55,10 +57,15 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
     
     func setup(model: MyPageStoryDashboardViewControllerModel) {
         stackView.subviews.forEach { $0.removeFromSuperview() }
-        model.contentModels.forEach {
-            let storyView = StorySmallView()
-            storyView.setup(model: $0)
-            stackView.addArrangedSubview(storyView)
+        
+        if model.contentModels.isEmpty {
+            stackView.addArrangedSubview(emptyView)
+        } else {
+            model.contentModels.forEach {
+                let storyView = StorySmallView()
+                storyView.setup(model: $0)
+                stackView.addArrangedSubview(storyView)
+            }
         }
     }
     
