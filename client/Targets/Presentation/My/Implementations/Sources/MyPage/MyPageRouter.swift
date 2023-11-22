@@ -9,7 +9,7 @@
 import ModernRIBs
 import MyInterfaces
 
-protocol MyPageInteractable: Interactable, MyPageUserDashboardListener, MyPageStoryDashboardListener {
+protocol MyPageInteractable: Interactable, MyPageUserDashboardListener, MyPageStoryDashboardListener, MyPageStorySeeAllListener {
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }
@@ -27,14 +27,19 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     private let storyDashboardBuilder: MyPageStoryDashboardBuildable
     private var storyDashboardRouting: ViewableRouting?
     
+    private let storySeeAllBuilder: MyPageStorySeeAllBuildable
+    private var storySeeAllRouting: ViewableRouting?
+    
     init(
         interactor: MyPageInteractable,
         viewController: MyPageViewControllable,
         userDashboardBuilder: MyPageUserDashboardBuildable,
-        storyDashboardBuilder: MyPageStoryDashboardBuildable
+        storyDashboardBuilder: MyPageStoryDashboardBuildable,
+        storySeeAllBuilder: MyPageStorySeeAllBuildable
     ) {
         self.userDashboardBuilder = userDashboardBuilder
         self.storyDashboardBuilder = storyDashboardBuilder
+        self.storySeeAllBuilder = storySeeAllBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -66,6 +71,21 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         guard let router = storyDashboardRouting else { return }
         viewController.removeDashboard(router.viewControllable)
         self.storyDashboardRouting = nil
+        detachChild(router)
+    }
+    
+    func attachStorySeeAll() {
+        guard storySeeAllRouting == nil else { return }
+        let router = storySeeAllBuilder.build(withListener: interactor)
+        viewControllable.pushViewController(router.viewControllable, animated: true)
+        self.storySeeAllRouting = router
+        attachChild(router)
+    }
+    
+    func detachStorySeeAll() {
+        guard let router = storySeeAllRouting else { return }
+        viewController.popViewController(animated: true)
+        self.storySeeAllRouting = nil
         detachChild(router)
     }
     

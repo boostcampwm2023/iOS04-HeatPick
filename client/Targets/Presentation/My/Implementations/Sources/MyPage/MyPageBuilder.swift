@@ -13,7 +13,8 @@ public protocol MyPageDependency: Dependency {}
 
 final class MyPageComponent: Component<MyPageDependency>,
                              MyPageUserDashboardDependency,
-                             MyPageStoryDashboardDependency {}
+                             MyPageStoryDashboardDependency,
+                             MyPageStorySeeAllDependency {}
 
 public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
     
@@ -31,7 +32,8 @@ public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
             interactor: interactor,
             viewController: viewController,
             userDashboardBuilder: MyPageUserDashboardBuilder(dependency: component),
-            storyDashboardBuilder: MyPageStoryDashboardBuilder(dependency: component)
+            storyDashboardBuilder: MyPageStoryDashboardBuilder(dependency: component),
+            storySeeAllBuilder: MyPageStorySeeAllBuilder(dependency: component)
         )
     }
     
