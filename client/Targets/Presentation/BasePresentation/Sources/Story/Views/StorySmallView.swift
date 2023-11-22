@@ -42,6 +42,7 @@ public final class StorySmallView: UIView {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constants.cornerRadiusMedium
         imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = .hpGray4
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()

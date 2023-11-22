@@ -34,4 +34,8 @@ final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDas
         super.willResignActive()
     }
     
+    func didTapSeeAll() {
+        
+    }
+    
 }
