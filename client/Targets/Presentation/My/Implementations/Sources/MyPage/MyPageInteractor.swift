@@ -40,4 +40,20 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         super.willResignActive()
     }
     
+    func didTapSetting() {
+        print("# Setting 화면으로 이동")
+    }
+    
+    // MARK: - UserDashboard
+    
+    func userDashboardDidTapProfile() {
+        print("# 프로필 변경으로 이동")
+    }
+    
+    // MARK: - StoryDashboard
+    
+    func storyDashboardDidTapSeeAll() {
+        print("# 모두 보기 화면으로 이동")
+    }
+    
 }

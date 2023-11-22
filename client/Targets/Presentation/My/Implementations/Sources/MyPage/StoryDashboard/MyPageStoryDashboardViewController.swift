@@ -15,6 +15,10 @@ protocol MyPageStoryDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
 }
 
+struct MyPageStoryDashboardViewControllerModel {
+    let contentModels: [StorySmallViewModel]
+}
+
 final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDashboardPresentable, MyPageStoryDashboardViewControllable {
     
     private enum Constant {
@@ -23,12 +27,13 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
     
     weak var listener: MyPageStoryDashboardPresentableListener?
     
-    private let seeAllView: SeeAllView = {
+    private lazy var seeAllView: SeeAllView = {
         let seeAllView = SeeAllView()
         seeAllView.setup(model: .init(
             title: "내가 쓴 스토리",
             isButtonEnabled: true
         ))
+        seeAllView.delegate = self
         seeAllView.translatesAutoresizingMaskIntoConstraints = false
         return seeAllView
     }()
@@ -46,9 +51,13 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        (0...9).forEach {
+    }
+    
+    func setup(model: MyPageStoryDashboardViewControllerModel) {
+        stackView.subviews.forEach { $0.removeFromSuperview() }
+        model.contentModels.forEach {
             let storyView = StorySmallView()
-            storyView.setup(model: .init(thumbnailImageURL: "", title: "\($0)번 타이틀", subtitle: "\($0)번 서브타이틀", likes: $0, comments: $0))
+            storyView.setup(model: $0)
             stackView.addArrangedSubview(storyView)
         }
     }

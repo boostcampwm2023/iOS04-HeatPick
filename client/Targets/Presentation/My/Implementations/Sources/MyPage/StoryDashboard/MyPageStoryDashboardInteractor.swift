@@ -7,14 +7,18 @@
 //
 
 import ModernRIBs
+import BasePresentation
 
 protocol MyPageStoryDashboardRouting: ViewableRouting {}
 
 protocol MyPageStoryDashboardPresentable: Presentable {
     var listener: MyPageStoryDashboardPresentableListener? { get set }
+    func setup(model: MyPageStoryDashboardViewControllerModel)
 }
 
-protocol MyPageStoryDashboardListener: AnyObject {}
+protocol MyPageStoryDashboardListener: AnyObject {
+    func storyDashboardDidTapSeeAll()
+}
 
 final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDashboardPresentable>, MyPageStoryDashboardInteractable, MyPageStoryDashboardPresentableListener {
     
@@ -28,6 +32,11 @@ final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDas
 
     override func didBecomeActive() {
         super.didBecomeActive()
+        presenter.setup(model: .init(contentModels: [
+            .init(thumbnailImageURL: "https://avatars.githubusercontent.com/u/74225754?v=4", title: "title 123", subtitle: "subtitle 123123123123", likes: 0, comments: 10000),
+            .init(thumbnailImageURL: "https://avatars.githubusercontent.com/u/74225754?v=4", title: "title 123", subtitle: "subtitle 123123123123", likes: 1231230, comments: 1231230),
+            .init(thumbnailImageURL: "https://avatars.githubusercontent.com/u/74225754?v=4", title: "title 123", subtitle: "subtitle 123123123123", likes: 1231231230, comments: 0),
+        ]))
     }
 
     override func willResignActive() {
@@ -35,7 +44,7 @@ final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDas
     }
     
     func didTapSeeAll() {
-        
+        listener?.storyDashboardDidTapSeeAll()
     }
     
 }

@@ -10,7 +10,21 @@ import ModernRIBs
 import UIKit
 import DesignKit
 
-protocol MyPageUserDashboardPresentableListener: AnyObject {}
+protocol MyPageUserDashboardPresentableListener: AnyObject {
+    func didTapProfile()
+}
+
+struct MyPageUserDashboardViewControllerModel {
+    let userName: String
+    let profileImageURL: String?
+    let follower: String
+    let storyCount: String
+    let experience: String
+    let temperatureTitle: String
+    let temperature: String
+    let badgeTitle: String
+    let badgeContent: String
+}
 
 final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashboardPresentable, MyPageUserDashboardViewControllable {
     
@@ -28,9 +42,13 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
         return label
     }()
     
-    private let userView = MyPageUserView()
     private let temperatureView = MyPageTemperatureView()
     private let badgeView = MyPageBadgeView()
+    private lazy var userView: MyPageUserView = {
+        let userView = MyPageUserView()
+        userView.delegate = self
+        return userView
+    }()
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -45,15 +63,26 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        titleLabel.text = "호구마츄님 안녕하세요"
+    }
+    
+    func setup(model: MyPageUserDashboardViewControllerModel) {
+        titleLabel.text = model.userName + "님 안녕하세요"
         userView.setup(model: .init(
-            profileImageURL: nil,
-            follower: "10K",
-            story: "13",
-            experience: "50%"
+            profileImageURL: model.profileImageURL, 
+            follower: model.follower, 
+            story: model.storyCount, 
+            experience: model.experience
         ))
-        temperatureView.setup(title: "🔥 따뜻해요", temperature: "30℃")
-        badgeView.setup(title: "🍼️ 뉴비", content: "저는 아무 것도 모르는 뉴비에요")
+        temperatureView.setup(title: model.temperatureTitle, temperature: model.temperature)
+        badgeView.setup(title: model.badgeTitle, content: model.badgeContent)
+    }
+    
+}
+
+extension MyPageUserDashboardViewController: MyPageUserViewDelegate {
+    
+    func myPageUserViewDidTapProfile(_ view: MyPageUserView) {
+        listener?.didTapProfile()
     }
     
 }
