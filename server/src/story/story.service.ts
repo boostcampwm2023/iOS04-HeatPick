@@ -99,9 +99,25 @@ export class StoryService {
           likeCount: 'DESC',
         },
         take: 10,
-        relations: ['user'],
+        relations: ['user', 'user.profileImage', 'storyImages'],
+        select: ['storyId', 'title', 'likeCount', 'createAt', 'user.userId', 'user.username', 'user.profileImage'],
       });
-      return stories;
+
+      const formattedStories = Promise.all(
+        stories.map(async (story) => {
+          const storyImageObjs = await story.storyImages;
+          return {
+            storyId: story.storyId,
+            title: story.title,
+            likeCount: story.likeCount,
+            createAt: story.createAt,
+            user: story.user,
+            storyImages: storyImageObjs.map((image) => image.imageUrl),
+          };
+        }),
+      );
+
+      return formattedStories;
     } catch (error) {
       throw error;
     }

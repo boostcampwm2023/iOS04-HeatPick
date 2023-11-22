@@ -12,6 +12,9 @@ import { SearchService } from './search/search.service';
 import { SearchModule } from './search/search.module';
 import { ImageModule } from './image/image.module';
 import { CommentModule } from './comment/comment.module';
+import { SlackService } from './slack/slack.service';
+import { APP_FILTER } from '@nestjs/core';
+import { SlackExceptionFilter } from './exception/slack-exception.filter';
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
@@ -33,7 +36,14 @@ export class AppLoggerMiddleware implements NestMiddleware {
 @Module({
   imports: [DatabaseModule, AuthModule, StoryModule, SearchModule, ImageModule, CommentModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    SlackService,
+    {
+      provide: APP_FILTER,
+      useClass: SlackExceptionFilter,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
