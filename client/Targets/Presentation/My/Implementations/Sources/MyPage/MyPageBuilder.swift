@@ -11,19 +11,24 @@ import MyInterfaces
 
 public protocol MyPageDependency: Dependency {}
 
-final class MyPageComponent: Component<MyPageDependency> {}
+final class MyPageComponent: Component<MyPageDependency>, MyPageUserDashboardDependency {}
 
 public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
 
     public override init(dependency: MyPageDependency) {
         super.init(dependency: dependency)
     }
-
+    
     public func build(withListener listener: MyPageListener) -> ViewableRouting {
         let component = MyPageComponent(dependency: dependency)
         let viewController = MyPageViewController()
         let interactor = MyPageInteractor(presenter: viewController)
         interactor.listener = listener
-        return MyPageRouter(interactor: interactor, viewController: viewController)
+        return MyPageRouter(
+            interactor: interactor,
+            viewController: viewController,
+            userDashboardBuilder: MyPageUserDashboardBuilder(dependency: component)
+        )
     }
+    
 }

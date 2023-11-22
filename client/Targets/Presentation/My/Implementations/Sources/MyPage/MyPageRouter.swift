@@ -9,18 +9,44 @@
 import ModernRIBs
 import MyInterfaces
 
-protocol MyPageInteractable: Interactable {
+protocol MyPageInteractable: Interactable, MyPageUserDashboardListener {
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }
 
-protocol MyPageViewControllable: ViewControllable {}
+protocol MyPageViewControllable: ViewControllable {
+    func setDashboard(_ viewControllable: ViewControllable)
+    func removeDashboard(_ viewControllable: ViewControllable)
+}
 
 final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControllable>, MyPageRouting {
     
-    override init(interactor: MyPageInteractable, viewController: MyPageViewControllable) {
+    private let userDashboardBuilder: MyPageUserDashboardBuildable
+    private var userDashboardRouting: ViewableRouting?
+    
+    init(
+        interactor: MyPageInteractable,
+        viewController: MyPageViewControllable,
+        userDashboardBuilder: MyPageUserDashboardBuildable
+    ) {
+        self.userDashboardBuilder = userDashboardBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
+    }
+    
+    func attachUserDashboard() {
+        guard userDashboardRouting == nil else { return }
+        let router = userDashboardBuilder.build(withListener: interactor)
+        viewController.setDashboard(router.viewControllable)
+        self.userDashboardRouting = router
+        attachChild(router)
+    }
+    
+    func detachUserDashboard() {
+        guard let router = userDashboardRouting else { return }
+        viewController.removeDashboard(router.viewControllable)
+        self.userDashboardRouting = nil
+        detachChild(router)
     }
     
 }

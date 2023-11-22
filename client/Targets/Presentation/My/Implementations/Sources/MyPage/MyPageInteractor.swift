@@ -9,7 +9,10 @@
 import ModernRIBs
 import MyInterfaces
 
-protocol MyPageRouting: ViewableRouting {}
+protocol MyPageRouting: ViewableRouting {
+    func attachUserDashboard()
+    func detachUserDashboard()
+}
 
 protocol MyPagePresentable: Presentable {
     var listener: MyPagePresentableListener? { get set }
@@ -27,6 +30,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     override func didBecomeActive() {
         super.didBecomeActive()
+        router?.attachUserDashboard()
     }
     
     override func willResignActive() {
