@@ -5,7 +5,7 @@ import { dateFormatToISO8601 } from './util.date.format.to.ISO8601';
 import { Category } from '../entities/category.entity';
 
 export const createStoryEntity = async ({ title, content, category, place, images, date }) => {
-  const savedImagePaths = await Promise.all(images.map(async (image: Express.Multer.File) => saveImageToLocal('../../uploads', image.buffer)));
+  const savedImageNames = await Promise.all(images.map(async (image: Express.Multer.File) => saveImageToLocal('./images/story', image.buffer)));
   const story = new Story();
   story.title = title;
   story.content = content;
@@ -16,9 +16,9 @@ export const createStoryEntity = async ({ title, content, category, place, image
   story.createAt = dateFormatToISO8601(date);
   story.likeCount = 0;
   const storyImageArr = await story.storyImages;
-  savedImagePaths.forEach((path) => {
+  savedImageNames.forEach((name) => {
     const storyImageObj = new StoryImage();
-    storyImageObj.imageUrl = path;
+    storyImageObj.imageUrl = name;
     storyImageArr.push(storyImageObj);
   });
   return story;
