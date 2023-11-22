@@ -20,5 +20,5 @@ export const saveImageToLocal = async (path: string, imageBuffer: Buffer): Promi
 
   await pipeline(readableImage, fs.createWriteStream(`${folderPath}/${fileName}`));
   // 저장된 이미지의 경로 반환
-  return `${folderPath}/${fileName}`;
+  return `${fileName}`;
 };
