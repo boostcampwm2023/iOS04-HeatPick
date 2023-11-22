@@ -175,11 +175,19 @@ extension Project {
                 "UILaunchStoryboardName": "LaunchScreen",
                 "LSSupportsOpeningDocumentsInPlace": true,
                 "UIFileSharingEnabled": true,
+                "NaverLoginConsumerKey": "$(NAVER_LOGIN_CONSUMER_KEY)",
+                "NaverLoginConsumerSecret": "$(NAVER_LOGIN_CONSUMER_SECRET)",
+                "NaverMapClientID": "$(NAVER_MAP_CLIENT_ID)",
+                "NaverMapSecret": "$(NAVER_MAP_SECRET)",
+                "BaseURL": "$(BASE_URL)"
             ]),
             sources: ["Sources/**"],
             resources: ["Resources/**"],
             dependencies: dependencies,
-            settings: .settings(defaultSettings: .recommended)
+            settings: .settings(configurations: [
+                .debug(name: .debug, xcconfig: XCConfig.secret),
+                .release(name: .release, xcconfig: XCConfig.secret),
+            ])
         )
         targets.append(target)
         
