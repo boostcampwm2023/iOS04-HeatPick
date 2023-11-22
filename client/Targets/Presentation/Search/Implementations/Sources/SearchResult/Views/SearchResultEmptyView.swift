@@ -1,5 +1,5 @@
 //
-//  SearchAfterEmptyView.swift
+//  SearchResultEmptyView.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 11/21/23.
@@ -9,7 +9,7 @@
 import UIKit
 import DesignKit
 
-struct SearchAfterEmptyViewModel {
+struct SearchResultEmptyViewModel {
     let title: String
     let subtitle: String
 }
@@ -64,7 +64,7 @@ final class SearchResultEmptyView: UIView {
         setupViews()
     }
     
-    func setup(model: SearchAfterEmptyViewModel) {
+    func setup(model: SearchResultEmptyViewModel) {
         titleLabel.text = model.title
         subtitleLabel.text = model.subtitle
     }
