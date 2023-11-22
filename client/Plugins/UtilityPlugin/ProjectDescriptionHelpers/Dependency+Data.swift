@@ -33,6 +33,7 @@ public extension TargetDependency.Target.Data.API {
     static let Auth = project(name: "Auth")
     static let Story = project(name: "Story")
     static let Search = project(name: "Search")
+    static let My = project(name: "My")
 }
 
 public extension TargetDependency.Target.Data.API {
