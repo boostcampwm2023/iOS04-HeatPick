@@ -23,8 +23,6 @@ export class UserService {
     private userJasoTrie: UserJasoTrie,
     private jwtService: JwtService,
     private imageService: ImageService,
-    @Inject('BADGE_REPOSITORY')
-    private badgeRepositroy: Repository<Badge>,
   ) {
     this.userRepository.loadEveryUser().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));

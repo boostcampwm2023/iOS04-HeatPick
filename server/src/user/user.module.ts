@@ -7,12 +7,11 @@ import { userProviders } from './user.providers';
 import { UserController } from './user.controller';
 import { JwtService } from '@nestjs/jwt';
 import { ImageService } from '../image/image.service';
-import { badgeProviders } from 'src/badge/badge.provider';
 
 @Module({
   imports: [DatabaseModule],
   controllers: [UserController],
-  providers: [...userProviders, ...badgeProviders, UserService, UserRepository, UserJasoTrie, JwtService, ImageService],
+  providers: [...userProviders, UserService, UserRepository, UserJasoTrie, JwtService, ImageService],
   exports: [UserService],
 })
 export class UserModule {}
