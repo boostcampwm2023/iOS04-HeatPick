@@ -1,5 +1,5 @@
 //
-//  MyPage.swift
+//  MyPageProfile.swift
 //  DomainEntities
 //
 //  Created by 홍성준 on 11/23/23.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct MyPage {
+public struct MyPageProfile {
     
     public let userName: String
     public let profileImageURL: String?
@@ -16,16 +16,14 @@ public struct MyPage {
     public let storyCount: Int
     public let experience: Int
     public let maxExperience: Int
-    public let stories: [MyPageStory]
     
-    public init(userName: String, profileImageURL: String?, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, stories: [MyPageStory]) {
+    public init(userName: String, profileImageURL: String?, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int) {
         self.userName = userName
         self.profileImageURL = profileImageURL
         self.followerCount = followerCount
         self.storyCount = storyCount
         self.experience = experience
         self.maxExperience = maxExperience
-        self.stories = stories
     }
     
 }

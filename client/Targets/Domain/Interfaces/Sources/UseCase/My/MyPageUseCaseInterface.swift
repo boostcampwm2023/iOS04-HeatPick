@@ -9,7 +9,7 @@
 import Foundation
 import DomainEntities
 
-public protocol MyPageUseCaseInterface: AnyObject {
+public protocol MyPageUseCaseInterface: MyPageProfileUseCaseInterface, MyPageStoryUseCaseInterface {
     
     func fetchMyPage() async -> Result<MyPage, Error>
     
