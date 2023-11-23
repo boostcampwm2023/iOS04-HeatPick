@@ -7,12 +7,14 @@
 //
 
 import ModernRIBs
+import FoundationKit
 import MyInterfaces
 import DomainInterfaces
 
 public protocol MyPageDependency: Dependency {
     
     var myPageUseCase: MyPageUseCaseInterface { get }
+    var signOutRequestService: SignOutRequestServiceInterface { get }
     
 }
 
@@ -26,6 +28,7 @@ final class MyPageComponent: Component<MyPageDependency>,
     var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
     var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
     var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
+    var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
     
 }
 

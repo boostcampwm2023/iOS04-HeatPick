@@ -14,6 +14,7 @@ import AuthAPI
 import HomeAPI
 import MyAPI
 import StoryAPI
+import FoundationKit
 import NetworkAPIKit
 import DomainUseCases
 import DomainInterfaces
@@ -44,6 +45,7 @@ final class AppRootComponent: Component<AppRootDependency>,
     let myPageUseCase: MyPageUseCaseInterface
     
     let naverLoginRepository: NaverLoginRepositoryInterface
+    let signOutRequestService: SignOutRequestServiceInterface
     
     lazy var signInBuilder: SignInBuildable = {
         SignInBuilder(dependency: self)
@@ -87,6 +89,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         
         let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [MyURLProtocol.self])
         self.myPageUseCase = MyPageUseCase(repository: MyPageRepository(session: myPageNetworkProvider))
+        self.signOutRequestService = SignoutService.shared
         
         super.init(dependency: dependency)
     }

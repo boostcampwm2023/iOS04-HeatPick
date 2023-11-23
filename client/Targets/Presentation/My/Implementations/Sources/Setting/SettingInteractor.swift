@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FoundationKit
 import ModernRIBs
 
 protocol SettingRouting: ViewableRouting {}
@@ -20,12 +21,22 @@ protocol SettingListener: AnyObject {
     func settingDidTapClose()
 }
 
+protocol SettingInteractorDependency: AnyObject {
+    var signOutRequestService: SignOutRequestServiceInterface { get }
+}
+
 final class SettingInteractor: PresentableInteractor<SettingPresentable>, SettingInteractable, SettingPresentableListener {
     
     weak var router: SettingRouting?
     weak var listener: SettingListener?
     
-    override init(presenter: SettingPresentable) {
+    private let dependency: SettingInteractorDependency
+    
+    init(
+        presenter: SettingPresentable,
+        dependency: SettingInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -50,6 +61,10 @@ final class SettingInteractor: PresentableInteractor<SettingPresentable>, Settin
     
     func didTapResign() {
         print("# 회원탈퇴 Attach")
+    }
+    
+    func didTapSignOut() {
+        dependency.signOutRequestService.signOut()
     }
     
 }
