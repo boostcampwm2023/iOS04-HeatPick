@@ -1,0 +1,29 @@
+{
+    "story": {
+        "storyId": 1,
+        "createdAt": "2023-11-23T12:23:28Z",
+        "category": "asffsa",
+        "storyImageURL": [
+            "c15fa423a5742100ae7e5f5f495f3eeb2.png",
+            "e5917f32e9ac51aa3c53751f9f972954.png",
+            "9104ecf5e5a14f6ee99dd1ac6ee99bebc.png"
+        ],
+        "title": "test123",
+        "badgeName": "뉴비",
+        "likeCount": 0,
+        "commentCount": 0,
+        "content": "aaa",
+        "place": {
+            "title": "abc",
+            "address": "fsafsa",
+            "latitude": 1,
+            "longitude": 2
+        }
+    },
+    "author": {
+        "userId": 2,
+        "username": "sayho",
+        "profileImageUrl": "9104ecf5e5a14f6ee99dd1ac6ee99bebc.png",
+        "status": 1
+    }
+}
