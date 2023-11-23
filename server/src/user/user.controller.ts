@@ -112,14 +112,14 @@ export class UserController {
   @Get('follow/:id')
   @ApiOperation({ summary: '특정 유저의 팔로잉 목록을 리턴합니다.' })
   @ApiResponse({ status: 200, description: '특정 유저가 팔로우하는 유저들의 Id 목록입니다' })
-  async getOtherFollows(@Param('id') followId: number) {
-    return await this.userService.getFollows(followId);
+  async getOtherFollows(@Param('id') userId: number) {
+    return await this.userService.getFollows(userId);
   }
 
   @Get('follower/:id')
   @ApiOperation({ summary: '특정 유저의 팔로워 목록을 리턴합니다.' })
   @ApiResponse({ status: 200, description: '특정 유저를 팔로우하는 유저들의 Id 목록입니다' })
-  async getOtherFollowers(@Param('id') followId: number) {
-    return await this.userService.getFollowers(followId);
+  async getOtherFollowers(@Param('id') userId: number) {
+    return await this.userService.getFollowers(userId);
   }
 }
