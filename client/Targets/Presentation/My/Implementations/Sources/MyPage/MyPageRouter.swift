@@ -9,7 +9,11 @@
 import ModernRIBs
 import MyInterfaces
 
-protocol MyPageInteractable: Interactable, MyPageUserDashboardListener, MyPageStoryDashboardListener, MyPageStorySeeAllListener {
+protocol MyPageInteractable: Interactable,
+                             MyPageUserDashboardListener,
+                             MyPageStoryDashboardListener,
+                             MyPageStorySeeAllListener,
+                             SettingListener {
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }
@@ -30,16 +34,21 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     private let storySeeAllBuilder: MyPageStorySeeAllBuildable
     private var storySeeAllRouting: ViewableRouting?
     
+    private let settingBuilder: SettingBuildable
+    private var settingRouting: SettingRouting?
+    
     init(
         interactor: MyPageInteractable,
         viewController: MyPageViewControllable,
         userDashboardBuilder: MyPageUserDashboardBuildable,
         storyDashboardBuilder: MyPageStoryDashboardBuildable,
-        storySeeAllBuilder: MyPageStorySeeAllBuildable
+        storySeeAllBuilder: MyPageStorySeeAllBuildable,
+        settingBuilder: SettingBuildable
     ) {
         self.userDashboardBuilder = userDashboardBuilder
         self.storyDashboardBuilder = storyDashboardBuilder
         self.storySeeAllBuilder = storySeeAllBuilder
+        self.settingBuilder = settingBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -86,6 +95,21 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         guard let router = storySeeAllRouting else { return }
         viewController.popViewController(animated: true)
         self.storySeeAllRouting = nil
+        detachChild(router)
+    }
+    
+    func attachSetting() {
+        guard settingRouting == nil else { return }
+        let router = settingBuilder.build(withListener: interactor)
+        viewController.pushViewController(router.viewControllable, animated: true)
+        self.settingRouting = router
+        attachChild(router)
+    }
+    
+    func detachSetting() {
+        guard let router = settingRouting else { return }
+        viewController.popViewController(animated: true)
+        self.settingRouting = nil
         detachChild(router)
     }
     

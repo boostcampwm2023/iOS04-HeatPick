@@ -14,7 +14,9 @@ protocol SettingPresentable: Presentable {
     var listener: SettingPresentableListener? { get set }
 }
 
-protocol SettingListener: AnyObject {}
+protocol SettingListener: AnyObject {
+    func settingDidTapClose()
+}
 
 final class SettingInteractor: PresentableInteractor<SettingPresentable>, SettingInteractable, SettingPresentableListener {
     
@@ -35,19 +37,15 @@ final class SettingInteractor: PresentableInteractor<SettingPresentable>, Settin
     }
     
     func didTapClose() {
-        
-    }
-    
-    func didTapAppVersion() {
-        
+        listener?.settingDidTapClose()
     }
     
     func didTapMailTo() {
-        
+        print("# Email 보내기")
     }
     
     func didTapResign() {
-        
+        print("# 회원탈퇴 Attach")
     }
     
 }

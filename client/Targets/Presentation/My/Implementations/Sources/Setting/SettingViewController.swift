@@ -13,7 +13,6 @@ import DesignKit
 
 protocol SettingPresentableListener: AnyObject {
     func didTapClose()
-    func didTapAppVersion()
     func didTapMailTo()
     func didTapResign()
 }
@@ -21,7 +20,7 @@ protocol SettingPresentableListener: AnyObject {
 final class SettingViewController: UIViewController, SettingPresentable, SettingViewControllable {
     
     private enum Constant {
-        static let topOffset: CGFloat = 60
+        static let topOffset: CGFloat = 40
         static let spacing: CGFloat = 20
     }
     
@@ -84,7 +83,11 @@ private extension SettingViewController {
 private extension SettingViewController {
     
     func setupViews() {
-        [navigationView, appVersionView, mailToView, resignView].forEach(view.addSubview)
+        let appVersionViewSeparator = makeSeparator()
+        let mailToViewSeparator = makeSeparator()
+        view.backgroundColor = .hpWhite
+        
+        [navigationView, appVersionView, appVersionViewSeparator, mailToView, mailToViewSeparator, resignView].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -96,11 +99,21 @@ private extension SettingViewController {
             appVersionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             appVersionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             
-            mailToView.topAnchor.constraint(equalTo: mailToView.bottomAnchor, constant: Constant.spacing),
+            appVersionViewSeparator.topAnchor.constraint(equalTo: appVersionView.bottomAnchor, constant: Constant.spacing),
+            appVersionViewSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            appVersionViewSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            appVersionViewSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
+            mailToView.topAnchor.constraint(equalTo: appVersionViewSeparator.bottomAnchor, constant: Constant.spacing),
             mailToView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             mailToView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             
-            resignView.topAnchor.constraint(equalTo: mailToView.bottomAnchor, constant: Constant.spacing),
+            mailToViewSeparator.topAnchor.constraint(equalTo: mailToView.bottomAnchor, constant: Constant.spacing),
+            mailToViewSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            mailToViewSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            mailToViewSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
+            resignView.topAnchor.constraint(equalTo: mailToViewSeparator.bottomAnchor, constant: Constant.spacing),
             resignView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             resignView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset)
         ])
@@ -112,6 +125,13 @@ private extension SettingViewController {
         contentView.addTapGesture(target: self, action: selector)
         contentView.translatesAutoresizingMaskIntoConstraints = false
         return contentView
+    }
+    
+    func makeSeparator() -> UIView {
+        let separator = UIView()
+        separator.backgroundColor = .hpGray4
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        return separator
     }
     
 }

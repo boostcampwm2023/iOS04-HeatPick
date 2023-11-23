@@ -18,7 +18,8 @@ final class MyPageComponent: Component<MyPageDependency>,
                              MyPageUserDashboardDependency,
                              MyPageStoryDashboardDependency,
                              MyPageStorySeeAllDependency,
-                             MyPageInteractorDependency {
+                             MyPageInteractorDependency,
+                             SettingDependency {
     var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
     var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
     var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
@@ -41,7 +42,8 @@ public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
             viewController: viewController,
             userDashboardBuilder: MyPageUserDashboardBuilder(dependency: component),
             storyDashboardBuilder: MyPageStoryDashboardBuilder(dependency: component),
-            storySeeAllBuilder: MyPageStorySeeAllBuilder(dependency: component)
+            storySeeAllBuilder: MyPageStorySeeAllBuilder(dependency: component),
+            settingBuilder: SettingBuilder(dependency: component)
         )
     }
     

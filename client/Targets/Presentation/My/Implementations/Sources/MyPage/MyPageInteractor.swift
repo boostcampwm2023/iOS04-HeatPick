@@ -19,6 +19,8 @@ protocol MyPageRouting: ViewableRouting {
     func detachStoryDashboard()
     func attachStorySeeAll()
     func detachStorySeeAll()
+    func attachSetting()
+    func detachSetting()
 }
 
 protocol MyPagePresentable: Presentable {
@@ -57,7 +59,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     }
     
     func didTapSetting() {
-        print("# Setting 화면으로 이동")
+        router?.attachSetting()
     }
     
     // MARK: - UserDashboard
@@ -76,6 +78,12 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     func myPageStorySeeAllDidTapClose() {
         router?.detachStorySeeAll()
+    }
+    
+    // MARK: - Setting
+    
+    func settingDidTapClose() {
+        router?.detachSetting()
     }
     
     private func fetchMyPage() {
