@@ -47,7 +47,8 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
                                                                                           likesCount: 3, commentsCount: 4),
                                                     images: ["https://public.codesquad.kr/jk/storeapp/data/main/1155_ZIP_P_0081_T.jpg",
                                                             "https://public.codesquad.kr/jk/storeapp/data/main/1155_ZIP_P_0081_T.jpg"],
-                                                    content: "점심 맛있게 드세요"))
+                                                    content: "점심 맛있게 드세요",
+                                                    storyMapViewModel: StoryMapViewModel(latitude: 37.5666102, longitude:  126.9783881, address: "성남시 분당구 정자동 178-4")))
     }
 
     override func willResignActive() {
@@ -76,7 +77,10 @@ fileprivate extension Story {
                                                                    likesCount: likesCount,
                                                                    commentsCount: commentsCount),
                                     images: content.imageUrls,
-                                    content: content.content)
+                                    content: content.content,
+                                    storyMapViewModel: StoryMapViewModel(latitude: CGFloat(content.place.lat),
+                                                                         longitude: CGFloat(content.place.lng),
+                                                                         address: content.place.address))
         
     }
 }

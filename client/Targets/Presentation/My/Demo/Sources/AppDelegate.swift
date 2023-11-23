@@ -3,6 +3,7 @@ import MyInterfaces
 import MyImplementations
 import ModernRIBs
 import CoreKit
+import MyAPI
 import NetworkAPIKit
 import BasePresentation
 import DomainInterfaces
@@ -41,6 +42,16 @@ extension AppDelegate: DemoRootRouterListener, MyPageListener {
 }
 
 final class MyPageRootComponent: MyPageDependency {
+    let myPageUseCase: MyPageUseCaseInterface
+    
+    init() {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [MyURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        let network = NetworkProvider(session: session)
+        let repository = MyPageRepository(session: network)
+        self.myPageUseCase = MyPageUseCase(repository: repository)
+    }
     
     
 }

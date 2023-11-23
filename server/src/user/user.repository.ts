@@ -25,6 +25,10 @@ export class UserRepository {
     return await this.userRepository.findOne({ where: { oauthId: id } });
   }
 
+  async findOneByIdWithBadges(id: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { oauthId: id }, relations: ['badges'] });
+  }
+
   async createUser(user: User) {
     await this.userRepository.save(user);
   }

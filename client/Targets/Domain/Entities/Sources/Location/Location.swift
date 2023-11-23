@@ -12,9 +12,9 @@ public struct Location {
     
     public let lat: Float
     public let lng: Float
-    public let address: String?
+    public let address: String
     
-    public init(lat: Float, lng: Float, address: String?) {
+    public init(lat: Float, lng: Float, address: String = "") {
         self.lat = lat
         self.lng = lng
         self.address = address

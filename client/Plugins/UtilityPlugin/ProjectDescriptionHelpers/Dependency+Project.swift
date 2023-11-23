@@ -27,7 +27,6 @@ extension TargetDependency {
         
         public struct Core {
             public struct Network {}
-            public struct Foundation {}
         }
         
         public struct DesignSystem {}
@@ -57,15 +56,6 @@ public extension TargetDependency.Target.Core {
     static let CoreKit = project(name: "CoreKit")
     static let ThirdPartyKit = project(name: "ThirdPartyKit")
     static let FoundationKit = project(name: "FoundationKit")
-}
-
-// MARK: - Core + Foundation
-
-public extension TargetDependency.Target.Core.Foundation {
-    static let UtilityKit: TargetDependency = .project(
-        target: "UtilityKit",
-        path: .relativeToRoot("Targets/Core/FoundationKit/UtilityKit")
-    )
 }
 
 // MARK: - Core + Network

@@ -8,8 +8,15 @@
 
 import UIKit
 
+import DesignKit
+
 final class UserBadgeView: UIView {
 
+    enum Constant {
+        static let leadingTrailingPadding: CGFloat = 15
+        static let topBottomPadding: CGFloat = 7
+    }
+    
     private var label: UILabel = {
         let label = UILabel()
         label.font = .smallSemibold
@@ -36,22 +43,19 @@ final class UserBadgeView: UIView {
             return
         }
         
-        layer.cornerRadius = 15
+        layer.cornerRadius = Constants.cornerRadiusMedium
         layer.borderColor = UIColor.hpBlack.cgColor
         layer.borderWidth = 1
     }
     
     private func setupViews() {
-        let leadingTrailingPadding: CGFloat = 15
-        let topBottomPadding: CGFloat = 7
-        
         addSubview(label)
         
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leadingTrailingPadding),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -leadingTrailingPadding),
-            label.topAnchor.constraint(equalTo: topAnchor, constant: topBottomPadding),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -topBottomPadding)
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constant.leadingTrailingPadding),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constant.leadingTrailingPadding),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topBottomPadding),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constant.topBottomPadding)
         ])
     }
     

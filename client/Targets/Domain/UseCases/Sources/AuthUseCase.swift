@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import Foundation
-import CoreKit
+import FoundationKit
 import DomainEntities
 import DomainInterfaces
 import NetworkAPIKit
