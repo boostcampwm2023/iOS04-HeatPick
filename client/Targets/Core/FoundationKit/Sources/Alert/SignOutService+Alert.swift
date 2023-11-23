@@ -19,13 +19,15 @@ extension SignoutService {
     }
     
     func presentAlert(type: AlertType, action: @escaping (() -> Void)) {
-        keyWindow?.rootViewController?
-            .presentAlert(
-                title: type.title,
-                message: type.message,
-                okAction: action,
-                isCancelButtonEnabled: type.isCancellable
-            )
+        DispatchQueue.main.async { [weak self] in
+            self?.keyWindow?.rootViewController?
+                .presentAlert(
+                    title: type.title,
+                    message: type.message,
+                    okAction: action,
+                    isCancelButtonEnabled: type.isCancellable
+                )
+        }
     }
     
 }
