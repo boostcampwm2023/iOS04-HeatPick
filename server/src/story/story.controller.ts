@@ -1,19 +1,5 @@
 import { StoryService } from './story.service';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Headers,
-  Param,
-  Patch,
-  Post,
-  UploadedFiles,
-  UseInterceptors,
-  ValidationPipe,
-  Query,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -22,6 +8,7 @@ import { UpdateStoryDto } from './dto/story.update.dto';
 import { LocationDTO } from 'src/place/dto/location.dto';
 import { Story } from 'src/entities/story.entity';
 import { RecommendStoryDto } from './dto/story.recommend.response.dto';
+import { plainToClass } from 'class-transformer';
 
 @ApiTags('story')
 @Controller('story')
@@ -104,7 +91,10 @@ export class StoryController {
   @ApiOperation({ summary: '현재 위치를 기반으로 추천 장소를 가져옵니다. 기본적으로, 좋아요가 10개 초과인 경우만 리턴됩니다.' })
   @ApiResponse({ status: 201, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: RecommendStoryDto, isArray: true })
   async recommendStoryByLocation(@Query() locationDto: LocationDTO) {
-    const recommededStory = await this.storyService.getRecommendByLocationStory(locationDto);
+    const transformedDto = plainToClass(LocationDTO, locationDto);
+    console.log(typeof transformedDto.latitude);
+    console.log(transformedDto);
+    const recommededStory = await this.storyService.getRecommendByLocationStory(transformedDto);
     return { recommededStories: recommededStory };
   }
 
