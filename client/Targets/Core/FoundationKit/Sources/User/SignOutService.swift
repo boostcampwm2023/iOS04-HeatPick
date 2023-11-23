@@ -18,6 +18,7 @@ public protocol SignOutServiceInterface: AnyObject {
 public protocol SignOutRequestServiceInterface: AnyObject {
     
     func signOut()
+    func singOut(type: AlertType)
     
 }
 
@@ -36,6 +37,12 @@ public final class SignoutService: SignOutServiceInterface, SignOutRequestServic
     public func signOut() {
         SecretManager.remove(type: .accessToken)
         signOutCompletedSubject.send(true)
+    }
+    
+    public func singOut(type: AlertType) {
+        presentAlert(type: type) { [weak self] in
+            self?.signOut()
+        }
     }
     
 }
