@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Transform } from 'class-transformer';
 import { Story } from './story.entity';
@@ -21,6 +21,12 @@ export class Badge {
   @ManyToOne(() => User, (user) => user.badges)
   user: User;
 
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  representativeUser: User;
+
   @OneToMany(() => Story, (story: Story) => story.badge)
   stories: Story[];
+
 }

@@ -6,6 +6,8 @@ import { idDuplicatedException } from 'src/exception/custom.exception/id.duplica
 import { profileImage } from 'src/entities/profileImage.entity';
 import { ImageService } from '../image/image.service';
 import { invalidTokenException } from 'src/exception/custom.exception/token.invalid.exception';
+import { Badge } from 'src/entities/badge.entity';
+import { strToEmoji } from 'src/util/util.string.to.emoji';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +37,15 @@ export class AuthService {
     const userObj = new User();
     userObj.username = username;
     userObj.oauthId = userId;
+
+    const newBadge = new Badge();
+    newBadge.badgeExp = 0;
+    newBadge.badgeName = '뉴비';
+    newBadge.emoji = strToEmoji[newBadge.badgeName];
+    newBadge.representativeUser = userObj;
+
+    const userBadges = await userObj.badges;
+    userBadges.push(newBadge);
 
     const profileObj = new profileImage();
     profileObj.imageUrl = imagePath;

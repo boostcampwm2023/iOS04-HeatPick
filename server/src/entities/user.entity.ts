@@ -45,14 +45,13 @@ export class User {
   @ApiProperty({ description: 'User의 최근 활동 시간' })
   recentActive: Date;
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user, { cascade: true })
   comments: Comment;
 
   @OneToMany(() => Badge, (badge) => badge.user, { cascade: true })
   badges: Promise<Badge[]>;
 
-  @OneToOne(() => Badge)
-  @JoinColumn()
+  @OneToOne(() => Badge, { cascade: true })
   representativeBadge: Badge;
 
   @ManyToMany(() => User, (user) => user.following)
@@ -62,6 +61,6 @@ export class User {
 
   @ManyToMany(() => User, (user) => user.followers)
   @JoinTable()
-  @ApiProperty({ description: '유저를 팔로워 목록' })
+  @ApiProperty({ description: '유저 팔로워 목록' })
   followers: User[];
 }
