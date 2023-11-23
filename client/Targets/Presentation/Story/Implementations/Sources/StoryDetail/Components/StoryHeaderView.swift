@@ -8,7 +8,16 @@
 
 import UIKit
 
+import CoreKit
 import DesignKit
+import DomainEntities
+
+struct StoryHeaderViewModel {
+    let title: String
+    let badgeId: Int
+    let likesCount: Int
+    let commentsCount: Int
+}
 
 final class StoryHeaderView: UIView {
     
@@ -53,6 +62,14 @@ final class StoryHeaderView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
+    }
+    
+    func setup(model: StoryHeaderViewModel) {
+        titleLabel.text = model.title
+        if let badge = Badge.allCases[safe: model.badgeId]?.title {
+            userBadgeView.setBadge(badge)
+        }
+        storyLikesCommentsView.setup(likes: model.likesCount, comments: model.commentsCount)
     }
     
 }
