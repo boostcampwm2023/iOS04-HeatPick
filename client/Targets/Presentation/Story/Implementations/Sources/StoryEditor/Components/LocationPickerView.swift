@@ -69,7 +69,6 @@ extension LocationPickerView: MKMapViewDelegate {
     func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
         centerAnnotation.coordinate = mapView.centerCoordinate
         delegate?.locationDidChange(self, to: .init(lat: Float(mapView.centerCoordinate.latitude),
-                                                    lng: Float(mapView.centerCoordinate.longitude),
-                                                    address: nil))
+                                                    lng: Float(mapView.centerCoordinate.longitude)))
     }
 }
