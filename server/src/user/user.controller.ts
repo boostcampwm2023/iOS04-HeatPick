@@ -26,7 +26,14 @@ export class UserController {
   @ApiOperation({ summary: 'Get a profile' })
   @ApiResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getProfile(@Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(userId);
+    return this.userService.getProfile(undefined, userId);
+  }
+
+  @Get('myProfile')
+  @ApiOperation({ summary: 'Get my profile' })
+  @ApiResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
+  async getMyProfile(@Headers('accessToken') accessToken: string): Promise<UserProfileDetailDataDto> {
+    return this.userService.getProfile(accessToken, undefined);
   }
 
   @Put('badge')

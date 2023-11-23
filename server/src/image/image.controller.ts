@@ -8,6 +8,7 @@ export class ImageController {
   constructor(private imageService: ImageService) {}
 
   @Get('story')
+  @Header('content-type', 'image/png')
   @ApiOperation({ summary: 'Get Story Image' })
   @ApiResponse({ status: 200, description: 'Profile Image or Story Image', type: 'image/png' })
   async requestStoryImage(@Query('name') name: string, @Res() res: Response) {
