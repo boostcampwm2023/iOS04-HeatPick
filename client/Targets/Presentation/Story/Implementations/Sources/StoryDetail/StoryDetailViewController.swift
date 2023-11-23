@@ -19,20 +19,24 @@ public protocol StoryDetailPresentableListener: AnyObject {
 }
 
 struct StoryDetailViewModel {
+    
     let userProfileViewModel: SimpleUserProfileViewModel
     let headerViewModel: StoryHeaderViewModel
     let images: [String]
     let content: String
-    private let dateFormat: Date.FormatStyle = Date.FormatStyle()
-                                                    .year(.defaultDigits)
-                                                    .month(.abbreviated)
-                                                    .day(.twoDigits)
+    let mapViewModel: StoryMapViewModel
 
-    init(userProfileViewModel: SimpleUserProfileViewModel, headerViewModel: StoryHeaderViewModel, images: [String], content: String) {
+    init(userProfileViewModel: SimpleUserProfileViewModel,
+         headerViewModel: StoryHeaderViewModel,
+         images: [String],
+         content: String,
+         storyMapViewModel: StoryMapViewModel) {
+        
         self.userProfileViewModel = userProfileViewModel
         self.headerViewModel = headerViewModel
         self.images = images
         self.content = content
+        self.mapViewModel = storyMapViewModel
     }
     
 }
@@ -43,7 +47,9 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
         static let navBarTitle = ""
         static let scrollViewTopBottomInset: CGFloat = 10
         static let scrollViewLeadingTrailingInset: CGFloat = 20
-        static let stackViewSpacing: CGFloat = 30
+        static let bodyViewTopBottomInset: CGFloat = 20
+        static let stackViewSpacing: CGFloat = 20
+        static let userPorifleHeight: CGFloat = 40
     }
     
     weak var listener: StoryDetailPresentableListener?
@@ -61,7 +67,8 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
         scrollView.showsHorizontalScrollIndicator = false
-        scrollView.contentInset = .init(top: 10, left: 0, bottom: 10, right: 0)
+        scrollView.contentInset = .init(top: Constant.scrollViewTopBottomInset, left: 0,
+                                        bottom: Constant.scrollViewTopBottomInset, right: 0)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
@@ -69,7 +76,7 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 15
+        stackView.spacing = Constant.stackViewSpacing
         stackView.alignment = .fill
         stackView.distribution = .fill
        
@@ -105,10 +112,20 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
         textView.textAlignment = .natural
         textView.isScrollEnabled = false
         textView.isUserInteractionEnabled = false
-        textView.textContainerInset = .init(top: 0, left: 20, bottom: 0, right: 20)
+        textView.textContainerInset = .init(top: Constant.bodyViewTopBottomInset,
+                                            left: Constants.leadingOffset,
+                                            bottom: Constant.bodyViewTopBottomInset,
+                                            right: Constants.traillingOffset)
         
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
+    }()
+    
+    private let mapView: StoryMapView = {
+        let mapView = StoryMapView()
+        
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        return mapView
     }()
     
     override public func viewDidLoad() {
@@ -121,16 +138,19 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
         storyHeaderView.setup(model: model.headerViewModel)
         storyImagesView.updateImages(model.images)
         bodyView.text = model.content
+        mapView.setup(model: model.mapViewModel)
     }
+    
 }
 
 private extension StoryDetailViewController {
+    
     func setupViews() {
         view.backgroundColor = .hpWhite
         [navigationView, scrollView].forEach(view.addSubview)
         
         scrollView.addSubview(stackView)
-        [simpleUserProfileView, storyImagesView, storyHeaderView, bodyView].forEach(stackView.addArrangedSubview)
+        [simpleUserProfileView, storyImagesView, storyHeaderView, bodyView, mapView].forEach(stackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -149,11 +169,10 @@ private extension StoryDetailViewController {
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
-            simpleUserProfileView.heightAnchor.constraint(equalToConstant: 40)
+            simpleUserProfileView.heightAnchor.constraint(equalToConstant: Constant.userPorifleHeight)
         ])
-        
-        bodyView.layoutIfNeeded()
     }
+    
 }
 
 extension StoryDetailViewController: NavigationViewDelegate {

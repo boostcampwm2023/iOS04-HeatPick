@@ -11,9 +11,16 @@ import UIKit
 
 final class StoryLikesCommentsView: UIView {
        
+    enum Constant {
+        static let heartImageName: String = "heart"
+        static let bubbleImageName: String = "bubble"
+        static let imageLabelSpacing: CGFloat = 3
+        static let likesCommentsSpacing: CGFloat = 10
+    }
+    
     private lazy var likesImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "heart")
+        imageView.image = UIImage(systemName: Constant.heartImageName)
         imageView.contentMode = .scaleAspectFill
         imageView.tintColor = .hpBlack
         
@@ -33,7 +40,7 @@ final class StoryLikesCommentsView: UIView {
     
     private lazy var commentsImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "bubble")
+        imageView.image = UIImage(systemName: Constant.bubbleImageName)
         imageView.contentMode = .scaleAspectFill
         imageView.tintColor = .hpBlack
          
@@ -70,9 +77,6 @@ final class StoryLikesCommentsView: UIView {
 private extension StoryLikesCommentsView {
     
     func setupViews() {
-        let spacing: CGFloat = 3
-        let padding: CGFloat = 10
-        
         [likesImage, likesCountLabel, commentsImage, commentsCountLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
@@ -82,16 +86,16 @@ private extension StoryLikesCommentsView {
             likesImage.widthAnchor.constraint(equalTo: likesImage.heightAnchor, multiplier: 1),
             
             likesCountLabel.topAnchor.constraint(equalTo: topAnchor),
-            likesCountLabel.leadingAnchor.constraint(equalTo: likesImage.trailingAnchor, constant: spacing),
+            likesCountLabel.leadingAnchor.constraint(equalTo: likesImage.trailingAnchor, constant: Constant.imageLabelSpacing),
             likesCountLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             commentsImage.topAnchor.constraint(equalTo: topAnchor),
-            commentsImage.leadingAnchor.constraint(equalTo: likesCountLabel.trailingAnchor, constant: padding),
+            commentsImage.leadingAnchor.constraint(equalTo: likesCountLabel.trailingAnchor, constant: Constant.likesCommentsSpacing),
             commentsImage.bottomAnchor.constraint(equalTo: bottomAnchor),
             commentsImage.widthAnchor.constraint(equalTo: commentsImage.heightAnchor, multiplier: 1),
             
             commentsCountLabel.topAnchor.constraint(equalTo: topAnchor),
-            commentsCountLabel.leadingAnchor.constraint(equalTo: commentsImage.trailingAnchor, constant: spacing),
+            commentsCountLabel.leadingAnchor.constraint(equalTo: commentsImage.trailingAnchor, constant: Constant.imageLabelSpacing),
             commentsCountLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             commentsCountLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
