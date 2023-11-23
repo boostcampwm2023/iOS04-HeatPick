@@ -1,4 +1,4 @@
-import { Column, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Story } from './story.entity';
 import { profileImage } from './profileImage.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -54,4 +54,14 @@ export class User {
   @OneToOne(() => Badge)
   @JoinColumn()
   representativeBadge: Badge;
+
+  @ManyToMany(() => User, (user) => user.following)
+  @JoinTable()
+  @ApiProperty({ description: '유저 팔로우 목록' })
+  following: User[];
+
+  @ManyToMany(() => User, (user) => user.followers)
+  @JoinTable()
+  @ApiProperty({ description: '유저를 팔로워 목록' })
+  followers: User[];
 }
