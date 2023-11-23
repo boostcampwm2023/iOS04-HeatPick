@@ -15,6 +15,7 @@ protocol SettingPresentableListener: AnyObject {
     func didTapClose()
     func didTapDiscussion()
     func didTapResign()
+    func didTapSignOut()
 }
 
 final class SettingViewController: UIViewController, SettingPresentable, SettingViewControllable {
@@ -48,6 +49,11 @@ final class SettingViewController: UIViewController, SettingPresentable, Setting
     private lazy var resignView = makeContentView(
         selector: #selector(didTapResign),
         title: "탈퇴하기"
+    )
+    
+    private lazy var signOutView = makeContentView(
+        selector: #selector(didTapSignOut),
+        title: "로그아웃하기"
     )
     
     override func viewDidLoad() {
@@ -84,6 +90,11 @@ private extension SettingViewController {
     @objc func didTapResign() {
         listener?.didTapResign()
     }
+    
+    @objc func didTapSignOut() {
+        listener?.didTapSignOut()
+    }
+    
 }
 
 private extension SettingViewController {
@@ -91,9 +102,19 @@ private extension SettingViewController {
     func setupViews() {
         let appVersionViewSeparator = makeSeparator()
         let discussionViewSeparator = makeSeparator()
+        let resignViewSeparator = makeSeparator()
         view.backgroundColor = .hpWhite
         
-        [navigationView, appVersionView, appVersionViewSeparator, discussionView, discussionViewSeparator, resignView].forEach(view.addSubview)
+        [
+            navigationView,
+            appVersionView,
+            appVersionViewSeparator,
+            discussionView,
+            discussionViewSeparator,
+            resignView,
+            resignViewSeparator,
+            signOutView
+        ].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -121,7 +142,16 @@ private extension SettingViewController {
             
             resignView.topAnchor.constraint(equalTo: discussionViewSeparator.bottomAnchor, constant: Constant.spacing),
             resignView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            resignView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset)
+            resignView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            
+            resignViewSeparator.topAnchor.constraint(equalTo: resignView.bottomAnchor, constant: Constant.spacing),
+            resignViewSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            resignViewSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            resignViewSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
+            signOutView.topAnchor.constraint(equalTo: resignViewSeparator.bottomAnchor, constant: Constant.spacing),
+            signOutView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            signOutView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset)
         ])
     }
     
