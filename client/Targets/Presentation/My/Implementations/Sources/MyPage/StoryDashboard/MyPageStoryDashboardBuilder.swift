@@ -7,10 +7,15 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol MyPageStoryDashboardDependency: Dependency {}
+protocol MyPageStoryDashboardDependency: Dependency {
+    var myPageStoryUseCase: MyPageStoryUseCaseInterface { get }
+}
 
-final class MyPageStoryDashboardComponent: Component<MyPageStoryDashboardDependency> {}
+final class MyPageStoryDashboardComponent: Component<MyPageStoryDashboardDependency>, MyPageStoryDashboardInteractorDependency {
+    var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageStoryUseCase }
+}
 
 protocol MyPageStoryDashboardBuildable: Buildable {
     func build(withListener listener: MyPageStoryDashboardListener) -> MyPageStoryDashboardRouting
@@ -25,7 +30,7 @@ final class MyPageStoryDashboardBuilder: Builder<MyPageStoryDashboardDependency>
     func build(withListener listener: MyPageStoryDashboardListener) -> MyPageStoryDashboardRouting {
         let component = MyPageStoryDashboardComponent(dependency: dependency)
         let viewController = MyPageStoryDashboardViewController()
-        let interactor = MyPageStoryDashboardInteractor(presenter: viewController)
+        let interactor = MyPageStoryDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return MyPageStoryDashboardRouter(interactor: interactor, viewController: viewController)
     }
