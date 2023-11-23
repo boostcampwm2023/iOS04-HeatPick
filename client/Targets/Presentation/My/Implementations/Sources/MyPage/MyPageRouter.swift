@@ -25,37 +25,26 @@ protocol MyPageViewControllable: ViewControllable {
 
 final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControllable>, MyPageRouting {
     
-    private let userDashboardBuilder: MyPageUserDashboardBuildable
     private var userDashboardRouting: ViewableRouting?
-    
-    private let storyDashboardBuilder: MyPageStoryDashboardBuildable
     private var storyDashboardRouting: ViewableRouting?
-    
-    private let storySeeAllBuilder: MyPageStorySeeAllBuildable
     private var storySeeAllRouting: ViewableRouting?
+    private var settingRouting: ViewableRouting?
     
-    private let settingBuilder: SettingBuildable
-    private var settingRouting: SettingRouting?
+    private let dependency: MypageRouterDependency
     
     init(
         interactor: MyPageInteractable,
         viewController: MyPageViewControllable,
-        userDashboardBuilder: MyPageUserDashboardBuildable,
-        storyDashboardBuilder: MyPageStoryDashboardBuildable,
-        storySeeAllBuilder: MyPageStorySeeAllBuildable,
-        settingBuilder: SettingBuildable
+        dependency: MypageRouterDependency
     ) {
-        self.userDashboardBuilder = userDashboardBuilder
-        self.storyDashboardBuilder = storyDashboardBuilder
-        self.storySeeAllBuilder = storySeeAllBuilder
-        self.settingBuilder = settingBuilder
+        self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
     func attachUserDashboard() {
         guard userDashboardRouting == nil else { return }
-        let router = userDashboardBuilder.build(withListener: interactor)
+        let router = dependency.userDashboardBuilder.build(withListener: interactor)
         viewController.setDashboard(router.viewControllable)
         self.userDashboardRouting = router
         attachChild(router)
@@ -70,7 +59,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     
     func attachStoryDashboard() {
         guard storyDashboardRouting == nil else { return }
-        let router = storyDashboardBuilder.build(withListener: interactor)
+        let router = dependency.storyDashboardBuilder.build(withListener: interactor)
         viewController.setDashboard(router.viewControllable)
         self.storyDashboardRouting = router
         attachChild(router)
@@ -85,7 +74,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     
     func attachStorySeeAll() {
         guard storySeeAllRouting == nil else { return }
-        let router = storySeeAllBuilder.build(withListener: interactor)
+        let router = dependency.storySeeAllBuilder.build(withListener: interactor)
         viewControllable.pushViewController(router.viewControllable, animated: true)
         self.storySeeAllRouting = router
         attachChild(router)
@@ -100,7 +89,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     
     func attachSetting() {
         guard settingRouting == nil else { return }
-        let router = settingBuilder.build(withListener: interactor)
+        let router = dependency.settingBuilder.build(withListener: interactor)
         viewController.pushViewController(router.viewControllable, animated: true)
         self.settingRouting = router
         attachChild(router)
