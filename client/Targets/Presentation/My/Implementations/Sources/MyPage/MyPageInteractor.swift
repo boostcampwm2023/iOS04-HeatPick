@@ -84,11 +84,9 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
             await depedency.myPageUseCase
                 .fetchMyPage()
                 .onSuccess(on: .main, with: self) { this, myPage in
-                    print("# HI: \(myPage)")
                     // UseCase에서 분배하고 있어서 필요 없음
                 }
                 .onFailure { error in
-                    print("# BYE: \(error)")
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
         }

@@ -34,4 +34,20 @@ final class SettingInteractor: PresentableInteractor<SettingPresentable>, Settin
         super.willResignActive()
     }
     
+    func didTapClose() {
+        
+    }
+    
+    func didTapAppVersion() {
+        
+    }
+    
+    func didTapMailTo() {
+        
+    }
+    
+    func didTapResign() {
+        
+    }
+    
 }
