@@ -28,13 +28,6 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
         enum EmptyView {
             static let topOffset: CGFloat = 20
             static let bottomOffset: CGFloat = -topOffset
-            static let title = "최근 검색어가 없어요"
-            static let subTitle = "검색어를 입력해보세요"
-        }
-        
-        enum ScrollView {
-            static let topOffset: CGFloat = 10
-            static let bottomOffset: CGFloat = -topOffset
         }
         
         enum StackView {
@@ -85,7 +78,7 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
         emptyView.isHidden = !isEmpty
         scrollView.isHidden = isEmpty
         models.forEach { model in
-            let contentView = searchBeforeRecentSearchesView()
+            let contentView = SearchBeforeRecentSearchesView()
             contentView.setup(model)
             contentView.delegate = self
             stackView.insertArrangedSubview(contentView, at: 0)
@@ -94,7 +87,7 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
     
     func append(models: [SearchBeforeRecentSearchesViewModel]) {
         models.forEach { model in
-            let contentView = searchBeforeRecentSearchesView()
+            let contentView = SearchBeforeRecentSearchesView()
             contentView.setup(model)
             contentView.delegate = self
             stackView.insertArrangedSubview(contentView, at: 0)
@@ -120,10 +113,10 @@ private extension SearchBeforeRecentSearchesDashboardViewController {
             emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             emptyView.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.EmptyView.bottomOffset),
             
-            scrollView.frameLayoutGuide.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.ScrollView.topOffset),
+            scrollView.frameLayoutGuide.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.HeaderView.topOffset),
             scrollView.frameLayoutGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             scrollView.frameLayoutGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            scrollView.frameLayoutGuide.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: Constant.ScrollView.bottomOffset),
+            scrollView.frameLayoutGuide.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
