@@ -6,8 +6,9 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
+import FoundationKit
 
 public final class NetworkProvider: Network {
     
@@ -45,7 +46,8 @@ public final class NetworkProvider: Network {
     }
     
     private func executeRequest<T: Decodable>(_ request: URLRequest) async throws -> Result<T, Error> {
-        let (data, _) = try await session.data(for: request)
+        let (data, urlResponse) = try await session.data(for: request)
+        interceptResponseIfNeeded(urlResponse)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let response =  try decoder.decode(T.self, from: data)
@@ -53,7 +55,8 @@ public final class NetworkProvider: Network {
     }
     
     private func executeUpload<T: Decodable>(_ request: URLRequest, from body: Data) async throws -> Result<T, Error> {
-        let (data, _) = try await session.upload(for: request, from: body)
+        let (data, urlResponse) = try await session.upload(for: request, from: body)
+        interceptResponseIfNeeded(urlResponse)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let response = try decoder.decode(T.self, from: data)
@@ -113,6 +116,22 @@ public final class NetworkProvider: Network {
             return nil
         case .multipart(let formData):
             return formData.makeData(boundary: boundary)
+        }
+    }
+    
+    private func interceptResponseIfNeeded(_ response: URLResponse) {
+        guard let httpResponse = response as? HTTPURLResponse,
+              let errorCode = NetworkErrorCode(rawValue: httpResponse.statusCode)
+        else {
+            return
+        }
+        
+        switch errorCode {
+        case .invalidToken:
+            SignoutService.shared.signOut(type: .invalidToken)
+            
+        default:
+            return
         }
     }
     

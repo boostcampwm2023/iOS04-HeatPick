@@ -60,13 +60,14 @@ export class StoryService {
       latitude: place.latitude,
       longitude: place.longitude,
     };
-
+    console.log(story);
     const storyDetailStoryData: StoryDetailStoryDataDto = {
+      storyId: story.storyId,
       createdAt: story.createAt,
       category: story.category.categoryName,
       storyImageURL: (await story.storyImages).map((storyImage: StoryImage) => storyImage.imageUrl),
       title: story.title,
-      badgeName: `${story.badge.emoji}${story.badge.badgeName}`,
+      badgeName: `${story.badge?.emoji}${story.badge?.badgeName}`,
       likeCount: story.likeCount,
       commentCount: story.commentCount,
       content: story.content,

@@ -64,7 +64,7 @@ final class SettingInteractor: PresentableInteractor<SettingPresentable>, Settin
     }
     
     func didTapSignOut() {
-        dependency.signOutRequestService.signOut()
+        dependency.signOutRequestService.signOut(type: .signOut)
     }
     
 }
