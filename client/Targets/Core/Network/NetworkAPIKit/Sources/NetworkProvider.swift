@@ -124,7 +124,7 @@ public final class NetworkProvider: Network {
         
         switch errorCode {
         case .invalidToken:
-            SignoutService.shared.singOut(type: .invalidToken)
+            SignoutService.shared.signOut(type: .invalidToken)
             
         default:
             return

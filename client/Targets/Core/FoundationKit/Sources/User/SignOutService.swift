@@ -18,7 +18,7 @@ public protocol SignOutServiceInterface: AnyObject {
 public protocol SignOutRequestServiceInterface: AnyObject {
     
     func signOut()
-    func singOut(type: AlertType)
+    func signOut(type: AlertType)
     
 }
 
@@ -39,7 +39,7 @@ public final class SignoutService: SignOutServiceInterface, SignOutRequestServic
         signOutCompletedSubject.send(true)
     }
     
-    public func singOut(type: AlertType) {
+    public func signOut(type: AlertType) {
         presentAlert(type: type) { [weak self] in
             self?.signOut()
         }
