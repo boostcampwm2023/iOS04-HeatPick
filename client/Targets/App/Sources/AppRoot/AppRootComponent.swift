@@ -38,6 +38,7 @@ final class AppRootComponent: Component<AppRootDependency>,
     let homeUseCase: HomeUseCaseInterface
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
     let storyUseCase: StoryUseCaseInterface
+    let myPageUseCase: MyPageUseCaseInterface
     
     let naverLoginRepository: NaverLoginRepositoryInterface
     
@@ -80,6 +81,9 @@ final class AppRootComponent: Component<AppRootDependency>,
         
         let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [])
         self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider))
+        
+        let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [])
+        self.myPageUseCase = MyPageUseCase(repository: MyPageRepository(session: myPageNetworkProvider))
         
         super.init(dependency: dependency)
     }

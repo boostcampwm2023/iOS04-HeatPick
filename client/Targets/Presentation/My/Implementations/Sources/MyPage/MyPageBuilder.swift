@@ -8,13 +8,21 @@
 
 import ModernRIBs
 import MyInterfaces
+import DomainInterfaces
 
-public protocol MyPageDependency: Dependency {}
+public protocol MyPageDependency: Dependency {
+    var myPageUseCase: MyPageUseCaseInterface { get }
+}
 
 final class MyPageComponent: Component<MyPageDependency>,
                              MyPageUserDashboardDependency,
                              MyPageStoryDashboardDependency,
-                             MyPageStorySeeAllDependency {}
+                             MyPageStorySeeAllDependency,
+                             MyPageInteractorDependency {
+    var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
+    var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
+    var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
+}
 
 public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
     
@@ -25,7 +33,7 @@ public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
     public func build(withListener listener: MyPageListener) -> ViewableRouting {
         let component = MyPageComponent(dependency: dependency)
         let viewController = MyPageViewController()
-        let interactor = MyPageInteractor(presenter: viewController)
+        let interactor = MyPageInteractor(presenter: viewController, depedency: component)
         interactor.listener = listener
         
         return MyPageRouter(
