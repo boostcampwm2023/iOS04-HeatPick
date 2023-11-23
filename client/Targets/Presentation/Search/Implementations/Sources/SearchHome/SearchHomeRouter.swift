@@ -18,7 +18,7 @@ protocol SearchHomeInteractable: Interactable,
 }
 
 protocol SearchHomeViewControllable: ViewControllable {  
-    func insertDashboard(_ viewControllable: ViewControllable)
+    func appendDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
 }
 
@@ -57,7 +57,7 @@ final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeV
         let router = searchMapBuilder.build(withListener: interactor)
         attachChild(router)
         searchMapRouter = router
-        viewController.insertDashboard(router.viewControllable)
+        viewController.appendDashboard(router.viewControllable)
     }
     
     func detachSearchMap() {
