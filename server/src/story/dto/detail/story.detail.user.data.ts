@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class userDataInStoryView {
+export class StoryDetailUserDataDto {
   @ApiProperty()
   userId: number;
 
@@ -9,5 +9,7 @@ export class userDataInStoryView {
 
   @ApiProperty()
   profileImageUrl: string;
-  //badge: string;
+
+  @ApiProperty()
+  status: number; //0 본인 1 언팔 2 팔로우
 }

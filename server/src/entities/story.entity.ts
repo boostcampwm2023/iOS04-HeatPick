@@ -5,6 +5,7 @@ import { StoryImage } from './storyImage.entity';
 import { Place } from './place.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Comment } from './comment.entity';
+import { Badge } from './badge.entity';
 @Entity()
 export class Story {
   @PrimaryGeneratedColumn()
@@ -26,9 +27,13 @@ export class Story {
   @ApiProperty({ description: 'Story에 포함된 이미지' })
   storyImages: Promise<StoryImage[]>;
 
-  @Column()
+  @Column({ default: 0 })
   @ApiProperty({ description: 'Story의 좋아요 수' })
   likeCount: number;
+
+  @Column({ default: 0 })
+  @ApiProperty({ description: 'Story의 댓글 수' })
+  commentCount: number;
 
   @Column()
   @ApiProperty({ description: 'Story가 작성된 날짜' })
@@ -39,6 +44,12 @@ export class Story {
   })
   @JoinColumn()
   category: Category;
+
+  @OneToOne(() => Badge, {
+    cascade: true,
+  })
+  @JoinColumn()
+  Badge: Badge;
 
   @OneToOne(() => Place, (place) => place.story, { cascade: true })
   @JoinColumn()

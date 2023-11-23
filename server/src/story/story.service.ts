@@ -12,8 +12,8 @@ import { LocationDTO } from 'src/place/dto/location.dto';
 import { calculateDistance } from 'src/util/util.haversine';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entities/user.entity';
-import { StoryDetailViewData } from './dto/story.detail.view.data.dto';
-import { userDataInStoryView } from './dto/story.detail.user.data';
+import { StoryDetailViewData } from './dto/detail/story.detail.view.data.dto';
+import { userDataInStoryView } from './dto/detail/story.detail.user.data';
 
 @Injectable()
 export class StoryService {
@@ -46,6 +46,7 @@ export class StoryService {
 
   public async read(storyId: number): Promise<StoryDetailViewData> {
     const story: Story = await this.storyRepository.findById(storyId);
+    console.log(story);
     const user: User = story.user;
     delete story.user;
 

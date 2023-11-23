@@ -7,7 +7,7 @@ import { UpdateStoryDto } from './dto/story.update.dto';
 import { LocationDTO } from 'src/place/dto/location.dto';;
 import { RecommendStoryDto } from './dto/story.recommend.response.dto';
 import { plainToClass } from 'class-transformer';
-import { StoryDetailViewData } from './dto/story.detail.view.data.dto';
+import { StoryDetailViewData } from './dto/detail/story.detail.view.data.dto';
 
 @ApiTags('story')
 @Controller('story')
@@ -40,7 +40,7 @@ export class StoryController {
     description: '성공',
     type: StoryDetailViewData,
   })
-  async read(@Query('storyId') storyId: number): Promise<StoryDetailViewData> {
+  async read(@Query('storyId', ParseIntPipe) storyId: number): Promise<StoryDetailViewData> {
     return this.storyService.read(storyId);
   }
 
