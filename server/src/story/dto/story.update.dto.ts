@@ -60,5 +60,8 @@ export class UpdateStoryDto {
     example: `3`,
     description: `User's badge`,
   })
+  @IsNotEmpty({ message: `badgeId 필수입니다.` })
+  @Transform(({ value }): number => parseInt(value, 10))
+  @IsNumber()
   badgeId: number;
 }

@@ -45,11 +45,10 @@ export class Story {
   @JoinColumn()
   category: Category;
 
-  @OneToOne(() => Badge, {
+  @ManyToOne(() => Badge, (badge: Badge) => badge.stories, {
     cascade: true,
   })
-  @JoinColumn()
-  Badge: Badge;
+  badge: Badge;
 
   @OneToOne(() => Place, (place) => place.story, { cascade: true })
   @JoinColumn()

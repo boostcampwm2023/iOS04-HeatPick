@@ -3,7 +3,7 @@ import { StoryDetailPlaceDataDto } from './story.detail.place.data.dto';
 
 export class StoryDetailStoryDataDto {
   @ApiProperty()
-  createdAt: string;
+  createdAt: Date;
 
   @ApiProperty()
   category: string;
@@ -15,7 +15,7 @@ export class StoryDetailStoryDataDto {
   title: string;
 
   @ApiProperty()
-  BadgeId: number;
+  badgeId: number;
 
   @ApiProperty()
   likeCount: number;

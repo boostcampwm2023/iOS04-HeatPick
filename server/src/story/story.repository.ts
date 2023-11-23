@@ -13,7 +13,7 @@ export class StoryRepository {
     return this.storyRepository.save(story);
   }
   findById(storyId: number): Promise<Story> {
-    return this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['user', 'user.profileImage', 'category', 'user.representativeBadge', 'place'] });
+    return this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'storyImages', 'badge', 'user', 'user.profileImage', 'user.representativeBadge', 'place'] });
   }
 
   async saveStory(story: Story) {

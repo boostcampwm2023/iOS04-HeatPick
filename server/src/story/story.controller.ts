@@ -7,7 +7,7 @@ import { UpdateStoryDto } from './dto/story.update.dto';
 import { LocationDTO } from 'src/place/dto/location.dto';;
 import { RecommendStoryDto } from './dto/story.recommend.response.dto';
 import { plainToClass } from 'class-transformer';
-import { StoryDetailViewData } from './dto/detail/story.detail.view.data.dto';
+import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
 
 @ApiTags('story')
 @Controller('story')
@@ -28,8 +28,8 @@ export class StoryController {
     },
   })
   async create(@UploadedFiles() images: Array<Express.Multer.File>, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) createStoryDto: CreateStoryDto) {
-    const { title, content, category, place, date } = createStoryDto;
-    const storyId = await this.storyService.create(accessToken, { title, content, category, place, images, date });
+    const { title, content, category, place, badgeId, date } = createStoryDto;
+    const storyId = await this.storyService.create(accessToken, { title, content, category, place, images, badgeId, date });
     return { storyId: storyId };
   }
 
@@ -38,10 +38,10 @@ export class StoryController {
   @ApiCreatedResponse({
     status: 200,
     description: '성공',
-    type: StoryDetailViewData,
+    type: StoryDetailViewDataDto,
   })
-  async read(@Query('storyId', ParseIntPipe) storyId: number): Promise<StoryDetailViewData> {
-    return this.storyService.read(storyId);
+  async read(@Headers('accessToken') accessToken: string, @Query('storyId', ParseIntPipe) storyId: number)  {
+    return await this.storyService.read(accessToken, storyId);
   }
 
   @Patch('edit')
@@ -58,8 +58,8 @@ export class StoryController {
     },
   })
   async update(@UploadedFiles() images: Array<Express.Multer.File>, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
-    const { storyId, title, content, category, place, date } = updateStoryDto;
-    const newStoryId = await this.storyService.update(accessToken, { storyId, title, content, category, place, images, date });
+    const { storyId, title, content, category, place, badgeId, date } = updateStoryDto;
+    const newStoryId = await this.storyService.update(accessToken, { storyId, title, content, category, place, images, badgeId, date });
     return { storyId: newStoryId };
   }
 
