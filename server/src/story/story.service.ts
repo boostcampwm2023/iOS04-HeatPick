@@ -42,7 +42,7 @@ export class StoryService {
   public async create(accessToken: string, { title, content, category, place, images, badgeId, date }): Promise<number> {
     const decodedToken = this.jwtService.decode(accessToken);
     const userId = decodedToken.userId;
-    const user: User = await this.userRepository.findOneById(userId);
+    const user: User = await this.userRepository.findOneByIdWithBadges(userId);
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     user.stories = Promise.resolve([...(await user.stories), story]);
@@ -66,7 +66,7 @@ export class StoryService {
       category: story.category.categoryName,
       storyImageURL: (await story.storyImages).map((storyImage: StoryImage) => storyImage.imageUrl),
       title: story.title,
-      badgeId: story.badge?.badgeId,
+      badgeName: `${story.badge.emoji}${story.badge.badgeName}`,
       likeCount: story.likeCount,
       commentCount: story.commentCount,
       content: story.content,

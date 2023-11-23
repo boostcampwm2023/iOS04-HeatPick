@@ -48,6 +48,7 @@ export class Story {
   @ManyToOne(() => Badge, (badge: Badge) => badge.stories, {
     cascade: true,
   })
+  @JoinColumn()
   badge: Badge;
 
   @OneToOne(() => Place, (place) => place.story, { cascade: true })
