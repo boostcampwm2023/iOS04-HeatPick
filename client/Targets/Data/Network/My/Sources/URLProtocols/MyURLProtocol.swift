@@ -1,6 +1,6 @@
 //
-//  HomeURLProtocol.swift
-//  HomeAPI
+//  MyURLProtocol.swift
+//  MyAPI
 //
 //  Created by 홍성준 on 11/23/23.
 //  Copyright © 2023 codesquad. All rights reserved.
@@ -9,11 +9,11 @@
 import CoreKit
 import Foundation
 
-public final class HomeURLProtocol: URLProtocol {
+public final class MyURLProtocol: URLProtocol {
     
     private lazy var mocks: [String: Data?] = [
-        HomeAPI.recommend.path: loadMockData(fileName: "HomeRecommendResponseMock"),
-        HomeAPI.recommendLocation(lat: 0, lon: 0).path: loadMockData(fileName: "HomeRecommendLocationResponseMock")
+        MyAPI.myProfile.path: loadMockData(fileName: "MyProfileResponseMock"),
+//        MyAPI.profile(id: 0).path: loadMockData(fileName: "MyProfileResponseMock")
     ]
     
     public override class func canInit(with request: URLRequest) -> Bool {

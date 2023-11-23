@@ -26,7 +26,7 @@ public struct MyProfileStoryResponseDTO: Decodable {
     public let storyId: Int
     public let title: String
     public let content: String
-//    public let storyImages: [String]
+    public let storyImages: [String]
     public let likeCount: Int
     public let createAt: String // 2023-11-23T03:11:58.868Z
 }
