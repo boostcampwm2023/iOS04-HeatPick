@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put, ParseIntPipe, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put, ParseIntPipe, ValidationPipe, Param } from '@nestjs/common';
 
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
@@ -107,5 +107,19 @@ export class UserController {
     const currentUserId = 5;
     const followers = await this.userService.getFollowers(currentUserId);
     return followers;
+  }
+
+  @Get('follow/:id')
+  @ApiOperation({ summary: '특정 유저의 팔로잉 목록을 리턴합니다.' })
+  @ApiResponse({ status: 200, description: '특정 유저가 팔로우하는 유저들의 Id 목록입니다' })
+  async getOtherFollows(@Param('id') followId: number) {
+    return await this.userService.getFollows(followId);
+  }
+
+  @Get('follower/:id')
+  @ApiOperation({ summary: '특정 유저의 팔로워 목록을 리턴합니다.' })
+  @ApiResponse({ status: 200, description: '특정 유저를 팔로우하는 유저들의 Id 목록입니다' })
+  async getOtherFollowers(@Param('id') followId: number) {
+    return await this.userService.getFollowers(followId);
   }
 }
