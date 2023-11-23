@@ -11,7 +11,7 @@ import DesignKit
 import ModernRIBs
 
 protocol SearchAfterStoryDashboardPresentableListener: AnyObject {
-    func didTapSeeAll()
+    func searchAfterHeaderViewSeeAllViewDidTap()
 }
 
 struct SearchAfterStoryDashboardModel {
@@ -39,8 +39,8 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
     
     weak var listener: SearchAfterStoryDashboardPresentableListener?
     
-    private lazy var titleView: SearchAfterTitleView = {
-        let titleView = SearchAfterTitleView()
+    private lazy var titleView: SearchAfterHeaderView = {
+        let titleView = SearchAfterHeaderView()
         titleView.delegate = self
         titleView.setupTitle(Constant.TitleView.title)
         titleView.isHiddenSeeAllView(true)
@@ -125,10 +125,10 @@ private extension SearchAfterStoryDashboardViewController {
     
 }
 
-extension SearchAfterStoryDashboardViewController: SearchAfterTitleViewDelegate {
+extension SearchAfterStoryDashboardViewController: SearchAfterHeaderViewDelegate {
     
-    func searcgAfterTitleViewSeeAllViewDidTap() {
-        listener?.didTapSeeAll()
+    func searchAfterHeaderViewSeeAllViewDidTap() {
+        listener?.searchAfterHeaderViewSeeAllViewDidTap()
     }
     
 }
