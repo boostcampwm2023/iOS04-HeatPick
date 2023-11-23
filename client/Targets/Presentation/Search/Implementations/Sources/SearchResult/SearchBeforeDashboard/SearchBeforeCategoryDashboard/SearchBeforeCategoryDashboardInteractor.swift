@@ -13,8 +13,7 @@ protocol SearchBeforeCategoryDashboardRouting: ViewableRouting { }
 protocol SearchBeforeCategoryDashboardPresentable: Presentable {
     var listener: SearchBeforeCategoryDashboardPresentableListener? { get set }
     
-    func setup(models: [SearchBeforeCategoryDashboardCellModel])
-    func append(models: [SearchBeforeCategoryDashboardCellModel])
+    func setup(models: [SearchBeforeCategoryViewModel])
 }
 
 protocol SearchBeforeCategoryDashboardListener: AnyObject { }
@@ -46,7 +45,7 @@ final class SearchBeforeCategoryDashboardInteractor: PresentableInteractor<Searc
         super.willResignActive()
     }
     
-    func didTapItem() {
+    func didTapSearchBeforeRecentSearchesView() {
         
     }
     
