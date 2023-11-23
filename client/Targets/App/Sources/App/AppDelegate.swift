@@ -1,7 +1,7 @@
 import UIKit
 import ModernRIBs
 
-import CoreKit
+import FoundationKit
 import NMapsMap
 
 @main

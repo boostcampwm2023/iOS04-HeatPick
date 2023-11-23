@@ -9,7 +9,7 @@
 import Combine
 import Foundation
 
-import CoreKit
+import FoundationKit
 import DomainInterfaces
 
 import NaverThirdPartyLogin

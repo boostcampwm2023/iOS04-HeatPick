@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import CoreKit
+import FoundationKit
 import NetworkAPIKit
 
 public extension NetworkHeader {
