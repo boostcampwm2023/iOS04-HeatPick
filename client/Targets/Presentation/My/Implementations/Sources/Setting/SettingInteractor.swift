@@ -6,12 +6,14 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Foundation
 import ModernRIBs
 
 protocol SettingRouting: ViewableRouting {}
 
 protocol SettingPresentable: Presentable {
     var listener: SettingPresentableListener? { get set }
+    func openURL(_ url: URL)
 }
 
 protocol SettingListener: AnyObject {
@@ -40,8 +42,10 @@ final class SettingInteractor: PresentableInteractor<SettingPresentable>, Settin
         listener?.settingDidTapClose()
     }
     
-    func didTapMailTo() {
-        print("# Email 보내기")
+    func didTapDiscussion() {
+        let discussionURL = "https://github.com/boostcampwm2023/iOS04-HeatPick/discussions/293"
+        guard let url = URL(string: discussionURL) else { return }
+        presenter.openURL(url)
     }
     
     func didTapResign() {
