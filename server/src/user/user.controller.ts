@@ -10,7 +10,7 @@ import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserUpdateDto } from './dto/user.update.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FollowRequest } from './dto/follow.reqeust.dto';
+import { FollowRequest } from './dto/follow.request.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -69,14 +69,17 @@ export class UserController {
   }
 
   @Post('follow')
-  @ApiOperation({ summary: 'follower Id에 해당하는 유저가 다른 유저를 follow 하는 경우입니다.' })
+  @ApiOperation({ summary: 'follower Id에 해당하는 유저가 다른 유저를 follow 하는 경우 사용합니다.' })
   @ApiBody({
     type: FollowRequest,
     description: '팔로우할 유저의 ID',
     required: true,
   })
   @ApiResponse({ status: 200, description: 'Follow-Follower 관계가 성공적으로 연결되었습니다.' })
-  async addfollow(@Body() followId: number) {
-    return this.userService.addFollowing(followId, 4);
+  async addfollow(@Body() followRequest: FollowRequest) {
+    // 현재 guard가 없는 상황이므로, follower의 id는 임시로 5로 지정하였습니다.
+    const transformedDto = plainToClass(FollowRequest, followRequest);
+    const followId = transformedDto.followId;
+    return this.userService.addFollowing(followId, 5);
   }
 }

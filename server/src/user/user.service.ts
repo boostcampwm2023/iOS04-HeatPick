@@ -126,13 +126,19 @@ export class UserService {
 
   async addFollowing(followId: number, followerId: number) {
     try {
-      const followUser = await this.userRepository.findOneByOption({ where: { oauthId: followId } });
-      const followerUser = await this.userRepository.findOneByOption({ where: { oauthId: followerId } });
+      const followUser = await this.userRepository.findOneByOption({ where: { userId: followId } });
+      const followerUser = await this.userRepository.findOneByOption({ where: { userId: followerId } });
+
+      if (!followerUser.following) followerUser.following = [];
+      if (!followUser.followers) followUser.followers = [];
+
       followerUser.following.push(followUser);
       followUser.followers.push(followerUser);
+
       this.userRepository.save(followUser);
       this.userRepository.save(followerUser);
     } catch (error) {
+      console.log(error);
       throw new InvalidIdException();
     }
   }
