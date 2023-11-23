@@ -61,6 +61,10 @@ final class StoryLikesCommentsView: UIView {
         setupViews()
     }
     
+    func setup(likes: Int, comments: Int) {
+        likesCountLabel.text = "\(likes)"
+        commentsCountLabel.text = "\(comments)"
+    }
 }
 
 private extension StoryLikesCommentsView {

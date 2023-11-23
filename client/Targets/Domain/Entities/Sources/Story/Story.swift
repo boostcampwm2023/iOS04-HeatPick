@@ -11,11 +11,17 @@ import Foundation
 public struct Story {
     
     public let id: Int
-    public let storyContent: StoryContent?
+    public let content: StoryContent?
+    public let author: Author?
+    public let likesCount: Int
+    public let commentsCount: Int
     
-    public init(id: Int, storyContent: StoryContent?) {
+    public init(id: Int, storyContent: StoryContent? = nil, author: Author? = nil, likesCount: Int = 0, commentsCount: Int = 0) {
         self.id = id
-        self.storyContent = storyContent
+        self.content = storyContent
+        self.author = author
+        self.likesCount = likesCount
+        self.commentsCount = commentsCount
     }
     
 }
