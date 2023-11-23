@@ -61,6 +61,6 @@ export class User {
 
   @ManyToMany(() => User, (user) => user.followers)
   @JoinTable()
-  @ApiProperty({ description: '유저를 팔로워 목록' })
+  @ApiProperty({ description: '유저 팔로워 목록' })
   followers: User[];
 }
