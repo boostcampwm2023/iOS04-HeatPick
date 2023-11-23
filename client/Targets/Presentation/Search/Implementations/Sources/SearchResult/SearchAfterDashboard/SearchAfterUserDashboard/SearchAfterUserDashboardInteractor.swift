@@ -54,7 +54,7 @@ final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfte
         
     }
     
-    func didTapSeeAll() {
+    func searchAfterHeaderViewSeeAllViewDidTap() {
         // TODO: 성준님이 만드신 뷰와 연결
     }
 }

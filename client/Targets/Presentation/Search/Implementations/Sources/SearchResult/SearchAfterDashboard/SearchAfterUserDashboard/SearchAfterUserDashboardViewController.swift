@@ -11,7 +11,7 @@ import DesignKit
 import ModernRIBs
 
 protocol SearchAfterUserDashboardPresentableListener: AnyObject {
-    func didTapSeeAll()
+    func searchAfterHeaderViewSeeAllViewDidTap()
 }
 
 struct SearchAfterUserDashboardViewModel {
@@ -25,7 +25,7 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
     private enum Constant {
         static let offset: CGFloat = 20
         
-        enum TitleView {
+        enum HeaderView {
             static let title = "유저"
         }
         
@@ -38,13 +38,13 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
             static let spacing: CGFloat = 15
         }
     }
-    private lazy var titleView: SearchAfterTitleView = {
-        let titleView = SearchAfterTitleView()
-        titleView.delegate = self
-        titleView.setupTitle(Constant.TitleView.title)
-        titleView.isHiddenSeeAllView(true)
-        titleView.translatesAutoresizingMaskIntoConstraints = false
-        return titleView
+    private lazy var headerView: SearchAfterHeaderView = {
+        let headerView = SearchAfterHeaderView()
+        headerView.delegate = self
+        headerView.setupTitle(Constant.HeaderView.title)
+        headerView.isHiddenSeeAllView(true)
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        return headerView
     }()
     
     private let emptyView: SearchResultEmptyView = {
@@ -60,9 +60,9 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
         scrollView.isHidden = true
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
@@ -84,7 +84,7 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
     
     func setup(model: SearchAfterUserDashboardViewModel) {
         let isEmpty = model.contentList.isEmpty
-        titleView.isHiddenSeeAllView(isEmpty)
+        headerView.isHiddenSeeAllView(isEmpty)
         emptyView.isHidden = !isEmpty
         scrollView.isHidden = isEmpty
         model.contentList.forEach { model in
@@ -98,20 +98,20 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
 
 private extension SearchAfterUserDashboardViewController {
     func setupViews() {
-        [titleView, emptyView, scrollView].forEach { view.addSubview($0) }
+        [headerView, emptyView, scrollView].forEach { view.addSubview($0) }
         scrollView.addSubview(stackView)
         
         NSLayoutConstraint.activate([
-            titleView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             
-            emptyView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.offset),
+            emptyView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.offset),
             emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            scrollView.frameLayoutGuide.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.offset),
+            scrollView.frameLayoutGuide.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.offset),
             scrollView.frameLayoutGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             scrollView.frameLayoutGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             scrollView.frameLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -125,10 +125,10 @@ private extension SearchAfterUserDashboardViewController {
     
 }
 
-extension SearchAfterUserDashboardViewController: SearchAfterTitleViewDelegate {
+extension SearchAfterUserDashboardViewController: SearchAfterHeaderViewDelegate {
     
-    func searcgAfterTitleViewSeeAllViewDidTap() {
-        listener?.didTapSeeAll()
+    func searchAfterHeaderViewSeeAllViewDidTap() {
+        listener?.searchAfterHeaderViewSeeAllViewDidTap()
     }
     
 }
