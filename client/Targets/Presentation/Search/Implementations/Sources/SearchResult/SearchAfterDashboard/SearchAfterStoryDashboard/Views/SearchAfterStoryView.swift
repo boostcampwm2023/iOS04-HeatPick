@@ -107,7 +107,7 @@ private extension SearchAfterStoryView {
             imageView.widthAnchor.constraint(equalToConstant: Constant.ImageView.Constants),
             imageView.topAnchor.constraint(equalTo: topAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             
             stackView.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: Constant.offset),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
