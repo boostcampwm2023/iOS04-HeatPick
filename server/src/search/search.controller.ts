@@ -54,13 +54,24 @@ export class SearchController {
   @ApiOperation({ summary: '검색어 추천 기능' })
   @ApiResponse({ status: 201, description: '입력된 글자를 바탕으로 자동 완성된 문장 배열을 리턴' })
   @Get('recommend')
-  @ApiOperation({ summary: '추천 검색어 기능 API' })
   @ApiResponse({
     status: 201,
     description: '파라미터로 넘겨받은 searchText 값을 바탕으로 유사한 검색어를 가져옵니다.',
     type: [SearchHistory],
   })
   async recommendSearch(@Query('searchText') searchText: string): Promise<string[]> {
+    return this.searchService.searchHistoryTree(graphemeSeperation(searchText));
+  }
+
+  @ApiOperation({ summary: '검색 기능' })
+  @ApiResponse({ status: 201, description: '검색어를 바탕으로 스토리와 유저 정보를 5개씩 리턴합니다.' })
+  @Get()
+  @ApiResponse({
+    status: 201,
+    description: '파라미터로 넘겨받은 searchText 값을 바탕으로 유사한 검색어를 가져옵니다.',
+    type: [SearchHistory],
+  })
+  async search(@Query('searchText') searchText: string): Promise<string[]> {
     return this.searchService.searchHistoryTree(graphemeSeperation(searchText));
   }
 }
