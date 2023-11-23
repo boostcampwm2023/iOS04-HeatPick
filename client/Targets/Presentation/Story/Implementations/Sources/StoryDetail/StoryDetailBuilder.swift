@@ -8,20 +8,31 @@
 
 import ModernRIBs
 
+import DomainEntities
+import DomainInterfaces
+
 public protocol StoryDetailDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var storyUseCase: StoryUseCaseInterface { get }
 }
 
 final class StoryDetailComponent: Component<StoryDetailDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    
+    let story: Story
+    var storyUseCase: StoryUseCaseInterface {
+        dependency.storyUseCase
+    }
+    
+    init(dependency: StoryDetailDependency, story: Story) {
+        self.story = story
+        super.init(dependency: dependency)
+    }
+    
 }
 
 // MARK: - Builder
 
 public protocol StoryDetailBuildable: Buildable {
-    func build(withListener listener: StoryDetailListener) -> StoryDetailRouting
+    func build(withListener listener: StoryDetailListener, story: Story) -> StoryDetailRouting
 }
 
 public final class StoryDetailBuilder: Builder<StoryDetailDependency>, StoryDetailBuildable {
@@ -30,11 +41,12 @@ public final class StoryDetailBuilder: Builder<StoryDetailDependency>, StoryDeta
         super.init(dependency: dependency)
     }
 
-    public func build(withListener listener: StoryDetailListener) -> StoryDetailRouting {
-        let component = StoryDetailComponent(dependency: dependency)
+    public func build(withListener listener: StoryDetailListener, story: Story) -> StoryDetailRouting {
+        let component = StoryDetailComponent(dependency: dependency, story: story)
         let viewController = StoryDetailViewController()
         let interactor = StoryDetailInteractor(presenter: viewController)
         interactor.listener = listener
         return StoryDetailRouter(interactor: interactor, viewController: viewController)
     }
+    
 }

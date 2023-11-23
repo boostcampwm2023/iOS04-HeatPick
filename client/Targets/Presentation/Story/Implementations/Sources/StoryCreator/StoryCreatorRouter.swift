@@ -66,7 +66,7 @@ final class StoryCreatorRouter: ViewableRouter<StoryCreatorInteractable,
     
     func attachStoryDetail(_ story: Story) {
         guard storyDetailRouter == nil else { return }
-        let storyDetailRouting = storyDetailBuilder.build(withListener: interactor)
+        let storyDetailRouting = storyDetailBuilder.build(withListener: interactor, story: story)
         self.storyDetailRouter = storyDetailRouting
         attachChild(storyDetailRouting)
         let storyDetailViewController = NavigationControllable(viewControllable: storyDetailRouting.viewControllable)

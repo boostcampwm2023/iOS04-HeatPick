@@ -23,7 +23,6 @@ final class StoryCreatorComponent: Component<StoryCreatorDependency>,
                                    StoryEditorDependency,
                                    StoryDetailDependency {
     
-    
     var storyUseCase: StoryUseCaseInterface { dependency.storyUseCase }
     lazy var storyEditorBuilder: StoryEditorBuildable = {
         StoryEditorBuilder(dependency: self)
