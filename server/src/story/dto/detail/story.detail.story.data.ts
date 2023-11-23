@@ -3,6 +3,9 @@ import { StoryDetailPlaceDataDto } from './story.detail.place.data.dto';
 
 export class StoryDetailStoryDataDto {
   @ApiProperty()
+  storyId: number;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
