@@ -121,4 +121,54 @@ export class UserService {
     }
     this.userRepository.save(userObject[0]);
   }
+
+  async addFollowing(followId: number, followerId: number) {
+    try {
+      const followUser = await this.userRepository.findOneByOption({ where: { userId: followId } });
+      const followerUser = await this.userRepository.findOneByOption({ where: { userId: followerId } });
+
+      if (!followerUser.following) followerUser.following = [];
+      if (!followUser.followers) followUser.followers = [];
+
+      followerUser.following.push(followUser);
+      followUser.followers.push(followerUser);
+
+      this.userRepository.save(followUser);
+      this.userRepository.save(followerUser);
+    } catch (error) {
+      console.log(error);
+      throw new InvalidIdException();
+    }
+  }
+  async unFollow(followId: number, followerId: number) {
+    try {
+      const followUser = await this.userRepository.findOneByOption({ where: { userId: followId } });
+      const followerUser = await this.userRepository.findOneByOption({ where: { userId: followerId } });
+
+      if (!followerUser.following) followerUser.following = [];
+      if (!followUser.followers) followUser.followers = [];
+
+      followerUser.following = followerUser.following.filter((user) => user.userId !== followId);
+      followUser.followers = followUser.followers.filter((user) => user.userId !== followerId);
+
+      this.userRepository.save(followUser);
+      this.userRepository.save(followerUser);
+    } catch (error) {
+      console.log(error);
+      throw new InvalidIdException();
+    }
+  }
+  async getFollows(userId: number) {
+    const userObj = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['following'] });
+    const follows = userObj.following;
+    const userIdArray = follows.map((user) => user.userId);
+    return userIdArray;
+  }
+
+  async getFollowers(userId: number) {
+    const userObj = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['follower'] });
+    const follows = userObj.followers;
+    const userIdArray = follows.map((user) => user.userId);
+    return userIdArray;
+  }
 }
