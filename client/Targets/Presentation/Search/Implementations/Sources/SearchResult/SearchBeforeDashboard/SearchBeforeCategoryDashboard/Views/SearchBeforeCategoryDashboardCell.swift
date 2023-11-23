@@ -1,5 +1,5 @@
 //
-//  SearchBeforeCategoryCell.swift
+//  SearchBeforeCategoryDashboardCell.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 11/21/23.
@@ -9,12 +9,12 @@
 import UIKit
 import DesignKit
 
-struct CategoryModel: Decodable {
+struct SearchBeforeCategoryDashboardCellModel: Decodable {
     let title: String
     let description: String
 }
 
-final class SearchBeforeCategoryCell: UICollectionViewCell {
+final class SearchBeforeCategoryDashboardCell: UITableViewCell {
     
     private enum Constant {
         static let spacing: CGFloat = 6
@@ -42,8 +42,8 @@ final class SearchBeforeCategoryCell: UICollectionViewCell {
         return label
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
     }
     
@@ -57,14 +57,14 @@ final class SearchBeforeCategoryCell: UICollectionViewCell {
         reset()
     }
     
-    func setup(_ model: CategoryModel) {
+    func setup(_ model: SearchBeforeCategoryDashboardCellModel) {
         titleLabel.text = model.title
         descriptionLabel.text = model.description
     }
     
 }
 
-private extension SearchBeforeCategoryCell {
+private extension SearchBeforeCategoryDashboardCell {
 
     func setupView() {
         contentView.clipsToBounds = true
