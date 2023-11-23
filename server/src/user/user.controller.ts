@@ -91,11 +91,21 @@ export class UserController {
 
   @Get('follow')
   @ApiOperation({ summary: '현재 유저의 팔로우 목록을 리턴합니다.' })
-  @ApiResponse({ status: 200, description: '현재 유저의 팔로우 목록입니다' })
+  @ApiResponse({ status: 200, description: '현재 유저의 팔로우의 Id 목록입니다' })
   async getMyFollows() {
     // 현재 guard가 없는 상황이므로 5로 고정하였습니다.
     const currentUserId = 5;
     const follows = await this.userService.getFollows(currentUserId);
     return follows;
+  }
+
+  @Get('follower')
+  @ApiOperation({ summary: '현재 유저의 팔로워 목록을 리턴합니다.' })
+  @ApiResponse({ status: 200, description: '현재 유저의 팔로워들의 Id 목록입니다' })
+  async getMyFollowers() {
+    // 현재 guard가 없는 상황이므로 5로 고정하였습니다.
+    const currentUserId = 5;
+    const followers = await this.userService.getFollowers(currentUserId);
+    return followers;
   }
 }

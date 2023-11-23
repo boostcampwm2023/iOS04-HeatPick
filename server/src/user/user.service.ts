@@ -147,4 +147,11 @@ export class UserService {
     const userIdArray = follows.map((user) => user.userId);
     return userIdArray;
   }
+
+  async getFollowers(userId: number) {
+    const userObj = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['follower'] });
+    const follows = userObj.followers;
+    const userIdArray = follows.map((user) => user.userId);
+    return userIdArray;
+  }
 }
