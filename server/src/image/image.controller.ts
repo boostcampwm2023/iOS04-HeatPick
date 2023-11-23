@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Header, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ImageService } from './image.service';
 
@@ -7,6 +7,7 @@ export class ImageController {
   constructor(private imageService: ImageService) {}
 
   @Get('story')
+  @Header('content-type', 'image/png')
   @ApiOperation({ summary: 'Get Story Image' })
   @ApiResponse({ status: 200, description: 'Profile Image or Story Image' })
   async requestStoryImage(@Query('name') name: string): Promise<Buffer> {

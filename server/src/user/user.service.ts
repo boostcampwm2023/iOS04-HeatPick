@@ -52,7 +52,7 @@ export class UserService {
 
   async getProfile(userId: number): Promise<UserProfileDetailDataDto> {
     const user = await this.userRepository.findOneByUserIdWithStory(userId);
-    const userBadges = await user.badges;
+    const mainBadge = user.representativeBadge;
     const stories = await user.stories;
     return {
       username: user.username,
@@ -61,7 +61,7 @@ export class UserService {
       storyCount: (await user.stories).length,
       experience: 0,
       maxExperience: 999,
-      badge: userBadges,
+      mainBadge: mainBadge,
       storyList: stories,
     };
   }

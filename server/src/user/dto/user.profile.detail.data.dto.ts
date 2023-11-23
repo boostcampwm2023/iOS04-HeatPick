@@ -22,7 +22,7 @@ export class UserProfileDetailDataDto {
   maxExperience: number;
 
   @ApiProperty()
-  badge: Badge[];
+  mainBadge: Badge;
 
   @ApiProperty()
   storyList: Story[];
