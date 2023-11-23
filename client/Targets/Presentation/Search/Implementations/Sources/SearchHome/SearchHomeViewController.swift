@@ -93,7 +93,7 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         setupViews()
     }
     
-    func insertDashboard(_ viewControllable: ViewControllable) {
+    func appendDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
         addChild(viewController)
         stackView.addArrangedSubview(viewController.view)

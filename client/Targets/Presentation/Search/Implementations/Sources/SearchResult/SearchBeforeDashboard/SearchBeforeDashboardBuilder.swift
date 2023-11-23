@@ -10,7 +10,23 @@ import ModernRIBs
 
 protocol SearchBeforeDashboardDependency: Dependency { }
 
-final class SearchBeforeDashboardComponent: Component<SearchBeforeDashboardDependency> { }
+final class SearchBeforeDashboardComponent: Component<SearchBeforeDashboardDependency>,
+                                                SearchBeforeRecentSearchesDashboardDependency,
+                                                SearchBeforeCategoryDashboardDependency {
+
+}
+
+final class SearchBeforeDashboardRouterComponent: SearchBeforeDashboardRouterDependency {
+    
+    let searchBeforeRecentSearchesDashboardBuilder: SearchBeforeRecentSearchesDashboardBuildable
+    let searchBeforeCategoryDashboardBuilder: SearchBeforeCategoryDashboardBuildable
+    
+    init(component: SearchBeforeDashboardComponent) {
+        self.searchBeforeRecentSearchesDashboardBuilder = SearchBeforeRecentSearchesDashboardBuilder(dependency: component)
+        self.searchBeforeCategoryDashboardBuilder = SearchBeforeCategoryDashboardBuilder(dependency: component)
+    }
+    
+}
 
 // MARK: - Builder
 
@@ -26,9 +42,15 @@ final class SearchBeforeDashboardBuilder: Builder<SearchBeforeDashboardDependenc
 
     func build(withListener listener: SearchBeforeDashboardListener) -> SearchBeforeDashboardRouting {
         let component = SearchBeforeDashboardComponent(dependency: dependency)
+        let routerComponent = SearchBeforeDashboardRouterComponent(component: component)
         let viewController = SearchBeforeDashboardViewController()
         let interactor = SearchBeforeDashboardInteractor(presenter: viewController)
         interactor.listener = listener
-        return SearchBeforeDashboardRouter(interactor: interactor, viewController: viewController)
+        return SearchBeforeDashboardRouter(
+            interactor: interactor, 
+            viewController: viewController,
+            dependency: routerComponent
+        )
     }
+    
 }
