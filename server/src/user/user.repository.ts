@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FindManyOptions, In, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, In, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 
 @Injectable()
@@ -11,6 +11,10 @@ export class UserRepository {
 
   async save(user: User) {
     this.userRepository.save(user);
+  }
+
+  async findOneByOption(findOneByOption: FindOneOptions) {
+    return await this.userRepository.findOne(findOneByOption);
   }
 
   async findByOption(findManyOptions: FindManyOptions) {

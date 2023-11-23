@@ -16,7 +16,6 @@ import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notV
 import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 
-
 @Injectable()
 export class UserService {
   constructor(
@@ -83,7 +82,6 @@ export class UserService {
 
     userObject[0].representativeBadge = targetbadge;
     this.userRepository.save(userObject[0]);
-
   }
 
   async getStoryList(userId: number): Promise<Story[]> {
@@ -124,5 +122,18 @@ export class UserService {
       targetbadge.badgeExp = 0;
     }
     this.userRepository.save(userObject[0]);
+  }
+
+  async addFollowing(followId: number, followerId: number) {
+    try {
+      const followUser = await this.userRepository.findOneByOption({ where: { oauthId: followId } });
+      const followerUser = await this.userRepository.findOneByOption({ where: { oauthId: followerId } });
+      followerUser.following.push(followUser);
+      followUser.followers.push(followerUser);
+      this.userRepository.save(followUser);
+      this.userRepository.save(followerUser);
+    } catch (error) {
+      throw new InvalidIdException();
+    }
   }
 }

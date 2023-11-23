@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put } from '@nestjs/common';
 
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
@@ -10,6 +10,7 @@ import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserUpdateDto } from './dto/user.update.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FollowRequest } from './dto/follow.reqeust.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -65,5 +66,17 @@ export class UserController {
   @ApiResponse({ status: 201, description: '회원 탈퇴 되었습니다.' })
   async resign(@Headers('accessToken') accessToken: string, @Body() message: string) {
     return this.userService.resign(accessToken, message);
+  }
+
+  @Post('follow')
+  @ApiOperation({ summary: 'follower Id에 해당하는 유저가 다른 유저를 follow 하는 경우입니다.' })
+  @ApiBody({
+    type: FollowRequest,
+    description: '팔로우할 유저의 ID',
+    required: true,
+  })
+  @ApiResponse({ status: 200, description: 'Follow-Follower 관계가 성공적으로 연결되었습니다.' })
+  async addfollow(@Body() followId: number) {
+    return this.userService.addFollowing(followId, 4);
   }
 }
