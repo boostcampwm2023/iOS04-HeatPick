@@ -38,4 +38,14 @@ public enum SecretManager {
         SecItemAdd(query, nil)
     }
     
+    public static func remove(type: SecretType) {
+        let query = NSDictionary(dictionary: [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: type.rawValue,
+            kSecReturnData: true,
+            kSecMatchLimit: kSecMatchLimitOne
+        ])
+        SecItemDelete(query)
+    }
+    
 }
