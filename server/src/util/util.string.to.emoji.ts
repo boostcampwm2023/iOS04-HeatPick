@@ -3,6 +3,7 @@ export const strToEmoji = {
   카페인중독: '☕',
   러닝맨: '🏃',
   '카페인의 신': '☕',
+  뉴비: '🍼',
 };
 
 export const nextBadge = {
