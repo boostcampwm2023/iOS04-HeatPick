@@ -19,6 +19,8 @@ protocol MyPageRouting: ViewableRouting {
     func detachStoryDashboard()
     func attachStorySeeAll()
     func detachStorySeeAll()
+    func attachSetting()
+    func detachSetting()
 }
 
 protocol MyPagePresentable: Presentable {
@@ -57,7 +59,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     }
     
     func didTapSetting() {
-        print("# Setting 화면으로 이동")
+        router?.attachSetting()
     }
     
     // MARK: - UserDashboard
@@ -78,17 +80,21 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.detachStorySeeAll()
     }
     
+    // MARK: - Setting
+    
+    func settingDidTapClose() {
+        router?.detachSetting()
+    }
+    
     private func fetchMyPage() {
         Task { [weak self] in
             guard let self else { return }
             await depedency.myPageUseCase
                 .fetchMyPage()
                 .onSuccess(on: .main, with: self) { this, myPage in
-                    print("# HI: \(myPage)")
                     // UseCase에서 분배하고 있어서 필요 없음
                 }
                 .onFailure { error in
-                    print("# BYE: \(error)")
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
         }
