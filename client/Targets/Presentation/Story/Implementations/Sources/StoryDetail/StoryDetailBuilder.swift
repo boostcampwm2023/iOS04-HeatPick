@@ -15,7 +15,7 @@ public protocol StoryDetailDependency: Dependency {
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
-final class StoryDetailComponent: Component<StoryDetailDependency> {
+final class StoryDetailComponent: Component<StoryDetailDependency>, StoryDetailInteractorDependency {
     
     let story: Story
     var storyUseCase: StoryUseCaseInterface {
@@ -44,7 +44,7 @@ public final class StoryDetailBuilder: Builder<StoryDetailDependency>, StoryDeta
     public func build(withListener listener: StoryDetailListener, story: Story) -> StoryDetailRouting {
         let component = StoryDetailComponent(dependency: dependency, story: story)
         let viewController = StoryDetailViewController()
-        let interactor = StoryDetailInteractor(presenter: viewController)
+        let interactor = StoryDetailInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return StoryDetailRouter(interactor: interactor, viewController: viewController)
     }
