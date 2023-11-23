@@ -10,7 +10,7 @@ export class UserRepository {
   ) {}
 
   async save(user: User) {
-    this.userRepository.save(user);
+    await this.userRepository.save(user);
   }
 
   async findOneByOption(findOneByOption: FindOneOptions) {

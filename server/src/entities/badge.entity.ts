@@ -21,12 +21,10 @@ export class Badge {
   @ManyToOne(() => User, (user) => user.badges)
   user: User;
 
-
-  @OneToOne(() => User)
+  @OneToOne(() => User, (user) => user.representativeBadge)
   @JoinColumn()
   representativeUser: User;
 
   @OneToMany(() => Story, (story: Story) => story.badge)
   stories: Story[];
-
 }
