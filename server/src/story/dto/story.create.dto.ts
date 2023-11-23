@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { IsISO8601, IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 type Place = {
@@ -36,6 +36,7 @@ export class CreateStoryDto {
     example: `{ latitude: 1.2345, longitude: 6.7890, title: '장소 이름', address: '주소명' }`,
     description: 'Where the story was created',
   })
+
   @IsNotEmpty({ message: 'place 필수입니다.' })
   @Transform(({ value }): object => JSON.parse(value))
   place: Place;
@@ -52,5 +53,8 @@ export class CreateStoryDto {
     example: `3`,
     description: `User's badge`,
   })
+  @IsNotEmpty({ message: `badgeId 필수입니다.` })
+  @Transform(({ value }): number => parseInt(value, 10))
+  @IsNumber()
   badgeId: number;
 }
