@@ -10,7 +10,7 @@ import UIKit
 
 extension SignoutService {
     
-    static var keyWindow: UIWindow? {
+    var keyWindow: UIWindow? {
         return UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .flatMap(\.windows)
@@ -19,7 +19,7 @@ extension SignoutService {
     }
     
     func presentAlert(type: AlertType, action: @escaping (() -> Void)) {
-        SignoutService.keyWindow?.rootViewController?
+        keyWindow?.rootViewController?
             .presentAlert(
                 title: type.title,
                 message: type.message,
