@@ -145,8 +145,8 @@ extension Project {
             options: .options(
                 automaticSchemesOptions: .disabled,
                 defaultKnownRegions: ["ko"],
-                disableBundleAccessors: true,
-                disableSynthesizedResourceAccessors: true
+                disableBundleAccessors: false,
+                disableSynthesizedResourceAccessors: false
             ),
             packages: packages,
             settings: .settings(),
