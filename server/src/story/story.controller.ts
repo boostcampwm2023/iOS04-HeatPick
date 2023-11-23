@@ -1,14 +1,13 @@
 import { StoryService } from './story.service';
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { StoryDetailViewData } from './type/story.detail.view.data';
 import { UpdateStoryDto } from './dto/story.update.dto';
-import { LocationDTO } from 'src/place/dto/location.dto';
-import { Story } from 'src/entities/story.entity';
+import { LocationDTO } from 'src/place/dto/location.dto';;
 import { RecommendStoryDto } from './dto/story.recommend.response.dto';
 import { plainToClass } from 'class-transformer';
+import { StoryDetailViewData } from './dto/story.detail.view.data.dto';
 
 @ApiTags('story')
 @Controller('story')
@@ -39,13 +38,7 @@ export class StoryController {
   @ApiCreatedResponse({
     status: 200,
     description: '성공',
-    schema: {
-      type: 'object',
-      properties: {
-        story: { type: 'object' },
-        author: { type: 'object' },
-      },
-    },
+    type: StoryDetailViewData,
   })
   async read(@Query('storyId') storyId: number): Promise<StoryDetailViewData> {
     return this.storyService.read(storyId);
