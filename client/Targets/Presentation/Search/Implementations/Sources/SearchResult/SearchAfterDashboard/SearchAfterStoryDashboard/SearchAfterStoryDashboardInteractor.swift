@@ -29,7 +29,23 @@ final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAft
     
     override func didBecomeActive() {
         super.didBecomeActive()
-
+        presenter.setup(model: .init(
+            contentList: [
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
+            ]
+        ))
+        
     }
     
     override func willResignActive() {
