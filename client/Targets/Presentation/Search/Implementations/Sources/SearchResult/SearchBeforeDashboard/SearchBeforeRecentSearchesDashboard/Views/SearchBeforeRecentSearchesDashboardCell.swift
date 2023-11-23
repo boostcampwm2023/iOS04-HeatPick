@@ -1,5 +1,5 @@
 //
-//  SearchBeforeRecentSearchTextCell.swift
+//  SearchBeforeRecentSearchesDashboardCell.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 11/20/23.
@@ -9,11 +9,11 @@
 import UIKit
 import DesignKit
 
-struct ReceentSearchTextModel: Decodable {
+struct SearchBeforeRecentSearchesDashboardCellModel: Decodable {
     let text: String
 }
 
-final class SearchBeforeRecentSearchTextCell: UICollectionViewCell {
+final class SearchBeforeRecentSearchesDashboardCell: UICollectionViewCell {
     
     private enum Constant {
         static let topOffset: CGFloat = 5
@@ -48,13 +48,13 @@ final class SearchBeforeRecentSearchTextCell: UICollectionViewCell {
         reset()
     }
     
-    func setup(_ model: ReceentSearchTextModel) {
+    func setup(_ model: SearchBeforeRecentSearchesDashboardCellModel) {
         titleLabel.text = model.text
     }
     
 }
 
-private extension SearchBeforeRecentSearchTextCell {
+private extension SearchBeforeRecentSearchesDashboardCell {
     
     func setupView() {
         contentView.backgroundColor = .hpGray3
