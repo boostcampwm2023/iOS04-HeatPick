@@ -5,17 +5,13 @@ import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
-
-import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
 import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../entities/user.entity';
 import { ImageService } from '../image/image.service';
-
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
 import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
-
+import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 
 @Injectable()
 export class UserService {
@@ -54,9 +50,9 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
-  async getProfile(userId: number): Promise<userProfileDetailDataType> {
-    const user = await this.userRepository.findOneByUserId(userId);
-    const userBadges = await user.badges;
+  async getProfile(accessToken?: string, userId?: number): Promise<UserProfileDetailDataDto> {
+    const user = accessToken ? await this.userRepository.findOneById(accessToken) : await this.userRepository.findOneByUserIdWithStory(userId);
+    const mainBadge = user.representativeBadge;
     const stories = await user.stories;
     return {
       username: user.username,
@@ -65,7 +61,7 @@ export class UserService {
       storyCount: (await user.stories).length,
       experience: 0,
       maxExperience: 999,
-      badge: userBadges,
+      mainBadge: mainBadge,
       storyList: stories,
     };
   }
@@ -83,17 +79,17 @@ export class UserService {
 
     userObject[0].representativeBadge = targetbadge;
     this.userRepository.save(userObject[0]);
-
   }
 
   async getStoryList(userId: number): Promise<Story[]> {
-    const user = await this.userRepository.findOneByUserId(userId);
+    const user = await this.userRepository.findOneByUserIdWithStory(userId);
     return await user.stories;
   }
 
-  async update(accessToken: string, image: Express.Multer.File, { username, mainBadge }) {
-    const decodedToken = this.jwtService.verify(accessToken);
+  async update(accessToken: string, image: Express.Multer.File, { username, mainBadgeId }) {
+    const decodedToken = this.jwtService.decode(accessToken);
     const userId = decodedToken.userId;
+
     return await this.userRepository.update({ oauthId: userId }, { username: username });
   }
 

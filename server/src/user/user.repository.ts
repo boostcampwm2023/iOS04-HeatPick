@@ -37,8 +37,16 @@ export class UserRepository {
     });
   }
 
-  async findOneByUserId(userId: number) {
+  async findOneByUserIdWithStory(userId: number) {
     return await this.userRepository.findOne({ where: { userId: userId }, relations: ['profileImage', 'stories', 'stories.storyImages', 'stories.comments'] });
+  }
+
+  async findOneByUserIdWithBadge(userId: number) {
+    return await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'representativeBadge'] });
+  }
+
+  async findOneByUserId(userId: number) {
+    return await this.userRepository.findOne({ where: { userId: userId } });
   }
 
   async update(where: object, elem: object) {
