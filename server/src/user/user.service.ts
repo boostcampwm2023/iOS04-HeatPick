@@ -5,16 +5,13 @@ import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
-
-import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
 import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../entities/user.entity';
 import { ImageService } from '../image/image.service';
-
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
 import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
+import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 
 
 @Injectable()
@@ -54,7 +51,7 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
-  async getProfile(userId: number): Promise<userProfileDetailDataType> {
+  async getProfile(userId: number): Promise<UserProfileDetailDataDto> {
     const user = await this.userRepository.findOneByUserId(userId);
     const userBadges = await user.badges;
     const stories = await user.stories;

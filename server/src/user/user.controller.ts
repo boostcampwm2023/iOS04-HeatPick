@@ -1,15 +1,27 @@
-import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  Headers,
+  UseInterceptors,
+  UploadedFile,
+  Delete,
+  Put,
+  ParseIntPipe,
+} from '@nestjs/common';
 
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { plainToClass } from 'class-transformer';
-import { userProfileDetailDataType } from './type/user.profile.detail.data.type';
 import { Story } from '../entities/story.entity';
-import { JwtService } from '@nestjs/jwt';
 import { UserUpdateDto } from './dto/user.update.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -25,8 +37,8 @@ export class UserController {
 
   @Get('profile')
   @ApiOperation({ summary: 'Get a profile' })
-  @ApiResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: Promise<userProfileDetailDataType> })
-  async getProfile(@Query() userId: number): Promise<userProfileDetailDataType> {
+  @ApiResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
+  async getProfile(@Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
     return this.userService.getProfile(userId);
   }
 
@@ -47,7 +59,7 @@ export class UserController {
   @Get('story')
   @ApiOperation({ summary: `Get All user's storyList` })
   @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [Story] })
-  async getStoryList(@Query() userId: number): Promise<Story[]> {
+  async getStoryList(@Query('userId', ParseIntPipe) userId: number): Promise<Story[]> {
     return this.userService.getStoryList(userId);
   }
 
