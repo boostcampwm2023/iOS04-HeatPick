@@ -85,8 +85,6 @@ export class StoryController {
   @ApiResponse({ status: 201, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: RecommendStoryDto, isArray: true })
   async recommendStoryByLocation(@Query() locationDto: LocationDTO) {
     const transformedDto = plainToClass(LocationDTO, locationDto);
-    console.log(typeof transformedDto.latitude);
-    console.log(transformedDto);
     const recommededStory = await this.storyService.getRecommendByLocationStory(transformedDto);
     return { recommededStories: recommededStory };
   }
