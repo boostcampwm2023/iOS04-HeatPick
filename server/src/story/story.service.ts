@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { StoryRepository } from './story.repository';
 import { Story } from '../entities/story.entity';
-import { StoryDetailViewData } from './type/story.detail.view.data';
-import { userDataInStoryView } from './type/story.user.data';
 import { UserRepository } from './../user/user.repository';
 import { ImageService } from '../image/image.service';
 import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { createStoryEntity } from '../util/util.create.story.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { FindManyOptions, MoreThan } from 'typeorm';
+import { MoreThan } from 'typeorm';
 import { LocationDTO } from 'src/place/dto/location.dto';
 import { calculateDistance } from 'src/util/util.haversine';
-import { Place } from 'src/entities/place.entity';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entities/user.entity';
+import { StoryDetailViewData } from './dto/story.detail.view.data.dto';
+import { userDataInStoryView } from './dto/story.detail.user.data';
 
 @Injectable()
 export class StoryService {
@@ -53,7 +52,7 @@ export class StoryService {
     const userData: userDataInStoryView = {
       userId: user.userId,
       username: user.username,
-      storyImageURL: (await story.storyImages).map((storyImage) => storyImage.imageUrl),
+      profileImageUrl: user.profileImage.imageUrl,
       //badge: story.user.badge
     };
 
