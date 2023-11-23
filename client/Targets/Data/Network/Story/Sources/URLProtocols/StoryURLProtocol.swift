@@ -12,8 +12,9 @@ import DomainEntities
 
 public final class StoryURLProtocol: URLProtocol {
     
-    private lazy var mocks: [String: Data] = [
-        StoryAPI.newStory(StoryContent(title: "", content: "", date: .now, category: .none, place: .init(lat: 0, lng: 0), badgeId: 0)).path: storyCreateResponseMock()
+    private lazy var mocks: [String: Data?] = [
+        StoryAPI.newStory(StoryContent(title: "", content: "", date: .now, category: "", place: .init(lat: 0, lng: 0), badgeId: 0)).path: loadMockData(fileName: "StoryCreateResponseMock"),
+        StoryAPI.storyDetail(Story(id: 0)).path: loadMockData(fileName: "StoryDetailResponseMock")
     ]
     
     public override class func canInit(with request: URLRequest) -> Bool {
@@ -26,37 +27,23 @@ public final class StoryURLProtocol: URLProtocol {
     
     public override func startLoading() {
         defer { client?.urlProtocolDidFinishLoading(self) }
-        
         if let url = request.url,
            let path = request.url?.path(percentEncoded: true),
-           let data = mocks[path],
-           let response = HTTPURLResponse(url: url,
-                                          statusCode: 200,
-                                          httpVersion: nil,
-                                          headerFields: nil) {
-            
-            client?.urlProtocol(self,
-                                didReceive: response,
-                                cacheStoragePolicy: .notAllowed)
-            
+           let mockData = mocks[path],
+           let data = mockData,
+           let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil) {
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data)
-        }
-        else {
-            client?.urlProtocol(self, didFailWithError: NSError(domain: "StoryCreateURLProtocol Error", code: -1))
+        } else {
+            client?.urlProtocol(self, didFailWithError: NSError(domain: String(describing: self), code: -1))
         }
             
     }
     
     public override func stopLoading() {}
-    
-    private func storyCreateResponseMock() -> Data {
-        let parameters: [String: Any] = [
-            "storyId": 123
-        ]
-        return makeMock(paramters: parameters)
-    }
-    
-    private func makeMock(paramters: [String: Any]) -> Data {
-        return try! JSONSerialization.data(withJSONObject: paramters)
+
+    private func loadMockData(fileName: String) -> Data? {
+        guard let url = Bundle.core.url(forResource: fileName, withExtension: "json") else { return nil }
+        return try? Data(contentsOf: url)
     }
 }
