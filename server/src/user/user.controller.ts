@@ -1,17 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  Post,
-  Query,
-  Headers,
-  UseInterceptors,
-  UploadedFile,
-  Delete,
-  Put,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put, ParseIntPipe, ValidationPipe } from '@nestjs/common';
 
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
@@ -67,9 +54,9 @@ export class UserController {
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: `Update user's info` })
   @ApiResponse({ status: 201, description: '사용자의 정보를 성공적으로 수정했습니다.' })
-  async update(@Headers('accessToken') accessToken: string, @UploadedFile() image: Express.Multer.File, @Body() updateUserDto: UserUpdateDto) {
-    const { username, mainBadge } = updateUserDto;
-    return this.userService.update(accessToken, image, { username, mainBadge });
+  async update(@UploadedFile() image: Express.Multer.File, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) updateUserDto: UserUpdateDto) {
+    const { username, mainBadgeId } = updateUserDto;
+    return this.userService.update(accessToken, image, { username, mainBadgeId });
   }
 
   @Delete('resign')

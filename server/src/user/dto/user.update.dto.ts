@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class UserUpdateDto {
   @ApiProperty({ example: 'my name', description: 'updated user name' })
@@ -7,8 +8,12 @@ export class UserUpdateDto {
   @IsString()
   username: string;
 
-  @ApiProperty({ example: '미정', description: '미정' })
-  @IsNotEmpty({ message: 'mainBadge 필수입니다' })
-  @IsString()
-  mainBadge: string;
+  @ApiProperty({ example: 3, description: 'main badge Id' })
+  @IsNotEmpty({ message: 'mainBadgeId 필수입니다' })
+  @Transform(({ value }): number => parseInt(value, 10))
+  @IsNumber()
+  mainBadgeId: number;
+
+  @ApiProperty()
+  image: Express.Multer.File;
 }

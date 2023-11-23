@@ -13,7 +13,6 @@ import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 
-
 @Injectable()
 export class UserService {
   constructor(
@@ -52,7 +51,7 @@ export class UserService {
   }
 
   async getProfile(userId: number): Promise<UserProfileDetailDataDto> {
-    const user = await this.userRepository.findOneByUserId(userId);
+    const user = await this.userRepository.findOneByUserIdWithStory(userId);
     const userBadges = await user.badges;
     const stories = await user.stories;
     return {
@@ -80,17 +79,17 @@ export class UserService {
 
     userObject[0].representativeBadge = targetbadge;
     this.userRepository.save(userObject[0]);
-
   }
 
   async getStoryList(userId: number): Promise<Story[]> {
-    const user = await this.userRepository.findOneByUserId(userId);
+    const user = await this.userRepository.findOneByUserIdWithStory(userId);
     return await user.stories;
   }
 
-  async update(accessToken: string, image: Express.Multer.File, { username, mainBadge }) {
-    const decodedToken = this.jwtService.verify(accessToken);
+  async update(accessToken: string, image: Express.Multer.File, { username, mainBadgeId }) {
+    const decodedToken = this.jwtService.decode(accessToken);
     const userId = decodedToken.userId;
+
     return await this.userRepository.update({ oauthId: userId }, { username: username });
   }
 
