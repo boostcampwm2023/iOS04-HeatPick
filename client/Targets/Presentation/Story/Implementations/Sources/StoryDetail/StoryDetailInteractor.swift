@@ -84,7 +84,7 @@ fileprivate extension Story {
                                                                               profileImageUrl: author.profileImageUrl,
                                                                               userStatus: author.authorStatus),
                                     headerViewModel: StoryHeaderViewModel(title: content.title,
-                                                                   badgeId: content.badgeId,
+                                                                   badgeName: content.badgeName,
                                                                    likesCount: likesCount,
                                                                    commentsCount: commentsCount),
                                     images: content.imageUrls,
