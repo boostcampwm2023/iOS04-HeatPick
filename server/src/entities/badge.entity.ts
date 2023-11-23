@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
+import { Story } from './story.entity';
 
 @Entity()
 export class Badge {
@@ -10,7 +11,7 @@ export class Badge {
   @Column()
   badgeName: string;
 
-  @Column()
+  @Column({ default: 0 })
   @Transform(({ value }) => parseInt(value, 10))
   badgeExp: number;
 
@@ -20,7 +21,12 @@ export class Badge {
   @ManyToOne(() => User, (user) => user.badges)
   user: User;
 
+
   @OneToOne(() => User)
   @JoinColumn()
   representativeUser: User;
+
+  @OneToMany(() => Story, (story: Story) => story.badge)
+  stories: Story[];
+
 }

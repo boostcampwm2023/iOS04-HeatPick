@@ -3,8 +3,9 @@ import { StoryImage } from '../entities/storyImage.entity';
 import { saveImageToLocal } from './util.save.image.local';
 import { dateFormatToISO8601 } from './util.date.format.to.ISO8601';
 import { Category } from '../entities/category.entity';
+import { Badge } from '../entities/badge.entity';
 
-export const createStoryEntity = async ({ title, content, category, place, images, date }) => {
+export const createStoryEntity = async ({ title, content, category, place, images, badge, date }) => {
   const savedImageNames = await Promise.all(images.map(async (image: Express.Multer.File) => saveImageToLocal('./images/story', image.buffer)));
   const story = new Story();
   story.title = title;
@@ -15,11 +16,13 @@ export const createStoryEntity = async ({ title, content, category, place, image
   story.place = place;
   story.createAt = dateFormatToISO8601(date);
   story.likeCount = 0;
+  story.commentCount = 0;
   const storyImageArr = await story.storyImages;
   savedImageNames.forEach((name) => {
     const storyImageObj = new StoryImage();
     storyImageObj.imageUrl = name;
     storyImageArr.push(storyImageObj);
   });
+  story.badge = badge;
   return story;
 };

@@ -9,13 +9,13 @@
 import UIKit
 import DesignKit
 
-protocol SearchAfterTitleViewDelegate: AnyObject {
-    func searcgAfterTitleViewSeeAllViewDidTap()
+protocol SearchAfterHeaderViewDelegate: AnyObject {
+    func searchAfterHeaderViewSeeAllViewDidTap()
 }
 
-final class SearchAfterTitleView: UIView {
+final class SearchAfterHeaderView: UIView {
     
-    weak var delegate: SearchAfterTitleViewDelegate?
+    weak var delegate: SearchAfterHeaderViewDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -52,15 +52,15 @@ final class SearchAfterTitleView: UIView {
     
 }
 
-private extension SearchAfterTitleView {
+private extension SearchAfterHeaderView {
     
     @objc private func seeAllViewDidTap() {
-        delegate?.searcgAfterTitleViewSeeAllViewDidTap()
+        delegate?.searchAfterHeaderViewSeeAllViewDidTap()
     }
     
 }
 
-private extension SearchAfterTitleView {
+private extension SearchAfterHeaderView {
     
     private func setupViews() {
         [titleLabel, seeAllView].forEach { addSubview($0) }

@@ -12,97 +12,126 @@ import CoreKit
 import UIKit
 
 protocol SearchBeforeCategoryDashboardPresentableListener: AnyObject {
-    func didTapItem()
+    func didTapSearchBeforeRecentSearchesView()
 }
 
 final class SearchBeforeCategoryDashboardViewController: UIViewController, SearchBeforeCategoryDashboardPresentable, SearchBeforeCategoryDashboardViewControllable {
-
-    weak var listener: SearchBeforeCategoryDashboardPresentableListener?
-    private enum Constant {
-        static let headerTitle = "카테고리"
-    }
     
-    private var models: [SearchBeforeCategoryDashboardCellModel] = []
+    weak var listener: SearchBeforeCategoryDashboardPresentableListener?
+    
+    private enum Constant {
+        enum HeaderView {
+            static let topOffset: CGFloat = 20
+            static let bottomOffset: CGFloat = -topOffset
+            static let title = "카테고리"
+        }
+        
+        enum EmptyView {
+            static let topOffset: CGFloat = 20
+            static let bottomOffset: CGFloat = -topOffset
+            static let title = "카테고리가 없어요"
+            static let subTitle = "조금만 기다려주시면 카테고리를 추가할게요"
+        }
+        
+        enum ScrollView {
+            static let topOffset: CGFloat = 10
+            static let bottomOffset: CGFloat = -topOffset
+        }
+        
+        enum StackView {
+            static let spacing: CGFloat = 10
+        }
+    }
     
     private let headerView: SearchBeforeHeaderView = {
        let headerView = SearchBeforeHeaderView()
-        headerView.setupTitle(Constant.headerTitle)
+        headerView.setupTitle(Constant.HeaderView.title)
         headerView.translatesAutoresizingMaskIntoConstraints = false
         return headerView
     }()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(SearchBeforeCategoryDashboardCell.self)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
+    private let emptyView: SearchResultEmptyView = {
+        let emptyView = SearchResultEmptyView()
+        emptyView.setup(model: .init(
+            title: Constant.EmptyView.title,
+            subtitle: Constant.EmptyView.subTitle)
+        )
+        emptyView.isHidden = true
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
+        return emptyView
+    }()
+    
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.isHidden = true
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+    
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.spacing = Constant.StackView.spacing
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
-    
-    func setup(models: [SearchBeforeCategoryDashboardCellModel]) {
-        Log.make(message: "SearchBeforeCategoryDashboardViewController \(#function)", log: .default)
-        self.models = models
-        tableView.reloadData()
-    }
-    
-    func append(models: [SearchBeforeCategoryDashboardCellModel]) {
-        self.models.append(contentsOf: models)
-        tableView.reloadData()
+
+    func setup(models: [SearchBeforeCategoryViewModel]) {
+        let isEmpty = models.isEmpty
+        emptyView.isHidden = !isEmpty
+        scrollView.isHidden = isEmpty
+        models.forEach { model in
+            let contentView = SearchBeforeCategoryView()
+            contentView.setup(model)
+            contentView.delegate = self
+            stackView.addArrangedSubview(contentView)
+        }
     }
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        Log.make(message: "SearchBeforeCategoryDashboardViewController \(#function)", log: .default)
-    }
-    
-    override func updateViewConstraints() {
-        super.updateViewConstraints()
-        Log.make(message: "SearchBeforeCategoryDashboardViewController \(#function)", log: .default)
-    }
 }
 
 private extension SearchBeforeCategoryDashboardViewController {
-    
     func setupViews() {
-        [headerView, tableView].forEach { view.addSubview($0) }
+        [headerView, emptyView, scrollView].forEach { view.addSubview($0) }
+        scrollView.addSubview(stackView)
         
         NSLayoutConstraint.activate([
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             
-            tableView.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 20),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-//            tableView.heightAnchor.constraint(equalToConstant: 300)
+            emptyView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.HeaderView.topOffset),
+            emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            scrollView.frameLayoutGuide.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.HeaderView.topOffset),
+            scrollView.frameLayoutGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            scrollView.frameLayoutGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            scrollView.frameLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            stackView.topAnchor.constraint(equalTo: scrollView.frameLayoutGuide.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.frameLayoutGuide.bottomAnchor)
         ])
     }
     
 }
 
-// TODO: Snapshot으로 변경 예정
-extension SearchBeforeCategoryDashboardViewController: UITableViewDataSource {
+extension SearchBeforeCategoryDashboardViewController: SearchBeforeCategoryViewDelegate {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        models.count
+    func didTapSearchBeforeCategoryView() {
+        listener?.didTapSearchBeforeRecentSearchesView()
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let model = models[safe: indexPath.row] else { return .init() }
-        let cell = tableView.dequeue(SearchBeforeCategoryDashboardCell.self, for: indexPath)
-        cell.setup(model)
-        return cell
-    }
-    
-}
-
-extension SearchBeforeCategoryDashboardViewController: UITableViewDelegate {
     
 }

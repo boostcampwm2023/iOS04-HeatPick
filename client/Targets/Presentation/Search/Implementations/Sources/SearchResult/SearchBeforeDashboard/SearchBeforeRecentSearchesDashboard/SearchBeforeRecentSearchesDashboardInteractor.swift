@@ -13,8 +13,8 @@ protocol SearchBeforeRecentSearchesDashboardRouting: ViewableRouting { }
 protocol SearchBeforeRecentSearchesDashboardPresentable: Presentable {
     var listener: SearchBeforeRecentSearchesDashboardPresentableListener? { get set }
     
-    func setup(models: [SearchBeforeRecentSearchesDashboardCellModel])
-    func append(models: [SearchBeforeRecentSearchesDashboardCellModel])
+    func setup(models: [SearchBeforeRecentSearchesViewModel])
+    func append(models: [SearchBeforeRecentSearchesViewModel])
 }
 
 protocol SearchBeforeRecentSearchesDashboardListener: AnyObject { }
@@ -48,7 +48,7 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
         super.willResignActive()
     }
     
-    func didTapItem() {
+    func didTapSearchBeforeRecentSearchesView(text: String?) {
         
     }
     

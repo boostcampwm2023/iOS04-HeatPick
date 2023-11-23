@@ -13,6 +13,7 @@ import ModernRIBs
 
 import CoreKit
 import DesignKit
+import DomainEntities
 
 struct SimpleUserProfileViewModel {
     
@@ -30,15 +31,15 @@ struct SimpleUserProfileViewModel {
     
 }
 
-extension UserStatus {
+fileprivate extension UserStatus {
     
     var image: UIImage? {
         switch self {
-        case .selfUser:
+        case .me:
             return nil
-        case .followingUser:
+        case .following:
             return UIImage(systemName: "person.badge.minus")
-        case .nonFollowingUser:
+        case .nonFollowing:
             return UIImage(systemName: "person.badge.plus")
         }
     }
@@ -104,7 +105,7 @@ final class SimpleUserProfileView: UIView {
     
     private lazy var followButton: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UserStatus.nonFollowingUser.image
+        imageView.image = UserStatus.nonFollowing.image
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .hpBlack
         imageView.isUserInteractionEnabled = true
@@ -135,7 +136,6 @@ final class SimpleUserProfileView: UIView {
     func setup(model: SimpleUserProfileViewModel) {
         nicknameLabel.text = model.nickname
         subtitleLabel.text = model.subtitle
-        
         profileImage.load(from: model.profileImageUrl)
     }
     

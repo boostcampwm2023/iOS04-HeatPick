@@ -12,8 +12,13 @@ import { LocationDTO } from 'src/place/dto/location.dto';
 import { calculateDistance } from 'src/util/util.haversine';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entities/user.entity';
-import { StoryDetailViewData } from './dto/story.detail.view.data.dto';
-import { userDataInStoryView } from './dto/story.detail.user.data';
+import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
+import { StoryDetailPlaceDataDto } from './dto/detail/story.detail.place.data.dto';
+import { StoryDetailStoryDataDto } from './dto/detail/story.detail.story.data';
+import { StoryImage } from '../entities/storyImage.entity';
+import { StoryDetailUserDataDto } from './dto/detail/story.detail.user.data';
+import { Badge } from '../entities/badge.entity';
+import { Place } from '../entities/place.entity';
 
 @Injectable()
 export class StoryService {
@@ -34,32 +39,78 @@ export class StoryService {
     });
   }
 
-  public async create(accessToken: string, { title, content, category, place, images, date }): Promise<number> {
-    const story: Story = await createStoryEntity({ title, content, category, place, images, date });
+  public async create(accessToken: string, { title, content, category, place, images, badgeId, date }): Promise<number> {
     const decodedToken = this.jwtService.decode(accessToken);
     const userId = decodedToken.userId;
     const user: User = await this.userRepository.findOneById(userId);
+    const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
+    const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     user.stories = Promise.resolve([...(await user.stories), story]);
     await this.userRepository.createUser(user);
     return story.storyId;
   }
 
-  public async read(storyId: number): Promise<StoryDetailViewData> {
+  public async read(accessToken: string, storyId: number) {
     const story: Story = await this.storyRepository.findById(storyId);
-    const user: User = story.user;
-    delete story.user;
+    const place: Place = await story.place;
 
-    const userData: userDataInStoryView = {
-      userId: user.userId,
-      username: user.username,
-      profileImageUrl: user.profileImage.imageUrl,
-      //badge: story.user.badge
+    const storyDetailPlaceData: StoryDetailPlaceDataDto = {
+      title: place.title,
+      address: place.address,
+      latitude: place.latitude,
+      longitude: place.longitude,
     };
 
-    return {
-      story: story,
-      author: userData,
+    const storyDetailStoryData: StoryDetailStoryDataDto = {
+      createdAt: story.createAt,
+      category: story.category.categoryName,
+      storyImageURL: (await story.storyImages).map((storyImage: StoryImage) => storyImage.imageUrl),
+      title: story.title,
+      badgeId: story.badge?.badgeId,
+      likeCount: story.likeCount,
+      commentCount: story.commentCount,
+      content: story.content,
+      place: storyDetailPlaceData,
     };
+
+    const storyDetailUserData: StoryDetailUserDataDto = {
+      userId: story.user.userId,
+      username: story.user.username,
+      profileImageUrl: story.user.profileImage.imageUrl,
+      status: this.jwtService.decode(accessToken).userId === story.user.oauthId ? 0 : 1,
+    };
+
+    const storyDetailViewData: StoryDetailViewDataDto = {
+      story: storyDetailStoryData,
+      author: storyDetailUserData,
+    };
+
+    return storyDetailViewData;
+  }
+
+  public async update(accessToken: string, { storyId, title, content, category, place, images, badgeId, date }): Promise<number> {
+    const decodedToken = this.jwtService.decode(accessToken);
+    const userId = decodedToken.userId;
+    const user: User = await this.userRepository.findOneById(userId);
+    const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
+    const newStory: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
+
+    user.stories = Promise.resolve(
+      (await user.stories).map((story: Story): Story => {
+        if (story.storyId === storyId) return newStory;
+        return story;
+      }),
+    );
+    await this.userRepository.createUser(user);
+    return newStory.storyId;
+  }
+
+  public async delete(accessToken: string, storyId: number) {
+    const decodedToken = this.jwtService.decode(accessToken);
+    const userId = decodedToken.userId;
+    const user: User = await this.userRepository.findOneById(userId);
+    user.stories = Promise.resolve((await user.stories).filter((story) => story.storyId !== storyId));
+    await this.userRepository.createUser(user);
   }
 
   async getStoriesFromTrie(seperatedStatement: string[]) {
@@ -120,29 +171,5 @@ export class StoryService {
     } catch (error) {
       throw error;
     }
-  }
-
-  public async update(accessToken: string, { storyId, title, content, category, place, images, date }): Promise<number> {
-    const newStory = await createStoryEntity({ title, content, category, place, images, date });
-    const decodedToken = this.jwtService.decode(accessToken);
-    const userId = decodedToken.userId;
-    const user = await this.userRepository.findOneById(userId);
-
-    user.stories = Promise.resolve(
-      (await user.stories).map((story: Story): Story => {
-        if (story.storyId === storyId) return newStory;
-        return story;
-      }),
-    );
-    await this.userRepository.createUser(user);
-    return newStory.storyId;
-  }
-
-  public async delete(accessToken: string, storyId: number) {
-    const decodedToken = this.jwtService.decode(accessToken);
-    const userId = decodedToken.userId;
-    const user: User = await this.userRepository.findOneById(userId);
-    user.stories = Promise.resolve((await user.stories).filter((story) => story.storyId !== storyId));
-    await this.userRepository.createUser(user);
   }
 }
