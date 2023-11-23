@@ -18,7 +18,9 @@ final class SearchBeforeDashboardViewController: UIViewController, SearchBeforeD
     weak var listener: SearchBeforeDashboardPresentableListener?
     
     private enum Constant {
-        static let spacing: CGFloat = 20
+        enum StackView {
+            static let spacing: CGFloat = 20
+        }
     }
     
     private let scrollView: UIScrollView = {
@@ -35,7 +37,7 @@ final class SearchBeforeDashboardViewController: UIViewController, SearchBeforeD
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
-        stackView.spacing = Constant.spacing
+        stackView.spacing = Constant.StackView.spacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
