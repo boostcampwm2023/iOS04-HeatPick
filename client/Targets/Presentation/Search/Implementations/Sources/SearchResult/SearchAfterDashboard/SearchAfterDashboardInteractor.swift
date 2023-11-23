@@ -8,7 +8,12 @@
 
 import ModernRIBs
 
-protocol SearchAfterDashboardRouting: ViewableRouting { }
+protocol SearchAfterDashboardRouting: ViewableRouting { 
+    func attachSearchAfterStoryDashboard()
+    func detachSearchAfterStoryDashboard()
+    func attachSearchAfterUserDashboard()
+    func detachSearchAfterUserDashboard()
+}
 
 protocol SearchAfterDashboardPresentable: Presentable {
     var listener: SearchAfterDashboardPresentableListener? { get set }
@@ -21,8 +26,6 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
     weak var router: SearchAfterDashboardRouting?
     weak var listener: SearchAfterDashboardListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
     override init(presenter: SearchAfterDashboardPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
@@ -30,11 +33,14 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        router?.attachSearchAfterStoryDashboard()
+        router?.attachSearchAfterUserDashboard()
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
+        router?.detachSearchAfterStoryDashboard()
+        router?.detachSearchAfterUserDashboard()
     }
+    
 }
