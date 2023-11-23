@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DesignKit
 
 final class SearchBeforeRecentSearchesEmptyView: UIView {
     
@@ -36,6 +37,11 @@ final class SearchBeforeRecentSearchesEmptyView: UIView {
 private extension SearchBeforeRecentSearchesEmptyView {
     
     func setupViews() {
+        clipsToBounds = true
+        layer.cornerRadius = Constants.cornerRadiusMedium
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.lightGray.cgColor
+        
         addSubview(titleLabel)
         
         NSLayoutConstraint.activate([

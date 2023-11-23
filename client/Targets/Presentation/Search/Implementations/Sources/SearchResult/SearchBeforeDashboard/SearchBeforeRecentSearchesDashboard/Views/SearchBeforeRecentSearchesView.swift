@@ -17,7 +17,7 @@ struct SearchBeforeRecentSearchesViewModel: Decodable {
     let text: String
 }
 
-final class searchBeforeRecentSearchesView: UIView {
+final class SearchBeforeRecentSearchesView: UIView {
     
     weak var delegate: searchBeforeRecentSearchesViewDelegate?
     
@@ -61,7 +61,7 @@ final class searchBeforeRecentSearchesView: UIView {
     
 }
 
-private extension searchBeforeRecentSearchesView {
+private extension SearchBeforeRecentSearchesView {
     
     func setupViews() {
         addSubview(titleLabel)
@@ -75,19 +75,20 @@ private extension searchBeforeRecentSearchesView {
     }
     
     func setupConfiguration() {
+        clipsToBounds = true
+        backgroundColor = .hpGray3
+        layer.cornerRadius = Constants.cornerRadiusSmall
+        
         let tapGesture = UITapGestureRecognizer(
             target: self,
             action: #selector(didTapSearchBeforeRecentSearchesView)
         )
         addGestureRecognizer(tapGesture)
-        backgroundColor = .hpGray3
-        clipsToBounds = true
-        layer.cornerRadius = Constants.cornerRadiusSmall
     }
 
 }
 
-private extension searchBeforeRecentSearchesView {
+private extension SearchBeforeRecentSearchesView {
     
     @objc func didTapSearchBeforeRecentSearchesView() {
         delegate?.didTapSearchBeforeRecentSearchesView(text: model?.text)
