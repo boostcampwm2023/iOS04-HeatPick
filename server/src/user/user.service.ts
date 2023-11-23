@@ -12,6 +12,9 @@ import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notV
 import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
+import { Inject } from '@nestjs/common/decorators/core/inject.decorator';
+import { Repository } from 'typeorm';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -52,7 +55,7 @@ export class UserService {
 
   async getProfile(accessToken?: string, userId?: number): Promise<UserProfileDetailDataDto> {
     const user = accessToken ? await this.userRepository.findOneById(accessToken) : await this.userRepository.findOneByUserIdWithStory(userId);
-    const mainBadge = user.representativeBadge;
+    const mainBadge = await user.representativeBadge;
     const stories = await user.stories;
     return {
       username: user.username,
@@ -70,15 +73,18 @@ export class UserService {
     const userId = setBadgeDto.userId;
     const badgeName = setBadgeDto.badgeName;
 
-    const userObject = await this.userRepository.findByOption({ where: { userId: userId } });
-    if (userObject.length <= 0) throw new InvalidIdException();
+    const userObject = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['representativeBadge'] });
+    if (!userObject) throw new InvalidIdException();
 
-    const badgeList = await userObject[0].badges;
+    const badgeList = await userObject.badges;
     const targetbadge = badgeList.find((badge) => badge.badgeName === badgeName);
     if (!targetbadge) throw new InvalidBadgeException();
+    userObject.representativeBadge = Promise.resolve(null);
+    await this.userRepository.save(userObject);
 
-    userObject[0].representativeBadge = targetbadge;
-    this.userRepository.save(userObject[0]);
+    userObject.representativeBadge = Promise.resolve(targetbadge);
+
+    await this.userRepository.save(userObject);
   }
 
   async getStoryList(userId: number): Promise<Story[]> {
