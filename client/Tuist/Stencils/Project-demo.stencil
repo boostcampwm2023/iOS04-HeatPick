@@ -7,5 +7,7 @@ let project = Project.demo(
     dependencies: [
         .Target.Presentation.{{ name }}.Interfaces,
         .Target.Presentation.{{ name }}.Implementations,
+        .Target.Data.Repositories,
+        .Target.Domain.UseCases
     ]
 )
