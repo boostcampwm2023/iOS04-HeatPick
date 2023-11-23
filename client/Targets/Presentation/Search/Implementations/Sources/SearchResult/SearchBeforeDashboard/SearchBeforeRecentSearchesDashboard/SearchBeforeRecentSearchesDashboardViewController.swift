@@ -61,7 +61,6 @@ private extension SearchBeforeRecentSearchesDashboardViewController {
     func setupViews() {
         [headerView, collectionView].forEach { view.addSubview($0) }
         
-        
         NSLayoutConstraint.activate([
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
