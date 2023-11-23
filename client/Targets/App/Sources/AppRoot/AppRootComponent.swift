@@ -13,6 +13,7 @@ import ModernRIBs
 import AuthAPI
 import HomeAPI
 import MyAPI
+import StoryAPI
 import NetworkAPIKit
 import DomainUseCases
 import DomainInterfaces
@@ -81,7 +82,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider))
         self.locationAuthorityUseCase = LocationAuthorityUseCase(service: LocationService())
         
-        let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [])
+        let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [StoryURLProtocol.self])
         self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider))
         
         let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [MyURLProtocol.self])
