@@ -140,7 +140,24 @@ export class UserService {
       throw new InvalidIdException();
     }
   }
+  async unFollow(followId: number, followerId: number) {
+    try {
+      const followUser = await this.userRepository.findOneByOption({ where: { userId: followId } });
+      const followerUser = await this.userRepository.findOneByOption({ where: { userId: followerId } });
 
+      if (!followerUser.following) followerUser.following = [];
+      if (!followUser.followers) followUser.followers = [];
+
+      followerUser.following = followerUser.following.filter((user) => user.userId !== followId);
+      followUser.followers = followUser.followers.filter((user) => user.userId !== followerId);
+
+      this.userRepository.save(followUser);
+      this.userRepository.save(followerUser);
+    } catch (error) {
+      console.log(error);
+      throw new InvalidIdException();
+    }
+  }
   async getFollows(userId: number) {
     const userObj = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['following'] });
     const follows = userObj.following;

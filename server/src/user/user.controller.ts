@@ -89,6 +89,21 @@ export class UserController {
     return await this.userService.addFollowing(followId, 5);
   }
 
+  @Delete('follow')
+  @ApiOperation({ summary: '특정 유저를 언팔로우 합니다.' })
+  @ApiBody({
+    type: FollowRequest,
+    description: '언팔할 유저의 ID',
+    required: true,
+  })
+  @ApiResponse({ status: 200, description: '언팔로우 시도가 정상적으로 처리되었습니다.' })
+  async unfollow(@Body() followRequest: FollowRequest) {
+    // 현재 guard가 없는 상황이므로, follower의 id는 임시로 5로 지정하였습니다.
+    const transformedDto = plainToClass(FollowRequest, followRequest);
+    const followId = transformedDto.followId;
+    return await this.userService.unFollow(followId, 5);
+  }
+
   @Get('follow')
   @ApiOperation({ summary: '현재 유저의 팔로우 목록을 리턴합니다.' })
   @ApiResponse({ status: 200, description: '현재 유저의 팔로우의 Id 목록입니다' })
