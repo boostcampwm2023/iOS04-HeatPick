@@ -37,7 +37,7 @@ final class SettingViewController: UIViewController, SettingPresentable, Setting
     private lazy var appVersionView = makeContentView(
         selector: #selector(didTapAppVersion),
         title: "앱 버전",
-        subtitle: "1.0.0"
+        subtitle: AppBundle.appVersion
     )
     
     private lazy var discussionView = makeContentView(
