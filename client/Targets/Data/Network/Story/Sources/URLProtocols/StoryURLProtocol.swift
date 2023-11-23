@@ -8,10 +8,12 @@
 
 import Foundation
 
+import DomainEntities
+
 public final class StoryURLProtocol: URLProtocol {
     
     private lazy var mocks: [String: Data] = [
-        "/story/create": storyCreateResponseMock()
+        StoryAPI.newStory(StoryContent(title: "", content: "", date: .now, category: .none, place: .init(lat: 0, lng: 0, address: nil), badgeId: 0)).path: storyCreateResponseMock()
     ]
     
     public override class func canInit(with request: URLRequest) -> Bool {
