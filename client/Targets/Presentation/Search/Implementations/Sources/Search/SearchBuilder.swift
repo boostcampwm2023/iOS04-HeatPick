@@ -1,5 +1,5 @@
 //
-//  SearchHomeBuilder.swift
+//  SearchBuilder.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 2023/11/13.
@@ -7,22 +7,26 @@
 //
 
 import ModernRIBs
+import HomeInterfaces
+import DomainInterfaces
 
-public protocol SearchHomeDependency: Dependency { }
+public protocol SearchDependency: Dependency {
+    var searchUseCase: SearchUseCaseInterface { get }
+}
 
-final class SearchHomeComponent: Component<SearchHomeDependency>,
+final class SearchComponent: Component<SearchDependency>,
                                  SearchMapDependency,
                                  SearchHomeListDependency,
                                  SearchResultDependency {
 }
 
-final class SearchHomeRouterComponent: SearchHomeRouterDependency {
+final class SearchRouterComponent: SearchHomeRouterDependency {
     
     let searchMapBuilder: SearchMapBuildable
     let searchHomeListBuilder: SearchHomeListBuildable
     let searchResultBuilder: SearchResultBuildable
     
-    init(component: SearchHomeComponent) {
+    init(component: SearchComponent) {
         self.searchMapBuilder = SearchMapBuilder(dependency: component)
         self.searchHomeListBuilder = SearchHomeListBuilder(dependency: component)
         self.searchResultBuilder = SearchResultBuilder(dependency: component)
@@ -32,19 +36,19 @@ final class SearchHomeRouterComponent: SearchHomeRouterDependency {
 
 // MARK: - Builder
 
-public protocol SearchHomeBuildable: Buildable {
+public protocol SearchBuildable: Buildable {
     func build(withListener listener: SearchHomeListener) -> ViewableRouting
 }
 
-public final class SearchHomeBuilder: Builder<SearchHomeDependency>, SearchHomeBuildable {
+public final class SearchBuilder: Builder<SearchDependency>, SearchBuildable {
     
-    public override init(dependency: SearchHomeDependency) {
+    public override init(dependency: SearchDependency) {
         super.init(dependency: dependency)
     }
     
     public func build(withListener listener: SearchHomeListener) -> ViewableRouting {
-        let component = SearchHomeComponent(dependency: dependency)
-        let routerComponent = SearchHomeRouterComponent(component: component)
+        let component = SearchComponent(dependency: dependency)
+        let routerComponent = SearchRouterComponent(component: component)
         let viewController = SearchHomeViewController()
         let interactor = SearchHomeInteractor(presenter: viewController)
         interactor.listener = listener

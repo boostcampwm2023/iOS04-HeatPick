@@ -1,5 +1,5 @@
 //
-//  SearchHomeViewController.swift
+//  SearchViewController.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 2023/11/13.
@@ -14,12 +14,12 @@ import DesignKit
 import NMapsMap
 import ModernRIBs
 
-protocol SearchHomePresentableListener: AnyObject {
+protocol SearchPresentableListener: AnyObject {
     func presentHomeList()
     func attachSearchResult()
 }
 
-public final class SearchHomeViewController: UIViewController, SearchHomePresentable, SearchHomeViewControllable {
+public final class SearchViewController: UIViewController, SearchPresentable, SearchViewControllable {
 
     private enum Constant {
         enum TabBar {
@@ -40,7 +40,7 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
         
     }
     
-    weak var listener: SearchHomePresentableListener?
+    weak var listener: SearchPresentableListener?
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -108,7 +108,7 @@ public final class SearchHomeViewController: UIViewController, SearchHomePresent
 
 }
 
-private extension SearchHomeViewController {
+private extension SearchViewController {
     func setupTabBar() {
         // TODO: tag 수정
         tabBarItem = .init(
@@ -140,7 +140,7 @@ private extension SearchHomeViewController {
     
 }
 
-private extension SearchHomeViewController {
+private extension SearchViewController {
     
     @objc func searchTextFieldDidTap() {
         listener?.attachSearchResult()

@@ -1,5 +1,5 @@
 //
-//  SearchHomeInteractor.swift
+//  SearchInteractor.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 2023/11/13.
@@ -8,7 +8,7 @@
 
 import ModernRIBs
 
-protocol SearchHomeRouting: ViewableRouting {
+protocol SearchRouting: ViewableRouting {
     func attachSearchMap()
     func detachSearchMap()
     
@@ -20,20 +20,20 @@ protocol SearchHomeRouting: ViewableRouting {
     func detachSearchResult()
 }
 
-protocol SearchHomePresentable: Presentable {
-    var listener: SearchHomePresentableListener? { get set }
+protocol SearchPresentable: Presentable {
+    var listener: SearchPresentableListener? { get set }
 }
 
-public protocol SearchHomeListener: AnyObject { }
+public protocol SearchListener: AnyObject { }
 
-final class SearchHomeInteractor: PresentableInteractor<SearchHomePresentable>,
-                                  SearchHomeInteractable,
-                                  SearchHomePresentableListener {
+final class SearchInteractor: PresentableInteractor<SearchPresentable>,
+                                  SearchInteractable,
+                                  SearchPresentableListener {
     
-    weak var router: SearchHomeRouting?
-    weak var listener: SearchHomeListener?
+    weak var router: SearchRouting?
+    weak var listener: SearchListener?
     
-    override init(presenter: SearchHomePresentable) {
+    override init(presenter: SearchPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
     }
