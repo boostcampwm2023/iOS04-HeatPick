@@ -10,6 +10,7 @@ import { UserUpdateDto } from './dto/user.update.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FollowRequest } from './dto/follow.request.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
+import { userEntityToUserObj } from './util/user.entity.to.obj';
 
 @ApiTags('user')
 @Controller('user')
@@ -111,7 +112,8 @@ export class UserController {
     // 현재 guard가 없는 상황이므로 5로 고정하였습니다.
     const currentUserId = 5;
     const follows = await this.userService.getFollows(currentUserId);
-    return follows;
+    const transformedFollows = follows.map((follow) => userEntityToUserObj(follow));
+    return { follows: transformedFollows };
   }
 
   @Get('follower')
@@ -121,20 +123,25 @@ export class UserController {
     // 현재 guard가 없는 상황이므로 5로 고정하였습니다.
     const currentUserId = 5;
     const followers = await this.userService.getFollowers(currentUserId);
-    return followers;
+    const transformedFollowers = followers.map((follower) => userEntityToUserObj(follower));
+    return { followers: transformedFollowers };
   }
 
   @Get('follow/:id')
   @ApiOperation({ summary: '특정 유저의 팔로잉 목록을 리턴합니다.' })
   @ApiResponse({ status: 200, description: '특정 유저가 팔로우하는 유저들의 Id 목록입니다' })
   async getOtherFollows(@Param('id') userId: number) {
-    return await this.userService.getFollows(userId);
+    const follows = await this.userService.getFollows(userId);
+    const transformedFollows = follows.map((follow) => userEntityToUserObj(follow));
+    return { follows: transformedFollows };
   }
 
   @Get('follower/:id')
   @ApiOperation({ summary: '특정 유저의 팔로워 목록을 리턴합니다.' })
   @ApiResponse({ status: 200, description: '특정 유저를 팔로우하는 유저들의 Id 목록입니다' })
   async getOtherFollowers(@Param('id') userId: number) {
-    return await this.userService.getFollowers(userId);
+    const followers = await this.userService.getFollowers(userId);
+    const transformedFollowers = followers.map((follower) => userEntityToUserObj(follower));
+    return { followers: transformedFollowers };
   }
 }
