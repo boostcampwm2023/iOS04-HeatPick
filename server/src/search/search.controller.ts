@@ -8,6 +8,7 @@ import { PlaceService } from './../place/place.service';
 import { Story } from 'src/entities/story.entity';
 import { User } from 'src/entities/user.entity';
 import { SearchHistory } from 'src/entities/search.entity';
+import { SearchResultDto } from './dto/search.result.dto';
 
 @ApiTags('search')
 @Controller('search')
@@ -30,7 +31,7 @@ export class SearchController {
     type: [Story],
   })
   async getStorySearchResult(@Query('searchText') searchText: string) {
-    return { stories: this.storyService.getStoriesFromTrie(graphemeSeperation(searchText)) };
+    return { stories: this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 10) };
   }
 
   @Get('user')
@@ -41,7 +42,7 @@ export class SearchController {
     type: [User],
   })
   async getUserSearchResult(@Query('searchText') searchText: string) {
-    return this.userService.getUsersFromTrie(graphemeSeperation(searchText));
+    return this.userService.getUsersFromTrie(graphemeSeperation(searchText), 10);
   }
 
   @Get('place')
@@ -66,12 +67,10 @@ export class SearchController {
   @ApiOperation({ summary: '검색 기능' })
   @ApiResponse({ status: 201, description: '검색어를 바탕으로 스토리와 유저 정보를 5개씩 리턴합니다.' })
   @Get()
-  @ApiResponse({
-    status: 201,
-    description: '파라미터로 넘겨받은 searchText 값을 바탕으로 유사한 검색어를 가져옵니다.',
-    type: [SearchHistory],
-  })
-  async search(@Query('searchText') searchText: string): Promise<string[]> {
-    return this.searchService.searchHistoryTree(graphemeSeperation(searchText));
+  async search(@Query('searchText') searchText: string): Promise<SearchResultDto> {
+    const stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 5);
+    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 5);
+    const result: SearchResultDto = { stories, users };
+    return result;
   }
 }

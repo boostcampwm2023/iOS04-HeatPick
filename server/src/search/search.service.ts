@@ -25,7 +25,7 @@ export class SearchService implements OnModuleInit {
   }
 
   searchHistoryTree(seperatedStatement: string[]): string[] {
-    const recommendedWords = this.searchHistoryJasoTrie.search(seperatedStatement);
+    const recommendedWords = this.searchHistoryJasoTrie.search(seperatedStatement, 10);
     return recommendedWords.map((word) => graphemeCombination(word));
   }
 

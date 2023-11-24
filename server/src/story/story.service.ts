@@ -113,8 +113,8 @@ export class StoryService {
     await this.userRepository.createUser(user);
   }
 
-  async getStoriesFromTrie(seperatedStatement: string[]) {
-    const ids = this.storyTitleJasoTrie.search(seperatedStatement);
+  async getStoriesFromTrie(seperatedStatement: string[], limit: number) {
+    const ids = this.storyTitleJasoTrie.search(seperatedStatement, limit);
     const stories = await this.storyRepository.getStoriesByIds(ids);
     return stories;
   }

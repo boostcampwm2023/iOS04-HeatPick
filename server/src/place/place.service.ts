@@ -25,7 +25,7 @@ export class PlaceService {
   }
 
   async getPlaceFromTrie(seperatedStatement: string[]) {
-    const ids = this.placeJasoTrie.search(seperatedStatement);
+    const ids = this.placeJasoTrie.search(seperatedStatement, 10);
     const places = await this.placeRepository.find({ where: { placeId: In(ids) } });
     return places;
   }
