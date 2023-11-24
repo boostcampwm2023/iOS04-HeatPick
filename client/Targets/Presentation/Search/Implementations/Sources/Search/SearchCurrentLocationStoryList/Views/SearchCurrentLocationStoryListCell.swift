@@ -1,5 +1,5 @@
 //
-//  SearchHomeListCell.swift
+//  SearchCurrentLocationStoryListCell.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 11/16/23.
@@ -11,7 +11,7 @@ import UIKit
 import BasePresentation
 import DesignKit
 
-public struct SearchHomeListCellModel {
+public struct SearchCurrentLocationStoryListCellModel {
     public let thumbnailImageURL: String
     public let title: String
     public let likes: Int
@@ -29,7 +29,7 @@ public struct SearchHomeListCellModel {
     }
 }
 
-final class SearchHomeListCell: UITableViewCell {
+final class SearchCurrentLocationStoryListCell: UITableViewCell {
     
     private enum Constant {
         static let spacing: CGFloat = 20
@@ -104,7 +104,7 @@ final class SearchHomeListCell: UITableViewCell {
         profileImageView.cancel()
     }
     
-    func setup(model: SearchHomeListCellModel) {
+    func setup(model: SearchCurrentLocationStoryListCellModel) {
         thumbnailImageView.load(from: model.thumbnailImageURL)
         titleLabel.text = model.title
         storySmallCommentView.setup(likes: model.likes, comments: model.comments)
@@ -113,7 +113,7 @@ final class SearchHomeListCell: UITableViewCell {
     }
 }
 
-private extension SearchHomeListCell {
+private extension SearchCurrentLocationStoryListCell {
     
     func setupViews() {
         selectionStyle = .none
