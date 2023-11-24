@@ -29,8 +29,8 @@ export class UserService {
     });
   }
 
-  async getUsersFromTrie(seperatedStatement: string[]) {
-    const ids = this.userJasoTrie.search(seperatedStatement);
+  async getUsersFromTrie(seperatedStatement: string[], limit: number) {
+    const ids = this.userJasoTrie.search(seperatedStatement, limit);
     const users = await this.userRepository.getStoriesByIds(ids);
     return users;
   }
