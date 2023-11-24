@@ -48,14 +48,18 @@ public final class NetworkProvider: Network {
     private func executeRequest<T: Decodable>(_ request: URLRequest) async throws -> Result<T, Error> {
         let (data, urlResponse) = try await session.data(for: request)
         interceptResponseIfNeeded(urlResponse)
-        let response =  try JSONDecoder().decode(T.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let response =  try decoder.decode(T.self, from: data)
         return .success(response)
     }
     
     private func executeUpload<T: Decodable>(_ request: URLRequest, from body: Data) async throws -> Result<T, Error> {
         let (data, urlResponse) = try await session.upload(for: request, from: body)
         interceptResponseIfNeeded(urlResponse)
-        let response = try JSONDecoder().decode(T.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let response = try decoder.decode(T.self, from: data)
         return .success(response)
     }
         

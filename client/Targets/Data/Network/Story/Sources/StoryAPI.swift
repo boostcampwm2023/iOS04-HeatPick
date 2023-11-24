@@ -15,6 +15,7 @@ import NetworkAPIKit
 
 public enum StoryAPI {
     case newStory(StoryContent)
+    case storyDetail(Story)
 }
 
 extension StoryAPI: Target {
@@ -26,12 +27,14 @@ extension StoryAPI: Target {
     public var path: String {
         switch self {
         case .newStory: return "/story/create"
+        case .storyDetail: return "/story/detail"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
         case .newStory: return .post
+        case .storyDetail: return .get
         }
     }
     
@@ -48,6 +51,10 @@ extension StoryAPI: Target {
             }
             
             return .multipart(MultipartFormData(data: request, mediaList: mediaList))
+        case .storyDetail(let story):
+            let request = StoryDetailRequestDTO(story: story)
+            
+            return .url(parameters: request.parameters())
         }
     }
     

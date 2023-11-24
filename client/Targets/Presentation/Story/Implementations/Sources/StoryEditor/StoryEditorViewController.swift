@@ -171,7 +171,7 @@ private extension StoryEditorViewController {
                                                    content: descriptionField.text,
                                                    date: attributeField.date,
                                                    images: imageField.images,
-                                                   category: StoryCategory.allCases[attributeField.categoryIndex],
+                                                   category: StoryCategory.allCases[attributeField.categoryIndex].title,
                                                    place: location,
                                                    badgeId: attributeField.badgeIndex))
     }
