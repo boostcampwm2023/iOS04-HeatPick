@@ -4,6 +4,6 @@ export function userEntityToUserObj(user: User) {
   return {
     userId: user.userId,
     username: user.username,
-    profileUrl: user.profileImage.imageUrl,
+    profileUrl: user.profileImage ? user.profileImage.imageUrl : '',
   };
 }

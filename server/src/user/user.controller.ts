@@ -10,7 +10,7 @@ import { UserUpdateDto } from './dto/user.update.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FollowRequest } from './dto/follow.request.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
-import { userEntityToUserObj } from './util/user.entity.to.obj';
+import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 
 @ApiTags('user')
 @Controller('user')

@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class StoryResultDto {
+  @ApiProperty({ description: 'user id' })
+  id: number;
+
   @ApiProperty({ description: '스토리의 제목' })
   title: string;
 
@@ -13,9 +16,6 @@ export class StoryResultDto {
   @ApiProperty({ description: '댓글 수' })
   commentCount: number;
 
-  @ApiProperty({ description: '게시물이 생성된 시간' })
-  createdAt: Date;
-
   @ApiProperty({ description: '스토리에 있는 이미지의 URL' })
-  storyImages: String[];
+  storyImage: String;
 }
