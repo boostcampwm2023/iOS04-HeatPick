@@ -9,6 +9,7 @@ import { Story } from 'src/entities/story.entity';
 import { User } from 'src/entities/user.entity';
 import { SearchHistory } from 'src/entities/search.entity';
 import { SearchResultDto } from './dto/search.result.dto';
+import { profileImage } from './../entities/profileImage.entity';
 
 @ApiTags('search')
 @Controller('search')
@@ -69,8 +70,27 @@ export class SearchController {
   @Get()
   async search(@Query('searchText') searchText: string): Promise<SearchResultDto> {
     const stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 5);
+    const storyArr = [];
+    await Promise.all(
+      stories.map(async (story) => {
+        const images = await story.storyImages;
+        const urls = images.map((image) => image.imageUrl);
+        storyArr.push({ title: story.title, content: story.content, likeCount: story.likeCount, commentCount: story.commentCount, createAt: story.createAt, storyImages: urls });
+      }),
+    );
+
     const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 5);
-    const result: SearchResultDto = { stories, users };
+
+    const userArr = [];
+    await Promise.all(
+      users.map(async (user) => {
+        const image = user.profileImage;
+        const url = image?.imageUrl;
+        userArr.push({ userId: user.userId, username: user.username, temperature: user.temperature, createdAt: user.createAt, recentlyActive: user.recentActive, profileImage: url });
+      }),
+    );
+
+    const result: SearchResultDto = { stories: storyArr, users: userArr };
     return result;
   }
 }
