@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct AuthorDTO: Decodable {
+public struct AuthorResponseDTO: Decodable {
     
     let userId: Int
     let username: String
