@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct StoryDTO: Decodable {
+public struct StoryResponseDTO: Decodable {
     
     let storyId: Int
     let createdAt: Date

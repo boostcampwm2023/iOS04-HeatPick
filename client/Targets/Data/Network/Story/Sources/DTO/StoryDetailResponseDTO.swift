@@ -13,17 +13,12 @@ import DomainEntities
 
 public struct StoryDetailResponseDTO: Decodable {
     
-    let story: StoryDTO
-    let author: AuthorDTO
+    let story: StoryResponseDTO
+    let author: AuthorResponseDTO
     
-    public init(story: StoryDTO, author: AuthorDTO) {
+    public init(story: StoryResponseDTO, author: AuthorResponseDTO) {
         self.story = story
         self.author = author
-    }
-    
-    public enum CodingKeys: CodingKey {
-        case story
-        case author
     }
     
     public func toDomain() -> Story {
