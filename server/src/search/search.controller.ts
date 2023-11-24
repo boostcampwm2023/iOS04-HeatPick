@@ -45,7 +45,9 @@ export class SearchController {
     type: [User],
   })
   async getUserSearchResult(@Query('searchText') searchText: string) {
-    return this.userService.getUsersFromTrie(graphemeSeperation(searchText), 10);
+    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 10);
+    const transfromedUsers = users.map((user) => userEntityToUserObj(user));
+    return { users: transfromedUsers };
   }
 
   @Get('place')
