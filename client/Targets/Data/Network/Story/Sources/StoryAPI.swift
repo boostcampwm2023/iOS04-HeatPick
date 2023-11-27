@@ -15,7 +15,7 @@ import NetworkAPIKit
 
 public enum StoryAPI {
     case newStory(StoryContent)
-    case storyDetail(Story)
+    case storyDetail(Int)
 }
 
 extension StoryAPI: Target {
@@ -51,8 +51,8 @@ extension StoryAPI: Target {
             }
             
             return .multipart(MultipartFormData(data: request, mediaList: mediaList))
-        case .storyDetail(let story):
-            let request = StoryDetailRequestDTO(story: story)
+        case .storyDetail(let storyId):
+            let request = StoryDetailRequestDTO(storyId: storyId)
             
             return .url(parameters: request.parameters())
         }

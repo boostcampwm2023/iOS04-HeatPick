@@ -12,9 +12,9 @@ import ModernRIBs
 
 import DomainEntities
 import DomainInterfaces
+import StoryInterfaces
 
-public protocol StoryDetailRouting: ViewableRouting {
-}
+protocol StoryDetailRouting: ViewableRouting {}
 
 protocol StoryDetailPresentable: Presentable {
     var listener: StoryDetailPresentableListener? { get set }
@@ -22,12 +22,8 @@ protocol StoryDetailPresentable: Presentable {
     func showFailure(_ error: Error)
 }
 
-public protocol StoryDetailListener: AnyObject {
-    func storyDetailDidTapClose()
-}
-
 protocol StoryDetailInteractorDependency: AnyObject {
-    var story: Story { get }
+    var storyId: Int { get }
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
@@ -49,7 +45,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
             guard let self else { return }
             await dependency
                 .storyUseCase
-                .requestStoryDetail(story: dependency.story)
+                .requestStoryDetail(storyId: dependency.storyId)
                 .onSuccess(on: .main, with: self) { this, story in
                     guard let model = story.toViewModel() else { return }
                     this.presenter.setup(model: model)

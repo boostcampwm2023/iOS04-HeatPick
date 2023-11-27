@@ -12,6 +12,7 @@ import ModernRIBs
 
 import DomainInterfaces
 import NetworkAPIKit
+import StoryInterfaces
 
 public protocol StoryCreatorDependency: Dependency {
     
@@ -34,18 +35,13 @@ final class StoryCreatorComponent: Component<StoryCreatorDependency>,
 }
 
 // MARK: - Builder
-
-public protocol StoryCreatorBuildable: Buildable {
-    func build(withListener listener: StoryCreatorListener) -> StoryCreatorRouting
-}
-
 public final class StoryCreatorBuilder: Builder<StoryCreatorDependency>, StoryCreatorBuildable {
 
     public override init(dependency: StoryCreatorDependency) {
         super.init(dependency: dependency)
     }
 
-    public func build(withListener listener: StoryCreatorListener) -> StoryCreatorRouting {
+    public func build(withListener listener: StoryCreatorListener) -> ViewableRouting {
         let component = StoryCreatorComponent(dependency: dependency)
         let viewController = StoryCreatorViewController()
         let interactor = StoryCreatorInteractor(presenter: viewController)

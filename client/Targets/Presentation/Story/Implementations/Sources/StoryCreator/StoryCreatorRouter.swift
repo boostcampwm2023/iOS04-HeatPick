@@ -10,18 +10,19 @@ import ModernRIBs
 
 import CoreKit
 import DomainEntities
+import StoryInterfaces
 
-public protocol StoryCreatorInteractable: Interactable,
-                                          StoryEditorListener,
-                                          StoryDetailListener {
+protocol StoryCreatorInteractable: Interactable, 
+                                    StoryEditorListener,
+                                    StoryDetailListener {
     
     var router: StoryCreatorRouting? { get set }
     var listener: StoryCreatorListener? { get set }
 }
 
-public protocol StoryCreatorViewControllable: ViewControllable {}
+protocol StoryCreatorViewControllable: ViewControllable {}
 
-public protocol StoryCreatorRouterDependency {
+protocol StoryCreatorRouterDependency {
     var storyEditorBuilder: StoryEditorBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
 }
@@ -64,9 +65,9 @@ final class StoryCreatorRouter: ViewableRouter<StoryCreatorInteractable,
         detachChild(router)
     }
     
-    func attachStoryDetail(_ story: Story) {
+    func attachStoryDetail(_ id: Int) {
         guard storyDetailRouter == nil else { return }
-        let storyDetailRouting = storyDetailBuilder.build(withListener: interactor, story: story)
+        let storyDetailRouting = storyDetailBuilder.build(withListener: interactor, storyId: id)
         self.storyDetailRouter = storyDetailRouting
         attachChild(storyDetailRouting)
         let storyDetailViewController = NavigationControllable(viewControllable: storyDetailRouting.viewControllable)
@@ -82,7 +83,7 @@ final class StoryCreatorRouter: ViewableRouter<StoryCreatorInteractable,
     
     func routeToDetail(of story: Story) {
         detachStoryEditor()
-        attachStoryDetail(story)
+        attachStoryDetail(story.id)
     }
     
 }

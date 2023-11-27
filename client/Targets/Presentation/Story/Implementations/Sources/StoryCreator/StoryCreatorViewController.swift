@@ -12,7 +12,7 @@ import ModernRIBs
 
 import DesignKit
 
-public protocol StoryCreatorPresentableListener: AnyObject {
+protocol StoryCreatorPresentableListener: AnyObject {
     func viewDidAppear()
 }
 
