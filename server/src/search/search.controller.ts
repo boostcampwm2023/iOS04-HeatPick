@@ -70,7 +70,7 @@ export class SearchController {
   }
 
   @ApiOperation({ summary: '검색 기능' })
-  @ApiResponse({ status: 201, description: '검색어를 바탕으로 스토리와 유저 정보를 5개씩 리턴합니다.' })
+  @ApiResponse({ status: 201, description: '검색어를 바탕으로 스토리와 유저 정보를 5개씩 리턴합니다. 쿼리 파라미터로 categoryId와 searchText를 받으며, categoryId만 입력하는 경우 Id가 일치하는 모든 스토리를 리턴합니다.' })
   @Get()
   async search(@Query('searchText') searchText?: string, @Query('categoryId') categoryId?: string): Promise<SearchResultDto> {
     const numericCategoryId: number = parseInt(categoryId, 10);
