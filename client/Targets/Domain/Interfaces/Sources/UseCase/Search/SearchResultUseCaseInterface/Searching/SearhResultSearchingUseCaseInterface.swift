@@ -12,6 +12,6 @@ import DomainEntities
 
 public protocol SearhResultSearchingUseCaseInterface {
     
-    func fetchRecommendText(searchText: String) async -> Result<[String], Error>
+    func fetchRecommendTexts(searchText: String) async -> Result<[String], Error>
     
 }
