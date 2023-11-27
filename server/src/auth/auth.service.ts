@@ -23,7 +23,7 @@ export class AuthService {
 
     let accessToken = '';
 
-    if (user) accessToken = this.jwtService.sign({ userId });
+    if (user) accessToken = this.jwtService.sign({ userId, userRecordId: user.userId });
 
     return accessToken;
   }
@@ -56,9 +56,9 @@ export class AuthService {
 
     if (user) throw new idDuplicatedException();
 
-    this.userRepository.createUser(userObj);
+    await this.userRepository.createUser(userObj);
 
-    const accessToken = this.jwtService.sign({ userId });
+    const accessToken = this.jwtService.sign({ userId, userRecordId: userObj.userId });
 
     return accessToken;
   }
