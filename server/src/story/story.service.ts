@@ -19,15 +19,16 @@ import { StoryImage } from '../entities/storyImage.entity';
 import { StoryDetailUserDataDto } from './dto/detail/story.detail.user.data';
 import { Badge } from '../entities/badge.entity';
 import { Place } from '../entities/place.entity';
+import { CategoryRepository } from '../category/category.repository';
+import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 
 @Injectable()
 export class StoryService {
   constructor(
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
-    private imageService: ImageService,
     private storyTitleJasoTrie: StoryJasoTrie,
-    private jwtService: JwtService,
+    private categoryRepository: CategoryRepository,
   ) {
     this.loadSearchHistoryTrie();
   }
@@ -37,6 +38,18 @@ export class StoryService {
     this.storyRepository.loadEveryStory().then((everyStory) => {
       everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
     });
+  }
+
+  public async createMetaData(userId: string) {
+    const user: User = await this.userRepository.findOneByIdWithBadges(userId);
+    const categoryList = await this.categoryRepository.finAll();
+    const metaData: CreateStoryMetaDto = {
+      badgeList: (await user.badges).map((badge: Badge) => {
+        return { badgeId: badge.badgeId, badgeName: badge.badgeName };
+      }),
+      categoryList: categoryList,
+    };
+    return metaData;
   }
 
   public async create(userId: string, { title, content, category, place, images, badgeId, date }): Promise<number> {
