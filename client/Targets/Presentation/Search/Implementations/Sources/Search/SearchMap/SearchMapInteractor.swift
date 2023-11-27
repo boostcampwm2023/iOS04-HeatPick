@@ -7,18 +7,18 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SearchMapRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
-}
+protocol SearchMapRouting: ViewableRouting { }
 
 protocol SearchMapPresentable: Presentable {
     var listener: SearchMapPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-protocol SearchMapListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+protocol SearchMapListener: AnyObject { }
+
+protocol SearchMapInteractorDependency: AnyObject {
+    var searchMapUseCase: SearchMapUseCaseInterface { get }
 }
 
 final class SearchMapInteractor: PresentableInteractor<SearchMapPresentable>, SearchMapInteractable, SearchMapPresentableListener {
@@ -26,20 +26,23 @@ final class SearchMapInteractor: PresentableInteractor<SearchMapPresentable>, Se
     weak var router: SearchMapRouting?
     weak var listener: SearchMapListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: SearchMapPresentable) {
+    private let dependency: SearchMapInteractorDependency
+    
+    init(
+        presenter: SearchMapPresentable,
+        dependency: SearchMapInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
     }
+    
 }

@@ -7,14 +7,20 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SearchResultDependency: Dependency { }
+protocol SearchResultDependency: Dependency { 
+    var searResultUseCase: SearchResultUseCaseInterface { get }
+}
 
 final class SearchResultComponent: Component<SearchResultDependency>,
                                    SearchBeforeDashboardDependency,
                                    SearchingDashboardDependency,
                                    SearchAfterDashboardDependency {
-
+    
+    var searhResultSearchBeforeUseCase: SearhResultSearchBeforeUseCaseInterface { dependency.searResultUseCase }
+    var searhResultsearchingUseCase: SearhResultSearchingUseCaseInterface { dependency.searResultUseCase }
+    var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { dependency.searResultUseCase }
 }
 
 final class SearchResultRouterComponent: SearchResultRouterDependency {
@@ -55,4 +61,5 @@ final class SearchResultBuilder: Builder<SearchResultDependency>, SearchResultBu
             dependency: routerComponent
         )
     }
+    
 }

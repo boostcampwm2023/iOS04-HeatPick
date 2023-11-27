@@ -29,13 +29,10 @@ protocol SearchResultRouterDependency {
 
 final class SearchResultRouter: ViewableRouter<SearchResultInteractable, SearchResultViewControllable>, SearchResultRouting {
     
-    private let searchBeforeDashboardBuilder: SearchBeforeDashboardBuildable
+    private let dependency: SearchResultRouterDependency
+    
     private var searchBeforeDashboardRouter: SearchBeforeDashboardRouting?
-    
-    private let searchingDashboardBuilder: SearchingDashboardBuildable
     private var searchingDashboardRouter: SearchingDashboardRouting?
-    
-    private let searchAfterDashboardBuilder: SearchAfterDashboardBuildable
     private var searchAfterDashboardRouter: SearchAfterDashboardRouting?
  
     init(
@@ -43,9 +40,7 @@ final class SearchResultRouter: ViewableRouter<SearchResultInteractable, SearchR
         viewController: SearchResultViewControllable,
         dependency: SearchResultRouterDependency
     ) {
-        self.searchBeforeDashboardBuilder = dependency.searchBeforeDashboardBuilder
-        self.searchingDashboardBuilder = dependency.searchingDashboardBuilder
-        self.searchAfterDashboardBuilder = dependency.searchAfterDashboardBuilder
+        self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -56,7 +51,7 @@ extension SearchResultRouter {
     
     func attachSearchBeforeDashboard() {
         guard searchBeforeDashboardRouter == nil else { return }
-        let router = searchBeforeDashboardBuilder.build(withListener: interactor)
+        let router = dependency.searchBeforeDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         searchBeforeDashboardRouter = router
     }
@@ -83,7 +78,7 @@ extension SearchResultRouter {
     
     func attachSearchingDashboard() {
         guard searchingDashboardRouter == nil else { return }
-        let router = searchingDashboardBuilder.build(withListener: interactor)
+        let router = dependency.searchingDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         searchingDashboardRouter = router
     }
@@ -110,7 +105,7 @@ extension SearchResultRouter {
     
     func attachSearchAfterDashboard() {
         guard searchAfterDashboardRouter == nil else { return }
-        let router = searchAfterDashboardBuilder.build(withListener: interactor)
+        let router = dependency.searchAfterDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         searchAfterDashboardRouter = router
     }

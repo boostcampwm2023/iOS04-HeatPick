@@ -7,13 +7,16 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SearchAfterDashboardDependency: Dependency { }
+protocol SearchAfterDashboardDependency: Dependency {
+    var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { get }
+}
 
-final class SearchAfterDashboardComponent: Component<SearchAfterDashboardDependency>,
+final class SearchAfterDashboardComponent: Component<SearchAfterDashboardDependency>, SearchAfterDashboardInteractorDependency,
                                            SearchAfterStoryDashboardDependency,
                                            SearchAfterUserDashboardDependency {
-    
+    var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { dependency.searhResultSearchAfterUseCase }
 }
 
 final class SearchAfterDashboardRouterComponent: SearchAfterDashboardRouterDependency {
@@ -45,7 +48,7 @@ final class SearchAfterDashboardBuilder: Builder<SearchAfterDashboardDependency>
         let component = SearchAfterDashboardComponent(dependency: dependency)
         let routerComponent = SearchAfterDashboardRouterComponent(component: component)
         let viewController = SearchAfterDashboardViewController()
-        let interactor = SearchAfterDashboardInteractor(presenter: viewController)
+        let interactor = SearchAfterDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return SearchAfterDashboardRouter(
             interactor: interactor,

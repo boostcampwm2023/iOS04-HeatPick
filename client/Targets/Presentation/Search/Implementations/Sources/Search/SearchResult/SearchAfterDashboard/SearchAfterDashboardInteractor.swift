@@ -7,6 +7,9 @@
 //
 
 import ModernRIBs
+import CoreKit
+import DomainEntities
+import DomainInterfaces
 
 protocol SearchAfterDashboardRouting: ViewableRouting { 
     func attachSearchAfterStoryDashboard()
@@ -21,12 +24,22 @@ protocol SearchAfterDashboardPresentable: Presentable {
 
 protocol SearchAfterDashboardListener: AnyObject { }
 
+protocol SearchAfterDashboardInteractorDependency: AnyObject {
+    var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { get }
+}
+
 final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDashboardPresentable>, SearchAfterDashboardInteractable, SearchAfterDashboardPresentableListener {
 
     weak var router: SearchAfterDashboardRouting?
     weak var listener: SearchAfterDashboardListener?
 
-    override init(presenter: SearchAfterDashboardPresentable) {
+    private let dependency: SearchAfterDashboardInteractorDependency
+    
+    init(
+        presenter: SearchAfterDashboardPresentable,
+        dependency: SearchAfterDashboardInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }

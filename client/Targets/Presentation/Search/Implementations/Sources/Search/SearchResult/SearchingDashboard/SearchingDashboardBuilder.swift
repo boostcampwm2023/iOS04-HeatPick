@@ -7,10 +7,15 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SearchingDashboardDependency: Dependency { }
+protocol SearchingDashboardDependency: Dependency { 
+    var searhResultsearchingUseCase: SearhResultSearchingUseCaseInterface { get }
+}
 
-final class SearchingDashboardComponent: Component<SearchingDashboardDependency> { }
+final class SearchingDashboardComponent: Component<SearchingDashboardDependency>, SearchingDashboardInteractorDependency {
+    var searhResultsearchingUseCase: SearhResultSearchingUseCaseInterface { dependency.searhResultsearchingUseCase }
+}
 
 // MARK: - Builder
 
@@ -27,7 +32,7 @@ final class SearchingDashboardBuilder: Builder<SearchingDashboardDependency>, Se
     func build(withListener listener: SearchingDashboardListener) -> SearchingDashboardRouting {
         let component = SearchingDashboardComponent(dependency: dependency)
         let viewController = SearchingDashboardViewController()
-        let interactor = SearchingDashboardInteractor(presenter: viewController)
+        let interactor = SearchingDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return SearchingDashboardRouter(interactor: interactor, viewController: viewController)
     }

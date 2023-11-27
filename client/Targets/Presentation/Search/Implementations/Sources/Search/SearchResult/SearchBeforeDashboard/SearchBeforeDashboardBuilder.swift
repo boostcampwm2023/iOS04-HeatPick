@@ -7,13 +7,17 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SearchBeforeDashboardDependency: Dependency { }
+protocol SearchBeforeDashboardDependency: Dependency {
+    var searhResultSearchBeforeUseCase: SearhResultSearchBeforeUseCaseInterface { get }
+}
 
 final class SearchBeforeDashboardComponent: Component<SearchBeforeDashboardDependency>,
-                                                SearchBeforeRecentSearchesDashboardDependency,
-                                                SearchBeforeCategoryDashboardDependency {
-
+                                            SearchBeforeDashboardInteractorDependency,
+                                            SearchBeforeRecentSearchesDashboardDependency,
+                                            SearchBeforeCategoryDashboardDependency {
+    var searhResultSearchBeforeUseCase: SearhResultSearchBeforeUseCaseInterface { dependency.searhResultSearchBeforeUseCase }
 }
 
 final class SearchBeforeDashboardRouterComponent: SearchBeforeDashboardRouterDependency {
@@ -35,19 +39,19 @@ protocol SearchBeforeDashboardBuildable: Buildable {
 }
 
 final class SearchBeforeDashboardBuilder: Builder<SearchBeforeDashboardDependency>, SearchBeforeDashboardBuildable {
-
+    
     override init(dependency: SearchBeforeDashboardDependency) {
         super.init(dependency: dependency)
     }
-
+    
     func build(withListener listener: SearchBeforeDashboardListener) -> SearchBeforeDashboardRouting {
         let component = SearchBeforeDashboardComponent(dependency: dependency)
         let routerComponent = SearchBeforeDashboardRouterComponent(component: component)
         let viewController = SearchBeforeDashboardViewController()
-        let interactor = SearchBeforeDashboardInteractor(presenter: viewController)
+        let interactor = SearchBeforeDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return SearchBeforeDashboardRouter(
-            interactor: interactor, 
+            interactor: interactor,
             viewController: viewController,
             dependency: routerComponent
         )

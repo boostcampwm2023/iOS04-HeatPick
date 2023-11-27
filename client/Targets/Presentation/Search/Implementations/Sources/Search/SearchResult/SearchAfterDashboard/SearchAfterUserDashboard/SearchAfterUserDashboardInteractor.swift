@@ -17,9 +17,7 @@ protocol SearchAfterUserDashboardPresentable: Presentable {
     func setup(model: SearchAfterUserDashboardViewModel)
 }
 
-protocol SearchAfterUserDashboardListener: AnyObject {
-    
-}
+protocol SearchAfterUserDashboardListener: AnyObject { }
 
 final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfterUserDashboardPresentable>, SearchAfterUserDashboardInteractable, SearchAfterUserDashboardPresentableListener {
     

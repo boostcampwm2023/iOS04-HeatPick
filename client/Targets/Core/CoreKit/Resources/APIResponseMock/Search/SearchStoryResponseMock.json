@@ -1,0 +1,54 @@
+{
+    "stories": [
+        {
+          "storyId": 1,
+          "title": "타이틀 1",
+          "content": "content",
+          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ],
+          "likeCount": 100,
+          "commentCount": 100,
+          "createAt": "2023-11-23T16:57:07.208Z"
+        },
+        {
+          "storyId": 2,
+          "title": "타이틀 2",
+          "content": "content",
+          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ],
+          "likeCount": 200,
+          "commentCount": 200,
+          "createAt": "2023-11-23T16:57:07.208Z"
+        },
+        {
+          "storyId": 3,
+          "title": "타이틀 3",
+          "content": "content",
+          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ],
+          "likeCount": 300,
+          "commentCount": 300,
+          "createAt": "2023-11-23T16:57:07.208Z"
+        },
+        {
+          "storyId": 4,
+          "title": "타이틀 4",
+          "content": "content",
+          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ],
+          "likeCount": 400,
+          "commentCount": 400,
+          "createAt": "2023-11-23T16:57:07.208Z"
+        },
+        {
+          "storyId": 5,
+          "title": "타이틀 5",
+          "content": "content",
+          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ],
+          "likeCount": 500,
+          "commentCount": 500,
+          "createAt": "2023-11-23T16:57:07.208Z"
+        },
+      ]
+}
