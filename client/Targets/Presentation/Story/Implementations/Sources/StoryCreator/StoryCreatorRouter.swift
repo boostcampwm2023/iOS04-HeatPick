@@ -10,18 +10,19 @@ import ModernRIBs
 
 import CoreKit
 import DomainEntities
+import StoryInterfaces
 
-public protocol StoryCreatorInteractable: Interactable,
-                                          StoryEditorListener,
-                                          StoryDetailListener {
+protocol StoryCreatorInteractable: Interactable, 
+                                    StoryEditorListener,
+                                    StoryDetailListener {
     
     var router: StoryCreatorRouting? { get set }
     var listener: StoryCreatorListener? { get set }
 }
 
-public protocol StoryCreatorViewControllable: ViewControllable {}
+protocol StoryCreatorViewControllable: ViewControllable {}
 
-public protocol StoryCreatorRouterDependency {
+protocol StoryCreatorRouterDependency {
     var storyEditorBuilder: StoryEditorBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
 }

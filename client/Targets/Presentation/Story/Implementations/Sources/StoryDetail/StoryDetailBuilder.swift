@@ -10,6 +10,7 @@ import ModernRIBs
 
 import DomainEntities
 import DomainInterfaces
+import StoryInterfaces
 
 public protocol StoryDetailDependency: Dependency {
     var storyUseCase: StoryUseCaseInterface { get }
@@ -30,18 +31,13 @@ final class StoryDetailComponent: Component<StoryDetailDependency>, StoryDetailI
 }
 
 // MARK: - Builder
-
-public protocol StoryDetailBuildable: Buildable {
-    func build(withListener listener: StoryDetailListener, storyId: Int) -> StoryDetailRouting
-}
-
 public final class StoryDetailBuilder: Builder<StoryDetailDependency>, StoryDetailBuildable {
 
     public override init(dependency: StoryDetailDependency) {
         super.init(dependency: dependency)
     }
 
-    public func build(withListener listener: StoryDetailListener, storyId: Int) -> StoryDetailRouting {
+    public func build(withListener listener: StoryDetailListener, storyId: Int) -> ViewableRouting {
         let component = StoryDetailComponent(dependency: dependency, storyId: storyId)
         let viewController = StoryDetailViewController()
         let interactor = StoryDetailInteractor(presenter: viewController, dependency: component)

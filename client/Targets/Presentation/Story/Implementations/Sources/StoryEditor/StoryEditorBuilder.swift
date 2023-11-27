@@ -8,6 +8,7 @@
 
 import ModernRIBs
 import DomainInterfaces
+import StoryInterfaces
 
 public protocol StoryEditorDependency: Dependency {
     var storyUseCase: StoryUseCaseInterface { get }
@@ -20,18 +21,13 @@ final class StoryEditorComponent: Component<StoryEditorDependency>, StoryEditorI
 }
 
 // MARK: - Builder
-
-public protocol StoryEditorBuildable: Buildable {
-    func build(withListener listener: StoryEditorListener) -> StoryEditorRouting
-}
-
 public final class StoryEditorBuilder: Builder<StoryEditorDependency>, StoryEditorBuildable {
 
     public override init(dependency: StoryEditorDependency) {
         super.init(dependency: dependency)
     }
 
-    public func build(withListener listener: StoryEditorListener) -> StoryEditorRouting {
+    public func build(withListener listener: StoryEditorListener) -> ViewableRouting {
         let component = StoryEditorComponent(dependency: dependency)
         let viewController = StoryEditorViewController()
         let interactor = StoryEditorInteractor(

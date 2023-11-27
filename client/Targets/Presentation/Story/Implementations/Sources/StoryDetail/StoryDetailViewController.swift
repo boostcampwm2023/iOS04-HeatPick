@@ -14,7 +14,7 @@ import ModernRIBs
 import DesignKit
 import DomainEntities
 
-public protocol StoryDetailPresentableListener: AnyObject {
+protocol StoryDetailPresentableListener: AnyObject {
     func storyDetailDidTapClose()
 }
 

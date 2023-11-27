@@ -14,7 +14,7 @@ import ModernRIBs
 import DesignKit
 import DomainEntities
 
-public protocol StoryEditorPresentableListener: AnyObject {
+protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
     func titleDidChange(_ title: String)
     func descriptionDidChange(_ description: String)

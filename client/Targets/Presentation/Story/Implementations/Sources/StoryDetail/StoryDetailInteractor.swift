@@ -12,18 +12,14 @@ import ModernRIBs
 
 import DomainEntities
 import DomainInterfaces
+import StoryInterfaces
 
-public protocol StoryDetailRouting: ViewableRouting {
-}
+protocol StoryDetailRouting: ViewableRouting {}
 
 protocol StoryDetailPresentable: Presentable {
     var listener: StoryDetailPresentableListener? { get set }
     func setup(model: StoryDetailViewModel)
     func showFailure(_ error: Error)
-}
-
-public protocol StoryDetailListener: AnyObject {
-    func storyDetailDidTapClose()
 }
 
 protocol StoryDetailInteractorDependency: AnyObject {
