@@ -38,7 +38,7 @@ final class SearchMapViewController: UIViewController, SearchMapPresentable, Sea
         listener?.didAppear()
     }
     
-    func moveCamera(lat: Double, lng: Double) {
+    func moveMap(lat: Double, lng: Double) {
         let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
         naverMap.mapView.moveCamera(cameraUpdate)
     }

@@ -13,7 +13,7 @@ protocol SearchMapRouting: ViewableRouting { }
 
 protocol SearchMapPresentable: Presentable {
     var listener: SearchMapPresentableListener? { get set }
-    func moveCamera(lat: Double, lng: Double)
+    func moveMap(lat: Double, lng: Double)
 }
 
 protocol SearchMapListener: AnyObject { }
@@ -50,7 +50,7 @@ final class SearchMapInteractor: PresentableInteractor<SearchMapPresentable>, Se
     func didAppear() {
         if let location = dependency.searchMapUseCase.location, !isInitialCameraMoved {
             isInitialCameraMoved = true
-            presenter.moveCamera(lat: location.latitude, lng: location.longitude)
+            presenter.moveMap(lat: location.latitude, lng: location.longitude)
         }
     }
     
