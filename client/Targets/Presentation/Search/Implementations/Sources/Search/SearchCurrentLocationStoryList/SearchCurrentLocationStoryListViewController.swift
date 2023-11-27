@@ -1,5 +1,5 @@
 //
-//  SearchHomeListViewController.swift
+//  SearchCurrentLocationStoryListViewController.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 2023/11/14.
@@ -10,16 +10,15 @@ import UIKit
 import DesignKit
 import ModernRIBs
 
-
-protocol SearchHomeListPresentableListener: AnyObject {
-    func didTapItem(model: SearchHomeListCellModel)
+protocol SearchCurrentLocationStoryListPresentableListener: AnyObject {
+    func didTapItem(model: SearchCurrentLocationStoryListCellModel)
 }
 
-final class SearchHomeListViewController: UIViewController, SearchHomeListPresentable, SearchHomeListViewControllable {
+final class SearchCurrentLocationStoryListViewController: UIViewController, SearchCurrentLocationStoryListPresentable, SearchCurrentLocationStoryListViewControllable {
     
-    weak var listener: SearchHomeListPresentableListener?
+    weak var listener: SearchCurrentLocationStoryListPresentableListener?
     
-    private var models: [SearchHomeListCellModel] = []
+    private var models: [SearchCurrentLocationStoryListCellModel] = []
     
     private enum Constant {
         static let topOffset: CGFloat = 20
@@ -27,7 +26,7 @@ final class SearchHomeListViewController: UIViewController, SearchHomeListPresen
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(SearchHomeListCell.self)
+        tableView.register(SearchCurrentLocationStoryListCell.self)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -53,19 +52,19 @@ final class SearchHomeListViewController: UIViewController, SearchHomeListPresen
         locationLabel.text = location
     }
     
-    func setup(models: [SearchHomeListCellModel]) {
+    func setup(models: [SearchCurrentLocationStoryListCellModel]) {
         self.models = models
         tableView.reloadData()
     }
     
-    func append(models: [SearchHomeListCellModel]) {
+    func append(models: [SearchCurrentLocationStoryListCellModel]) {
         self.models.append(contentsOf: models)
         tableView.reloadData()
     }
     
 }
 
-private extension SearchHomeListViewController {
+private extension SearchCurrentLocationStoryListViewController {
 
     func setupViews() {
         view.backgroundColor = .hpWhite
@@ -84,7 +83,7 @@ private extension SearchHomeListViewController {
     
 }
 
-extension SearchHomeListViewController: UITableViewDataSource {
+extension SearchCurrentLocationStoryListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         models.count
@@ -94,14 +93,14 @@ extension SearchHomeListViewController: UITableViewDataSource {
         guard let model = models[safe: indexPath.row] else {
             return .init()
         }
-        let cell = tableView.dequeue(SearchHomeListCell.self, for: indexPath)
+        let cell = tableView.dequeue(SearchCurrentLocationStoryListCell.self, for: indexPath)
         cell.setup(model: model)
         return cell
     }
     
 }
 
-extension SearchHomeListViewController: UITableViewDelegate {
+extension SearchCurrentLocationStoryListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let model = models[safe: indexPath.row] else { return }

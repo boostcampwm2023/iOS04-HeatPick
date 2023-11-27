@@ -1,5 +1,5 @@
 //
-//  SearchHomeRouter.swift
+//  SearchRouter.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 2023/11/13.
@@ -9,40 +9,40 @@
 import CoreKit
 import ModernRIBs
 
-protocol SearchHomeInteractable: Interactable,
+protocol SearchInteractable: Interactable,
                                  SearchMapListener,
-                                 SearchHomeListListener,
+                                 SearchCurrentLocationStoryListListener,
                                  SearchResultListener {
-    var router: SearchHomeRouting? { get set }
-    var listener: SearchHomeListener? { get set }
+    var router: SearchRouting? { get set }
+    var listener: SearchListener? { get set }
 }
 
-protocol SearchHomeViewControllable: ViewControllable {  
+protocol SearchViewControllable: ViewControllable {
     func appendDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
 }
 
-protocol SearchHomeRouterDependency {
+protocol SearchRouterDependency {
     var searchMapBuilder: SearchMapBuildable { get }
-    var searchHomeListBuilder: SearchHomeListBuildable { get }
+    var searchHomeListBuilder: SearchCurrentLocationStoryListBuildable { get }
     var searchResultBuilder: SearchResultBuildable { get }
 }
 
-final class SearchHomeRouter: ViewableRouter<SearchHomeInteractable, SearchHomeViewControllable>, SearchHomeRouting {
+final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControllable>, SearchRouting {
     
     private let searchMapBuilder: SearchMapBuildable
     private var searchMapRouter: SearchMapRouting?
     
-    private let searchHomeListBuilder: SearchHomeListBuildable
-    private var searchHomeListRouter: SearchHomeListRouting?
+    private let searchHomeListBuilder: SearchCurrentLocationStoryListBuildable
+    private var searchHomeListRouter: SearchCurrentLocationStoryListRouting?
     
     private let searchResultBuilder: SearchResultBuildable
     private var searchResultRouter: SearchResultRouting?
     
     init(
-        interactor: SearchHomeInteractable,
-        viewController: SearchHomeViewControllable,
-        dependency: SearchHomeRouterDependency
+        interactor: SearchInteractable,
+        viewController: SearchViewControllable,
+        dependency: SearchRouterDependency
     ) {
         self.searchMapBuilder = dependency.searchMapBuilder
         self.searchHomeListBuilder = dependency.searchHomeListBuilder

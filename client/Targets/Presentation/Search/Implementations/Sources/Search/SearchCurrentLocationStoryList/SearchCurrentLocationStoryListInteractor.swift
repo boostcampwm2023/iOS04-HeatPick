@@ -1,5 +1,5 @@
 //
-//  SearchHomeListInteractor.swift
+//  SearchCurrentLocationStoryListInteractor.swift
 //  SearchImplementations
 //
 //  Created by 이준복 on 2023/11/14.
@@ -8,26 +8,26 @@
 
 import ModernRIBs
 
-protocol SearchHomeListRouting: ViewableRouting {
+protocol SearchCurrentLocationStoryListRouting: ViewableRouting {
     
 }
 
-protocol SearchHomeListPresentable: Presentable {
-    var listener: SearchHomeListPresentableListener? { get set }
+protocol SearchCurrentLocationStoryListPresentable: Presentable {
+    var listener: SearchCurrentLocationStoryListPresentableListener? { get set }
     
     func updateLocation(_ location: String)
-    func setup(models: [SearchHomeListCellModel])
-    func append(models: [SearchHomeListCellModel])
+    func setup(models: [SearchCurrentLocationStoryListCellModel])
+    func append(models: [SearchCurrentLocationStoryListCellModel])
 }
 
-protocol SearchHomeListListener: AnyObject { }
+protocol SearchCurrentLocationStoryListListener: AnyObject { }
 
-final class SearchHomeListInteractor: PresentableInteractor<SearchHomeListPresentable>, SearchHomeListInteractable, SearchHomeListPresentableListener {
+final class SearchCurrentLocationStoryListInteractor: PresentableInteractor<SearchCurrentLocationStoryListPresentable>, SearchCurrentLocationStoryListInteractable, SearchCurrentLocationStoryListPresentableListener {
 
-    weak var router: SearchHomeListRouting?
-    weak var listener: SearchHomeListListener?
+    weak var router: SearchCurrentLocationStoryListRouting?
+    weak var listener: SearchCurrentLocationStoryListListener?
 
-    override init(presenter: SearchHomeListPresentable) {
+    override init(presenter: SearchCurrentLocationStoryListPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -83,7 +83,7 @@ final class SearchHomeListInteractor: PresentableInteractor<SearchHomeListPresen
         
     }
     
-    func didTapItem(model: SearchHomeListCellModel) {
+    func didTapItem(model: SearchCurrentLocationStoryListCellModel) {
         
     }
     
