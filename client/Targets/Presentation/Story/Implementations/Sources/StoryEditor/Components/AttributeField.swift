@@ -8,6 +8,7 @@
 
 import UIKit
 
+import DesignKit
 import DomainEntities
 
 protocol AttributeFieldDelegate: AnyObject {

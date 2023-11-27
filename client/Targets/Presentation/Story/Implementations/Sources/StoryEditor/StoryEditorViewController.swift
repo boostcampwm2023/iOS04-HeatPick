@@ -26,6 +26,7 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     
     private enum Constant {
         static let navBarTitle = "스토리 생성"
+        static let keyboardSpacing: CGFloat = 10
         static let scrollViewInset: CGFloat = 20
         static let stackViewSpacing: CGFloat = 30
     }
@@ -54,7 +55,7 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = Constant.stackViewSpacing
-        stackView.alignment = .fill
+        stackView.alignment = .center
         stackView.distribution = .fill
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -135,7 +136,8 @@ private extension StoryEditorViewController {
         [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
         [titleField, imageField, descriptionField, attributeField, saveButton].forEach(stackView.addArrangedSubview)
-        
+        view.keyboardLayoutGuide.followsUndockedKeyboard = true
+
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -145,16 +147,31 @@ private extension StoryEditorViewController {
             scrollView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -10),
-            scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1, constant: Constant.scrollViewInset * 2),
+            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            
+            titleField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            titleField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
+            imageField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+            imageField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+            descriptionField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            descriptionField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
+            attributeField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            attributeField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
+            saveButton.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            saveButton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
             
             saveButton.heightAnchor.constraint(equalToConstant: 50)
         ])
         
-        scrollView.contentInset = .init(top: 40, left: Constant.scrollViewInset, bottom: 0, right: Constant.scrollViewInset)
+        scrollView.contentInset = .init(top: 40, left: 0,
+                                        bottom: Constant.keyboardSpacing,
+                                        right: 0)
         saveButton.layer.cornerRadius = Constants.cornerRadiusMedium
         
         view.addTapGesture(target: self, action: #selector(dismissKeyboard))
