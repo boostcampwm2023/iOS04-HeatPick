@@ -8,10 +8,12 @@
 
 import UIKit
 import CoreKit
+import Combine
 import DesignKit
 
 public protocol SearchNavigationViewDelegate: AnyObject {
     func leftButtonDidTap()
+    func editing(_ text: String)
     func showBeginEditingTextDashboard()
     func showEditingTextDashboard()
     func showEndEditingTextDashboard(_ text: String)
@@ -27,7 +29,7 @@ public final class SearchNavigationView: UIView {
         static let leadingOffset: CGFloat = 8
     }
     
-    public weak var delegate: SearchNavigationViewDelegate?
+    weak var delegate: SearchNavigationViewDelegate?
     
     private lazy var leftButton: UIButton = {
         let button = UIButton()
@@ -46,6 +48,7 @@ public final class SearchNavigationView: UIView {
         textField.returnKeyType = .done
         textField.clipsToBounds = true
         textField.layer.cornerRadius = Constants.cornerRadiusMedium
+        textField.addTarget(self, action: #selector(searchTextFieldValueChanged), for: .editingChanged)
         textField.setContentHuggingPriority(.init(200), for: .horizontal)
         textField.autocorrectionType = .no
         textField.spellCheckingType = .no
@@ -88,6 +91,11 @@ private extension SearchNavigationView {
     
     @objc func leftButtonDidTap() {
         delegate?.leftButtonDidTap()
+    }
+    
+    @objc func searchTextFieldValueChanged(_ sender: UITextField) {
+        guard let text = sender.text else { return }
+        delegate?.editing(text)
     }
     
 }
