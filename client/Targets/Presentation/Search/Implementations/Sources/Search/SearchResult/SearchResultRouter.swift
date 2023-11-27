@@ -6,6 +6,7 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
 import ModernRIBs
 
 protocol SearchResultInteractable: Interactable,
@@ -47,6 +48,7 @@ final class SearchResultRouter: ViewableRouter<SearchResultInteractable, SearchR
     
 }
 
+// MARK: SearchBefore
 extension SearchResultRouter {
     
     func attachSearchBeforeDashboard() {
@@ -74,6 +76,7 @@ extension SearchResultRouter {
     
 }
 
+// MARK: Searching
 extension SearchResultRouter {
     
     func attachSearchingDashboard() {
@@ -101,6 +104,7 @@ extension SearchResultRouter {
     
 }
 
+// MARK: SearchAfter
 extension SearchResultRouter {
     
     func attachSearchAfterDashboard() {

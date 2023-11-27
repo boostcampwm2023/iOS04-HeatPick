@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import Combine
 import DesignKit
 import ModernRIBs
 
 protocol SearchResultPresentableListener: AnyObject {
+    func editing(_ text: String)
+    func endEditing(_ text: String)
     func detachSearchResult()
     func showSearchBeforeDashboard()
     func hideSearchBeforeDashboard()
@@ -69,6 +72,7 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
 private extension SearchResultViewController {
     
     func setupViews() {
+        view.backgroundColor = .hpWhite
         [searchNavigationView, stackView].forEach { view.addSubview($0) }
         
         NSLayoutConstraint.activate([
@@ -88,6 +92,10 @@ private extension SearchResultViewController {
 
 extension SearchResultViewController: SearchNavigationViewDelegate {
     
+    func editing(_ text: String) {
+        listener?.editing(text)
+    }
+    
     func showBeginEditingTextDashboard() {
         listener?.hideSearchingDashboard()
         listener?.showSearchBeforeDashboard()
@@ -100,6 +108,7 @@ extension SearchResultViewController: SearchNavigationViewDelegate {
     }
     
     func showEndEditingTextDashboard(_ text: String) {
+        listener?.endEditing(text)
         listener?.hideSearchingDashboard()
         listener?.showSearchAfterDashboard()
     }

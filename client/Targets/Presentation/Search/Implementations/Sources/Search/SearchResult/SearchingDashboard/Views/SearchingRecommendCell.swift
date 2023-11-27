@@ -9,10 +9,6 @@
 import UIKit
 import DesignKit
 
-struct SearchingRecommendCellModel {
-    let recommendText: String
-}
-
 final class SearchingRecommendCell: UITableViewCell {
     
     private enum Constant {
@@ -61,8 +57,8 @@ final class SearchingRecommendCell: UITableViewCell {
         reset()
     }
     
-    func setup(model: SearchingRecommendCellModel) {
-        recommendLabel.text = model.recommendText
+    func setup(text: String) {
+        recommendLabel.text = text
     }
     
 }

@@ -6,7 +6,11 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+
 import ModernRIBs
+
+import CoreKit
 import DomainInterfaces
 
 protocol SearchingDashboardRouting: ViewableRouting { }
@@ -14,11 +18,12 @@ protocol SearchingDashboardRouting: ViewableRouting { }
 protocol SearchingDashboardPresentable: Presentable {
     var listener: SearchingDashboardPresentableListener? { get set }
     
-    func setup(searchingRecommendCellModels: [SearchingRecommendCellModel])
-    func append(searchingRecommendCellModels: [SearchingRecommendCellModel])
+    func setup(recommendTexts: [String])
 }
 
-protocol SearchingDashboardListener: AnyObject { }
+protocol SearchingDashboardListener: AnyObject {
+    var editingSearchTextPublisher: AnyPublisher<String, Never> { get }
+}
 
 protocol SearchingDashboardInteractorDependency: AnyObject {
     var searhResultsearchingUseCase: SearhResultSearchingUseCaseInterface { get }
@@ -31,6 +36,7 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     
     private let dependecy: SearchingDashboardInteractorDependency
     
+    private var cancellables = Set<AnyCancellable>()
 
     init(
         presenter: SearchingDashboardPresentable,
@@ -43,18 +49,20 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(searchingRecommendCellModels: [
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집을 소개해드릴게요 네이버 부스트캠프 iOS04팀의 Github 저장소가 아주 맛집입니다."),
-        ])
-        
+        listener?.editingSearchTextPublisher
+            .sink { editingText in
+                Task { [weak self] in
+                    let result = await self?.dependecy.searhResultsearchingUseCase.fetchRecommendTexts(searchText:editingText)
+                    switch result {
+                    case .success(let recommendTexts):
+                        self?.presenter.setup(recommendTexts: recommendTexts)
+                    case .failure(let error):
+                        Log.make(message: error.localizedDescription, log: .network)
+                    default: break
+                    }
+                    
+                }
+            }.store(in: &cancellables)
     }
 
     override func willResignActive() {
@@ -62,7 +70,7 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
         
     }
     
-    func didTapItem(_ item: SearchingRecommendCellModel) {
+    func didTapItem(_ item: String) {
         
     }
 }
