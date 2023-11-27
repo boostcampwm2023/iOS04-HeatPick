@@ -72,10 +72,10 @@ export class SearchController {
   @ApiOperation({ summary: '검색 기능' })
   @ApiResponse({ status: 201, description: '검색어를 바탕으로 스토리와 유저 정보를 5개씩 리턴합니다.' })
   @Get()
-  async search(@Query('searchText') searchText: string, @Query('categoryId') categoryId?: string): Promise<SearchResultDto> {
+  async search(@Query('searchText') searchText?: string, @Query('categoryId') categoryId?: string): Promise<SearchResultDto> {
     const numericCategoryId: number = parseInt(categoryId, 10);
-
-    let stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 5);
+    const searchStatement = searchText ? searchText : '';
+    let stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchStatement), 100);
     if (categoryId) stories = stories.filter((story) => story.category && story.category.categoryId === numericCategoryId);
 
     const storyArr = await Promise.all(
@@ -84,7 +84,7 @@ export class SearchController {
       }),
     );
 
-    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 5);
+    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchStatement), 100);
     const userArr = [];
     if (!categoryId) {
       await Promise.all(
@@ -94,7 +94,9 @@ export class SearchController {
       );
     }
 
-    const result: SearchResultDto = { stories: storyArr, users: userArr };
+    const truncatedStoryArr = storyArr.splice(0, 5);
+    const truncatedUserArr = userArr.splice(0, 5);
+    const result: SearchResultDto = { stories: truncatedStoryArr, users: truncatedUserArr };
     return result;
   }
 }
