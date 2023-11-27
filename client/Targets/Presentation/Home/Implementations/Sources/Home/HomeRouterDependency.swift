@@ -7,10 +7,12 @@
 //
 
 import ModernRIBs
+import StoryInterfaces
 
 protocol HomeRouterDependency: AnyObject {
     var base: HomeBaseRouterDependency { get }
     var seeAll: HomeSeeAllRouterDependency { get }
+    var storyDetailBuilder: StoryDetailBuildable { get }
 }
 
 protocol HomeBaseRouterDependency: AnyObject {
