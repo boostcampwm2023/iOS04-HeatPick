@@ -16,19 +16,25 @@ public protocol SearchDependency: Dependency {
 
 final class SearchComponent: Component<SearchDependency>,
                                  SearchMapDependency,
-                                 SearchHomeListDependency,
+                                 SearchCurrentLocationStoryListDependency,
                                  SearchResultDependency {
+    
+    var searchCurrentLocationStoryListUseCase: SearchCurrentLocationStoryListUseCaseInterface { dependency.searchUseCase }
+    var searResultUseCase: SearchResultUseCaseInterface { dependency.searchUseCase }
+    var searchMapUseCase: SearchMapUseCaseInterface {
+        dependency.searchUseCase
+    }
 }
 
-final class SearchRouterComponent: SearchHomeRouterDependency {
+final class SearchRouterComponent: SearchRouterDependency {
     
     let searchMapBuilder: SearchMapBuildable
-    let searchHomeListBuilder: SearchHomeListBuildable
+    let searchHomeListBuilder: SearchCurrentLocationStoryListBuildable
     let searchResultBuilder: SearchResultBuildable
     
     init(component: SearchComponent) {
         self.searchMapBuilder = SearchMapBuilder(dependency: component)
-        self.searchHomeListBuilder = SearchHomeListBuilder(dependency: component)
+        self.searchHomeListBuilder = SearchCurrentLocationStoryListBuilder(dependency: component)
         self.searchResultBuilder = SearchResultBuilder(dependency: component)
     }
     
@@ -37,7 +43,7 @@ final class SearchRouterComponent: SearchHomeRouterDependency {
 // MARK: - Builder
 
 public protocol SearchBuildable: Buildable {
-    func build(withListener listener: SearchHomeListener) -> ViewableRouting
+    func build(withListener listener: SearchListener) -> ViewableRouting
 }
 
 public final class SearchBuilder: Builder<SearchDependency>, SearchBuildable {
@@ -46,13 +52,13 @@ public final class SearchBuilder: Builder<SearchDependency>, SearchBuildable {
         super.init(dependency: dependency)
     }
     
-    public func build(withListener listener: SearchHomeListener) -> ViewableRouting {
+    public func build(withListener listener: SearchListener) -> ViewableRouting {
         let component = SearchComponent(dependency: dependency)
         let routerComponent = SearchRouterComponent(component: component)
-        let viewController = SearchHomeViewController()
-        let interactor = SearchHomeInteractor(presenter: viewController)
+        let viewController = SearchViewController()
+        let interactor = SearchInteractor(presenter: viewController)
         interactor.listener = listener
-        return SearchHomeRouter(
+        return SearchRouter(
             interactor: interactor,
             viewController: viewController,
             dependency: routerComponent

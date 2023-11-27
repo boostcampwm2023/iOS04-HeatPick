@@ -14,7 +14,7 @@ import DomainEntities
 
 struct StoryHeaderViewModel {
     let title: String
-    let badgeId: Int
+    let badgeName: String
     let likesCount: Int
     let commentsCount: Int
 }
@@ -66,9 +66,7 @@ final class StoryHeaderView: UIView {
     
     func setup(model: StoryHeaderViewModel) {
         titleLabel.text = model.title
-        if let badge = Badge.allCases[safe: model.badgeId]?.title {
-            userBadgeView.setBadge(badge)
-        }
+        userBadgeView.setBadge(model.badgeName)
         storyLikesCommentsView.setup(likes: model.likesCount, comments: model.commentsCount)
     }
     

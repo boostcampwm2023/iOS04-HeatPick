@@ -39,9 +39,7 @@ export class StoryService {
     });
   }
 
-  public async create(accessToken: string, { title, content, category, place, images, badgeId, date }): Promise<number> {
-    const decodedToken = this.jwtService.decode(accessToken);
-    const userId = decodedToken.userId;
+  public async create(userId: string, { title, content, category, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOneByIdWithBadges(userId);
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
@@ -50,7 +48,7 @@ export class StoryService {
     return story.storyId;
   }
 
-  public async read(accessToken: string, storyId: number) {
+  public async read(userId: string, storyId: number) {
     const story: Story = await this.storyRepository.findById(storyId);
     const place: Place = await story.place;
 
@@ -78,7 +76,7 @@ export class StoryService {
       userId: story.user.userId,
       username: story.user.username,
       profileImageUrl: story.user.profileImage.imageUrl,
-      status: this.jwtService.decode(accessToken).userId === story.user.oauthId ? 0 : 1,
+      status: userId === story.user.oauthId ? 0 : 1,
     };
 
     const storyDetailViewData: StoryDetailViewDataDto = {
@@ -89,9 +87,7 @@ export class StoryService {
     return storyDetailViewData;
   }
 
-  public async update(accessToken: string, { storyId, title, content, category, place, images, badgeId, date }): Promise<number> {
-    const decodedToken = this.jwtService.decode(accessToken);
-    const userId = decodedToken.userId;
+  public async update(userId: string, { storyId, title, content, category, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOneById(userId);
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
     const newStory: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
@@ -106,16 +102,14 @@ export class StoryService {
     return newStory.storyId;
   }
 
-  public async delete(accessToken: string, storyId: number) {
-    const decodedToken = this.jwtService.decode(accessToken);
-    const userId = decodedToken.userId;
+  public async delete(userId: string, storyId: number) {
     const user: User = await this.userRepository.findOneById(userId);
     user.stories = Promise.resolve((await user.stories).filter((story) => story.storyId !== storyId));
     await this.userRepository.createUser(user);
   }
 
-  async getStoriesFromTrie(seperatedStatement: string[]) {
-    const ids = this.storyTitleJasoTrie.search(seperatedStatement);
+  async getStoriesFromTrie(seperatedStatement: string[], limit: number) {
+    const ids = this.storyTitleJasoTrie.search(seperatedStatement, limit);
     const stories = await this.storyRepository.getStoriesByIds(ids);
     return stories;
   }

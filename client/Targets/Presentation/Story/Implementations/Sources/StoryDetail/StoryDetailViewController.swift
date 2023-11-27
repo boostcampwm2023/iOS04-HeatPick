@@ -141,6 +141,12 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
         mapView.setup(model: model.mapViewModel)
     }
     
+    func showFailure(_ error: Error) {
+        let alert = UIAlertController(title: "스토리 로드 실패", message: "\(error.localizedDescription)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .default))
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 private extension StoryDetailViewController {

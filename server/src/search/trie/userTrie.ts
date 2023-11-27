@@ -15,7 +15,7 @@ export class UserJasoTrie {
     node.userId.push(storyId);
   }
 
-  search(prefix: string[]): number[] {
+  search(prefix: string[], limit: number): number[] {
     let node = this.root;
     for (const jaso of prefix) {
       if (!node.children[jaso]) {
@@ -24,19 +24,20 @@ export class UserJasoTrie {
       node = node.children[jaso];
     }
 
-    return this.getWordsWithPrefix(node, prefix);
+    return this.getWordsWithPrefix(node, prefix, limit);
   }
 
-  getWordsWithPrefix(node: UserTrieNode, currentPrefix: string[]): number[] {
+  getWordsWithPrefix(node: UserTrieNode, currentPrefix: string[], limit: number): number[] {
     let results: number[] = [];
     if (node.isEndOfWord) {
       results.push(...node.userId);
+      if (results.length === limit) return results;
     }
 
     for (const [jaso, childNode] of Object.entries(node.children)) {
       const childPrefix = [...currentPrefix, jaso];
-
-      results = results.concat(this.getWordsWithPrefix(childNode, childPrefix));
+      results = results.concat(this.getWordsWithPrefix(childNode, childPrefix, limit - results.length));
+      if (results.length === limit) return results;
     }
 
     return results;

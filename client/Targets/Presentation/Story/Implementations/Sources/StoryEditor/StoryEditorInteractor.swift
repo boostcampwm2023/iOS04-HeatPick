@@ -90,10 +90,10 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
                 .onSuccess(on: .main, with: self, { this, story in
                     this.listener?.storyDidCreate(story)
                 })
-                .onFailure { [weak self] error in
+                .onFailure(on: .main, with: self, { this, error in
                     Log.make(message: error.localizedDescription, log: .interactor)
-                    self?.presenter.showFailure(error)
-                }
+                    this.presenter.showFailure(error)
+                })
         }
     }
     
