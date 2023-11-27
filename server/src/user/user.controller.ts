@@ -19,6 +19,13 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Get('badge')
+  @ApiOperation({ summary: '유저의 모든 뱃지를 리턴합니다..' })
+  @ApiResponse({ status: 200 })
+  async getBadges(@Req() req: any) {
+    return this.userService.getBadges(req.user.userRecordId);
+  }
+
   @Post('badge')
   @ApiOperation({ summary: '유제 객체에 새로운 뱃지를 추가합니다.' })
   @ApiResponse({ status: 200, description: 'Badge가 성공적으로 추가되었습니다.' })
