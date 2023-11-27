@@ -16,5 +16,6 @@ public protocol SearchRepositoryInterface: AnyObject {
     func fetchStory(searchText: String) async -> Result<[SearchStory], Error>
     func fetchUser(searchText: String) async -> Result<[SearchUser], Error>
     func fetchRecommendText(searchText: String) async -> Result<[String], Error>
+    func fetchPlaces(lat: Double, lng: Double) async -> Result<[Place], Error>
     
 }

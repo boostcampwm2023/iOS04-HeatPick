@@ -45,4 +45,10 @@ public final class SearchRepository: SearchRepositoryInterface {
         return request
     }
     
+    public func fetchPlaces(lat: Double, lng: Double) async -> Result<[Place], Error> {
+        let target = PlaceAPI.place(lat: lat, lng: lng)
+        let request: Result<PlaceResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
 }

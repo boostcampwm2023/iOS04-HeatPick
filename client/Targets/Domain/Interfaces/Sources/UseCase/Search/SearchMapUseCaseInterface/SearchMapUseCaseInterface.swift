@@ -8,7 +8,9 @@
 
 import Foundation
 import CoreLocation
+import DomainEntities
 
 public protocol SearchMapUseCaseInterface {
     var location: CLLocationCoordinate2D? { get }
+    func fetchPlaces(lat: Double, lng: Double) async -> Result<[Place], Error>
 }
