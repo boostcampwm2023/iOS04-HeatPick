@@ -21,6 +21,7 @@ import { Badge } from '../entities/badge.entity';
 import { Place } from '../entities/place.entity';
 import { CategoryRepository } from '../category/category.repository';
 import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
+import { Category } from '../entities/category.entity';
 
 @Injectable()
 export class StoryService {
@@ -52,9 +53,10 @@ export class StoryService {
     return metaData;
   }
 
-  public async create(userId: string, { title, content, category, place, images, badgeId, date }): Promise<number> {
+  public async create(userId: string, { title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOneByIdWithBadges(userId);
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
+    const category: Category = await this.categoryRepository.findById(categoryId);
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     user.stories = Promise.resolve([...(await user.stories), story]);
     await this.userRepository.createUser(user);
@@ -100,9 +102,10 @@ export class StoryService {
     return storyDetailViewData;
   }
 
-  public async update(userId: string, { storyId, title, content, category, place, images, badgeId, date }): Promise<number> {
+  public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOneById(userId);
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
+    const category: Category = await this.categoryRepository.findById(categoryId);
     const newStory: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
 
     user.stories = Promise.resolve(

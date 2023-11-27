@@ -12,4 +12,8 @@ export class CategoryRepository {
   async finAll() {
     return await this.categoryRepository.find();
   }
+
+  async findById(categoryId: number) {
+    return await this.categoryRepository.findOneBy({ categoryId: categoryId });
+  }
 }

@@ -42,8 +42,8 @@ export class StoryController {
     },
   })
   async create(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) createStoryDto: CreateStoryDto) {
-    const { title, content, category, place, badgeId, date } = createStoryDto;
-    const storyId = await this.storyService.create(req.user.userId, { title, content, category, place, images, badgeId, date });
+    const { title, content, categoryId, place, badgeId, date } = createStoryDto;
+    const storyId = await this.storyService.create(req.user.userId, { title, content, categoryId, place, images, badgeId, date });
     return { storyId: storyId };
   }
 
@@ -72,8 +72,8 @@ export class StoryController {
     },
   })
   async update(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
-    const { storyId, title, content, category, place, badgeId, date } = updateStoryDto;
-    const newStoryId = await this.storyService.update(req.user.userId, { storyId, title, content, category, place, images, badgeId, date });
+    const { storyId, title, content, categoryId, place, badgeId, date } = updateStoryDto;
+    const newStoryId = await this.storyService.update(req.user.userId, { storyId, title, content, categoryId, place, images, badgeId, date });
     return { storyId: newStoryId };
   }
 

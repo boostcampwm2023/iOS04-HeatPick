@@ -29,14 +29,14 @@ export class CreateStoryDto {
     description: 'Story Category',
   })
   @IsNotEmpty({ message: 'category 필수입니다.' })
-  @IsString()
-  category: string;
+  @IsNumber()
+  @Transform(({ value }): number => parseInt(value, 10))
+  categoryId: number;
 
   @ApiProperty({
     example: `{ latitude: 1.2345, longitude: 6.7890, title: '장소 이름', address: '주소명' }`,
     description: 'Where the story was created',
   })
-
   @IsNotEmpty({ message: 'place 필수입니다.' })
   @Transform(({ value }): object => JSON.parse(value))
   place: Place;
