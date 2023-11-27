@@ -14,8 +14,8 @@ public struct StoryDetailRequestDTO: Encodable {
     
     let storyId: Int
     
-    public init(story: Int) {
-        self.storyId = story
+    public init(storyId: Int) {
+        self.storyId = storyId
     }
     
 }

@@ -45,7 +45,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
             guard let self else { return }
             await dependency
                 .storyUseCase
-                .requestStoryDetail(story: dependency.storyId)
+                .requestStoryDetail(storyId: dependency.storyId)
                 .onSuccess(on: .main, with: self) { this, story in
                     guard let model = story.toViewModel() else { return }
                     this.presenter.setup(model: model)

@@ -28,8 +28,8 @@ public final class StoryRepository: StoryRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
-    public func requestStoryDetail(story: Int) async -> Result<Story, Error> {
-        let target = StoryAPI.storyDetail(story)
+    public func requestStoryDetail(storyId: Int) async -> Result<Story, Error> {
+        let target = StoryAPI.storyDetail(storyId)
         let request: Result<StoryDetailResponseDTO, Error> = await session.request(target)
         
         return request.map { $0.toDomain() }

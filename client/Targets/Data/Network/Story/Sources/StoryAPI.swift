@@ -51,8 +51,8 @@ extension StoryAPI: Target {
             }
             
             return .multipart(MultipartFormData(data: request, mediaList: mediaList))
-        case .storyDetail(let story):
-            let request = StoryDetailRequestDTO(story: story)
+        case .storyDetail(let storyId):
+            let request = StoryDetailRequestDTO(storyId: storyId)
             
             return .url(parameters: request.parameters())
         }
