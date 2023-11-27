@@ -10,6 +10,8 @@ import { User } from 'src/entities/user.entity';
 import { SearchHistory } from 'src/entities/search.entity';
 import { SearchResultDto } from './dto/search.result.dto';
 import { profileImage } from './../entities/profileImage.entity';
+import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
+import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 
 @ApiTags('search')
 @Controller('search')
@@ -43,7 +45,9 @@ export class SearchController {
     type: [User],
   })
   async getUserSearchResult(@Query('searchText') searchText: string) {
-    return this.userService.getUsersFromTrie(graphemeSeperation(searchText), 10);
+    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 10);
+    const transfromedUsers = users.map((user) => userEntityToUserObj(user));
+    return { users: transfromedUsers };
   }
 
   @Get('place')
@@ -70,23 +74,17 @@ export class SearchController {
   @Get()
   async search(@Query('searchText') searchText: string): Promise<SearchResultDto> {
     const stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 5);
-    const storyArr = [];
-    await Promise.all(
+
+    const storyArr = await Promise.all(
       stories.map(async (story) => {
-        const images = await story.storyImages;
-        const urls = images.map((image) => image.imageUrl);
-        storyArr.push({ title: story.title, content: story.content, likeCount: story.likeCount, commentCount: story.commentCount, createAt: story.createAt, storyImages: urls });
+        return storyEntityToObjWithOneImg(story);
       }),
     );
-
     const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 5);
-
     const userArr = [];
     await Promise.all(
       users.map(async (user) => {
-        const image = user.profileImage;
-        const url = image?.imageUrl;
-        userArr.push({ userId: user.userId, username: user.username, temperature: user.temperature, createdAt: user.createAt, recentlyActive: user.recentActive, profileImage: url });
+        userArr.push(userEntityToUserObj(user));
       }),
     );
 
