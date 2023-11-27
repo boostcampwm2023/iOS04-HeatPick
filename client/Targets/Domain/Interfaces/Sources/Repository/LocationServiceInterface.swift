@@ -13,6 +13,7 @@ import Combine
 public protocol LocationServiceInterface: AnyObject {
     
     var permisson: CLAuthorizationStatus { get }
+    var location: CLLocationCoordinate2D? { get }
     
     func startUpdatingLocation()
     func stopUpdatingLocation()

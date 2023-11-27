@@ -17,6 +17,10 @@ public final class LocationService: NSObject, LocationServiceInterface {
         return manager.authorizationStatus
     }
     
+    public var location: CLLocationCoordinate2D? {
+        return manager.location?.coordinate
+    }
+    
     private let manager: CLLocationManager
     
     private var permissionSubject = PassthroughSubject<CLAuthorizationStatus, Error>()
@@ -64,6 +68,7 @@ extension LocationService: CLLocationManagerDelegate {
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
         locationSubject.send(location.coordinate)
+        stopUpdatingLocation()
     }
     
 }
