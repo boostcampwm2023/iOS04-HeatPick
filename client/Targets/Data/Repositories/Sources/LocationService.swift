@@ -54,6 +54,7 @@ public final class LocationService: NSObject, LocationServiceInterface {
         guard let location = manager.location else { return nil }
         let geoCoder: CLGeocoder = CLGeocoder()
         let place = try await geoCoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "ko_kr"))
+        if let subLocality = place.last?.subLocality { return subLocality }
         return place.last?.locality
     }
     
