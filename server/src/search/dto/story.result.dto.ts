@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class StoryResultDto {
   @ApiProperty({ description: 'user id' })
-  id: number;
+  storyId: number;
 
   @ApiProperty({ description: '스토리의 제목' })
   title: string;

@@ -110,7 +110,6 @@ export class UserController {
   @ApiResponse({ status: 200, description: '현재 유저의 팔로우의 Id 목록입니다' })
   async getMyFollows(@Req() req: any) {
     const currentUserId = req.user.userRecordId;
-    console.log(currentUserId);
     const follows = await this.userService.getFollows(currentUserId);
     const transformedFollows = follows.map((follow) => userEntityToUserObj(follow));
     return { follows: transformedFollows };
