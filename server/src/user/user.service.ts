@@ -29,6 +29,12 @@ export class UserService {
     });
   }
 
+  async getBadges(userRecordId: number) {
+    const user = await this.userRepository.findOneByOption({ where: { userId: userRecordId }, relations: ['badges'] });
+    const badges = await user.badges;
+    return badges;
+  }
+
   async getUsersFromTrie(seperatedStatement: string[], limit: number) {
     const ids = this.userJasoTrie.search(seperatedStatement, limit);
     const users = await this.userRepository.getStoriesByIds(ids);

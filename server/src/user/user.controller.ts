@@ -12,12 +12,20 @@ import { FollowRequest } from './dto/follow.request.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { Badge } from 'src/entities/badge.entity';
 
 @ApiTags('user')
 @Controller('user')
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @Get('badge')
+  @ApiOperation({ summary: '유저의 모든 뱃지를 리턴합니다..' })
+  @ApiResponse({ status: 200, type: Badge })
+  async getBadges(@Req() req: any) {
+    return this.userService.getBadges(req.user.userRecordId);
+  }
 
   @Post('badge')
   @ApiOperation({ summary: '유제 객체에 새로운 뱃지를 추가합니다.' })
