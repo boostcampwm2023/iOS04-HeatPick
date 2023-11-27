@@ -21,7 +21,7 @@ public extension NetworkHeader {
     
     static var authorized: NetworkHeader {
         guard let token = token else { return .default }
-        return .default.accessToken(token)
+        return .default.authorization(token)
     }
     
 }
