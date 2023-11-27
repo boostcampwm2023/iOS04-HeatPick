@@ -15,10 +15,13 @@ import DomainInterfaces
 
 public final class SearchRepository: SearchRepositoryInterface {
     
+    private static let UserDefaultsKey = "RecentSearches"
+    private var recentSearches: [String] = []
     private let session: Network
     
     public init (session: Network) {
         self.session = session
+        loadRecentSearches()
     }
     
     public func fetchSearchResult(searchText: String) async -> Result<SearchResult, Error> {
@@ -43,6 +46,34 @@ public final class SearchRepository: SearchRepositoryInterface {
         let target = SearchAPI.recommend(searchText: searchText)
         let request: Result<[String], Error> = await session.request(target)
         return request
+    }
+    
+    public func fetchRecentSearches() -> [String] {
+        recentSearches
+    }
+    
+    public func appendRecentSearch(searchText: String) -> String? {
+        var temp = Set(recentSearches)
+        temp.insert(searchText)
+        guard temp.count != recentSearches.count else { return nil }
+        recentSearches.append(searchText)
+        return searchText
+    }
+    
+    deinit {
+        saveRecentSearches()
+    }
+    
+}
+
+private extension SearchRepository {
+    
+    func saveRecentSearches() {
+        UserDefaults.standard.setValue(recentSearches, forKey: Self.UserDefaultsKey)
+    }
+    
+    func loadRecentSearches() {
+        self.recentSearches = UserDefaults.standard.array(forKey: Self.UserDefaultsKey) as? [String] ?? []
     }
     
 }
