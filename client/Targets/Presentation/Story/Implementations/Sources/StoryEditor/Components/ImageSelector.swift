@@ -113,6 +113,10 @@ private extension ImageSelector {
         ])
     }
     
+}
+
+private extension ImageSelector {
+    
     @objc func addImageDidTap() {
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
         configuration.selectionLimit = 1
@@ -126,6 +130,13 @@ private extension ImageSelector {
     @objc func removeImageDidTap() {
         delegate?.imageDidRemove(from: self)
     }
+    
+    func changeToRemoveButton() {
+        plusImageView.removeFromSuperview()
+        addSubview(xImageView)
+        setupXImageView()
+        delegate?.imageDidAdd()
+    }
 }
 
 extension ImageSelector: PHPickerViewControllerDelegate {
@@ -138,12 +149,9 @@ extension ImageSelector: PHPickerViewControllerDelegate {
             
             itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
                 DispatchQueue.main.async { [weak self] in
-                    guard let image = image as? UIImage, let xImageView = self?.xImageView else { return }
-                    self?.imageView.image = image
-                    self?.plusImageView.removeFromSuperview()
-                    self?.addSubview(xImageView)
-                    self?.setupXImageView()
-                    self?.delegate?.imageDidAdd()
+                    guard let image = image as? UIImage, let self else { return }
+                    imageView.image = image
+                    changeToRemoveButton()
                 }
             }
             return
@@ -160,11 +168,8 @@ extension ImageSelector: PHPickerViewControllerDelegate {
                 }, completionHandler: { error in
                     DispatchQueue.main.async { [weak self] in
                         guard let self else { return }
-                        self.imageView.image = UIImage(data: imageData as Data)
-                        self.plusImageView.removeFromSuperview()
-                        self.addSubview(xImageView)
-                        self.setupXImageView()
-                        self.delegate?.imageDidAdd()
+                        imageView.image = UIImage(data: imageData as Data)
+                        changeToRemoveButton()
                     }
                 })
             }
