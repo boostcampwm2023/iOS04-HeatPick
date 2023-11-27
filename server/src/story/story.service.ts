@@ -48,10 +48,10 @@ export class StoryService {
     const user: User = await this.userRepository.findOneByIdWithBadges(userId);
     const categoryList = await this.categoryRepository.finAll();
     const metaData: CreateStoryMetaDto = {
-      badgeList: (await user.badges).map((badge: Badge) => {
+      badges: (await user.badges).map((badge: Badge) => {
         return { badgeId: badge.badgeId, badgeName: badge.badgeName };
       }),
-      categoryList: categoryList,
+      categories: categoryList,
     };
     return metaData;
   }
