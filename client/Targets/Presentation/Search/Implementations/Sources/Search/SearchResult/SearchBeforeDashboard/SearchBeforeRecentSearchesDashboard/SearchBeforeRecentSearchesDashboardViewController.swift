@@ -73,7 +73,7 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
         setupViews()
     }
         
-    func setup(models: [SearchBeforeRecentSearchesViewModel]) {
+    func setup(models: [String]) {
         let isEmpty = models.isEmpty
         emptyView.isHidden = !isEmpty
         scrollView.isHidden = isEmpty
@@ -85,13 +85,11 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
         }
     }
     
-    func append(models: [SearchBeforeRecentSearchesViewModel]) {
-        models.forEach { model in
-            let contentView = SearchBeforeRecentSearchesView()
-            contentView.setup(model)
-            contentView.delegate = self
-            stackView.insertArrangedSubview(contentView, at: 0)
-        }
+    func append(model: String) {
+        let contentView = SearchBeforeRecentSearchesView()
+        contentView.setup(model)
+        contentView.delegate = self
+        stackView.insertArrangedSubview(contentView, at: 0)
     }
     
 }
