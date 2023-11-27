@@ -1,6 +1,7 @@
 import { Badge } from '../../entities/badge.entity';
 import { Story } from '../../entities/story.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserProfileDetailStoryDto } from './user.profile.detail.story.dto';
 
 export class UserProfileDetailDataDto {
   @ApiProperty()
@@ -25,5 +26,5 @@ export class UserProfileDetailDataDto {
   mainBadge: Badge;
 
   @ApiProperty()
-  storyList: Story[];
+  storyList: UserProfileDetailStoryDto[];
 }
