@@ -17,8 +17,6 @@ final class SearchMapComponent: Component<SearchMapDependency>, SearchMapInterac
     var searchMapUseCase: SearchMapUseCaseInterface { dependency.searchMapUseCase }
 }
 
-// MARK: - Builder
-
 protocol SearchMapBuildable: Buildable {
     func build(withListener listener: SearchMapListener) -> SearchMapRouting
 }
