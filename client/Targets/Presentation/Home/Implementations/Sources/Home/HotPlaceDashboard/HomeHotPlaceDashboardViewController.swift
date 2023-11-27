@@ -17,6 +17,7 @@ struct HomeHotPlaceDashboardViewModel {
 
 protocol HomeHotPlaceDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
+    func didTap(storyID: Int)
 }
 
 final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceDashboardPresentable, HomeHotPlaceDashboardViewControllable {
@@ -87,6 +88,7 @@ final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceD
         scrollView.isHidden = isEmpty
         model.contentList.forEach { contentModel in
             let contentView = HomeHotPlaceContentView()
+            contentView.addTapGesture(target: self, action: #selector(contentViewDidTap))
             contentView.setup(model: contentModel)
             stackView.addArrangedSubview(contentView)
         }
@@ -98,6 +100,18 @@ extension HomeHotPlaceDashboardViewController: SeeAllViewDelegate {
     
     func seeAllViewDidTapSeeAll() {
         listener?.didTapSeeAll()
+    }
+    
+}
+
+private extension HomeHotPlaceDashboardViewController {
+    
+    @objc func contentViewDidTap(_ gesture: UITapGestureRecognizer) {
+        guard let contentView = gesture.view as? HomeHotPlaceContentView,
+              let storyID = contentView.id else {
+            return
+        }
+        listener?.didTap(storyID: storyID)
     }
     
 }
