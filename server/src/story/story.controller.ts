@@ -9,12 +9,24 @@ import { RecommendStoryDto } from './dto/story.recommend.response.dto';
 import { plainToClass } from 'class-transformer';
 import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 
 @ApiTags('story')
 @Controller('story')
 @UseGuards(JwtAuthGuard)
 export class StoryController {
   constructor(private storyService: StoryService) {}
+
+  @Get('meta')
+  @ApiOperation({ summary: 'Create Story Meta Data (Category, Badge)' })
+  @ApiResponse({
+    status: 200,
+    description: '생성하는 유저의 카테고리와 뱃지',
+    type: CreateStoryMetaDto,
+  })
+  async meta(@Request() req: any): Promise<CreateStoryMetaDto> {
+    return await this.storyService.createMetaData(req.user.userId);
+  }
 
   @Post('create')
   @UseInterceptors(FilesInterceptor('images', 3))
