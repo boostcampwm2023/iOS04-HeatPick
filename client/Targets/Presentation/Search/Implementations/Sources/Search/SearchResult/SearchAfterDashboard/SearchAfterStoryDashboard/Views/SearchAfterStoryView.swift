@@ -7,17 +7,10 @@
 //
 
 import UIKit
-import DesignKit
-import BasePresentation
 
-struct SearchAfterStoryViewModel {
-    let stroyId: Int
-    let title: String
-    let address: String
-    let thumbnailImage: String
-    let likeCount: Int
-    let commentCount: Int
-}
+import DesignKit
+import DomainEntities
+import BasePresentation
 
 final class SearchAfterStoryView: UIView {
     
@@ -88,10 +81,10 @@ final class SearchAfterStoryView: UIView {
         setupViews()
     }
     
-    func setup(model: SearchAfterStoryViewModel) {
-        imageView.load(from: model.thumbnailImage)
+    func setup(model: SearchStory) {
+        imageView.load(from: model.imageURLs.first)
         titleLabel.text = model.title
-        addressLabel.text = model.address
+        addressLabel.text = model.content
         commentView.setup(likes: model.likeCount, comments: model.commentCount)
     }
     

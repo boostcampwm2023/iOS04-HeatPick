@@ -6,23 +6,31 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+
 import ModernRIBs
 
-protocol SearchAfterUserDashboardRouting: ViewableRouting {
-    
-}
+import CoreKit
+import DomainEntities
+import DomainInterfaces
+
+protocol SearchAfterUserDashboardRouting: ViewableRouting { }
 
 protocol SearchAfterUserDashboardPresentable: Presentable {
     var listener: SearchAfterUserDashboardPresentableListener? { get set }
-    func setup(model: SearchAfterUserDashboardViewModel)
+    func setup(models: [SearchUser])
 }
 
-protocol SearchAfterUserDashboardListener: AnyObject { }
+protocol SearchAfterUserDashboardListener: AnyObject {
+    var searchResultUsersPublisher: AnyPublisher<[SearchUser], Never> { get }
+}
 
 final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfterUserDashboardPresentable>, SearchAfterUserDashboardInteractable, SearchAfterUserDashboardPresentableListener {
     
     weak var router: SearchAfterUserDashboardRouting?
     weak var listener: SearchAfterUserDashboardListener?
+    
+    private var cancellables = Set<AnyCancellable>()
     
     override init(presenter: SearchAfterUserDashboardPresentable) {
         super.init(presenter: presenter)
@@ -31,20 +39,13 @@ final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfte
     
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(model: .init(
-            contentList: [
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-                .init(profileImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", nickname: "윈터", badge: "에스파"),
-            ]
-        ))
+        listener?.searchResultUsersPublisher
+            .sink { [weak self] users in
+                self?.presenter.setup(models: users)
+            }.store(in: &cancellables)
+        
+        
+        
     }
     
     override func willResignActive() {
