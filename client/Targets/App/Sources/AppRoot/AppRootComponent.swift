@@ -26,6 +26,7 @@ import HomeImplementations
 import SearchAPI
 import SearchInterfaces
 import SearchImplementations
+import StoryInterfaces
 import StoryImplementations
 import MyInterfaces
 import MyImplementations
@@ -38,7 +39,8 @@ final class AppRootComponent: Component<AppRootDependency>,
                               HomeDependency,
                               SearchDependency,
                               StoryCreatorDependency,
-                              MyPageDependency {
+                              MyPageDependency,
+                                StoryDetailDependency {
     
     
     let authUseCase: AuthUseCaseInterface
@@ -71,6 +73,10 @@ final class AppRootComponent: Component<AppRootDependency>,
         MyPageBuilder(dependency: self)
     }()
     
+    lazy var storyDeatilBuilder: StoryDetailBuildable = {
+        StoryDetailBuilder(dependency: self)
+    }()
+    
     override init(dependency: AppRootDependency) {
         let naverLoginRepository: NaverLoginRepositoryInterface = {
             let repository = NaverLoginRepository()
@@ -84,9 +90,12 @@ final class AppRootComponent: Component<AppRootDependency>,
             signInUseCase: SignInUseCase(naverLoginRepository: naverLoginRepository)
         )
         
+        let locationService = LocationService()
+        locationService.startUpdatingLocation()
+        
         let homeNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [HomeURLProtocol.self])
-        self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider))
-        self.locationAuthorityUseCase = LocationAuthorityUseCase(service: LocationService())
+        self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider), locationService: locationService)
+        self.locationAuthorityUseCase = LocationAuthorityUseCase(service: locationService)
         
         let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [StoryURLProtocol.self])
         self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider))
@@ -96,7 +105,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         self.signOutRequestService = SignoutService.shared
         
         let searchNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [SearchURLProtocol.self])
-        self.searchUseCase = SearchUseCase(repository: SearchRepository(session: searchNetworkProvider))
+        self.searchUseCase = SearchUseCase(repository: SearchRepository(session: searchNetworkProvider), locationService: locationService)
         
         super.init(dependency: dependency)
     }

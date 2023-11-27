@@ -12,7 +12,7 @@ import CoreKit
 import AuthInterfaces
 import HomeInterfaces
 import SearchImplementations
-import StoryImplementations
+import StoryInterfaces
 import MyInterfaces
 
 protocol AppRootInteractable: Interactable,

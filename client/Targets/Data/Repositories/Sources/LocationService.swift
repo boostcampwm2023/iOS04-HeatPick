@@ -17,6 +17,10 @@ public final class LocationService: NSObject, LocationServiceInterface {
         return manager.authorizationStatus
     }
     
+    public var location: CLLocationCoordinate2D? {
+        return manager.location?.coordinate
+    }
+    
     private let manager: CLLocationManager
     
     private var permissionSubject = PassthroughSubject<CLAuthorizationStatus, Error>()
@@ -46,6 +50,14 @@ public final class LocationService: NSObject, LocationServiceInterface {
         manager.requestWhenInUseAuthorization()
     }
     
+    public func requestLocality() async throws -> String? {
+        guard let location = manager.location else { return nil }
+        let geoCoder: CLGeocoder = CLGeocoder()
+        let place = try await geoCoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "ko_kr"))
+        if let subLocality = place.last?.subLocality { return subLocality }
+        return place.last?.locality
+    }
+    
 }
 
 extension LocationService: CLLocationManagerDelegate {
@@ -57,6 +69,7 @@ extension LocationService: CLLocationManagerDelegate {
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
         locationSubject.send(location.coordinate)
+        stopUpdatingLocation()
     }
     
 }

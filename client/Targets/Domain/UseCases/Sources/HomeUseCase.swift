@@ -14,16 +14,20 @@ import DomainInterfaces
 public final class HomeUseCase: HomeUseCaseInterface {
     
     private let repository: HomeRepositoryInterface
+    private let locationService: LocationServiceInterface
     
-    public init(repository: HomeRepositoryInterface) {
+    public init(repository: HomeRepositoryInterface, locationService: LocationServiceInterface) {
         self.repository = repository
+        self.locationService = locationService
     }
     
-    public func fetchRecommendPlace(lat: Double, lon: Double) async -> Result<[RecommendStory], Error> {
+    public func fetchRecommendPlace(lat: Double, lon: Double) async -> Result<RecommendPlace, Error> {
+        let locality = try? await locationService.requestLocality()
         return await repository.fetchRecommendPlace(lat: lat, lon: lon)
+            .map { .init(title: locality ?? "위치를 알 수 없어요", stories: $0)}
     }
     
-    public func fetchHotPlace() async -> Result<[RecommendStory], Error> {
+    public func fetchHotPlace() async -> Result<[HotPlace], Error> {
         return await repository.fetchHotPlace()
     }
     

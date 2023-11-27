@@ -7,15 +7,18 @@
 //
 
 import ModernRIBs
+import StoryInterfaces
 
 final class HomeRouterComponent: HomeRouterDependency {
     
     let base: HomeBaseRouterDependency
     let seeAll: HomeSeeAllRouterDependency
+    let storyDetailBuilder: StoryDetailBuildable
     
     init(component: HomeComponent) {
         self.base = HomeBaseRouterComponent(component: component)
         self.seeAll = HomeSeeAllRouterComponent(component: component)
+        self.storyDetailBuilder = component.storyDeatilBuilder
     }
     
 }

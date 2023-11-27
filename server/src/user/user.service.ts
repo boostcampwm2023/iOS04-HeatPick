@@ -12,9 +12,6 @@ import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notV
 import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
-import { Inject } from '@nestjs/common/decorators/core/inject.decorator';
-import { Repository } from 'typeorm';
-import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -27,6 +24,12 @@ export class UserService {
     this.userRepository.loadEveryUser().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));
     });
+  }
+
+  async getBadges(userRecordId: number) {
+    const user = await this.userRepository.findOneByOption({ where: { userId: userRecordId }, relations: ['badges'] });
+    const badges = await user.badges;
+    return badges;
   }
 
   async getUsersFromTrie(seperatedStatement: string[], limit: number) {
@@ -53,10 +56,13 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
-  async getProfile(accessToken?: string, userId?: number): Promise<UserProfileDetailDataDto> {
-    const user = accessToken ? await this.userRepository.findOneById(accessToken) : await this.userRepository.findOneByUserIdWithStory(userId);
+  async getProfile(oauthId?: string, userId?: number): Promise<UserProfileDetailDataDto> {
+    const user = oauthId
+      ? await this.userRepository.findOneByOption({ where: { oauthId: oauthId }, relations: ['stories', 'stories.storyImages', 'profileImage'] })
+      : await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['stories', 'stories.storyImages', 'profileImage'] });
     const mainBadge = await user.representativeBadge;
     const stories = await user.stories;
+
     return {
       username: user.username,
       profileURL: user.profileImage.imageUrl,
@@ -65,7 +71,11 @@ export class UserService {
       experience: 0,
       maxExperience: 999,
       mainBadge: mainBadge,
-      storyList: stories,
+      storyList: await Promise.all(
+        stories.map(async (story: Story) => {
+          return { storyId: story.storyId, thumbnailImageURL: (await story.storyImages)[0].imageUrl, title: story.title, content: story.content, likeCount: story.likeCount, commentCount: story.commentCount };
+        }),
+      ),
     };
   }
 
@@ -92,11 +102,11 @@ export class UserService {
     return await user.stories;
   }
 
-  async update(accessToken: string, image: Express.Multer.File, { username, mainBadgeId }) {
-    const decodedToken = this.jwtService.decode(accessToken);
-    const userId = decodedToken.userId;
-
-    return await this.userRepository.update({ oauthId: userId }, { username: username });
+  async update(oauthId: string, image: Express.Multer.File, { username, selectedBadgeId }) {
+    const userWithBadges = await this.userRepository.findOneByIdWithBadges(oauthId);
+    const badges = await userWithBadges.badges;
+    const selectedBadge = badges.filter((badge) => badge.badgeId === selectedBadgeId);
+    return await this.userRepository.update({ oauthId: oauthId }, { username: username, representativeBadge: selectedBadge });
   }
 
   async resign(accessToken: string, message: string) {

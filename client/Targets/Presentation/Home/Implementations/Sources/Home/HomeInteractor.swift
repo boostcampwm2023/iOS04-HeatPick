@@ -8,6 +8,7 @@
 
 import ModernRIBs
 import HomeInterfaces
+import StoryInterfaces
 
 protocol HomeRouting: ViewableRouting {
     func attachRecommendDashboard()
@@ -19,6 +20,8 @@ protocol HomeRouting: ViewableRouting {
     func detachRecommendSeeAll()
     func attachHotPlaceSeeAll()
     func detachHotPlaceSeeAll()
+    func attachStoryDetail(storyID: Int)
+    func detachStoryDetail()
 }
 
 protocol HomePresentable: Presentable {
@@ -56,10 +59,18 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         router?.attachRecommendSeeAll()
     }
     
+    func recommendDashboardDidTapStory(id: Int) {
+        router?.attachStoryDetail(storyID: id)
+    }
+    
     // MARK: - HotPlace
     
     func hotPlaceDashboardDidTapSeeAll() {
         router?.attachHotPlaceSeeAll()
+    }
+    
+    func hotPlaceDashboardDidTapStory(id: Int) {
+        router?.attachStoryDetail(storyID: id)
     }
     
     // MARK: - Following
@@ -76,6 +87,12 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     
     func hotPlaceSeeAllDidTapClose() {
         router?.detachHotPlaceSeeAll()
+    }
+    
+    // MARK: - Story Detail
+    
+    func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
     }
     
 }

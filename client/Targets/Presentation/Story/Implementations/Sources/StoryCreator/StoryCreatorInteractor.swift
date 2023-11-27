@@ -9,23 +9,20 @@
 import ModernRIBs
 
 import DomainEntities
+import StoryInterfaces
 
-public protocol StoryCreatorRouting: ViewableRouting {
+protocol StoryCreatorRouting: ViewableRouting {
     func attachStoryEditor()
     func detachStoryEditor()
     
-    func attachStoryDetail(_ story: Story)
+    func attachStoryDetail(_ id: Int)
     func detachStoryDetail()
     
     func routeToDetail(of story: Story)
 }
 
-public protocol StoryCreatorPresentable: Presentable {
+protocol StoryCreatorPresentable: Presentable {
     var listener: StoryCreatorPresentableListener? { get set }
-}
-
-public protocol StoryCreatorListener: AnyObject {
-    func storyCreatorDidComplete()
 }
 
 final class StoryCreatorInteractor: PresentableInteractor<StoryCreatorPresentable>, StoryCreatorInteractable, StoryCreatorPresentableListener {

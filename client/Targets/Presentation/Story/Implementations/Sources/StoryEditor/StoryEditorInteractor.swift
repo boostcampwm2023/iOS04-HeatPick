@@ -13,21 +13,14 @@ import ModernRIBs
 import CoreKit
 import DomainEntities
 import DomainInterfaces
+import StoryInterfaces
 
-public protocol StoryEditorRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
-}
+protocol StoryEditorRouting: ViewableRouting {}
 
-public protocol StoryEditorPresentable: Presentable {
+protocol StoryEditorPresentable: Presentable {
     var listener: StoryEditorPresentableListener? { get set }
     func setSaveButton(_ enabled: Bool)
     func showFailure(_ error: Error)
-}
-
-public protocol StoryEditorListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
-    func storyEditorDidTapClose()
-    func storyDidCreate(_ story: Story)
 }
 
 protocol StoryEditorInteractorDependency: AnyObject {

@@ -11,6 +11,7 @@ import CoreKit
 import DesignKit
 
 struct HomeHotPlaceContentViewModel {
+    let id: Int
     let thumbnailImageURL: String
     let title: String
     let nickname: String
@@ -18,6 +19,8 @@ struct HomeHotPlaceContentViewModel {
 }
 
 final class HomeHotPlaceContentView: UIView {
+    
+    var id: Int?
     
     private enum Constant {
         static let imageWidth: CGFloat = 180
@@ -78,6 +81,7 @@ final class HomeHotPlaceContentView: UIView {
     
     
     func setup(model: HomeHotPlaceContentViewModel) {
+        id = model.id
         titleLabel.text = model.title
         nicknameLabel.text = model.nickname
         imageView.load(from: model.thumbnailImageURL)

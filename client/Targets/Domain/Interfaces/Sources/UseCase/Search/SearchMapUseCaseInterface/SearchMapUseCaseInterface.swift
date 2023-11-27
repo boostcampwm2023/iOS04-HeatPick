@@ -7,5 +7,8 @@
 //
 
 import Foundation
+import CoreLocation
 
-public protocol SearchMapUseCaseInterface {}
+public protocol SearchMapUseCaseInterface {
+    var location: CLLocationCoordinate2D? { get }
+}

@@ -11,12 +11,15 @@ import CoreKit
 import DesignKit
 
 struct HomeRecommendContentViewModel {
+    let id: Int
     let title: String
     let subtitle: String
     let imageURL: String
 }
 
 final class HomeRecommendContentView: UIView {
+    
+    var id: Int?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -60,6 +63,7 @@ final class HomeRecommendContentView: UIView {
     }
     
     func setup(model: HomeRecommendContentViewModel) {
+        id = model.id
         titleLabel.text = model.title
         subtitleLabel.text = model.subtitle
         imageView.load(from: model.imageURL)

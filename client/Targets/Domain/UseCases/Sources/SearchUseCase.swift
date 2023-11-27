@@ -8,15 +8,22 @@
 
 import Combine
 import Foundation
+import CoreLocation
 import DomainEntities
 import DomainInterfaces
 
 public final class SearchUseCase: SearchUseCaseInterface {
-
-    private let repository: SearchRepositoryInterface
     
-    public init(repository: SearchRepositoryInterface) {
+    public var location: CLLocationCoordinate2D? {
+        return locationService.location
+    }
+    
+    private let repository: SearchRepositoryInterface
+    private let locationService: LocationServiceInterface
+    
+    public init(repository: SearchRepositoryInterface, locationService: LocationServiceInterface) {
         self.repository = repository
+        self.locationService = locationService
     }
     
     public func fetchResult(searchText: String) async -> Result<DomainEntities.SearchResult, Error> {

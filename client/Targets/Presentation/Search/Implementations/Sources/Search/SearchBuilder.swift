@@ -29,18 +29,16 @@ final class SearchComponent: Component<SearchDependency>,
 final class SearchRouterComponent: SearchRouterDependency {
     
     let searchMapBuilder: SearchMapBuildable
-    let searchHomeListBuilder: SearchCurrentLocationStoryListBuildable
+    let searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable
     let searchResultBuilder: SearchResultBuildable
     
     init(component: SearchComponent) {
         self.searchMapBuilder = SearchMapBuilder(dependency: component)
-        self.searchHomeListBuilder = SearchCurrentLocationStoryListBuilder(dependency: component)
+        self.searchCurrentLocationBuilder = SearchCurrentLocationStoryListBuilder(dependency: component)
         self.searchResultBuilder = SearchResultBuilder(dependency: component)
     }
     
 }
-
-// MARK: - Builder
 
 public protocol SearchBuildable: Buildable {
     func build(withListener listener: SearchListener) -> ViewableRouting

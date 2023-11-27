@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put, ParseIntPipe, ValidationPipe, Param } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put, ParseIntPipe, ValidationPipe, Param, UseGuards, Req } from '@nestjs/common';
 
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
@@ -11,11 +11,21 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FollowRequest } from './dto/follow.request.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { Badge } from 'src/entities/badge.entity';
 
 @ApiTags('user')
 @Controller('user')
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @Get('badge')
+  @ApiOperation({ summary: '유저의 모든 뱃지를 리턴합니다..' })
+  @ApiResponse({ status: 200, type: Badge })
+  async getBadges(@Req() req: any) {
+    return this.userService.getBadges(req.user.userRecordId);
+  }
 
   @Post('badge')
   @ApiOperation({ summary: '유제 객체에 새로운 뱃지를 추가합니다.' })
@@ -25,17 +35,17 @@ export class UserController {
   }
 
   @Get('profile')
-  @ApiOperation({ summary: 'Get a profile' })
+  @ApiOperation({ summary: '유저 ID로 Profile를 불러옵니다.' })
   @ApiResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getProfile(@Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
     return this.userService.getProfile(undefined, userId);
   }
 
   @Get('myProfile')
-  @ApiOperation({ summary: 'Get my profile' })
+  @ApiOperation({ summary: '자신의 토큰으로 자신의 Profile을 불러옵니다.' })
   @ApiResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
-  async getMyProfile(@Headers('accessToken') accessToken: string): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(accessToken, undefined);
+  async getMyProfile(@Req() req: any): Promise<UserProfileDetailDataDto> {
+    return this.userService.getProfile(req.user.userId, undefined);
   }
 
   @Put('badge')
@@ -53,7 +63,7 @@ export class UserController {
     return this.userService.addBadgeExp(transformedDto);
   }
   @Get('story')
-  @ApiOperation({ summary: `Get All user's storyList` })
+  @ApiOperation({ summary: `해당 userId에 해당하는 유저의 스토리를 모두 불러옵니다.` })
   @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [Story] })
   async getStoryList(@Query('userId', ParseIntPipe) userId: number): Promise<Story[]> {
     return this.userService.getStoryList(userId);
@@ -61,15 +71,15 @@ export class UserController {
 
   @Patch('update')
   @UseInterceptors(FileInterceptor('image'))
-  @ApiOperation({ summary: `Update user's info` })
+  @ApiOperation({ summary: `자신의 프로필을 수정합니다.` })
   @ApiResponse({ status: 201, description: '사용자의 정보를 성공적으로 수정했습니다.' })
-  async update(@UploadedFile() image: Express.Multer.File, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) updateUserDto: UserUpdateDto) {
-    const { username, mainBadgeId } = updateUserDto;
-    return this.userService.update(accessToken, image, { username, mainBadgeId });
+  async update(@UploadedFile() image: Express.Multer.File, @Req() req: any, @Body(new ValidationPipe({ transform: true })) updateUserDto: UserUpdateDto) {
+    const { username, selectedBadgeId } = updateUserDto;
+    return this.userService.update(req.user.userId, image, { username, selectedBadgeId });
   }
 
   @Delete('resign')
-  @ApiOperation({ summary: `resign user` })
+  @ApiOperation({ summary: `회원 탈퇴` })
   @ApiResponse({ status: 201, description: '회원 탈퇴 되었습니다.' })
   async resign(@Headers('accessToken') accessToken: string, @Body() message: string) {
     return this.userService.resign(accessToken, message);
@@ -83,11 +93,10 @@ export class UserController {
     required: true,
   })
   @ApiResponse({ status: 200, description: 'Follow-Follower 관계가 성공적으로 연결되었습니다.' })
-  async addfollow(@Body() followRequest: FollowRequest) {
-    // 현재 guard가 없는 상황이므로, follower의 id는 임시로 5로 지정하였습니다.
+  async addfollow(@Body() followRequest: FollowRequest, @Req() req: any) {
     const transformedDto = plainToClass(FollowRequest, followRequest);
     const followId = transformedDto.followId;
-    return await this.userService.addFollowing(followId, 5);
+    return await this.userService.addFollowing(followId, req.user.userRecordId);
   }
 
   @Delete('follow')
@@ -98,19 +107,17 @@ export class UserController {
     required: true,
   })
   @ApiResponse({ status: 200, description: '언팔로우 시도가 정상적으로 처리되었습니다.' })
-  async unfollow(@Body() followRequest: FollowRequest) {
-    // 현재 guard가 없는 상황이므로, follower의 id는 임시로 5로 지정하였습니다.
+  async unfollow(@Body() followRequest: FollowRequest, @Req() req: any) {
     const transformedDto = plainToClass(FollowRequest, followRequest);
     const followId = transformedDto.followId;
-    return await this.userService.unFollow(followId, 5);
+    return await this.userService.unFollow(followId, req.user.userRecordId);
   }
 
   @Get('follow')
   @ApiOperation({ summary: '현재 유저의 팔로우 목록을 리턴합니다.' })
   @ApiResponse({ status: 200, description: '현재 유저의 팔로우의 Id 목록입니다' })
-  async getMyFollows() {
-    // 현재 guard가 없는 상황이므로 5로 고정하였습니다.
-    const currentUserId = 5;
+  async getMyFollows(@Req() req: any) {
+    const currentUserId = req.user.userRecordId;
     const follows = await this.userService.getFollows(currentUserId);
     const transformedFollows = follows.map((follow) => userEntityToUserObj(follow));
     return { follows: transformedFollows };
@@ -119,9 +126,8 @@ export class UserController {
   @Get('follower')
   @ApiOperation({ summary: '현재 유저의 팔로워 목록을 리턴합니다.' })
   @ApiResponse({ status: 200, description: '현재 유저의 팔로워들의 Id 목록입니다' })
-  async getMyFollowers() {
-    // 현재 guard가 없는 상황이므로 5로 고정하였습니다.
-    const currentUserId = 5;
+  async getMyFollowers(@Req() req: any) {
+    const currentUserId = req.user.userRecordId;
     const followers = await this.userService.getFollowers(currentUserId);
     const transformedFollowers = followers.map((follower) => userEntityToUserObj(follower));
     return { followers: transformedFollowers };

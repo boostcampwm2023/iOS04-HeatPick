@@ -12,7 +12,7 @@ export class UserUpdateDto {
   @IsNotEmpty({ message: 'mainBadgeId 필수입니다' })
   @Transform(({ value }): number => parseInt(value, 10))
   @IsNumber()
-  mainBadgeId: number;
+  selectedBadgeId: number;
 
   @ApiProperty()
   image: Express.Multer.File;

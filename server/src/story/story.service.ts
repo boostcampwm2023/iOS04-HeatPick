@@ -19,15 +19,20 @@ import { StoryImage } from '../entities/storyImage.entity';
 import { StoryDetailUserDataDto } from './dto/detail/story.detail.user.data';
 import { Badge } from '../entities/badge.entity';
 import { Place } from '../entities/place.entity';
+import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
+import { CategoryRepository } from '../category/category.repository';
+import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
+import { Category } from '../entities/category.entity';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class StoryService {
   constructor(
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
-    private imageService: ImageService,
     private storyTitleJasoTrie: StoryJasoTrie,
-    private jwtService: JwtService,
+    private categoryRepository: CategoryRepository,
+    private userService: UserService,
   ) {
     this.loadSearchHistoryTrie();
   }
@@ -39,12 +44,26 @@ export class StoryService {
     });
   }
 
-  public async create(userId: string, { title, content, category, place, images, badgeId, date }): Promise<number> {
+  public async createMetaData(userId: string) {
+    const user: User = await this.userRepository.findOneByIdWithBadges(userId);
+    const categoryList = await this.categoryRepository.finAll();
+    const metaData: CreateStoryMetaDto = {
+      badges: (await user.badges).map((badge: Badge) => {
+        return { badgeId: badge.badgeId, badgeName: badge.badgeName };
+      }),
+      categories: categoryList,
+    };
+    return metaData;
+  }
+
+  public async create(userId: string, { title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOneByIdWithBadges(userId);
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
+    const category: Category = await this.categoryRepository.findById(categoryId);
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     user.stories = Promise.resolve([...(await user.stories), story]);
     await this.userRepository.createUser(user);
+    if (badge) this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: user.userId, exp: 10 });
     return story.storyId;
   }
 
@@ -87,9 +106,10 @@ export class StoryService {
     return storyDetailViewData;
   }
 
-  public async update(userId: string, { storyId, title, content, category, place, images, badgeId, date }): Promise<number> {
+  public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOneById(userId);
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
+    const category: Category = await this.categoryRepository.findById(categoryId);
     const newStory: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
 
     user.stories = Promise.resolve(
@@ -115,7 +135,7 @@ export class StoryService {
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO) {
-    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10, relations: ['user'] });
+    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10, relations: ['user', 'category'] });
 
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;
@@ -133,8 +153,12 @@ export class StoryService {
         return null;
       }),
     );
-
-    return results.filter((result) => result !== null);
+    const storyArr = await Promise.all(
+      results.map(async (story) => {
+        return storyEntityToObjWithOneImg(story);
+      }),
+    );
+    return storyArr.filter((result) => result !== null);
   }
 
   async getRecommendedStory() {
@@ -144,25 +168,16 @@ export class StoryService {
           likeCount: 'DESC',
         },
         take: 10,
-        relations: ['user', 'user.profileImage', 'storyImages'],
-        select: ['storyId', 'title', 'likeCount', 'createAt', 'user.userId', 'user.username', 'user.profileImage'],
+        relations: ['user', 'user.profileImage', 'storyImages', 'category'],
       });
 
-      const formattedStories = Promise.all(
+      const storyArr = await Promise.all(
         stories.map(async (story) => {
-          const storyImageObjs = await story.storyImages;
-          return {
-            storyId: story.storyId,
-            title: story.title,
-            likeCount: story.likeCount,
-            createAt: story.createAt,
-            user: story.user,
-            storyImages: storyImageObjs.map((image) => image.imageUrl),
-          };
+          return storyEntityToObjWithOneImg(story);
         }),
       );
 
-      return formattedStories;
+      return storyArr;
     } catch (error) {
       throw error;
     }

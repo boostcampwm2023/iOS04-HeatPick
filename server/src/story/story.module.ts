@@ -9,11 +9,16 @@ import { userProviders } from 'src/user/user.providers';
 import { ImageService } from '../image/image.service';
 import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { JwtService } from '@nestjs/jwt';
+import { CategoryRepository } from '../category/category.repository';
+import { CategoryProvider } from '../category/category.provider';
+import { UserService } from 'src/user/user.service';
+import { UserModule } from 'src/user/user.module';
+import { UserJasoTrie } from 'src/search/trie/userTrie';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UserModule],
   controllers: [StoryController],
-  providers: [...storyProvider, ...userProviders, StoryService, StoryRepository, UserRepository, ImageService, StoryJasoTrie, JwtService],
+  providers: [...storyProvider, ...userProviders, ...CategoryProvider, UserJasoTrie, UserService, StoryService, StoryRepository, UserRepository, ImageService, StoryJasoTrie, JwtService, CategoryRepository],
   exports: [StoryRepository, StoryService],
 })
 export class StoryModule {}

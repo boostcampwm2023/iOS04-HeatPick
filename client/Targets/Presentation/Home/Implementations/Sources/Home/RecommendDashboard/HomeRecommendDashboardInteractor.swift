@@ -20,6 +20,7 @@ protocol HomeRecommendDashboardPresentable: Presentable {
 
 protocol HomeRecommendDashboardListener: AnyObject {
     func recommendDashboardDidTapSeeAll()
+    func recommendDashboardDidTapStory(id: Int)
 }
 
 protocol HomeRecommendDashboardInteractorDependency: AnyObject {
@@ -55,11 +56,15 @@ final class HomeRecommendDashboardInteractor: PresentableInteractor<HomeRecommen
         listener?.recommendDashboardDidTapSeeAll()
     }
     
+    func didTap(storyID: Int) {
+        listener?.recommendDashboardDidTapStory(id: storyID)
+    }
+    
     private func fetchRecommendPlace() {
         Task {
             await dependency.recommendUseCase.fetchRecommendPlace(lat: 30, lon: 40)
-                .onSuccess(on: .main, with: self) { this, stories in
-                    this.performAfterFecthingRecommendPlace(stories: stories)
+                .onSuccess(on: .main, with: self) { this, place in
+                    this.performAfterFecthingRecommendPlace(place: place)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)
@@ -67,15 +72,15 @@ final class HomeRecommendDashboardInteractor: PresentableInteractor<HomeRecommen
         }
     }
     
-    private func performAfterFecthingRecommendPlace(stories: [RecommendStory]) {
-        let model = makeModel(stories: stories)
+    private func performAfterFecthingRecommendPlace(place: RecommendPlace) {
+        let model = makeModel(place: place)
         presenter.setup(model: model)
     }
     
-    private func makeModel(stories: [RecommendStory]) -> HomeRecommendDashboardViewModel  {
+    private func makeModel(place: RecommendPlace) -> HomeRecommendDashboardViewModel  {
         return .init(
-            title: "TODO: - 종로구",
-            contentList: stories.map(\.toModel)
+            title: place.title,
+            contentList: place.stories.map(\.toModel)
         )
     }
     
@@ -85,9 +90,10 @@ private extension RecommendStory {
     
     var toModel: HomeRecommendContentViewModel {
         return .init(
+            id: id,
             title: title,
             subtitle: content,
-            imageURL: imageURLs.first ?? ""
+            imageURL: imageURL
         )
     }
     
