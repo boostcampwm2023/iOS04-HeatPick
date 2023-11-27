@@ -14,7 +14,7 @@ public protocol StoryCreatorRouting: ViewableRouting {
     func attachStoryEditor()
     func detachStoryEditor()
     
-    func attachStoryDetail(_ story: Story)
+    func attachStoryDetail(_ id: Int)
     func detachStoryDetail()
     
     func routeToDetail(of story: Story)

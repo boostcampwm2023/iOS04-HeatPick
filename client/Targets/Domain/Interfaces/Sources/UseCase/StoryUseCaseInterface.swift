@@ -13,5 +13,5 @@ import DomainEntities
 public protocol StoryUseCaseInterface: AnyObject {
     
     func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error>
-    func requestStoryDetail(story: Story) async -> Result<Story, Error>
+    func requestStoryDetail(story: Int) async -> Result<Story, Error>
 }

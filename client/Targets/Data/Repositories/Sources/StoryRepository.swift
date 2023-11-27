@@ -28,7 +28,7 @@ public final class StoryRepository: StoryRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
-    public func requestStoryDetail(story: Story) async -> Result<Story, Error> {
+    public func requestStoryDetail(story: Int) async -> Result<Story, Error> {
         let target = StoryAPI.storyDetail(story)
         let request: Result<StoryDetailResponseDTO, Error> = await session.request(target)
         

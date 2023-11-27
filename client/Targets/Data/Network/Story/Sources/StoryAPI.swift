@@ -15,7 +15,7 @@ import NetworkAPIKit
 
 public enum StoryAPI {
     case newStory(StoryContent)
-    case storyDetail(Story)
+    case storyDetail(Int)
 }
 
 extension StoryAPI: Target {

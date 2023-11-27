@@ -25,7 +25,7 @@ public final class StoryUseCase: StoryUseCaseInterface {
         return await repository.requestCreateStory(storyContent: storyContent)
     }
     
-    public func requestStoryDetail(story: Story) async -> Result<Story, Error> {
+    public func requestStoryDetail(story: Int) async -> Result<Story, Error> {
         return await repository.requestStoryDetail(story: story)
     }
 }

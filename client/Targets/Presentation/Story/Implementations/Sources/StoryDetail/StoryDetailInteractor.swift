@@ -27,7 +27,7 @@ public protocol StoryDetailListener: AnyObject {
 }
 
 protocol StoryDetailInteractorDependency: AnyObject {
-    var story: Story { get }
+    var storyId: Int { get }
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
@@ -49,7 +49,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
             guard let self else { return }
             await dependency
                 .storyUseCase
-                .requestStoryDetail(story: dependency.story)
+                .requestStoryDetail(story: dependency.storyId)
                 .onSuccess(on: .main, with: self) { this, story in
                     guard let model = story.toViewModel() else { return }
                     this.presenter.setup(model: model)

@@ -17,13 +17,13 @@ public protocol StoryDetailDependency: Dependency {
 
 final class StoryDetailComponent: Component<StoryDetailDependency>, StoryDetailInteractorDependency {
     
-    let story: Story
+    let storyId: Int
     var storyUseCase: StoryUseCaseInterface {
         dependency.storyUseCase
     }
     
-    init(dependency: StoryDetailDependency, story: Story) {
-        self.story = story
+    init(dependency: StoryDetailDependency, storyId: Int) {
+        self.storyId = storyId
         super.init(dependency: dependency)
     }
     
@@ -32,7 +32,7 @@ final class StoryDetailComponent: Component<StoryDetailDependency>, StoryDetailI
 // MARK: - Builder
 
 public protocol StoryDetailBuildable: Buildable {
-    func build(withListener listener: StoryDetailListener, story: Story) -> StoryDetailRouting
+    func build(withListener listener: StoryDetailListener, storyId: Int) -> StoryDetailRouting
 }
 
 public final class StoryDetailBuilder: Builder<StoryDetailDependency>, StoryDetailBuildable {
@@ -41,8 +41,8 @@ public final class StoryDetailBuilder: Builder<StoryDetailDependency>, StoryDeta
         super.init(dependency: dependency)
     }
 
-    public func build(withListener listener: StoryDetailListener, story: Story) -> StoryDetailRouting {
-        let component = StoryDetailComponent(dependency: dependency, story: story)
+    public func build(withListener listener: StoryDetailListener, storyId: Int) -> StoryDetailRouting {
+        let component = StoryDetailComponent(dependency: dependency, storyId: storyId)
         let viewController = StoryDetailViewController()
         let interactor = StoryDetailInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
