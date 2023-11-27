@@ -6,7 +6,11 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+
 import ModernRIBs
+
+import CoreKit
 import DomainInterfaces
 
 protocol SearchBeforeRecentSearchesDashboardRouting: ViewableRouting { }
@@ -18,19 +22,22 @@ protocol SearchBeforeRecentSearchesDashboardPresentable: Presentable {
     func append(model: String)
 }
 
-protocol SearchBeforeRecentSearchesDashboardListener: AnyObject { }
+protocol SearchBeforeRecentSearchesDashboardListener: AnyObject {
+    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
+}
 
 protocol SearchBeforeRecentSearchesDashboardInteractorDependency: AnyObject {
     var searchBeforeRecentSearchesUsecase: SearchBeforeRecentSearchesUseCaseInterface { get }
 }
 
 final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor<SearchBeforeRecentSearchesDashboardPresentable>, SearchBeforeRecentSearchesDashboardInteractable, SearchBeforeRecentSearchesDashboardPresentableListener {
-
+    
     weak var router: SearchBeforeRecentSearchesDashboardRouting?
     weak var listener: SearchBeforeRecentSearchesDashboardListener?
     
+    private var cancellables = Set<AnyCancellable>()
     private let dependecy: SearchBeforeRecentSearchesDashboardInteractorDependency
-
+    
     init(
         presenter: SearchBeforeRecentSearchesDashboardPresentable,
         dependency: SearchBeforeRecentSearchesDashboardInteractorDependency
@@ -39,12 +46,17 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
         presenter.setup(models: dependecy.searchBeforeRecentSearchesUsecase.fetchRecentSearches())
+        listener?.endEditingSearchTextPublisher
+            .sink { [weak self] text in
+                guard let text = self?.dependecy.searchBeforeRecentSearchesUsecase.appendRecentSearch(searchText: text) else { return }
+                self?.presenter.append(model: text)
+            }.store(in: &cancellables)
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
     }
