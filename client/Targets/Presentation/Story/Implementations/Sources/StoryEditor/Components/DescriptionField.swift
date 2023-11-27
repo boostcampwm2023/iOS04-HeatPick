@@ -63,11 +63,11 @@ private extension DescriptionField {
 
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor),
             
             textField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10),
-            textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
-            textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
+            textField.leadingAnchor.constraint(equalTo: leadingAnchor),
+            textField.trailingAnchor.constraint(equalTo: trailingAnchor),
             textField.bottomAnchor.constraint(equalTo: bottomAnchor),
             textField.heightAnchor.constraint(greaterThanOrEqualToConstant: 125)
         ])

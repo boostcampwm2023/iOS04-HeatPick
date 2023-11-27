@@ -55,7 +55,7 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = Constant.stackViewSpacing
-        stackView.alignment = .fill
+        stackView.alignment = .center
         stackView.distribution = .fill
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -133,9 +133,9 @@ private extension StoryEditorViewController {
     
     func setupViews() {
         view.backgroundColor = .hpWhite
-        [navigationView, scrollView, saveButton].forEach(view.addSubview)
+        [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
-        [titleField, imageField, descriptionField, attributeField].forEach(stackView.addArrangedSubview)
+        [titleField, imageField, descriptionField, attributeField, saveButton].forEach(stackView.addArrangedSubview)
         view.keyboardLayoutGuide.followsUndockedKeyboard = true
 
         NSLayoutConstraint.activate([
@@ -155,14 +155,22 @@ private extension StoryEditorViewController {
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             
-            saveButton.heightAnchor.constraint(equalToConstant: 50),
-            saveButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
-            saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            saveButton.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -Constant.keyboardSpacing)
+            titleField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            titleField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
+            imageField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+            imageField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+            descriptionField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            descriptionField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
+            attributeField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            attributeField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
+            saveButton.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            saveButton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
+            
+            saveButton.heightAnchor.constraint(equalToConstant: 50)
         ])
         
         scrollView.contentInset = .init(top: 40, left: 0,
-                                        bottom: (Constants.actionButtonHeight + Constant.stackViewSpacing + Constant.keyboardSpacing),
+                                        bottom: Constant.keyboardSpacing,
                                         right: 0)
         saveButton.layer.cornerRadius = Constants.cornerRadiusMedium
         
