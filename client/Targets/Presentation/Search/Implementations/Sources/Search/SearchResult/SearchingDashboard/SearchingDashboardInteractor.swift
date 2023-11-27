@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
 protocol SearchingDashboardRouting: ViewableRouting { }
 
@@ -19,12 +20,23 @@ protocol SearchingDashboardPresentable: Presentable {
 
 protocol SearchingDashboardListener: AnyObject { }
 
+protocol SearchingDashboardInteractorDependency: AnyObject {
+    var searhResultsearchingUseCase: SearhResultSearchingUseCaseInterface { get }
+}
+
 final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboardPresentable>, SearchingDashboardInteractable, SearchingDashboardPresentableListener {
 
     weak var router: SearchingDashboardRouting?
     weak var listener: SearchingDashboardListener?
+    
+    private let dependecy: SearchingDashboardInteractorDependency
+    
 
-    override init(presenter: SearchingDashboardPresentable) {
+    init(
+        presenter: SearchingDashboardPresentable,
+        dependency: SearchingDashboardInteractorDependency
+    ) {
+        self.dependecy = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }

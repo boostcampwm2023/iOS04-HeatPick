@@ -23,17 +23,20 @@ import AuthInterfaces
 import AuthImplementations
 import HomeInterfaces
 import HomeImplementations
+import SearchAPI
+import SearchInterfaces
 import SearchImplementations
 import StoryImplementations
 import MyInterfaces
 import MyImplementations
+
 
 final class AppRootComponent: Component<AppRootDependency>,
                               AppRootRouterDependency,
                               AppRootInteractorDependency,
                               SignInDependency,
                               HomeDependency,
-                              SearchHomeDependency,
+                              SearchDependency,
                               StoryCreatorDependency,
                               MyPageDependency {
     
@@ -43,6 +46,7 @@ final class AppRootComponent: Component<AppRootDependency>,
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
     let storyUseCase: StoryUseCaseInterface
     let myPageUseCase: MyPageUseCaseInterface
+    let searchUseCase: SearchUseCaseInterface
     
     let naverLoginRepository: NaverLoginRepositoryInterface
     let signOutRequestService: SignOutRequestServiceInterface
@@ -55,8 +59,8 @@ final class AppRootComponent: Component<AppRootDependency>,
         HomeBuilder(dependency: self)
     }()
     
-    lazy var searchBuilder: SearchHomeBuildable = {
-        SearchHomeBuilder(dependency: self)
+    lazy var searchBuilder: SearchBuildable = {
+        SearchBuilder(dependency: self)
     }()
     
     lazy var storyCreatorBuilder: StoryCreatorBuildable = {
@@ -90,6 +94,9 @@ final class AppRootComponent: Component<AppRootDependency>,
         let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [MyURLProtocol.self])
         self.myPageUseCase = MyPageUseCase(repository: MyPageRepository(session: myPageNetworkProvider))
         self.signOutRequestService = SignoutService.shared
+        
+        let searchNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [SearchURLProtocol.self])
+        self.searchUseCase = SearchUseCase(repository: SearchRepository(session: searchNetworkProvider))
         
         super.init(dependency: dependency)
     }

@@ -7,10 +7,9 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SearchCurrentLocationStoryListRouting: ViewableRouting {
-    
-}
+protocol SearchCurrentLocationStoryListRouting: ViewableRouting { }
 
 protocol SearchCurrentLocationStoryListPresentable: Presentable {
     var listener: SearchCurrentLocationStoryListPresentableListener? { get set }
@@ -22,12 +21,22 @@ protocol SearchCurrentLocationStoryListPresentable: Presentable {
 
 protocol SearchCurrentLocationStoryListListener: AnyObject { }
 
+protocol SearchCurrentLocationStoryListInteractorDependency: AnyObject {
+    var searchCurrentLocationStoryListUseCase: SearchCurrentLocationStoryListUseCaseInterface { get }
+}
+
 final class SearchCurrentLocationStoryListInteractor: PresentableInteractor<SearchCurrentLocationStoryListPresentable>, SearchCurrentLocationStoryListInteractable, SearchCurrentLocationStoryListPresentableListener {
 
     weak var router: SearchCurrentLocationStoryListRouting?
     weak var listener: SearchCurrentLocationStoryListListener?
+    
+    private let dependency: SearchCurrentLocationStoryListInteractorDependency
 
-    override init(presenter: SearchCurrentLocationStoryListPresentable) {
+    init(
+        presenter: SearchCurrentLocationStoryListPresentable,
+        dependency: SearchCurrentLocationStoryListInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }

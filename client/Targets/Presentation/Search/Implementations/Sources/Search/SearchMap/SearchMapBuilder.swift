@@ -7,15 +7,14 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
 protocol SearchMapDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var searchMapUseCase: SearchMapUseCaseInterface { get }
 }
 
-final class SearchMapComponent: Component<SearchMapDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+final class SearchMapComponent: Component<SearchMapDependency>, SearchMapInteractorDependency {
+    var searchMapUseCase: SearchMapUseCaseInterface { dependency.searchMapUseCase }
 }
 
 // MARK: - Builder
@@ -33,8 +32,9 @@ final class SearchMapBuilder: Builder<SearchMapDependency>, SearchMapBuildable {
     func build(withListener listener: SearchMapListener) -> SearchMapRouting {
         let component = SearchMapComponent(dependency: dependency)
         let viewController = SearchMapViewController()
-        let interactor = SearchMapInteractor(presenter: viewController)
+        let interactor = SearchMapInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return SearchMapRouter(interactor: interactor, viewController: viewController)
     }
+    
 }

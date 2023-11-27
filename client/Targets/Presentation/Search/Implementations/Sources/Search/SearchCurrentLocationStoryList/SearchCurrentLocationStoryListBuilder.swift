@@ -7,13 +7,15 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
 protocol SearchCurrentLocationStoryListDependency: Dependency {
-
+    var searchCurrentLocationStoryListUseCase: SearchCurrentLocationStoryListUseCaseInterface { get }
 }
 
-final class SearchCurrentLocationStoryListComponent: Component<SearchCurrentLocationStoryListDependency> {
-
+final class SearchCurrentLocationStoryListComponent: Component<SearchCurrentLocationStoryListDependency>, SearchCurrentLocationStoryListInteractorDependency {
+    
+    var searchCurrentLocationStoryListUseCase: SearchCurrentLocationStoryListUseCaseInterface { dependency.searchCurrentLocationStoryListUseCase }
 }
 
 // MARK: - Builder
@@ -31,7 +33,7 @@ final class SearchCurrentLocationStoryListBuilder: Builder<SearchCurrentLocation
     func build(withListener listener: SearchCurrentLocationStoryListListener) -> SearchCurrentLocationStoryListRouting {
         let component = SearchCurrentLocationStoryListComponent(dependency: dependency)
         let viewController = SearchCurrentLocationStoryListViewController()
-        let interactor = SearchCurrentLocationStoryListInteractor(presenter: viewController)
+        let interactor = SearchCurrentLocationStoryListInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return SearchCurrentLocationStoryListRouter(interactor: interactor, viewController: viewController)
     }
