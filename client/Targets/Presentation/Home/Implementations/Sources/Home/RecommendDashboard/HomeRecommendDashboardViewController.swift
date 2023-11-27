@@ -18,6 +18,7 @@ struct HomeRecommendDashboardViewModel {
 
 protocol HomeRecommendDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
+    func didTap(storyID: Int)
 }
 
 final class HomeRecommendDashboardViewController: UIViewController, HomeRecommendDashboardPresentable, HomeRecommendDashboardViewControllable {
@@ -85,6 +86,7 @@ final class HomeRecommendDashboardViewController: UIViewController, HomeRecommen
         scrollView.isHidden = isEmpty
         model.contentList.forEach { contentModel in
             let contentView = HomeRecommendContentView()
+            contentView.addTapGesture(target: self, action: #selector(contentViewDidTap))
             contentView.clipsToBounds = true
             contentView.setup(model: contentModel)
             contentView.layer.cornerRadius = Constants.cornerRadiusMedium
@@ -98,6 +100,18 @@ extension HomeRecommendDashboardViewController: SeeAllViewDelegate {
     
     func seeAllViewDidTapSeeAll() {
         listener?.didTapSeeAll()
+    }
+    
+}
+
+private extension HomeRecommendDashboardViewController {
+    
+    @objc func contentViewDidTap(_ gesture: UITapGestureRecognizer) {
+        guard let contentView = gesture.view as? HomeRecommendContentView,
+              let storyID = contentView.id else {
+            return
+        }
+        listener?.didTap(storyID: storyID)
     }
     
 }
