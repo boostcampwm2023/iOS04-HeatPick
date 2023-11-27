@@ -42,10 +42,11 @@ public final class SearchRepository: SearchRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
+    // TODO: Combine으로 ??
     public func fetchRecommendText(searchText: String) async -> Result<[String], Error> {
         let target = SearchAPI.recommend(searchText: searchText)
-        let request: Result<[String], Error> = await session.request(target)
-        return request
+        let request: Result<SearchRecommendResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDmain() }
     }
     
     public func fetchRecentSearches() -> [String] {
