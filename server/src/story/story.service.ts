@@ -23,7 +23,7 @@ import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
 import { CategoryRepository } from '../category/category.repository';
 import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 import { Category } from '../entities/category.entity';
-
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class StoryService {
@@ -32,6 +32,7 @@ export class StoryService {
     private userRepository: UserRepository,
     private storyTitleJasoTrie: StoryJasoTrie,
     private categoryRepository: CategoryRepository,
+    private userService: UserService,
   ) {
     this.loadSearchHistoryTrie();
   }
@@ -62,6 +63,7 @@ export class StoryService {
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     user.stories = Promise.resolve([...(await user.stories), story]);
     await this.userRepository.createUser(user);
+    if (badge) this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: user.userId, exp: 10 });
     return story.storyId;
   }
 
