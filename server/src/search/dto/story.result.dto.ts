@@ -18,4 +18,7 @@ export class StoryResultDto {
 
   @ApiProperty({ description: '스토리에 있는 이미지의 URL' })
   storyImage: String;
+
+  @ApiProperty({ description: '카테고리의 id' })
+  categoryId: number;
 }
