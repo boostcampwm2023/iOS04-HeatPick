@@ -58,11 +58,11 @@ private extension TitleField {
 
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
             
             textField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10),
-            textField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            textField.trailingAnchor.constraint(equalTo: trailingAnchor),
+            textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             textField.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         

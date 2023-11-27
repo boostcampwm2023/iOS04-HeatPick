@@ -9,6 +9,8 @@
 import UIKit
 import PhotosUI
 
+import DesignKit
+
 final class ImageField: UIView {
     
     var images: [Data] {
@@ -70,7 +72,7 @@ private extension ImageField {
         
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
             
             scrollView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -83,6 +85,7 @@ private extension ImageField {
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
         ])
+        scrollView.contentInset = .init(top: 0, left: Constants.leadingOffset, bottom: 0, right: -Constants.traillingOffset)
     }
     
     func addImageSelector() {

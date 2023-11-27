@@ -26,6 +26,7 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
     
     private enum Constant {
         static let navBarTitle = "스토리 생성"
+        static let keyboardSpacing: CGFloat = 10
         static let scrollViewInset: CGFloat = 20
         static let stackViewSpacing: CGFloat = 30
     }
@@ -132,10 +133,11 @@ private extension StoryEditorViewController {
     
     func setupViews() {
         view.backgroundColor = .hpWhite
-        [navigationView, scrollView].forEach(view.addSubview)
+        [navigationView, scrollView, saveButton].forEach(view.addSubview)
         scrollView.addSubview(stackView)
-        [titleField, imageField, descriptionField, attributeField, saveButton].forEach(stackView.addArrangedSubview)
-        
+        [titleField, imageField, descriptionField, attributeField].forEach(stackView.addArrangedSubview)
+        view.keyboardLayoutGuide.followsUndockedKeyboard = true
+
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -145,16 +147,23 @@ private extension StoryEditorViewController {
             scrollView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -10),
-            scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1, constant: Constant.scrollViewInset * 2),
+            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             
-            saveButton.heightAnchor.constraint(equalToConstant: 50)
+            saveButton.heightAnchor.constraint(equalToConstant: 50),
+            saveButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
+            saveButton.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -Constant.keyboardSpacing)
         ])
         
-        scrollView.contentInset = .init(top: 40, left: Constant.scrollViewInset, bottom: 0, right: Constant.scrollViewInset)
+        scrollView.contentInset = .init(top: 40, left: 0,
+                                        bottom: (Constants.actionButtonHeight + Constant.stackViewSpacing + Constant.keyboardSpacing),
+                                        right: 0)
         saveButton.layer.cornerRadius = Constants.cornerRadiusMedium
         
         view.addTapGesture(target: self, action: #selector(dismissKeyboard))

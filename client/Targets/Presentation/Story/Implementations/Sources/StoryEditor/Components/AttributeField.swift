@@ -8,6 +8,7 @@
 
 import UIKit
 
+import DesignKit
 import DomainEntities
 
 protocol AttributeFieldDelegate: AnyObject {
@@ -83,8 +84,8 @@ private extension AttributeField {
         [categoryPicker, Separator(), datePicker, Separator(), locationPicker, Separator(), badgePicker].forEach(stackView.addArrangedSubview)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
