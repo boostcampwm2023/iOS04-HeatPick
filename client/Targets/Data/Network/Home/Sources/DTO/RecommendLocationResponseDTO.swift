@@ -15,26 +15,22 @@ public struct RecommendLocationResponseDTO: Decodable {
         public let storyId: Int
         public let title: String
         public let content: String
-        public let storyImages: [String]
-        public let likeCount: Int
-        public let createAt: String // "2023-11-21T03:55:45.161Z"
+        public let storyImage: String
     }
     
-    public let recommendStories: [RecommendStoryResponse]
+    public let recommededStories: [RecommendStoryResponse]
     
 }
 
 public extension RecommendLocationResponseDTO {
     
     func toDomain() -> [RecommendStory] {
-        return recommendStories
+        return recommededStories
             .map { RecommendStory(
                 id: $0.storyId,
                 title: $0.title,
                 content: $0.content,
-                imageURLs: $0.storyImages,
-                likeCount: $0.likeCount,
-                createAt: $0.createAt
+                imageURL: $0.storyImage
             )}
     }
     
