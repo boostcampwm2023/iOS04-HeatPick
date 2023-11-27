@@ -84,9 +84,12 @@ final class AppRootComponent: Component<AppRootDependency>,
             signInUseCase: SignInUseCase(naverLoginRepository: naverLoginRepository)
         )
         
+        let locationService = LocationService()
+        locationService.startUpdatingLocation()
+        
         let homeNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [HomeURLProtocol.self])
-        self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider))
-        self.locationAuthorityUseCase = LocationAuthorityUseCase(service: LocationService())
+        self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider), locationService: locationService)
+        self.locationAuthorityUseCase = LocationAuthorityUseCase(service: locationService)
         
         let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [StoryURLProtocol.self])
         self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider))

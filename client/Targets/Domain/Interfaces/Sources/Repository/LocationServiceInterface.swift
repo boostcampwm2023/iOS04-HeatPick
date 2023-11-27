@@ -18,5 +18,6 @@ public protocol LocationServiceInterface: AnyObject {
     func stopUpdatingLocation()
     func requestLocation() -> AnyPublisher<CLLocationCoordinate2D, Error>
     func requestPermssion()
+    func requestLocality() async throws -> String?
     
 }

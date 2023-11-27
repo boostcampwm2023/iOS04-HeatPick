@@ -46,6 +46,13 @@ public final class LocationService: NSObject, LocationServiceInterface {
         manager.requestWhenInUseAuthorization()
     }
     
+    public func requestLocality() async throws -> String? {
+        guard let location = manager.location else { return nil }
+        let geoCoder: CLGeocoder = CLGeocoder()
+        let place = try await geoCoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "ko_kr"))
+        return place.last?.locality
+    }
+    
 }
 
 extension LocationService: CLLocationManagerDelegate {

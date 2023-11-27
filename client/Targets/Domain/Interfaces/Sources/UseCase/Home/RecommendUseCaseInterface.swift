@@ -11,6 +11,6 @@ import DomainEntities
 
 public protocol RecommendUseCaseInterface: AnyObject {
     
-    func fetchRecommendPlace(lat: Double, lon: Double) async -> Result<[RecommendStory], Error>
+    func fetchRecommendPlace(lat: Double, lon: Double) async -> Result<RecommendPlace, Error>
     
 }
