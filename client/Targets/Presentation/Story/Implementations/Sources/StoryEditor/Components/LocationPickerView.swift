@@ -7,8 +7,10 @@
 //
 
 import UIKit
-import MapKit
 
+import NMapsMap
+
+import DesignKit
 import DomainEntities
 
 protocol LocationPickerViewDelegate: AnyObject {
@@ -17,21 +19,32 @@ protocol LocationPickerViewDelegate: AnyObject {
 
 final class LocationPickerView: UIInputView {
 
+    enum Constant {
+        static let markerWidthHeight: CGFloat = 24
+        static let markerImageName: String = "mappin.circle.fill"
+    }
+    
     weak var delegate: LocationPickerViewDelegate?
     
-    private lazy var mapView: MKMapView = {
-        let mapView = MKMapView()
-        mapView.delegate = self
-        mapView.showsUserLocation = true
-        mapView.userTrackingMode = .follow
+    private lazy var mapView: NMFNaverMapView = {
+        let mapView = NMFNaverMapView()
+        mapView.mapView.addCameraDelegate(delegate: self)
+        mapView.showCompass = false
+        mapView.showScaleBar = false
+        mapView.showZoomControls = false
+        mapView.showLocationButton = true
+        mapView.isUserInteractionEnabled = true
         
         mapView.translatesAutoresizingMaskIntoConstraints = false
         return mapView
     }()
     
-    private let centerAnnotation: MKPointAnnotation = {
-        let marker = MKPointAnnotation()
+    private let marker: UIImageView = {
+        let marker = UIImageView()
+        marker.image = UIImage(systemName: Constant.markerImageName)
+        marker.tintColor = .hpRed1
         
+        marker.translatesAutoresizingMaskIntoConstraints = false
         return marker
     }()
     
@@ -50,25 +63,25 @@ final class LocationPickerView: UIInputView {
 private extension LocationPickerView {
     
     func setupViews() {
-        addSubview(mapView)
-        
+        [mapView].forEach(addSubview)
+        mapView.addSubview(marker)
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: topAnchor),
             mapView.leadingAnchor.constraint(equalTo: leadingAnchor),
             mapView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            mapView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            mapView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            marker.centerXAnchor.constraint(equalTo: mapView.centerXAnchor),
+            marker.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
+            marker.heightAnchor.constraint(equalToConstant: Constant.markerWidthHeight),
+            marker.widthAnchor.constraint(equalToConstant: Constant.markerWidthHeight)
         ])
-        
-        mapView.addAnnotation(centerAnnotation)
     }
     
 }
 
-
-extension LocationPickerView: MKMapViewDelegate {
-    func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
-        centerAnnotation.coordinate = mapView.centerCoordinate
-        delegate?.locationDidChange(self, to: .init(lat: Float(mapView.centerCoordinate.latitude),
-                                                    lng: Float(mapView.centerCoordinate.longitude)))
+extension LocationPickerView: NMFMapViewCameraDelegate {
+    func mapView(_ mapView: NMFMapView, cameraIsChangingByReason reason: Int) {
+        delegate?.locationDidChange(self, to: .init(lat: Float(mapView.latitude), lng: Float(mapView.longitude), address: ""))
     }
 }
