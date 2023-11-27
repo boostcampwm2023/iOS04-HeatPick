@@ -39,7 +39,8 @@ final class AppRootComponent: Component<AppRootDependency>,
                               HomeDependency,
                               SearchDependency,
                               StoryCreatorDependency,
-                              MyPageDependency {
+                              MyPageDependency,
+                                StoryDetailDependency {
     
     
     let authUseCase: AuthUseCaseInterface
@@ -70,6 +71,10 @@ final class AppRootComponent: Component<AppRootDependency>,
     
     lazy var myPageBuilder: MyPageBuildable = {
         MyPageBuilder(dependency: self)
+    }()
+    
+    lazy var storyDeatilBuilder: StoryDetailBuildable = {
+        StoryDetailBuilder(dependency: self)
     }()
     
     override init(dependency: AppRootDependency) {

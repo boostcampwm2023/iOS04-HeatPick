@@ -20,6 +20,7 @@ protocol HomeHotPlaceDashboardPresentable: Presentable {
 
 protocol HomeHotPlaceDashboardListener: AnyObject {
     func hotPlaceDashboardDidTapSeeAll()
+    func hotPlaceDashboardDidTapStory(id: Int)
 }
 
 protocol HomeHotPlaceDashboardInteractorDependency: AnyObject {
@@ -55,6 +56,10 @@ final class HomeHotPlaceDashboardInteractor: PresentableInteractor<HomeHotPlaceD
         listener?.hotPlaceDashboardDidTapSeeAll()
     }
     
+    func didTap(storyID: Int) {
+        listener?.hotPlaceDashboardDidTapStory(id: storyID)
+    }
+    
     private func fetchHotPlace() {
         Task {
             await dependency.hotPlaceUseCase.fetchHotPlace()
@@ -82,6 +87,7 @@ private extension HotPlace {
     
     var toModel: HomeHotPlaceContentViewModel {
         return .init(
+            id: id,
             thumbnailImageURL: imageURLs.first ?? "",
             title: title,
             nickname: username,

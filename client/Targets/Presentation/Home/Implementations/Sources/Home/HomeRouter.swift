@@ -8,6 +8,7 @@
 
 import ModernRIBs
 import HomeInterfaces
+import StoryInterfaces
 
 protocol HomeInteractable: Interactable,
                            HomeRecommendDashboardListener,
@@ -15,7 +16,8 @@ protocol HomeInteractable: Interactable,
                            HomeFollowingDashboardListener,
                            HomeFriendDashboardListener,
                            RecommendSeeAllListener,
-                           HotPlaceSeeAllListener {
+                           HotPlaceSeeAllListener,
+                           StoryDetailListener {
     var router: HomeRouting? { get set }
     var listener: HomeListener? { get set }
 }
@@ -41,6 +43,10 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     private var recommendSeeAllRouting: Routing?
     private var hotPlaceSeeAllRouting: Routing?
+    
+    // MARK: - Story
+    
+    private var storyDetailRouting: Routing?
     
     init(
         interactor: HomeInteractable,
@@ -122,6 +128,23 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
         guard let router = hotPlaceSeeAllRouting else { return }
         viewController.popViewController(animated: true)
         self.hotPlaceSeeAllRouting = nil
+        detachChild(router)
+    }
+    
+    // MARK: - Story
+    
+    func attachStoryDetail(storyID: Int) {
+        guard storyDetailRouting == nil else { return }
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyID)
+        viewController.pushViewController(router.viewControllable, animated: true)
+        self.storyDetailRouting = router
+        attachChild(router)
+    }
+    
+    func detachStoryDetail() {
+        guard let router = storyDetailRouting else { return }
+        viewController.popViewController(animated: true)
+        self.storyDetailRouting = nil
         detachChild(router)
     }
     
