@@ -115,6 +115,7 @@ private extension ImageSelector {
     @objc func addImageDidTap() {
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
         configuration.selectionLimit = 1
+        configuration.filter = .images
         
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = self
@@ -131,23 +132,43 @@ extension ImageSelector: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
         
-        guard let itemProvider = results.first?.itemProvider,
-              itemProvider.canLoadObject(ofClass: UIImage.self)
-        else {
-            // TODO: Handle empty results or item provider not being able load UIImage
+        if let itemProvider = results.first?.itemProvider,
+              itemProvider.canLoadObject(ofClass: UIImage.self) {
+            
+            itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
+                DispatchQueue.main.async { [weak self] in
+                    guard let image = image as? UIImage, let xImageView = self?.xImageView else { return }
+                    self?.imageView.image = image
+                    self?.plusImageView.removeFromSuperview()
+                    self?.addSubview(xImageView)
+                    self?.setupXImageView()
+                    self?.delegate?.imageDidAdd()
+                }
+            }
             return
         }
         
-        itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
-            DispatchQueue.main.async { [weak self] in
-                guard let image = image as? UIImage, let xImageView = self?.xImageView else { return }
-                self?.imageView.image = image
-                self?.plusImageView.removeFromSuperview()
-                self?.addSubview(xImageView)
-                self?.setupXImageView()
-                self?.delegate?.imageDidAdd()
+        if let livePhotoProgress = results.first?.itemProvider, livePhotoProgress.canLoadObject(ofClass: PHLivePhoto.self) {
+            livePhotoProgress.loadObject(ofClass: PHLivePhoto.self) { livePhoto, _ in
+                guard let livePhoto = livePhoto as? PHLivePhoto,
+                      let photo = PHAssetResource.assetResources(for: livePhoto).first(where: { $0.type == .photo }) else { return }
+                
+                let imageData = NSMutableData()
+                PHAssetResourceManager.default().requestData(for: photo, options: nil, dataReceivedHandler: { data in
+                    imageData.append(data)
+                }, completionHandler: { error in
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self else { return }
+                        self.imageView.image = UIImage(data: imageData as Data)
+                        self.plusImageView.removeFromSuperview()
+                        self.addSubview(xImageView)
+                        self.setupXImageView()
+                        self.delegate?.imageDidAdd()
+                    }
+                })
             }
         }
+        
     }
     
 }
