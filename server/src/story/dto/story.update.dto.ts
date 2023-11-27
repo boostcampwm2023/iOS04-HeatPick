@@ -37,8 +37,9 @@ export class UpdateStoryDto {
     description: 'Story Category',
   })
   @IsNotEmpty({ message: 'category 필수입니다.' })
-  @IsString()
-  category: string;
+  @IsNumber()
+  @Transform(({ value }): number => parseInt(value, 10))
+  categoryId: number;
 
   @ApiProperty({
     example: `{ lat: 1.2345, lng: 6.7890 }`,

@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Story } from './story.entity';
 
 @Entity()
@@ -9,6 +9,6 @@ export class Category {
   @Column()
   categoryName: string;
 
-  @OneToOne(() => Story, (story) => story.category)
-  story: Story;
+  @OneToMany(() => Story, (story: Story) => story.category)
+  stories: Story[];
 }

@@ -8,18 +8,17 @@
 
 import ModernRIBs
 
-public protocol StoryDetailInteractable: Interactable {
+import StoryInterfaces
+
+protocol StoryDetailInteractable: Interactable {
     var router: StoryDetailRouting? { get set }
     var listener: StoryDetailListener? { get set }
 }
 
-public protocol StoryDetailViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy.
-}
+protocol StoryDetailViewControllable: ViewControllable {}
 
 final class StoryDetailRouter: ViewableRouter<StoryDetailInteractable, StoryDetailViewControllable>, StoryDetailRouting {
 
-    // TODO: Constructor inject child builder protocols to allow building children.
     override init(interactor: StoryDetailInteractable, viewController: StoryDetailViewControllable) {
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self

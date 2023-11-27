@@ -26,7 +26,7 @@ public final class HomeRepository: HomeRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
-    public func fetchHotPlace() async -> Result<[RecommendStory], Error> {
+    public func fetchHotPlace() async -> Result<[HotPlace], Error> {
         let target = HomeAPI.recommend
         let request: Result<RecommendResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }

@@ -14,7 +14,7 @@ public final class StoryURLProtocol: URLProtocol {
     
     private lazy var mocks: [String: Data?] = [
         StoryAPI.newStory(StoryContent(title: "", content: "", date: .now, category: "", place: .init(lat: 0, lng: 0), badgeId: 0)).path: loadMockData(fileName: "StoryCreateResponseMock"),
-        StoryAPI.storyDetail(Story(id: 0)).path: loadMockData(fileName: "StoryDetailResponseMock")
+        StoryAPI.storyDetail(0).path: loadMockData(fileName: "StoryDetailResponseMock")
     ]
     
     public override class func canInit(with request: URLRequest) -> Bool {

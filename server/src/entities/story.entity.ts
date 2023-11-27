@@ -39,7 +39,7 @@ export class Story {
   @ApiProperty({ description: 'Story가 작성된 날짜' })
   createAt: Date;
 
-  @OneToOne(() => Category, (category) => category.story, {
+  @ManyToOne(() => Category, (category: Category) => category.stories, {
     cascade: true,
   })
   @JoinColumn()

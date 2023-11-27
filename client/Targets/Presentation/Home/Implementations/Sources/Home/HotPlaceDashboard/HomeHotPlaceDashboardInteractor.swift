@@ -67,25 +67,25 @@ final class HomeHotPlaceDashboardInteractor: PresentableInteractor<HomeHotPlaceD
         }
     }
     
-    private func performAfterFetchingHotPlace(stories: [RecommendStory]) {
+    private func performAfterFetchingHotPlace(stories: [HotPlace]) {
         let model = makeModels(stories: stories)
         presenter.setup(model: model)
     }
     
-    private func makeModels(stories: [RecommendStory]) -> HomeHotPlaceDashboardViewModel {
+    private func makeModels(stories: [HotPlace]) -> HomeHotPlaceDashboardViewModel {
         return .init(contentList: stories.map(\.toModel))
     }
     
 }
 
-private extension RecommendStory {
+private extension HotPlace {
     
     var toModel: HomeHotPlaceContentViewModel {
         return .init(
             thumbnailImageURL: imageURLs.first ?? "",
             title: title,
-            nickname: "추후 추가 예정",
-            profileImageURL: nil // 추후 추가 예정
+            nickname: username,
+            profileImageURL: userProfileImageURL
         )
     }
 }

@@ -10,6 +10,7 @@ import { plainToClass } from 'class-transformer';
 import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
+import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 
 @ApiTags('story')
 @Controller('story')
@@ -17,9 +18,20 @@ import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
 export class StoryController {
   constructor(private storyService: StoryService) {}
 
+  @Get('meta')
+  @ApiOperation({ summary: '스토리 생성시 필요한 뱃지와 카테고리 리스트 불러오기' })
+  @ApiResponse({
+    status: 200,
+    description: '생성하는 유저의 카테고리와 뱃지',
+    type: CreateStoryMetaDto,
+  })
+  async meta(@Request() req: any): Promise<CreateStoryMetaDto> {
+    return await this.storyService.createMetaData(req.user.userId);
+  }
+
   @Post('create')
   @UseInterceptors(FilesInterceptor('images', 3))
-  @ApiOperation({ summary: 'Create story' })
+  @ApiOperation({ summary: '스토리 생성' })
   @ApiResponse({
     status: 200,
     description: 'storyId',
@@ -31,13 +43,13 @@ export class StoryController {
     },
   })
   async create(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) createStoryDto: CreateStoryDto) {
-    const { title, content, category, place, badgeId, date } = createStoryDto;
-    const storyId = await this.storyService.create(req.user.userId, { title, content, category, place, images, badgeId, date });
+    const { title, content, categoryId, place, badgeId, date } = createStoryDto;
+    const storyId = await this.storyService.create(req.user.userId, { title, content, categoryId, place, images, badgeId, date });
     return { storyId: storyId };
   }
 
   @Get('detail')
-  @ApiOperation({ summary: 'Send detail story info' })
+  @ApiOperation({ summary: '스토리 상세 정보' })
   @ApiCreatedResponse({
     status: 200,
     description: '성공',
@@ -49,7 +61,7 @@ export class StoryController {
 
   @Patch('edit')
   @UseInterceptors(FilesInterceptor('images', 3))
-  @ApiOperation({ summary: 'Update story' })
+  @ApiOperation({ summary: '스토리 수정' })
   @ApiResponse({
     status: 200,
     description: 'storyId',
@@ -61,13 +73,13 @@ export class StoryController {
     },
   })
   async update(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
-    const { storyId, title, content, category, place, badgeId, date } = updateStoryDto;
-    const newStoryId = await this.storyService.update(req.user.userId, { storyId, title, content, category, place, images, badgeId, date });
+    const { storyId, title, content, categoryId, place, badgeId, date } = updateStoryDto;
+    const newStoryId = await this.storyService.update(req.user.userId, { storyId, title, content, categoryId, place, images, badgeId, date });
     return { storyId: newStoryId };
   }
 
   @Delete('delete')
-  @ApiOperation({ summary: 'Delete Story' })
+  @ApiOperation({ summary: '스토리 삭제' })
   @ApiResponse({
     status: 200,
     description: '성공',
