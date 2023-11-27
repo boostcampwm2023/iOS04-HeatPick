@@ -57,7 +57,7 @@ extension SearchAPI: Target {
 private extension SearchAPI {
     
     func makeSearchRequestDTO(searchText: String) -> Task {
-        let request = SearchRequestDTO(seachText: searchText)
+        let request = SearchRequestDTO(searchText: searchText)
         return .url(parameters: request.parameters())
     }
     

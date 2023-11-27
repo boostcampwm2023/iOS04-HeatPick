@@ -10,6 +10,6 @@ import Foundation
 
 public struct SearchRequestDTO: Encodable {
 
-    let seachText: String
+    let searchText: String
     
 }
