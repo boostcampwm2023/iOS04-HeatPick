@@ -95,7 +95,6 @@ export class UserService {
   async update(accessToken: string, image: Express.Multer.File, { username, mainBadgeId }) {
     const decodedToken = this.jwtService.decode(accessToken);
     const userId = decodedToken.userId;
-
     return await this.userRepository.update({ oauthId: userId }, { username: username });
   }
 
