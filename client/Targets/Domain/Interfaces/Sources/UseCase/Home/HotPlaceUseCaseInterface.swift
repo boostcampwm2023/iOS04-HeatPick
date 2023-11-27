@@ -11,6 +11,6 @@ import DomainEntities
 
 public protocol HotPlaceUseCaseInterface: AnyObject {
     
-    func fetchHotPlace() async -> Result<[RecommendStory], Error>
+    func fetchHotPlace() async -> Result<[HotPlace], Error>
     
 }

@@ -23,7 +23,7 @@ public final class HomeUseCase: HomeUseCaseInterface {
         return await repository.fetchRecommendPlace(lat: lat, lon: lon)
     }
     
-    public func fetchHotPlace() async -> Result<[RecommendStory], Error> {
+    public func fetchHotPlace() async -> Result<[HotPlace], Error> {
         return await repository.fetchHotPlace()
     }
     

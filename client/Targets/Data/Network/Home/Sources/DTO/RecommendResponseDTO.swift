@@ -14,27 +14,31 @@ public struct RecommendResponseDTO: Decodable {
     public struct RecommendStoryResponse: Decodable {
         public let storyId: Int
         public let title: String
-        public let content: String
         public let storyImages: [String]
-        public let likeCount: Int
-        public let createAt: String // "2023-11-21T03:55:45.161Z"
+        public let user: RecommendUserResponse
     }
     
-    public let recommendStories: [RecommendStoryResponse]
+    public struct RecommendUserResponse: Decodable {
+        public let userId: Int
+        public let username: String
+        public let profileImage: String?
+    }
+    
+    public let recommededStories: [RecommendStoryResponse]
     
 }
 
 public extension RecommendResponseDTO {
     
-    func toDomain() -> [RecommendStory] {
-        return recommendStories
-            .map { RecommendStory(
+    func toDomain() -> [HotPlace] {
+        return recommededStories
+            .map { HotPlace(
                 id: $0.storyId,
                 title: $0.title,
-                content: $0.content,
                 imageURLs: $0.storyImages,
-                likeCount: $0.likeCount,
-                createAt: $0.createAt
+                userId: $0.user.userId,
+                username: $0.user.username,
+                userProfileImageURL: $0.user.profileImage
             )}
     }
     
