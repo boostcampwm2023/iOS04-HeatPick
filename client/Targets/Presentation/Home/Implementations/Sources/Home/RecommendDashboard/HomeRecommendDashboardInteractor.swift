@@ -87,7 +87,7 @@ private extension RecommendStory {
         return .init(
             title: title,
             subtitle: content,
-            imageURL: imageURLs.first ?? ""
+            imageURL: imageURL
         )
     }
     

@@ -1,54 +1,49 @@
 {
-    "recommendStories": [
+    "recommededStories": [
         {
-            "storyId": 1,
-            "title": "타이틀 1",
-            "content": "content",
+            "storyId": 7,
+            "title": "test123",
+            "likeCount": 0,
+            "createAt": "2023-11-20T14:30:00.000Z",
+            "user": {
+                "userId": 2,
+                "username": "sayho",
+                "profileImage": "https://picsum.photos/200/300"
+            },
             "storyImages": [
-                "https://avatars.githubusercontent.com/u/74225754?v=4"
-            ],
-            "likeCount": 100,
-            "createAt": "2023-11-21T03:55:45.161Z"
+                "https://picsum.photos/200/300",
+                "https://picsum.photos/200/300",
+                "https://picsum.photos/200/300"
+            ]
         },
         {
-            "storyId": 2,
-            "title": "타이틀 2",
-            "content": "content",
+            "storyId": 14,
+            "title": "서울 맛집",
+            "createAt": "2023-11-20T23:30:00.000Z",
+            "user": {
+                "userId": 1,
+                "username": "테스트할게요",
+                "profileImage": "https://picsum.photos/200/300"
+            },
             "storyImages": [
-                "https://avatars.githubusercontent.com/u/51906365?v=4"
-            ],
-            "likeCount": 200,
-            "createAt": "2023-11-21T03:55:45.161Z"
+                "https://picsum.photos/200/300",
+                "https://picsum.photos/200/300"
+            ]
         },
         {
-            "storyId": 3,
-            "title": "타이틀 1",
-            "content": "content",
+            "storyId": 15,
+            "title": "test123",
+            "createAt": "2023-11-20T14:30:00.000Z",
+            "user": {
+                "userId": 2,
+                "username": "sayho",
+                "profileImage": "https://picsum.photos/200/300"
+            },
             "storyImages": [
-                "https://avatars.githubusercontent.com/u/125888614?v=4"
-            ],
-            "likeCount": 300,
-            "createAt": "2023-11-21T03:55:45.161Z"
-        },
-        {
-            "storyId": 4,
-            "title": "타이틀 1",
-            "content": "content",
-            "storyImages": [
-                "https://avatars.githubusercontent.com/u/71696675?v=4"
-            ],
-            "likeCount": 400,
-            "createAt": "2023-11-21T03:55:45.161Z"
-        },
-        {
-            "storyId": 5,
-            "title": "타이틀 1",
-            "content": "content",
-            "storyImages": [
-                "https://avatars.githubusercontent.com/u/32038936?v=4"
-            ],
-            "likeCount": 500,
-            "createAt": "2023-11-21T03:55:45.161Z"
+                "https://picsum.photos/200/300",
+                "https://picsum.photos/200/300",
+                "https://picsum.photos/200/300"
+            ]
         }
     ]
 }
