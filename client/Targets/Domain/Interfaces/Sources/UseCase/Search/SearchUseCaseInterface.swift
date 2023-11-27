@@ -9,7 +9,8 @@
 import Foundation
 import DomainEntities
 
-public protocol SearchUseCaseInterface: SearchMapUseCaseInterface,
+public protocol SearchUseCaseInterface: AnyObject,
+                                        SearchMapUseCaseInterface,
                                         SearchCurrentLocationStoryListUseCaseInterface,
                                         SearchResultUseCaseInterface { }
 
