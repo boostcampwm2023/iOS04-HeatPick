@@ -9,6 +9,7 @@ import { RecommendStoryDto } from './dto/story.recommend.response.dto';
 import { plainToClass } from 'class-transformer';
 import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
 
 @ApiTags('story')
 @Controller('story')
@@ -96,6 +97,7 @@ export class StoryController {
   @ApiResponse({ status: 201, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: RecommendStoryDto, isArray: true })
   async recommendStory() {
     const recommededStory = await this.storyService.getRecommendedStory();
+
     return { recommededStories: recommededStory };
   }
 }
