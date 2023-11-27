@@ -7,14 +7,14 @@
 //
 
 import ModernRIBs
+import BasePresentation
 
 protocol SearchRouting: ViewableRouting {
     func attachSearchMap()
     func detachSearchMap()
     
-    func attachSearchHomeList()
-    func detachSearchHomeList()
-    func presentSearchHomeList()
+    func attachSearchCurrentLocation()
+    func detachSearchCurrentLocation()
     
     func attachSearchResult()
     func detachSearchResult()
@@ -27,31 +27,28 @@ protocol SearchPresentable: Presentable {
 public protocol SearchListener: AnyObject { }
 
 final class SearchInteractor: PresentableInteractor<SearchPresentable>,
-                                  SearchInteractable,
-                                  SearchPresentableListener {
+                              AdaptivePresentationControllerDelegate,
+                              SearchInteractable,
+                              SearchPresentableListener {
     
     weak var router: SearchRouting?
     weak var listener: SearchListener?
+    let presentationAdapter: AdaptivePresentationControllerDelegateAdapter
     
     override init(presenter: SearchPresentable) {
+        self.presentationAdapter = AdaptivePresentationControllerDelegateAdapter()
         super.init(presenter: presenter)
         presenter.listener = self
+        presentationAdapter.delegate = self
     }
     
     override func didBecomeActive() {
         super.didBecomeActive()
         router?.attachSearchMap()
-        router?.attachSearchHomeList()
     }
     
     override func willResignActive() {
         super.willResignActive()
-        router?.detachSearchMap()
-        router?.detachSearchHomeList()
-    }
-    
-    func presentHomeList() {
-        router?.presentSearchHomeList()
     }
     
     func attachSearchResult() {
@@ -61,5 +58,13 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     func detachSearchResult() {
         router?.detachSearchResult()
     }
-
+    
+    func didTapCurrentLocation() {
+        router?.attachSearchCurrentLocation()
+    }
+    
+    func controllerDidDismiss() {
+        router?.detachSearchCurrentLocation()
+    }
+    
 }
