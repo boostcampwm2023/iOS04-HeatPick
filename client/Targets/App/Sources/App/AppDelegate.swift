@@ -14,12 +14,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var cancellables = Set<AnyCancellable>()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        NMFAuthManager.shared().clientId = Secret.naverMapClientID.value
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
         let router = makeRootBuilder().build()
         self.launchRouter = router
         launchRouter?.launch(from: window)
-        NMFAuthManager.shared().clientId = Secret.naverMapClientID.value
         receiveSignOut()
         return true
     }
