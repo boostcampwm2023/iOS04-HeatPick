@@ -22,6 +22,7 @@ final class ImageSelector: UIView {
 
     enum Constant {
         static let transparentBlack: UIColor = .init(red: 0, green: 0, blue: 0, alpha: 0.5)
+        static let buttonWidthHeight: CGFloat = 44
     }
     weak var delegate: ImageSelectorDelegate?
     weak var presenterDelegate: ImageSelectorPickerPresenterDelegate?
@@ -96,8 +97,8 @@ private extension ImageSelector {
     
     private func setupPlusImageView() {
         NSLayoutConstraint.activate([
-            plusImageView.widthAnchor.constraint(equalToConstant: 25),
-            plusImageView.heightAnchor.constraint(equalToConstant: 25),
+            plusImageView.widthAnchor.constraint(equalToConstant: Constant.buttonWidthHeight),
+            plusImageView.heightAnchor.constraint(equalToConstant: Constant.buttonWidthHeight),
             plusImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             plusImageView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
@@ -105,10 +106,10 @@ private extension ImageSelector {
     
     private func setupXImageView() {
         NSLayoutConstraint.activate([
-            xImageView.widthAnchor.constraint(equalToConstant: 14),
-            xImageView.heightAnchor.constraint(equalToConstant: 14),
-            xImageView.topAnchor.constraint(equalTo: topAnchor, constant: 5),
-            xImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5)
+            xImageView.widthAnchor.constraint(equalToConstant: Constant.buttonWidthHeight),
+            xImageView.heightAnchor.constraint(equalToConstant: Constant.buttonWidthHeight),
+            xImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            xImageView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
     
