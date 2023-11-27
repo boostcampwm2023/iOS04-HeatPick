@@ -35,17 +35,17 @@ export class UserController {
   }
 
   @Get('profile')
-  @ApiOperation({ summary: 'Get a profile' })
+  @ApiOperation({ summary: '유저 ID로 Profile를 불러옵니다.' })
   @ApiResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getProfile(@Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
     return this.userService.getProfile(undefined, userId);
   }
 
   @Get('myProfile')
-  @ApiOperation({ summary: 'Get my profile' })
+  @ApiOperation({ summary: '자신의 토큰으로 자신의 Profile을 불러옵니다.' })
   @ApiResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
-  async getMyProfile(@Headers('accessToken') accessToken: string): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(accessToken, undefined);
+  async getMyProfile(@Req() req: any): Promise<UserProfileDetailDataDto> {
+    return this.userService.getProfile(req.user.userId, undefined);
   }
 
   @Put('badge')
@@ -63,7 +63,7 @@ export class UserController {
     return this.userService.addBadgeExp(transformedDto);
   }
   @Get('story')
-  @ApiOperation({ summary: `Get All user's storyList` })
+  @ApiOperation({ summary: `해당 userId에 해당하는 유저의 스토리를 모두 불러옵니다.` })
   @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [Story] })
   async getStoryList(@Query('userId', ParseIntPipe) userId: number): Promise<Story[]> {
     return this.userService.getStoryList(userId);
@@ -71,15 +71,15 @@ export class UserController {
 
   @Patch('update')
   @UseInterceptors(FileInterceptor('image'))
-  @ApiOperation({ summary: `Update user's info` })
+  @ApiOperation({ summary: `자신의 프로필을 수정합니다.` })
   @ApiResponse({ status: 201, description: '사용자의 정보를 성공적으로 수정했습니다.' })
-  async update(@UploadedFile() image: Express.Multer.File, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) updateUserDto: UserUpdateDto) {
-    const { username, mainBadgeId } = updateUserDto;
-    return this.userService.update(accessToken, image, { username, mainBadgeId });
+  async update(@UploadedFile() image: Express.Multer.File, @Req() req: any, @Body(new ValidationPipe({ transform: true })) updateUserDto: UserUpdateDto) {
+    const { username, selectedBadgeId } = updateUserDto;
+    return this.userService.update(req.user.userId, image, { username, selectedBadgeId });
   }
 
   @Delete('resign')
-  @ApiOperation({ summary: `resign user` })
+  @ApiOperation({ summary: `회원 탈퇴` })
   @ApiResponse({ status: 201, description: '회원 탈퇴 되었습니다.' })
   async resign(@Headers('accessToken') accessToken: string, @Body() message: string) {
     return this.userService.resign(accessToken, message);
