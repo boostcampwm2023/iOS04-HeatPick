@@ -1,16 +1,18 @@
 import { StoryService } from './story.service';
-import { Body, Controller, Delete, Get, Headers, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UpdateStoryDto } from './dto/story.update.dto';
-import { LocationDTO } from 'src/place/dto/location.dto';;
+import { LocationDTO } from 'src/place/dto/location.dto';
 import { RecommendStoryDto } from './dto/story.recommend.response.dto';
 import { plainToClass } from 'class-transformer';
 import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
 @ApiTags('story')
 @Controller('story')
+@UseGuards(JwtAuthGuard)
 export class StoryController {
   constructor(private storyService: StoryService) {}
 
@@ -27,9 +29,9 @@ export class StoryController {
       },
     },
   })
-  async create(@UploadedFiles() images: Array<Express.Multer.File>, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) createStoryDto: CreateStoryDto) {
+  async create(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) createStoryDto: CreateStoryDto) {
     const { title, content, category, place, badgeId, date } = createStoryDto;
-    const storyId = await this.storyService.create(accessToken, { title, content, category, place, images, badgeId, date });
+    const storyId = await this.storyService.create(req.userId, { title, content, category, place, images, badgeId, date });
     return { storyId: storyId };
   }
 
@@ -40,8 +42,8 @@ export class StoryController {
     description: '성공',
     type: StoryDetailViewDataDto,
   })
-  async read(@Headers('accessToken') accessToken: string, @Query('storyId', ParseIntPipe) storyId: number)  {
-    return await this.storyService.read(accessToken, storyId);
+  async read(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
+    return await this.storyService.read(req.userId, storyId);
   }
 
   @Patch('edit')
@@ -57,9 +59,9 @@ export class StoryController {
       },
     },
   })
-  async update(@UploadedFiles() images: Array<Express.Multer.File>, @Headers('accessToken') accessToken: string, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
+  async update(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
     const { storyId, title, content, category, place, badgeId, date } = updateStoryDto;
-    const newStoryId = await this.storyService.update(accessToken, { storyId, title, content, category, place, images, badgeId, date });
+    const newStoryId = await this.storyService.update(req.userId, { storyId, title, content, category, place, images, badgeId, date });
     return { storyId: newStoryId };
   }
 
@@ -75,8 +77,8 @@ export class StoryController {
       },
     },
   })
-  async delete(@Headers('accessToken') accessToken: string, @Query('storyId', ParseIntPipe) storyId: number) {
-    await this.storyService.delete(accessToken, storyId);
+  async delete(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
+    await this.storyService.delete(req.userId, storyId);
     return { storyId: storyId };
   }
 
