@@ -22,9 +22,6 @@ protocol SearchBeforeDashboardPresentable: Presentable {
 
 protocol SearchBeforeDashboardListener: AnyObject { }
 
-protocol SearchBeforeDashboardInteractorDependency: AnyObject {
-    var searhResultSearchBeforeUseCase: SearhResultSearchBeforeUseCaseInterface { get }
-}
 
 final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeDashboardPresentable>,
                                                 SearchBeforeDashboardInteractable,
@@ -33,13 +30,7 @@ final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeD
     weak var router: SearchBeforeDashboardRouting?
     weak var listener: SearchBeforeDashboardListener?
     
-    private let dependecy: SearchBeforeDashboardInteractorDependency
-    
-    init(
-        presenter: SearchBeforeDashboardPresentable,
-        dependency: SearchBeforeDashboardInteractorDependency
-    ) {
-        self.dependecy = dependency
+    override init(presenter: SearchBeforeDashboardPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
     }

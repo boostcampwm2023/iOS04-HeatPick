@@ -7,10 +7,18 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SearchBeforeRecentSearchesDashboardDependency: Dependency { }
+protocol SearchBeforeRecentSearchesDashboardDependency: Dependency { 
+    var searchBeforeRecentSearchesUsecase: SearchBeforeRecentSearchesUseCaseInterface { get }
+}
 
-final class SearchBeforeRecentSearchesDashboardComponent: Component<SearchBeforeRecentSearchesDashboardDependency> { }
+final class SearchBeforeRecentSearchesDashboardComponent: Component<SearchBeforeRecentSearchesDashboardDependency>,
+SearchBeforeRecentSearchesDashboardInteractorDependency {
+    var searchBeforeRecentSearchesUsecase: SearchBeforeRecentSearchesUseCaseInterface {
+        dependency.searchBeforeRecentSearchesUsecase
+    }
+}
 
 // MARK: - Builder
 
@@ -27,7 +35,7 @@ final class SearchBeforeRecentSearchesDashboardBuilder: Builder<SearchBeforeRece
     func build(withListener listener: SearchBeforeRecentSearchesDashboardListener) -> SearchBeforeRecentSearchesDashboardRouting {
         let component = SearchBeforeRecentSearchesDashboardComponent(dependency: dependency)
         let viewController = SearchBeforeRecentSearchesDashboardViewController()
-        let interactor = SearchBeforeRecentSearchesDashboardInteractor(presenter: viewController)
+        let interactor = SearchBeforeRecentSearchesDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return SearchBeforeRecentSearchesDashboardRouter(interactor: interactor, viewController: viewController)
     }

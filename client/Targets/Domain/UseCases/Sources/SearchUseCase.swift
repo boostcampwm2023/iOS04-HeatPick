@@ -23,7 +23,6 @@ public final class SearchUseCase: SearchUseCaseInterface {
         await repository.fetchSearchResult(searchText: searchText)
     }
     
-    
     public func fetchStory(searchText: String) async -> Result<[DomainEntities.SearchStory], Error> {
         await repository.fetchStory(searchText: searchText)
     }
@@ -34,6 +33,14 @@ public final class SearchUseCase: SearchUseCaseInterface {
     
     public func fetchRecommendText(searchText: String) async -> Result<[String], Error> {
         await repository.fetchRecommendText(searchText: searchText)
+    }
+    
+    public func fetchRecentSearches() -> [String] {
+        repository.fetchRecentSearches()
+    }
+    
+    public func appendRecentSearch(searchText: String) -> String? {
+        repository.appendRecentSearch(searchText: searchText)
     }
     
 }
