@@ -1,5 +1,5 @@
 //
-//  Category.swift
+//  Badge.swift
 //  DomainEntities
 //
 //  Created by jungmin lim on 11/20/23.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct StoryCategory {
+public struct Badge {
     
     public let id: Int
     public let title: String
