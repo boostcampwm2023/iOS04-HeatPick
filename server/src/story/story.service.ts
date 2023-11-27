@@ -19,9 +19,11 @@ import { StoryImage } from '../entities/storyImage.entity';
 import { StoryDetailUserDataDto } from './dto/detail/story.detail.user.data';
 import { Badge } from '../entities/badge.entity';
 import { Place } from '../entities/place.entity';
+import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
 import { CategoryRepository } from '../category/category.repository';
 import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 import { Category } from '../entities/category.entity';
+
 
 @Injectable()
 export class StoryService {
@@ -131,7 +133,7 @@ export class StoryService {
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO) {
-    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10, relations: ['user'] });
+    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10, relations: ['user', 'category'] });
 
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;
@@ -149,8 +151,12 @@ export class StoryService {
         return null;
       }),
     );
-
-    return results.filter((result) => result !== null);
+    const storyArr = await Promise.all(
+      results.map(async (story) => {
+        return storyEntityToObjWithOneImg(story);
+      }),
+    );
+    return storyArr.filter((result) => result !== null);
   }
 
   async getRecommendedStory() {
@@ -160,25 +166,16 @@ export class StoryService {
           likeCount: 'DESC',
         },
         take: 10,
-        relations: ['user', 'user.profileImage', 'storyImages'],
-        select: ['storyId', 'title', 'likeCount', 'createAt', 'user.userId', 'user.username', 'user.profileImage'],
+        relations: ['user', 'user.profileImage', 'storyImages', 'category'],
       });
 
-      const formattedStories = Promise.all(
+      const storyArr = await Promise.all(
         stories.map(async (story) => {
-          const storyImageObjs = await story.storyImages;
-          return {
-            storyId: story.storyId,
-            title: story.title,
-            likeCount: story.likeCount,
-            createAt: story.createAt,
-            user: story.user,
-            storyImages: storyImageObjs.map((image) => image.imageUrl),
-          };
+          return storyEntityToObjWithOneImg(story);
         }),
       );
 
-      return formattedStories;
+      return storyArr;
     } catch (error) {
       throw error;
     }

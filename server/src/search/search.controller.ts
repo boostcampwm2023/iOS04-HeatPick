@@ -70,25 +70,33 @@ export class SearchController {
   }
 
   @ApiOperation({ summary: '검색 기능' })
-  @ApiResponse({ status: 201, description: '검색어를 바탕으로 스토리와 유저 정보를 5개씩 리턴합니다.' })
+  @ApiResponse({ status: 201, description: '검색어를 바탕으로 스토리와 유저 정보를 5개씩 리턴합니다. 쿼리 파라미터로 categoryId와 searchText를 받으며, categoryId만 입력하는 경우 Id가 일치하는 모든 스토리를 리턴합니다.' })
   @Get()
-  async search(@Query('searchText') searchText: string): Promise<SearchResultDto> {
-    const stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 5);
+  async search(@Query('searchText') searchText?: string, @Query('categoryId') categoryId?: string): Promise<SearchResultDto> {
+    const numericCategoryId: number = parseInt(categoryId, 10);
+    const searchStatement = searchText ? searchText : '';
+    let stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchStatement), 100);
+    if (categoryId) stories = stories.filter((story) => story.category && story.category.categoryId === numericCategoryId);
 
     const storyArr = await Promise.all(
       stories.map(async (story) => {
         return storyEntityToObjWithOneImg(story);
       }),
     );
-    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 5);
-    const userArr = [];
-    await Promise.all(
-      users.map(async (user) => {
-        userArr.push(userEntityToUserObj(user));
-      }),
-    );
 
-    const result: SearchResultDto = { stories: storyArr, users: userArr };
+    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchStatement), 100);
+    const userArr = [];
+    if (!categoryId) {
+      await Promise.all(
+        users.map(async (user) => {
+          userArr.push(userEntityToUserObj(user));
+        }),
+      );
+    }
+
+    const truncatedStoryArr = storyArr.splice(0, 5);
+    const truncatedUserArr = userArr.splice(0, 5);
+    const result: SearchResultDto = { stories: truncatedStoryArr, users: truncatedUserArr };
     return result;
   }
 }
