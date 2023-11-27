@@ -31,7 +31,7 @@ export class StoryController {
   })
   async create(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) createStoryDto: CreateStoryDto) {
     const { title, content, category, place, badgeId, date } = createStoryDto;
-    const storyId = await this.storyService.create(req.userId, { title, content, category, place, images, badgeId, date });
+    const storyId = await this.storyService.create(req.user.userId, { title, content, category, place, images, badgeId, date });
     return { storyId: storyId };
   }
 
@@ -43,7 +43,7 @@ export class StoryController {
     type: StoryDetailViewDataDto,
   })
   async read(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
-    return await this.storyService.read(req.userId, storyId);
+    return await this.storyService.read(req.user.userId, storyId);
   }
 
   @Patch('edit')
@@ -61,7 +61,7 @@ export class StoryController {
   })
   async update(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) updateStoryDto: UpdateStoryDto) {
     const { storyId, title, content, category, place, badgeId, date } = updateStoryDto;
-    const newStoryId = await this.storyService.update(req.userId, { storyId, title, content, category, place, images, badgeId, date });
+    const newStoryId = await this.storyService.update(req.user.userId, { storyId, title, content, category, place, images, badgeId, date });
     return { storyId: newStoryId };
   }
 
@@ -78,7 +78,7 @@ export class StoryController {
     },
   })
   async delete(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
-    await this.storyService.delete(req.userId, storyId);
+    await this.storyService.delete(req.user.userId, storyId);
     return { storyId: storyId };
   }
 
