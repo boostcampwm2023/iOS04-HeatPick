@@ -27,10 +27,9 @@ protocol SearchAfterDashboardRouterDependency {
 
 final class SearchAfterDashboardRouter: ViewableRouter<SearchAfterDashboardInteractable, SearchAfterDashboardViewControllable>, SearchAfterDashboardRouting {
 
-    private let searchAfterStoryDashboardBuilder: SearchAfterStoryDashboardBuildable
-    private var searchAfterStoryDashboardRouter: SearchAfterStoryDashboardRouting?
+    private let dependency: SearchAfterDashboardRouterDependency
     
-    private let searchAfterUserDashboardBuilder: SearchAfterUserDashboardBuildable
+    private var searchAfterStoryDashboardRouter: SearchAfterStoryDashboardRouting?
     private var searchAfterUserDashboardRouter: SearchAfterUserDashboardRouting?
     
     init(
@@ -38,15 +37,14 @@ final class SearchAfterDashboardRouter: ViewableRouter<SearchAfterDashboardInter
         viewController: SearchAfterDashboardViewControllable,
         dependency: SearchAfterDashboardRouterDependency
     ) {
-        self.searchAfterStoryDashboardBuilder = dependency.searchAfterStoryDashboardBuilder
-        self.searchAfterUserDashboardBuilder = dependency.searchAfterUserDashboardBuilder
+        self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
     func attachSearchAfterStoryDashboard() {
         guard searchAfterStoryDashboardRouter == nil else { return }
-        let router = searchAfterStoryDashboardBuilder.build(withListener: interactor)
+        let router = dependency.searchAfterStoryDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         searchAfterStoryDashboardRouter = router
         viewController.appendDashboard(router.viewControllable)
@@ -61,7 +59,7 @@ final class SearchAfterDashboardRouter: ViewableRouter<SearchAfterDashboardInter
     
     func attachSearchAfterUserDashboard() {
         guard searchAfterUserDashboardRouter == nil else { return }
-        let router = searchAfterUserDashboardBuilder.build(withListener: interactor)
+        let router = dependency.searchAfterUserDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         searchAfterUserDashboardRouter = router
         viewController.appendDashboard(router.viewControllable)

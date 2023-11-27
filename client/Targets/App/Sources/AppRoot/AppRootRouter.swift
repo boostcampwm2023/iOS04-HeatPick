@@ -17,7 +17,7 @@ import MyInterfaces
 
 protocol AppRootInteractable: Interactable,
                               SignInListener,
-                              SearchHomeListener,
+                              SearchListener,
                               HomeListener,
                               StoryCreatorListener,
                               MyPageListener {
@@ -33,7 +33,7 @@ protocol AppRootViewControllable: ViewControllable {
 protocol AppRootRouterDependency: AnyObject {
     var signInBuilder: SignInBuildable { get }
     var homeBuilder: HomeBuildable { get }
-    var searchBuilder: SearchHomeBuildable { get }
+    var searchBuilder: SearchBuildable { get }
     var storyCreatorBuilder: StoryCreatorBuildable { get }
     var myPageBuilder: MyPageBuildable { get }
 }

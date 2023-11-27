@@ -8,13 +8,9 @@
 
 import ModernRIBs
 
-protocol SearchAfterUserDashboardDependency: Dependency {
-    
-}
+protocol SearchAfterUserDashboardDependency: Dependency { }
 
-final class SearchAfterUserDashboardComponent: Component<SearchAfterUserDashboardDependency> {
-
-}
+final class SearchAfterUserDashboardComponent: Component<SearchAfterUserDashboardDependency> { }
 
 // MARK: - Builder
 

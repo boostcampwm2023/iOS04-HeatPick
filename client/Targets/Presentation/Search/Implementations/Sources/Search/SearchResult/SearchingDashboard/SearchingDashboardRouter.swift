@@ -13,9 +13,7 @@ protocol SearchingDashboardInteractable: Interactable {
     var listener: SearchingDashboardListener? { get set }
 }
 
-protocol SearchingDashboardViewControllable: ViewControllable {
-    
-}
+protocol SearchingDashboardViewControllable: ViewControllable { }
 
 final class SearchingDashboardRouter: ViewableRouter<SearchingDashboardInteractable, SearchingDashboardViewControllable>, SearchingDashboardRouting {
 

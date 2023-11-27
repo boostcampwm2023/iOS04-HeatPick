@@ -27,10 +27,9 @@ protocol SearchBeforeDashboardRouterDependency {
 
 final class SearchBeforeDashboardRouter: ViewableRouter<SearchBeforeDashboardInteractable, SearchBeforeDashboardViewControllable>, SearchBeforeDashboardRouting {
     
-    private let searchBeforeRecentSearchesDashboardBuilder: SearchBeforeRecentSearchesDashboardBuildable
-    private var searchBeforeRecentSearchsDashboardRouter: SearchBeforeRecentSearchesDashboardRouting?
+    private let dependency: SearchBeforeDashboardRouterDependency
     
-    private let searchBeforeCategoryDashboardBuilder: SearchBeforeCategoryDashboardBuildable
+    private var searchBeforeRecentSearchsDashboardRouter: SearchBeforeRecentSearchesDashboardRouting?
     private var searchBeforeCategoryDashboardRouter: SearchBeforeCategoryDashboardRouting?
     
     init(
@@ -38,15 +37,14 @@ final class SearchBeforeDashboardRouter: ViewableRouter<SearchBeforeDashboardInt
         viewController: SearchBeforeDashboardViewControllable,
         dependency: SearchBeforeDashboardRouterDependency
     ) {
-        self.searchBeforeRecentSearchesDashboardBuilder = dependency.searchBeforeRecentSearchesDashboardBuilder
-        self.searchBeforeCategoryDashboardBuilder = dependency.searchBeforeCategoryDashboardBuilder
+        self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
     func attachSearchBeforeRecentSearchesDashboard() {
         guard searchBeforeRecentSearchsDashboardRouter == nil else { return }
-        let router = searchBeforeRecentSearchesDashboardBuilder.build(withListener: interactor)
+        let router = dependency.searchBeforeRecentSearchesDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         searchBeforeRecentSearchsDashboardRouter = router
         viewController.appendDashboard(router.viewControllable)
@@ -61,7 +59,7 @@ final class SearchBeforeDashboardRouter: ViewableRouter<SearchBeforeDashboardInt
     
     func attachSearchBeforeCategoryDashboard() {
         guard searchBeforeCategoryDashboardRouter == nil else { return }
-        let router = searchBeforeCategoryDashboardBuilder.build(withListener: interactor)
+        let router = dependency.searchBeforeCategoryDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         searchBeforeCategoryDashboardRouter = router
         viewController.appendDashboard(router.viewControllable)
