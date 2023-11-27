@@ -13,7 +13,7 @@ import ModernRIBs
 import NMapsMap
 
 protocol SearchMapPresentableListener: AnyObject {
-    
+    func didAppear()
 }
 
 final class SearchMapViewController: UIViewController, SearchMapPresentable, SearchMapViewControllable {
@@ -31,6 +31,16 @@ final class SearchMapViewController: UIViewController, SearchMapPresentable, Sea
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        listener?.didAppear()
+    }
+    
+    func moveMap(lat: Double, lng: Double) {
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
+        naverMap.mapView.moveCamera(cameraUpdate)
     }
     
 }

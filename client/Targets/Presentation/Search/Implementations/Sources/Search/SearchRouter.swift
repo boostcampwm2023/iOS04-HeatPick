@@ -8,6 +8,7 @@
 
 import CoreKit
 import ModernRIBs
+import BasePresentation
 
 protocol SearchInteractable: Interactable,
                                  SearchMapListener,
@@ -15,6 +16,7 @@ protocol SearchInteractable: Interactable,
                                  SearchResultListener {
     var router: SearchRouting? { get set }
     var listener: SearchListener? { get set }
+    var presentationAdapter: AdaptivePresentationControllerDelegateAdapter { get }
 }
 
 protocol SearchViewControllable: ViewControllable {
@@ -24,7 +26,7 @@ protocol SearchViewControllable: ViewControllable {
 
 protocol SearchRouterDependency {
     var searchMapBuilder: SearchMapBuildable { get }
-    var searchHomeListBuilder: SearchCurrentLocationStoryListBuildable { get }
+    var searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable { get }
     var searchResultBuilder: SearchResultBuildable { get }
 }
 
@@ -33,8 +35,8 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     private let searchMapBuilder: SearchMapBuildable
     private var searchMapRouter: SearchMapRouting?
     
-    private let searchHomeListBuilder: SearchCurrentLocationStoryListBuildable
-    private var searchHomeListRouter: SearchCurrentLocationStoryListRouting?
+    private let searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable
+    private var searchCurrentLocationRouter: ViewableRouting?
     
     private let searchResultBuilder: SearchResultBuildable
     private var searchResultRouter: SearchResultRouting?
@@ -45,7 +47,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         dependency: SearchRouterDependency
     ) {
         self.searchMapBuilder = dependency.searchMapBuilder
-        self.searchHomeListBuilder = dependency.searchHomeListBuilder
+        self.searchCurrentLocationBuilder = dependency.searchCurrentLocationBuilder
         self.searchResultBuilder = dependency.searchResultBuilder
         
         super.init(interactor: interactor, viewController: viewController)
@@ -67,22 +69,20 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         searchMapRouter = nil
     }
     
-    func attachSearchHomeList() {
-        guard searchHomeListRouter == nil else { return }
-        let router = searchHomeListBuilder.build(withListener: interactor)
+    func attachSearchCurrentLocation() {
+        guard searchCurrentLocationRouter == nil else { return }
+        let router = searchCurrentLocationBuilder.build(withListener: interactor)
         attachChild(router)
-        searchHomeListRouter = router
+        router.viewControllable.uiviewController.presentationController?.delegate = interactor.presentationAdapter
+        viewController.present(router.viewControllable, animated: true)
+        searchCurrentLocationRouter = router
     }
     
-    func detachSearchHomeList() {
-        guard let router = searchHomeListRouter else { return }
+    func detachSearchCurrentLocation() {
+        guard let router = searchCurrentLocationRouter else { return }
         detachChild(router)
-        searchHomeListRouter = nil
-    }
-    
-    func presentSearchHomeList() {
-        guard let searchHomeListRouter else { return }
-        viewController.present(searchHomeListRouter.viewControllable, animated: true)
+        searchCurrentLocationRouter = nil
+        viewController.popViewController(animated: true)
     }
     
     func attachSearchResult() {

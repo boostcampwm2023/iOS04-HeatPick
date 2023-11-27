@@ -15,7 +15,7 @@ import NMapsMap
 import ModernRIBs
 
 protocol SearchPresentableListener: AnyObject {
-    func presentHomeList()
+    func didTapCurrentLocation()
     func attachSearchResult()
 }
 
@@ -148,7 +148,7 @@ private extension SearchViewController {
     }
     
     @objc func showSearchHomeListButtonDidTap() {
-        listener?.presentHomeList()
+        listener?.didTapCurrentLocation()
     }
     
 }

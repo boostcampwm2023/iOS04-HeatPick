@@ -13,6 +13,7 @@ protocol SearchMapRouting: ViewableRouting { }
 
 protocol SearchMapPresentable: Presentable {
     var listener: SearchMapPresentableListener? { get set }
+    func moveMap(lat: Double, lng: Double)
 }
 
 protocol SearchMapListener: AnyObject { }
@@ -27,6 +28,7 @@ final class SearchMapInteractor: PresentableInteractor<SearchMapPresentable>, Se
     weak var listener: SearchMapListener?
 
     private let dependency: SearchMapInteractorDependency
+    private var isInitialCameraMoved = false
     
     init(
         presenter: SearchMapPresentable,
@@ -43,6 +45,13 @@ final class SearchMapInteractor: PresentableInteractor<SearchMapPresentable>, Se
 
     override func willResignActive() {
         super.willResignActive()
+    }
+    
+    func didAppear() {
+        if let location = dependency.searchMapUseCase.location, !isInitialCameraMoved {
+            isInitialCameraMoved = true
+            presenter.moveMap(lat: location.latitude, lng: location.longitude)
+        }
     }
     
 }
