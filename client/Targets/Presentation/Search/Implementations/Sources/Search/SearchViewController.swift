@@ -119,6 +119,7 @@ private extension SearchViewController {
     }
     
     func setupViews() {
+        view.backgroundColor = .hpWhite
         [stackView, searchTextField, showSearchHomeListButton].forEach { view.addSubview($0) }
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: view.topAnchor),

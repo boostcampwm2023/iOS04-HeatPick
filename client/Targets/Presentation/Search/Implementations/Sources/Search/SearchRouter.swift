@@ -11,7 +11,7 @@ import ModernRIBs
 
 protocol SearchInteractable: Interactable,
                                  SearchMapListener,
-                                 SearchHomeListListener,
+                                 SearchCurrentLocationStoryListListener,
                                  SearchResultListener {
     var router: SearchRouting? { get set }
     var listener: SearchListener? { get set }
@@ -24,7 +24,7 @@ protocol SearchViewControllable: ViewControllable {
 
 protocol SearchRouterDependency {
     var searchMapBuilder: SearchMapBuildable { get }
-    var searchHomeListBuilder: SearchHomeListBuildable { get }
+    var searchHomeListBuilder: SearchCurrentLocationStoryListBuildable { get }
     var searchResultBuilder: SearchResultBuildable { get }
 }
 
@@ -33,8 +33,8 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     private let searchMapBuilder: SearchMapBuildable
     private var searchMapRouter: SearchMapRouting?
     
-    private let searchHomeListBuilder: SearchHomeListBuildable
-    private var searchHomeListRouter: SearchHomeListRouting?
+    private let searchHomeListBuilder: SearchCurrentLocationStoryListBuildable
+    private var searchHomeListRouter: SearchCurrentLocationStoryListRouting?
     
     private let searchResultBuilder: SearchResultBuildable
     private var searchResultRouter: SearchResultRouting?
