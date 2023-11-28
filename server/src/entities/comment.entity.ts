@@ -19,4 +19,7 @@ export class Comment {
   @ManyToMany(() => User, (user) => user.comments)
   @JoinTable()
   mentions: User[];
+
+  @Column()
+  createdAt: Date;
 }
