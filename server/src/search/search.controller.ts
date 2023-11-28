@@ -15,6 +15,7 @@ import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 import { SearchParameterDto } from './dto/search.parameter.dto';
 import { UserResultDto } from './dto/user.result.dto';
 import { StoryResultDto } from './dto/story.result.dto';
+import { SearchHistoryResultDto } from './dto/search.history.result.dto';
 
 @ApiTags('search')
 @Controller('search')
@@ -63,15 +64,15 @@ export class SearchController {
   }
 
   @ApiOperation({ summary: '검색어 추천 기능' })
-  @ApiResponse({ status: 201, description: '입력된 글자를 바탕으로 자동 완성된 문장 배열을 리턴', type: [String] })
   @Get('recommend')
   @ApiResponse({
     status: 201,
     description: '파라미터로 넘겨받은 searchText 값을 바탕으로 유사한 검색어를 가져옵니다.',
-    type: [SearchHistory],
+    type: SearchHistoryResultDto,
   })
-  async recommendSearch(@Query('searchText') searchText: string): Promise<string[]> {
-    return this.searchService.searchHistoryTree(graphemeSeperation(searchText));
+  async recommendSearch(@Query('searchText') searchText: string): Promise<SearchHistoryResultDto> {
+    const results = this.searchService.searchHistoryTree(graphemeSeperation(searchText));
+    return { histories: results };
   }
 
   @ApiOperation({ summary: '검색 기능' })
