@@ -31,6 +31,7 @@ final class HomeHotPlaceContentView: UIView {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.backgroundColor = .hpGray4
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constants.cornerRadiusMedium
         imageView.contentMode = .scaleAspectFill
