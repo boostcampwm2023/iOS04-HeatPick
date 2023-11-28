@@ -12,6 +12,7 @@ import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notV
 import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
+import { getTemperatureFeeling } from '../constant/temperature';
 
 @Injectable()
 export class UserService {
@@ -64,8 +65,11 @@ export class UserService {
     const stories = await user.stories;
 
     return {
+      userId: user.userId,
       username: user.username,
       profileURL: user.profileImage.imageUrl,
+      temperature: user.temperature,
+      temperatureFeeling: getTemperatureFeeling(user.temperature),
       followerCount: 0,
       storyCount: (await user.stories).length,
       experience: 0,
