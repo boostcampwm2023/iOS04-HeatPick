@@ -57,6 +57,7 @@ extension SearchResultRouter {
         let router = dependency.searchBeforeDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         viewController.appendDashboard(router.viewControllable)
+        router.viewControllable.uiviewController.view.isHidden = true
         searchBeforeDashboardRouter = router
     }
     
@@ -65,6 +66,14 @@ extension SearchResultRouter {
         viewController.removeDashboard(router.viewControllable)
         detachChild(router)
         searchBeforeDashboardRouter = nil
+    }
+    
+    func showSearchBeforeDashboard() {
+        searchBeforeDashboardRouter?.viewControllable.uiviewController.view.isHidden = false
+    }
+    
+    func hideSearchBeforeDashboard() {
+        searchBeforeDashboardRouter?.viewControllable.uiviewController.view.isHidden = true
     }
     
 }
@@ -77,6 +86,7 @@ extension SearchResultRouter {
         let router = dependency.searchingDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         viewController.appendDashboard(router.viewControllable)
+        router.viewControllable.uiviewController.view.isHidden = true
         searchingDashboardRouter = router
     }
     
@@ -87,6 +97,15 @@ extension SearchResultRouter {
         searchingDashboardRouter = nil
     }
         
+    
+    func showSearchingDashboard() {
+        searchingDashboardRouter?.viewControllable.uiviewController.view.isHidden = false
+    }
+    
+    func hideSearchingDashboard() {
+        searchingDashboardRouter?.viewControllable.uiviewController.view.isHidden = true
+    }
+    
 }
 
 // MARK: SearchAfter
@@ -97,6 +116,7 @@ extension SearchResultRouter {
         let router = dependency.searchAfterDashboardBuilder.build(withListener: interactor)
         attachChild(router)
         viewController.appendDashboard(router.viewControllable)
+        router.viewControllable.uiviewController.view.isHidden = true
         searchAfterDashboardRouter = router
     }
     
@@ -106,5 +126,14 @@ extension SearchResultRouter {
         detachChild(router)
         searchAfterDashboardRouter = nil
     }
+    
+    func showSearchAfterDashboard() {
+        searchAfterDashboardRouter?.viewControllable.uiviewController.view.isHidden = false
+    }
+    
+    func hideSearchAfterDashboard() {
+        searchAfterDashboardRouter?.viewControllable.uiviewController.view.isHidden = true
+    }
+
     
 }
