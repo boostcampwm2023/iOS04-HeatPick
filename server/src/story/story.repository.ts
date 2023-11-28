@@ -21,7 +21,7 @@ export class StoryRepository {
   }
 
   loadEveryStory() {
-    return this.storyRepository.find();
+    return this.storyRepository.find({ relations: ['user'] });
   }
 
   getStoryByCondition(option: FindManyOptions) {
@@ -33,7 +33,7 @@ export class StoryRepository {
       where: {
         storyId: In(ids),
       },
-      relations: ['category'],
+      relations: ['category', 'user'],
     });
   }
 }
