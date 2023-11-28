@@ -38,8 +38,17 @@ public final class SearchUseCase: SearchUseCaseInterface {
         await repository.fetchUser(searchText: searchText)
     }
     
-    public func fetchRecommendText(searchText: String) async -> Result<[String], Error> {
+    public func fetchRecommendTexts(searchText: String) async -> Result<[String], Error> {
         await repository.fetchRecommendText(searchText: searchText)
+    }
+    
+    public func fetchRecentSearches() -> [String] {
+        repository.loadRecentSearches()
+        return repository.fetchRecentSearches()
+    }
+    
+    public func appendRecentSearch(searchText: String) -> String? {
+        repository.appendRecentSearch(searchText: searchText)
     }
     
 }

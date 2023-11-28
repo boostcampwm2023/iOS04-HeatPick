@@ -6,44 +6,65 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+import Foundation
+
 import ModernRIBs
+
+import CoreKit
+import DomainInterfaces
 
 protocol SearchBeforeRecentSearchesDashboardRouting: ViewableRouting { }
 
 protocol SearchBeforeRecentSearchesDashboardPresentable: Presentable {
     var listener: SearchBeforeRecentSearchesDashboardPresentableListener? { get set }
     
-    func setup(models: [SearchBeforeRecentSearchesViewModel])
-    func append(models: [SearchBeforeRecentSearchesViewModel])
+    func setup(models: [String])
+    func append(model: String)
 }
 
-protocol SearchBeforeRecentSearchesDashboardListener: AnyObject { }
+protocol SearchBeforeRecentSearchesDashboardListener: AnyObject {
+    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
+}
+
+protocol SearchBeforeRecentSearchesDashboardInteractorDependency: AnyObject {
+    var searchBeforeRecentSearchesUsecase: SearchBeforeRecentSearchesUseCaseInterface { get }
+}
 
 final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor<SearchBeforeRecentSearchesDashboardPresentable>, SearchBeforeRecentSearchesDashboardInteractable, SearchBeforeRecentSearchesDashboardPresentableListener {
-
+    
     weak var router: SearchBeforeRecentSearchesDashboardRouting?
     weak var listener: SearchBeforeRecentSearchesDashboardListener?
-
-    override init(presenter: SearchBeforeRecentSearchesDashboardPresentable) {
+    
+    private var cancellables = Set<AnyCancellable>()
+    private let dependecy: SearchBeforeRecentSearchesDashboardInteractorDependency
+    
+    init(
+        presenter: SearchBeforeRecentSearchesDashboardPresentable,
+        dependency: SearchBeforeRecentSearchesDashboardInteractorDependency
+    ) {
+        self.dependecy = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(models: [
-            .init(text: "서울 맛집"),
-            .init(text: "네이버"),
-            .init(text: "부스트캠프"),
-            .init(text: "iOS04"),
-            .init(text: "이준복"),
-            .init(text: "임정민"),
-            .init(text: "홍성준"),
-            .init(text: "정세호"),
-            .init(text: "최검기"),
-        ])
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            presenter.setup(models: dependecy.searchBeforeRecentSearchesUsecase.fetchRecentSearches())
+        }
+        
+        listener?.endEditingSearchTextPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] text in
+                guard let self,
+                      let text = self.dependecy.searchBeforeRecentSearchesUsecase.appendRecentSearch(searchText: text) else { return }
+                self.presenter.append(model: text)
+            }.store(in: &cancellables)
+        
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
     }

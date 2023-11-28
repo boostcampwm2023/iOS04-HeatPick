@@ -7,15 +7,14 @@
 //
 
 import UIKit
-import DesignKit
+
 import ModernRIBs
+
+import DesignKit
+import DomainEntities
 
 protocol SearchAfterStoryDashboardPresentableListener: AnyObject {
     func searchAfterHeaderViewSeeAllViewDidTap()
-}
-
-struct SearchAfterStoryDashboardModel {
-    let contentList: [SearchAfterStoryViewModel]
 }
 
 final class SearchAfterStoryDashboardViewController: UIViewController, SearchAfterStoryDashboardPresentable, SearchAfterStoryDashboardViewControllable {
@@ -39,7 +38,7 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
     
     weak var listener: SearchAfterStoryDashboardPresentableListener?
     
-    private lazy var titleView: SearchAfterHeaderView = {
+    private lazy var headerView: SearchAfterHeaderView = {
         let titleView = SearchAfterHeaderView()
         titleView.delegate = self
         titleView.setupTitle(Constant.TitleView.title)
@@ -82,15 +81,15 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
         setupViews()
     }
     
-    func setup(model: SearchAfterStoryDashboardModel) {
-        let isEmpty = model.contentList.isEmpty
-        titleView.isHiddenSeeAllView(isEmpty)
+    func setup(models: [SearchStory]) {
+        let isEmpty = models.isEmpty
+        headerView.isHiddenSeeAllView(isEmpty)
         emptyView.isHidden = !isEmpty
         scrollView.isHidden = isEmpty
-        model.contentList.forEach { model in
+        models.forEach { model in
             let contentView = SearchAfterStoryView()
             contentView.setup(model: model)
-            stackView.addArrangedSubview(contentView)
+            self.stackView.addArrangedSubview(contentView)
         }
     }
     
@@ -98,20 +97,20 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
 
 private extension SearchAfterStoryDashboardViewController {
     func setupViews() {
-        [titleView, emptyView, scrollView].forEach { view.addSubview($0) }
+        [headerView, emptyView, scrollView].forEach { view.addSubview($0) }
         scrollView.addSubview(stackView)
         
         NSLayoutConstraint.activate([
-            titleView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             
-            emptyView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.offset),
+            emptyView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.offset),
             emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            scrollView.frameLayoutGuide.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.offset),
+            scrollView.frameLayoutGuide.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.offset),
             scrollView.frameLayoutGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             scrollView.frameLayoutGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             scrollView.frameLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),

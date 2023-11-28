@@ -6,7 +6,10 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+
 import ModernRIBs
+
 import CoreKit
 import DomainEntities
 import DomainInterfaces
@@ -22,7 +25,9 @@ protocol SearchAfterDashboardPresentable: Presentable {
     var listener: SearchAfterDashboardPresentableListener? { get set }
 }
 
-protocol SearchAfterDashboardListener: AnyObject { }
+protocol SearchAfterDashboardListener: AnyObject {
+    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
+}
 
 protocol SearchAfterDashboardInteractorDependency: AnyObject {
     var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { get }
@@ -34,6 +39,13 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
     weak var listener: SearchAfterDashboardListener?
 
     private let dependency: SearchAfterDashboardInteractorDependency
+    
+    var searchResultStoriesPublisher: AnyPublisher<[SearchStory], Never> { searchResultStoriesSubject.eraseToAnyPublisher() }
+    var searchResultUsersPublisher: AnyPublisher<[SearchUser], Never> { searchResultUsersSubject.eraseToAnyPublisher() }
+    
+    private var searchResultStoriesSubject: PassthroughSubject<[SearchStory], Never> = .init()
+    private var searchResultUsersSubject: PassthroughSubject<[SearchUser], Never> = .init()
+    private var cancellables = Set<AnyCancellable>()
     
     init(
         presenter: SearchAfterDashboardPresentable,
@@ -48,6 +60,22 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
         super.didBecomeActive()
         router?.attachSearchAfterStoryDashboard()
         router?.attachSearchAfterUserDashboard()
+        
+        listener?.endEditingSearchTextPublisher
+            .sink { searchText in
+                Task { [weak self] in
+                    guard let self else { return }
+                    await self.dependency.searhResultSearchAfterUseCase
+                        .fetchResult(searchText: searchText)
+                        .onSuccess { searchResult in
+                            self.searchResultStoriesSubject.send(searchResult.stories)
+                            self.searchResultUsersSubject.send(searchResult.users)
+                        }
+                        .onFailure { error in
+                            Log.make(message: error.localizedDescription, log: .network)
+                        }
+                }
+            }.store(in: &cancellables)
     }
 
     override func willResignActive() {

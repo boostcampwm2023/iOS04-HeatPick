@@ -7,15 +7,14 @@
 //
 
 import UIKit
-import DesignKit
+
 import ModernRIBs
+
+import DesignKit
+import DomainEntities
 
 protocol SearchAfterUserDashboardPresentableListener: AnyObject {
     func searchAfterHeaderViewSeeAllViewDidTap()
-}
-
-struct SearchAfterUserDashboardViewModel {
-    let contentList: [SearchAfterUserViewModel]
 }
 
 final class SearchAfterUserDashboardViewController: UIViewController, SearchAfterUserDashboardPresentable, SearchAfterUserDashboardViewControllable {
@@ -82,15 +81,18 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
         setupViews()
     }
     
-    func setup(model: SearchAfterUserDashboardViewModel) {
-        let isEmpty = model.contentList.isEmpty
-        headerView.isHiddenSeeAllView(isEmpty)
-        emptyView.isHidden = !isEmpty
-        scrollView.isHidden = isEmpty
-        model.contentList.forEach { model in
-            let contentView = SearchAfterUserView()
-            contentView.setup(model: model)
-            stackView.addArrangedSubview(contentView)
+    func setup(models: [SearchUser]) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let isEmpty = models.isEmpty
+            headerView.isHiddenSeeAllView(isEmpty)
+            emptyView.isHidden = !isEmpty
+            scrollView.isHidden = isEmpty
+            models.forEach { model in
+                let contentView = SearchAfterUserView()
+                contentView.setup(model: model)
+                self.stackView.addArrangedSubview(contentView)
+            }
         }
     }
     

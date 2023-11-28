@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import Combine
 
 protocol SearchResultRouting: ViewableRouting {
     func attachSearchBeforeDashboard()
@@ -27,7 +28,6 @@ protocol SearchResultRouting: ViewableRouting {
 
 protocol SearchResultPresentable: Presentable {
     var listener: SearchResultPresentableListener? { get set }
-    
 }
 
 protocol SearchResultListener: AnyObject { 
@@ -38,7 +38,13 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
 
     weak var router: SearchResultRouting?
     weak var listener: SearchResultListener?
-
+    
+    var editingSearchTextPublisher: AnyPublisher<String, Never> { editingSearchTextSubject.eraseToAnyPublisher() }
+    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { endEditingSearchTextSubject.eraseToAnyPublisher() }
+    
+    private var editingSearchTextSubject: PassthroughSubject<String, Never> = .init()
+    private var endEditingSearchTextSubject: PassthroughSubject<String, Never> = .init()
+    
     
     override init(presenter: SearchResultPresentable) {
         super.init(presenter: presenter)
@@ -63,6 +69,19 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
         listener?.detachSearchResult()
     }
     
+    func editing(_ text: String) {
+        editingSearchTextSubject.send(text)
+    }
+    
+    func endEditing(_ text: String) {
+        endEditingSearchTextSubject.send(text)
+    }
+    
+}
+
+// MARK: SearchBefore
+extension SearchResultInteractor {
+    
     func showSearchBeforeDashboard() {
         router?.showSearchBeforeDashboard()
     }
@@ -70,6 +89,12 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
     func hideSearchBeforeDashboard() {
         router?.hideSearchBeforeDashboard()
     }
+    
+}
+
+
+// MARK: Searching
+extension SearchResultInteractor {
     
     func showSearchingDashboard() {
         router?.showSearchingDashboard()
@@ -79,6 +104,11 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
         router?.hideSearchingDashboard()
     }
     
+}
+
+// MARK: SearchAfter
+extension SearchResultInteractor {
+    
     func showSearchAfterDashboard() {
         router?.showSearchAfterDashboard()
     }
@@ -86,4 +116,5 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
     func hideSearchAfterDashboard() {
         router?.hideSearchAfterDashboard()
     }
+    
 }
