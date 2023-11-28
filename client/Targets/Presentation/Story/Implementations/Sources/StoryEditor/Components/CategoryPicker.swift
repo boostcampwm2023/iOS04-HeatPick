@@ -133,6 +133,6 @@ extension CategoryPicker: UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return items[safe: row]?.title ?? "Error"
+        return items[safe: row]?.title
     }
 }
