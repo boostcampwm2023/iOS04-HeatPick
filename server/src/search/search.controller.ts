@@ -56,13 +56,6 @@ export class SearchController {
     return { users: transfromedUsers };
   }
 
-  @Get('place')
-  @ApiOperation({ summary: '장소 검색' })
-  @ApiResponse({ status: 201 })
-  async getPlaceSearchResult(@Query('searchText') searchText: string) {
-    return this.placeService.getPlaceFromTrie(graphemeSeperation(searchText));
-  }
-
   @ApiOperation({ summary: '검색어 추천 기능' })
   @Get('recommend')
   @ApiResponse({
