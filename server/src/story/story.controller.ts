@@ -1,5 +1,5 @@
 import { StoryService } from './story.service';
-import { Body, Controller, Delete, Get, Headers, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -9,7 +9,6 @@ import { RecommendStoryDto } from './dto/story.recommend.response.dto';
 import { plainToClass } from 'class-transformer';
 import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
 import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 
 @ApiTags('story')
