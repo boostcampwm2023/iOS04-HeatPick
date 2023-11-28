@@ -15,9 +15,9 @@ import DomainInterfaces
 
 public final class SearchRepository: SearchRepositoryInterface {
     
-    private static let UserDefaultsKey = "RecentSearches"
-    private var recentSearches: [String] = []
     private let session: Network
+    private let userDefaultsKey = "RecentSearches"
+    private var recentSearches: [String] = []
     
     public init (session: Network) {
         self.session = session
@@ -61,20 +61,17 @@ public final class SearchRepository: SearchRepositoryInterface {
         return searchText
     }
     
+    public func saveRecentSearches() {
+        UserDefaults.standard.setValue(recentSearches, forKey: userDefaultsKey)
+    }
+    
+    public func loadRecentSearches() {
+        self.recentSearches = UserDefaults.standard.array(forKey: userDefaultsKey) as? [String] ?? []
+    }
+
+    
     deinit {
         saveRecentSearches()
-    }
-    
-}
-
-private extension SearchRepository {
-    
-    func saveRecentSearches() {
-        UserDefaults.standard.setValue(recentSearches, forKey: Self.UserDefaultsKey)
-    }
-    
-    func loadRecentSearches() {
-        self.recentSearches = UserDefaults.standard.array(forKey: Self.UserDefaultsKey) as? [String] ?? []
     }
     
 }

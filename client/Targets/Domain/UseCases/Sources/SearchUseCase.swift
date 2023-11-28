@@ -43,7 +43,8 @@ public final class SearchUseCase: SearchUseCaseInterface {
     }
     
     public func fetchRecentSearches() -> [String] {
-        repository.fetchRecentSearches()
+        repository.loadRecentSearches()
+        return repository.fetchRecentSearches()
     }
     
     public func appendRecentSearch(searchText: String) -> String? {

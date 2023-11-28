@@ -12,5 +12,7 @@ public protocol SearchResultSearchBeforeRepositoryInterface {
     
     func fetchRecentSearches() -> [String]
     func appendRecentSearch(searchText: String) -> String?
+    func loadRecentSearches()
+    func saveRecentSearches()
     
 }
