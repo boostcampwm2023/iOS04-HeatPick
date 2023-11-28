@@ -5,6 +5,9 @@ import { UserProfileDetailStoryDto } from './user.profile.detail.story.dto';
 
 export class UserProfileDetailDataDto {
   @ApiProperty()
+  userId: number;
+
+  @ApiProperty()
   username: string;
 
   @ApiProperty()
@@ -15,6 +18,12 @@ export class UserProfileDetailDataDto {
 
   @ApiProperty()
   storyCount: number;
+
+  @ApiProperty()
+  temperature: number;
+
+  @ApiProperty()
+  temperatureFeeling: string;
 
   @ApiProperty()
   experience: number;
