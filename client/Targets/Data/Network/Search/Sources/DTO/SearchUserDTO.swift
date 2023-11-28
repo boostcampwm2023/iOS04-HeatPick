@@ -13,13 +13,7 @@ public struct SearchUserDTO: Decodable {
     
     public let userId: Int
     public let username: String
-    public let oauthId: String
-    public let temperature: Int
-    public let createAt: String
-    public let deletedAt: String
-    public let recentActive: String
-    public let following: [String]
-    public let followers: [String]
+    public let profileUrl: String
     
 }
 
@@ -29,13 +23,7 @@ public extension SearchUserDTO {
         SearchUser(
             userId: self.userId,
             username: self.username,
-            oauthId: self.oauthId,
-            temperature: self.temperature,
-            createAt: self.createAt,
-            deletedAt: self.deletedAt,
-            recentActive: self.recentActive,
-            following: self.following,
-            followers: self.followers
+            profileUrl: self.profileUrl
         )
     }
 
