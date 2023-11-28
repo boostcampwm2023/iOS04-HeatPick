@@ -1,49 +1,144 @@
 {
     "recommededStories": [
         {
-            "storyId": 7,
+            "storyId": 1,
             "title": "test123",
+            "content": "aaa",
             "likeCount": 0,
-            "createAt": "2023-11-20T14:30:00.000Z",
-            "user": {
-                "userId": 2,
-                "username": "sayho",
-                "profileImage": "https://picsum.photos/200/300"
-            },
-            "storyImages": [
-                "https://picsum.photos/200/300",
-                "https://picsum.photos/200/300",
-                "https://picsum.photos/200/300"
-            ]
-        },
-        {
-            "storyId": 14,
-            "title": "서울 맛집",
-            "createAt": "2023-11-20T23:30:00.000Z",
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 2,
             "user": {
                 "userId": 1,
-                "username": "테스트할게요",
-                "profileImage": "https://picsum.photos/200/300"
-            },
-            "storyImages": [
-                "https://picsum.photos/200/300",
-                "https://picsum.photos/200/300"
-            ]
+                "username": "sayho",
+                "profileUrl": ""
+            }
         },
         {
-            "storyId": 15,
+            "storyId": 2,
             "title": "test123",
-            "createAt": "2023-11-20T14:30:00.000Z",
+            "content": "aaa",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 2,
             "user": {
-                "userId": 2,
+                "userId": 1,
                 "username": "sayho",
-                "profileImage": "https://picsum.photos/200/300"
-            },
-            "storyImages": [
-                "https://picsum.photos/200/300",
-                "https://picsum.photos/200/300",
-                "https://picsum.photos/200/300"
-            ]
+                "profileUrl": ""
+            }
+        },
+        {
+            "storyId": 3,
+            "title": "서울 맛집",
+            "content": "서울의 맛집 김밥천국입니다",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 1,
+            "user": {
+                "userId": 3,
+                "username": "기검",
+                "profileUrl": ""
+            }
+        },
+        {
+            "storyId": 4,
+            "title": "서울 맛집",
+            "content": "서울의 맛집 김밥천국입니다",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 1,
+            "user": {
+                "userId": 3,
+                "username": "기검",
+                "profileUrl": ""
+            }
+        },
+        {
+            "storyId": 5,
+            "title": "서울 맛집",
+            "content": "서울의 맛집 김밥천국입니다",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 1,
+            "user": {
+                "userId": 3,
+                "username": "기검",
+                "profileUrl": ""
+            }
+        },
+        {
+            "storyId": 6,
+            "title": "서울 맛집",
+            "content": "서울의 맛집 김밥천국입니다",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 1,
+            "user": {
+                "userId": 3,
+                "username": "기검",
+                "profileUrl": ""
+            }
+        },
+        {
+            "storyId": 7,
+            "title": "서울 경복궁",
+            "content": "서울의 맛집 경복궁",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 1,
+            "user": {
+                "userId": 3,
+                "username": "기검",
+                "profileUrl": ""
+            }
+        },
+        {
+            "storyId": 8,
+            "title": "서울 경복궁",
+            "content": "서울의 맛집 경복궁",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 1,
+            "user": {
+                "userId": 3,
+                "username": "기검",
+                "profileUrl": ""
+            }
+        },
+        {
+            "storyId": 9,
+            "title": "서울 경복궁",
+            "content": "서울의 맛집 경복궁",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 1,
+            "user": {
+                "userId": 3,
+                "username": "기검",
+                "profileUrl": ""
+            }
+        },
+        {
+            "storyId": 10,
+            "title": "서울 경복궁",
+            "content": "서울의 맛집 경복궁",
+            "likeCount": 0,
+            "commentCount": 0,
+            "storyImage": "",
+            "categoryId": 1,
+            "user": {
+                "userId": 3,
+                "username": "기검",
+                "profileUrl": ""
+            }
         }
     ]
 }

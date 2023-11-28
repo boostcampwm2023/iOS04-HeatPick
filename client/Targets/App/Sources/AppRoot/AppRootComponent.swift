@@ -93,7 +93,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         let locationService = LocationService()
         locationService.startUpdatingLocation()
         
-        let homeNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [HomeURLProtocol.self])
+        let homeNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [HomeURLProtocol.self])
         self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider), locationService: locationService)
         self.locationAuthorityUseCase = LocationAuthorityUseCase(service: locationService)
         
