@@ -37,7 +37,8 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     
     private let dependecy: SearchingDashboardInteractorDependency
     
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellables: Set<AnyCancellable> = []
+    private var cancelTaskBag: CancelBag = .init()
     
     init(
         presenter: SearchingDashboardPresentable,
@@ -50,11 +51,10 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     
     override func didBecomeActive() {
         super.didBecomeActive()
-        
         listener?.editingSearchTextPublisher
-            .sink { editingText in
-                Task { [weak self] in
-                    guard let self else { return }
+            .sink { [weak self] editingText in
+                guard let self else { return }
+                Task {
                     await self.dependecy.searhResultsearchingUseCase
                         .fetchRecommendTexts(searchText:editingText)
                         .onSuccess(on: .main, with: self) { this, recommentTexts in
@@ -63,13 +63,12 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
                         .onFailure { error in
                             Log.make(message: error.localizedDescription, log: .network)
                         }
-                }
+                }.store(in: cancelTaskBag)
             }.store(in: &cancellables)
     }
     
     override func willResignActive() {
         super.willResignActive()
-        
     }
     
     func didTapItem(_ item: String) {

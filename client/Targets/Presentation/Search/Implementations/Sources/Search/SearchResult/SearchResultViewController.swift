@@ -8,23 +8,25 @@
 
 import UIKit
 import Combine
-import DesignKit
+
 import ModernRIBs
 
+import CoreKit
+import DesignKit
+
+
 protocol SearchResultPresentableListener: AnyObject {
-    func editing(_ text: String)
-    func endEditing(_ text: String)
-    func detachSearchResult()
+    func editing(_ searchText: String)
+    
     func showSearchBeforeDashboard()
-    func hideSearchBeforeDashboard()
     func showSearchingDashboard()
-    func hideSearchingDashboard()
-    func showSearchAfterDashboard()
-    func hideSearchAfterDashboard()
+    func showSearchAfterDashboard(_ searchText: String)
+    
+    func detachSearchResult()
 }
 
 final class SearchResultViewController: UIViewController, SearchResultPresentable, SearchResultViewControllable {
-
+    
     weak var listener: SearchResultPresentableListener?
     
     private lazy var searchNavigationView: SearchNavigationView = {
@@ -63,8 +65,12 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
     
     func removeDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
-        guard let view = stackView.arrangedSubviews.filter({ $0 == viewController.view }).first else { return }
-        view.isHidden = true
+        stackView.removeArrangedSubview(viewController.view)
+        viewController.removeFromParent()
+    }
+    
+    func setSearchText(_ searchText: String) {
+        searchNavigationView.setSearchText(searchText)
     }
     
 }
@@ -92,25 +98,20 @@ private extension SearchResultViewController {
 
 extension SearchResultViewController: SearchNavigationViewDelegate {
     
-    func editing(_ text: String) {
-        listener?.editing(text)
+    func editing(_ searchText: String) {
+        listener?.editing(searchText)
     }
     
-    func showBeginEditingTextDashboard() {
-        listener?.hideSearchingDashboard()
+    func showSearchBeforeDashboard() {
         listener?.showSearchBeforeDashboard()
     }
     
-    func showEditingTextDashboard() {
-        listener?.hideSearchAfterDashboard()
-        listener?.hideSearchBeforeDashboard()
+    func showSearchingDashboard() {
         listener?.showSearchingDashboard()
     }
     
-    func showEndEditingTextDashboard(_ text: String) {
-        listener?.endEditing(text)
-        listener?.hideSearchingDashboard()
-        listener?.showSearchAfterDashboard()
+    func showSearchAfterDashboard(_ searchText: String) {
+        listener?.showSearchAfterDashboard(searchText)
     }
     
     func leftButtonDidTap() {

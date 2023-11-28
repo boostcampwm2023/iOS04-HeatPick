@@ -8,6 +8,7 @@
 
 import Combine
 import ModernRIBs
+import CoreKit
 import DomainInterfaces
 
 protocol SearchBeforeDashboardRouting: ViewableRouting {
@@ -23,12 +24,15 @@ protocol SearchBeforeDashboardPresentable: Presentable {
 
 protocol SearchBeforeDashboardListener: AnyObject {
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
+    func showSearchAfterDashboard(_ searchText: String)
 }
 
 
 final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeDashboardPresentable>,
                                              SearchBeforeDashboardInteractable,
                                              SearchBeforeDashboardPresentableListener {
+
+    
     
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { endEditingSearchTextSubject.eraseToAnyPublisher() }
     private var endEditingSearchTextSubject: PassthroughSubject<String, Never> = .init()
@@ -56,6 +60,10 @@ final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeD
         super.willResignActive()
         router?.detachSearchBeforeRecentSearchesDashboard()
         router?.detachSearchBeforeCategoryDashboard()
+    }
+    
+    func showSearchAfterDashboard(_ searchText: String) {
+        listener?.showSearchAfterDashboard(searchText)
     }
     
 }

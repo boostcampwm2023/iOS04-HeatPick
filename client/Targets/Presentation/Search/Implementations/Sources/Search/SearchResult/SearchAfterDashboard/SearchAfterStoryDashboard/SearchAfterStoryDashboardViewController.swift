@@ -82,6 +82,7 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
     }
     
     func setup(models: [SearchStory]) {
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let isEmpty = models.isEmpty
         headerView.isHiddenSeeAllView(isEmpty)
         emptyView.isHidden = !isEmpty

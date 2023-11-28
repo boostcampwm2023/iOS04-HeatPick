@@ -6,8 +6,11 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import ModernRIBs
+
 import Combine
+import ModernRIBs
+import CoreKit
+
 
 protocol SearchResultRouting: ViewableRouting {
     func attachSearchBeforeDashboard()
@@ -28,13 +31,15 @@ protocol SearchResultRouting: ViewableRouting {
 
 protocol SearchResultPresentable: Presentable {
     var listener: SearchResultPresentableListener? { get set }
+    
+    func setSearchText(_ searchText: String)
 }
 
 protocol SearchResultListener: AnyObject { 
     func detachSearchResult()
 }
 
-final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {
+final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {    
 
     weak var router: SearchResultRouting?
     weak var listener: SearchResultListener?
@@ -69,6 +74,10 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
         listener?.detachSearchResult()
     }
     
+}
+
+extension SearchResultInteractor {
+    
     func editing(_ text: String) {
         editingSearchTextSubject.send(text)
     }
@@ -79,42 +88,26 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
     
 }
 
-// MARK: SearchBefore
 extension SearchResultInteractor {
     
     func showSearchBeforeDashboard() {
+        router?.hideSearchingDashboard()
+        router?.hideSearchAfterDashboard()
         router?.showSearchBeforeDashboard()
     }
     
-    func hideSearchBeforeDashboard() {
-        router?.hideSearchBeforeDashboard()
-    }
-    
-}
-
-
-// MARK: Searching
-extension SearchResultInteractor {
-    
     func showSearchingDashboard() {
+        router?.hideSearchBeforeDashboard()
+        router?.hideSearchAfterDashboard()
         router?.showSearchingDashboard()
     }
     
-    func hideSearchingDashboard() {
+    func showSearchAfterDashboard(_ searchText: String) {
+        endEditing(searchText)
+        presenter.setSearchText(searchText)
+        router?.hideSearchBeforeDashboard()
         router?.hideSearchingDashboard()
-    }
-    
-}
-
-// MARK: SearchAfter
-extension SearchResultInteractor {
-    
-    func showSearchAfterDashboard() {
         router?.showSearchAfterDashboard()
-    }
-    
-    func hideSearchAfterDashboard() {
-        router?.hideSearchAfterDashboard()
     }
     
 }

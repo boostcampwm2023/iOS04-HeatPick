@@ -8,6 +8,8 @@
 
 import ModernRIBs
 
+import CoreKit
+
 protocol SearchBeforeDashboardInteractable: Interactable,
                                             SearchBeforeRecentSearchesDashboardListener,
                                             SearchBeforeCategoryDashboardListener {
@@ -46,8 +48,8 @@ final class SearchBeforeDashboardRouter: ViewableRouter<SearchBeforeDashboardInt
         guard searchBeforeRecentSearchsDashboardRouter == nil else { return }
         let router = dependency.searchBeforeRecentSearchesDashboardBuilder.build(withListener: interactor)
         attachChild(router)
-        searchBeforeRecentSearchsDashboardRouter = router
         viewController.appendDashboard(router.viewControllable)
+        searchBeforeRecentSearchsDashboardRouter = router
     }
     
     func detachSearchBeforeRecentSearchesDashboard() {
@@ -61,8 +63,8 @@ final class SearchBeforeDashboardRouter: ViewableRouter<SearchBeforeDashboardInt
         guard searchBeforeCategoryDashboardRouter == nil else { return }
         let router = dependency.searchBeforeCategoryDashboardBuilder.build(withListener: interactor)
         attachChild(router)
-        searchBeforeCategoryDashboardRouter = router
         viewController.appendDashboard(router.viewControllable)
+        searchBeforeCategoryDashboardRouter = router
     }
     
     func detachSearchBeforeCategoryDashboard() {

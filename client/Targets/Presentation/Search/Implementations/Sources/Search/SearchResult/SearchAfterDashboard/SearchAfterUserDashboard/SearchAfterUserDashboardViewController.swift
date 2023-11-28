@@ -82,18 +82,17 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
     }
     
     func setup(models: [SearchUser]) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            let isEmpty = models.isEmpty
-            headerView.isHiddenSeeAllView(isEmpty)
-            emptyView.isHidden = !isEmpty
-            scrollView.isHidden = isEmpty
-            models.forEach { model in
-                let contentView = SearchAfterUserView()
-                contentView.setup(model: model)
-                self.stackView.addArrangedSubview(contentView)
-            }
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        let isEmpty = models.isEmpty
+        headerView.isHiddenSeeAllView(isEmpty)
+        emptyView.isHidden = !isEmpty
+        scrollView.isHidden = isEmpty
+        models.forEach { model in
+            let contentView = SearchAfterUserView()
+            contentView.setup(model: model)
+            self.stackView.addArrangedSubview(contentView)
         }
+        
     }
     
 }

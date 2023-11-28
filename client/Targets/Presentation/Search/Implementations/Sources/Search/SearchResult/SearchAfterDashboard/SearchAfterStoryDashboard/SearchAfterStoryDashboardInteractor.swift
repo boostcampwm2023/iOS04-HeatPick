@@ -31,7 +31,7 @@ final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAft
     weak var router: SearchAfterStoryDashboardRouting?
     weak var listener: SearchAfterStoryDashboardListener?
     
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellables: Set<AnyCancellable> = []
     
     override init(presenter: SearchAfterStoryDashboardPresentable) {
         super.init(presenter: presenter)

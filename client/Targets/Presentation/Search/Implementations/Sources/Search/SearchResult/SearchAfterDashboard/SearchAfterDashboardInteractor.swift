@@ -45,7 +45,8 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
     
     private var searchResultStoriesSubject: PassthroughSubject<[SearchStory], Never> = .init()
     private var searchResultUsersSubject: PassthroughSubject<[SearchUser], Never> = .init()
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellables: Set<AnyCancellable> = []
+    private var cancelTaskBag: CancelBag = .init()
     
     init(
         presenter: SearchAfterDashboardPresentable,
@@ -62,9 +63,9 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
         router?.attachSearchAfterUserDashboard()
         
         listener?.endEditingSearchTextPublisher
-            .sink { searchText in
-                Task { [weak self] in
-                    guard let self else { return }
+            .sink { [weak self] searchText in
+                guard let self else { return }
+                Task {
                     await self.dependency.searhResultSearchAfterUseCase
                         .fetchResult(searchText: searchText)
                         .onSuccess { searchResult in
@@ -74,7 +75,7 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
                         .onFailure { error in
                             Log.make(message: error.localizedDescription, log: .network)
                         }
-                }
+                }.store(in: cancelTaskBag)
             }.store(in: &cancellables)
     }
 

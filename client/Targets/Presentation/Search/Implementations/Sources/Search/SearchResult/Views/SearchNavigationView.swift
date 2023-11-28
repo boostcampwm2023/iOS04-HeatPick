@@ -13,10 +13,10 @@ import DesignKit
 
 public protocol SearchNavigationViewDelegate: AnyObject {
     func leftButtonDidTap()
-    func editing(_ text: String)
-    func showBeginEditingTextDashboard()
-    func showEditingTextDashboard()
-    func showEndEditingTextDashboard(_ text: String)
+    func editing(_ searchText: String)
+    func showSearchBeforeDashboard()
+    func showSearchingDashboard()
+    func showSearchAfterDashboard(_ searchText: String)
 }
 
 public final class SearchNavigationView: UIView {
@@ -52,6 +52,7 @@ public final class SearchNavigationView: UIView {
         textField.setContentHuggingPriority(.init(200), for: .horizontal)
         textField.autocorrectionType = .no
         textField.spellCheckingType = .no
+        textField.clearButtonMode = .always
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -64,6 +65,10 @@ public final class SearchNavigationView: UIView {
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
+    }
+    
+    func setSearchText(_ searchText: String) {
+        searchTextField.text = searchText
     }
     
 }
@@ -94,8 +99,8 @@ private extension SearchNavigationView {
     }
     
     @objc func searchTextFieldValueChanged(_ sender: UITextField) {
-        guard let text = sender.text else { return }
-        delegate?.editing(text)
+        guard let searchText = sender.text else { return }
+        delegate?.editing(searchText)
     }
     
 }
@@ -103,15 +108,15 @@ private extension SearchNavigationView {
 extension SearchNavigationView: UITextFieldDelegate {
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
-        delegate?.showEditingTextDashboard()
+        delegate?.showSearchingDashboard()
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        let text = textField.text ?? ""
-        if text.isEmpty {
-            delegate?.showBeginEditingTextDashboard()
+        let searchText = textField.text ?? ""
+        if searchText.isEmpty {
+            delegate?.showSearchBeforeDashboard()
         } else {
-            delegate?.showEndEditingTextDashboard(text)
+            delegate?.showSearchAfterDashboard(searchText)
         }
     }
     

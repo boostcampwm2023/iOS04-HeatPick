@@ -7,11 +7,12 @@
 //
 
 import UIKit
-import DesignKit
 import ModernRIBs
+import CoreKit
+import DesignKit
 
 protocol SearchBeforeRecentSearchesDashboardPresentableListener: AnyObject {
-    func didTapSearchBeforeRecentSearchesView(text: String?)
+    func didTapSearchBeforeRecentSearchesView(searchText: String)
 }
 
 final class SearchBeforeRecentSearchesDashboardViewController: UIViewController, SearchBeforeRecentSearchesDashboardPresentable, SearchBeforeRecentSearchesDashboardViewControllable {
@@ -85,7 +86,10 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
         }
     }
     
+    // TODO: 조금 더 좋은 로직을 생각 중 ...
     func append(model: String) {
+        emptyView.isHidden = true
+        scrollView.isHidden = false
         let contentView = SearchBeforeRecentSearchesView()
         contentView.setup(model)
         contentView.delegate = self
@@ -128,8 +132,8 @@ private extension SearchBeforeRecentSearchesDashboardViewController {
 
 extension SearchBeforeRecentSearchesDashboardViewController: searchBeforeRecentSearchesViewDelegate {
     
-    func didTapSearchBeforeRecentSearchesView(text: String?) {
-        listener?.didTapSearchBeforeRecentSearchesView(text: text)
+    func didTapSearchBeforeRecentSearchesView(searchText: String) {
+        listener?.didTapSearchBeforeRecentSearchesView(searchText: searchText)
     }
     
 }
