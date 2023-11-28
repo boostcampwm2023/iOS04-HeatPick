@@ -6,24 +6,21 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import ModernRIBs
+
 import Combine
+import ModernRIBs
+import CoreKit
+
 
 protocol SearchResultRouting: ViewableRouting {
     func attachSearchBeforeDashboard()
     func detachSearchBeforeDashboard()
-    func showSearchBeforeDashboard()
-    func hideSearchBeforeDashboard()
     
     func attachSearchingDashboard()
     func detachSearchingDashboard()
-    func showSearchingDashboard()
-    func hideSearchingDashboard()
     
     func attachSearchAfterDashboard()
     func detachSearchAfterDashboard()
-    func showSearchAfterDashboard()
-    func hideSearchAfterDashboard()
 }
 
 protocol SearchResultPresentable: Presentable {
@@ -34,7 +31,7 @@ protocol SearchResultListener: AnyObject {
     func detachSearchResult()
 }
 
-final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {
+final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {    
 
     weak var router: SearchResultRouting?
     weak var listener: SearchResultListener?
@@ -53,9 +50,6 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        router?.attachSearchBeforeDashboard()
-        router?.attachSearchingDashboard()
-        router?.attachSearchAfterDashboard()
     }
 
     override func willResignActive() {
@@ -82,12 +76,12 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
 // MARK: SearchBefore
 extension SearchResultInteractor {
     
-    func showSearchBeforeDashboard() {
-        router?.showSearchBeforeDashboard()
+    func attachSearchBeforeDashboard() {
+        router?.attachSearchBeforeDashboard()
     }
     
-    func hideSearchBeforeDashboard() {
-        router?.hideSearchBeforeDashboard()
+    func detachSearchBeforeDashboard() {
+        router?.detachSearchBeforeDashboard()
     }
     
 }
@@ -96,12 +90,12 @@ extension SearchResultInteractor {
 // MARK: Searching
 extension SearchResultInteractor {
     
-    func showSearchingDashboard() {
-        router?.showSearchingDashboard()
+    func attachSearchingDashboard() {
+        router?.attachSearchingDashboard()
     }
     
-    func hideSearchingDashboard() {
-        router?.hideSearchingDashboard()
+    func detachSearchingDashboard() {
+        router?.detachSearchingDashboard()
     }
     
 }
@@ -109,12 +103,12 @@ extension SearchResultInteractor {
 // MARK: SearchAfter
 extension SearchResultInteractor {
     
-    func showSearchAfterDashboard() {
-        router?.showSearchAfterDashboard()
+    func attachSearchAfterDashboard() {
+        router?.attachSearchAfterDashboard()
     }
     
-    func hideSearchAfterDashboard() {
-        router?.hideSearchAfterDashboard()
+    func detachSearchAfterDashboard() {
+        router?.detachSearchAfterDashboard()
     }
     
 }

@@ -14,9 +14,9 @@ import DesignKit
 public protocol SearchNavigationViewDelegate: AnyObject {
     func leftButtonDidTap()
     func editing(_ text: String)
-    func showBeginEditingTextDashboard()
-    func showEditingTextDashboard()
-    func showEndEditingTextDashboard(_ text: String)
+    func showSearchBeforeDashboard()
+    func showSearchingDashboard()
+    func showSearchAfterDashboard(_ text: String)
 }
 
 public final class SearchNavigationView: UIView {
@@ -103,15 +103,15 @@ private extension SearchNavigationView {
 extension SearchNavigationView: UITextFieldDelegate {
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
-        delegate?.showEditingTextDashboard()
+        delegate?.showSearchingDashboard()
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         let text = textField.text ?? ""
         if text.isEmpty {
-            delegate?.showBeginEditingTextDashboard()
+            delegate?.showSearchBeforeDashboard()
         } else {
-            delegate?.showEndEditingTextDashboard(text)
+            delegate?.showSearchAfterDashboard(text)
         }
     }
     

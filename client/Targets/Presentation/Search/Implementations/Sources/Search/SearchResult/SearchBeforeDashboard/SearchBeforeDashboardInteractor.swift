@@ -8,6 +8,7 @@
 
 import Combine
 import ModernRIBs
+import CoreKit
 import DomainInterfaces
 
 protocol SearchBeforeDashboardRouting: ViewableRouting {

@@ -31,7 +31,7 @@ final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfte
     weak var router: SearchAfterUserDashboardRouting?
     weak var listener: SearchAfterUserDashboardListener?
     
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellables: Set<AnyCancellable> = []
     
     override init(presenter: SearchAfterUserDashboardPresentable) {
         super.init(presenter: presenter)
@@ -45,9 +45,6 @@ final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfte
             .sink { [weak self] users in
                 self?.presenter.setup(models: users)
             }.store(in: &cancellables)
-        
-        
-        
     }
     
     override func willResignActive() {

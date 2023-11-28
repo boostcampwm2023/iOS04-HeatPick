@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import DesignKit
 import ModernRIBs
-
+import CoreKit
+import DesignKit
 
 protocol SearchBeforeDashboardPresentableListener: AnyObject { }
 
@@ -59,7 +59,7 @@ final class SearchBeforeDashboardViewController: UIViewController, SearchBeforeD
         stackView.removeArrangedSubview(viewController.view)
         viewController.removeFromParent()
     }
-    
+ 
 }
 
 private extension SearchBeforeDashboardViewController {

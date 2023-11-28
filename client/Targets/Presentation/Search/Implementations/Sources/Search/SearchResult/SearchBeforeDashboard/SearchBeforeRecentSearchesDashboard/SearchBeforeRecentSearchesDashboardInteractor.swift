@@ -36,7 +36,7 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
     weak var router: SearchBeforeRecentSearchesDashboardRouting?
     weak var listener: SearchBeforeRecentSearchesDashboardListener?
     
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellables: Set<AnyCancellable> = []
     private let dependecy: SearchBeforeRecentSearchesDashboardInteractorDependency
     
     init(
@@ -50,10 +50,7 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
     
     override func didBecomeActive() {
         super.didBecomeActive()
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            presenter.setup(models: dependecy.searchBeforeRecentSearchesUsecase.fetchRecentSearches())
-        }
+        presenter.setup(models: dependecy.searchBeforeRecentSearchesUsecase.fetchRecentSearches())
         
         listener?.endEditingSearchTextPublisher
             .receive(on: DispatchQueue.main)

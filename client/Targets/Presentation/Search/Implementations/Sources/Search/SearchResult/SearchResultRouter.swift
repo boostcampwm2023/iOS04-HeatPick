@@ -8,6 +8,7 @@
 
 import Combine
 import ModernRIBs
+import CoreKit
 
 protocol SearchResultInteractable: Interactable,
                                    SearchBeforeDashboardListener,
@@ -55,23 +56,15 @@ extension SearchResultRouter {
         guard searchBeforeDashboardRouter == nil else { return }
         let router = dependency.searchBeforeDashboardBuilder.build(withListener: interactor)
         attachChild(router)
+        viewController.appendDashboard(router.viewControllable)
         searchBeforeDashboardRouter = router
     }
     
     func detachSearchBeforeDashboard() {
         guard let router = searchBeforeDashboardRouter else { return }
+        viewController.removeDashboard(router.viewControllable)
         detachChild(router)
         searchBeforeDashboardRouter = nil
-    }
-    
-    func showSearchBeforeDashboard() {
-        guard let searchBeforeDashboardRouter else { return }
-        viewController.appendDashboard(searchBeforeDashboardRouter.viewControllable)
-    }
-    
-    func hideSearchBeforeDashboard() {
-        guard let searchBeforeDashboardRouter else { return }
-        viewController.removeDashboard(searchBeforeDashboardRouter.viewControllable)
     }
     
 }
@@ -83,25 +76,17 @@ extension SearchResultRouter {
         guard searchingDashboardRouter == nil else { return }
         let router = dependency.searchingDashboardBuilder.build(withListener: interactor)
         attachChild(router)
+        viewController.appendDashboard(router.viewControllable)
         searchingDashboardRouter = router
     }
     
     func detachSearchingDashboard() {
         guard let router = searchingDashboardRouter else { return }
+        viewController.removeDashboard(router.viewControllable)
         detachChild(router)
         searchingDashboardRouter = nil
     }
-    
-    func showSearchingDashboard() {
-        guard let searchingDashboardRouter else { return }
-        viewController.appendDashboard(searchingDashboardRouter.viewControllable)
-    }
-    
-    func hideSearchingDashboard() {
-        guard let searchingDashboardRouter else { return }
-        viewController.removeDashboard(searchingDashboardRouter.viewControllable)
-    }
-    
+        
 }
 
 // MARK: SearchAfter
@@ -111,23 +96,15 @@ extension SearchResultRouter {
         guard searchAfterDashboardRouter == nil else { return }
         let router = dependency.searchAfterDashboardBuilder.build(withListener: interactor)
         attachChild(router)
+        viewController.appendDashboard(router.viewControllable)
         searchAfterDashboardRouter = router
     }
     
     func detachSearchAfterDashboard() {
         guard let router = searchAfterDashboardRouter else { return }
+        viewController.removeDashboard(router.viewControllable)
         detachChild(router)
         searchAfterDashboardRouter = nil
-    }
-    
-    func showSearchAfterDashboard() {
-        guard let searchAfterDashboardRouter else { return }
-        viewController.appendDashboard(searchAfterDashboardRouter.viewControllable)
-    }
-    
-    func hideSearchAfterDashboard() {
-        guard let searchAfterDashboardRouter else { return }
-        viewController.removeDashboard(searchAfterDashboardRouter.viewControllable)
     }
     
 }
