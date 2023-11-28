@@ -7,6 +7,8 @@ let project = Project.demo(
     dependencies: [
         .Target.Presentation.Search.Interfaces,
         .Target.Presentation.Search.Implementations,
+        .Target.Presentation.Story.Interfaces,
+        .Target.Presentation.Story.Implementations,
         .Target.Data.Repositories,
         .Target.Domain.UseCases
     ]
