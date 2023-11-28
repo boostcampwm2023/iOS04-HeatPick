@@ -13,10 +13,6 @@ protocol searchBeforeRecentSearchesViewDelegate: AnyObject {
     func didTapSearchBeforeRecentSearchesView(text: String?)
 }
 
-struct SearchBeforeRecentSearchesViewModel: Decodable {
-    let text: String
-}
-
 final class SearchBeforeRecentSearchesView: UIView {
     
     weak var delegate: searchBeforeRecentSearchesViewDelegate?
@@ -28,7 +24,7 @@ final class SearchBeforeRecentSearchesView: UIView {
         static let trailingOffset: CGFloat = -leadingOffset
     }
     
-    private var model: SearchBeforeRecentSearchesViewModel?
+    private var searchText: String?
     
     private let titleLabel: UILabel = {
        let label = UILabel()
@@ -54,9 +50,9 @@ final class SearchBeforeRecentSearchesView: UIView {
     }
 
     
-    func setup(_ model: SearchBeforeRecentSearchesViewModel) {
-        self.model = model
-        titleLabel.text = model.text
+    func setup(_ searchText: String) {
+        self.searchText = searchText
+        titleLabel.text = searchText
     }
     
 }
@@ -91,7 +87,7 @@ private extension SearchBeforeRecentSearchesView {
 private extension SearchBeforeRecentSearchesView {
     
     @objc func didTapSearchBeforeRecentSearchesView() {
-        delegate?.didTapSearchBeforeRecentSearchesView(text: model?.text)
+        delegate?.didTapSearchBeforeRecentSearchesView(text: searchText)
     }
     
 }

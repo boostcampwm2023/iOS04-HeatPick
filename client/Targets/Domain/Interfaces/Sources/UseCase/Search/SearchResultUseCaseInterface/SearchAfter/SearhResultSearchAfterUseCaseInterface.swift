@@ -9,10 +9,9 @@
 import Foundation
 import DomainEntities
 
-public protocol SearhResultSearchAfterUseCaseInterface {
+public protocol SearhResultSearchAfterUseCaseInterface: SearhResultSearchAfterStoryUseCaseInterface, 
+                                                            SearhResultSearchAfterUserUseCaseInterface {
     
     func fetchResult(searchText: String) async -> Result<SearchResult, Error>
-    func fetchStory(searchText: String) async -> Result<[SearchStory], Error>
-    func fetchUser(searchText: String) async -> Result<[SearchUser], Error>
     
 }

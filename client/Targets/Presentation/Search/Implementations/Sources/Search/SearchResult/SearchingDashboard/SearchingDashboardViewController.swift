@@ -9,16 +9,16 @@
 import ModernRIBs
 import UIKit
 
+
 protocol SearchingDashboardPresentableListener: AnyObject {
-    func didTapItem(_ item: SearchingRecommendCellModel)
+    func didTapItem(_ item: String)
 }
 
 final class SearchingDashboardViewController: UIViewController, SearchingDashboardPresentable, SearchingDashboardViewControllable {
 
     weak var listener: SearchingDashboardPresentableListener?
     
-    // TODO: 처음엔 최근 검색어 목록을 보여주다가 텍스트를 입력하면 추천 검색어를 보여주는 식으로 변경
-    private var models: [SearchingRecommendCellModel] = []
+    private var models: [String] = []
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -34,15 +34,11 @@ final class SearchingDashboardViewController: UIViewController, SearchingDashboa
         setupViews()
     }
     
-    func setup(searchingRecommendCellModels: [SearchingRecommendCellModel]) {
-        models = searchingRecommendCellModels
+    func setup(recommendTexts: [String]) {
+        models = recommendTexts
         tableView.reloadData()
     }
     
-    func append(searchingRecommendCellModels: [SearchingRecommendCellModel]) {
-        models.append(contentsOf: searchingRecommendCellModels)
-        tableView.reloadData()
-    }
 }
 
 private extension SearchingDashboardViewController {
@@ -67,7 +63,7 @@ extension SearchingDashboardViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let model = models[safe: indexPath.row] else { return .init() }
         let cell = tableView.dequeue(SearchingRecommendCell.self, for: indexPath)
-        cell.setup(model: model)
+        cell.setup(text: model)
         return cell
     }
     

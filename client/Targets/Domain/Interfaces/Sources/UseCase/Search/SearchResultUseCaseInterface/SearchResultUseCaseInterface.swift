@@ -10,8 +10,7 @@ import Foundation
 
 public protocol SearchResultUseCaseInterface: SearhResultSearchBeforeUseCaseInterface,
                                               SearhResultSearchingUseCaseInterface,
-                                              SearhResultSearchAfterUseCaseInterface
-{
+                                              SearhResultSearchAfterUseCaseInterface {
     
 }
 

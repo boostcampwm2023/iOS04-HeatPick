@@ -6,7 +6,12 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+import Foundation
+
 import ModernRIBs
+
+import CoreKit
 import DomainInterfaces
 
 protocol SearchingDashboardRouting: ViewableRouting { }
@@ -14,24 +19,26 @@ protocol SearchingDashboardRouting: ViewableRouting { }
 protocol SearchingDashboardPresentable: Presentable {
     var listener: SearchingDashboardPresentableListener? { get set }
     
-    func setup(searchingRecommendCellModels: [SearchingRecommendCellModel])
-    func append(searchingRecommendCellModels: [SearchingRecommendCellModel])
+    func setup(recommendTexts: [String])
 }
 
-protocol SearchingDashboardListener: AnyObject { }
+protocol SearchingDashboardListener: AnyObject {
+    var editingSearchTextPublisher: AnyPublisher<String, Never> { get }
+}
 
 protocol SearchingDashboardInteractorDependency: AnyObject {
     var searhResultsearchingUseCase: SearhResultSearchingUseCaseInterface { get }
 }
 
 final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboardPresentable>, SearchingDashboardInteractable, SearchingDashboardPresentableListener {
-
+    
     weak var router: SearchingDashboardRouting?
     weak var listener: SearchingDashboardListener?
     
     private let dependecy: SearchingDashboardInteractorDependency
     
-
+    private var cancellables = Set<AnyCancellable>()
+    
     init(
         presenter: SearchingDashboardPresentable,
         dependency: SearchingDashboardInteractorDependency
@@ -40,29 +47,32 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(searchingRecommendCellModels: [
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집"),
-            .init(recommendText: "서울 맛집을 소개해드릴게요 네이버 부스트캠프 iOS04팀의 Github 저장소가 아주 맛집입니다."),
-        ])
         
+        listener?.editingSearchTextPublisher
+            .sink { editingText in
+                Task { [weak self] in
+                    guard let self else { return }
+                    await self.dependecy.searhResultsearchingUseCase
+                        .fetchRecommendTexts(searchText:editingText)
+                        .onSuccess(on: .main, with: self) { this, recommentTexts in
+                            this.presenter.setup(recommendTexts: recommentTexts)
+                        }
+                        .onFailure { error in
+                            Log.make(message: error.localizedDescription, log: .network)
+                        }
+                }
+            }.store(in: &cancellables)
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
         
     }
     
-    func didTapItem(_ item: SearchingRecommendCellModel) {
+    func didTapItem(_ item: String) {
         
     }
 }

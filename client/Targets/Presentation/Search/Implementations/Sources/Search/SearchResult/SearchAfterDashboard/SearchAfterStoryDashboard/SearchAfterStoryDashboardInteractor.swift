@@ -6,21 +6,32 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+import Foundation
+
 import ModernRIBs
+
+import CoreKit
+import DomainEntities
+import DomainInterfaces
 
 protocol SearchAfterStoryDashboardRouting: ViewableRouting { }
 
 protocol SearchAfterStoryDashboardPresentable: Presentable {
     var listener: SearchAfterStoryDashboardPresentableListener? { get set }
-    func setup(model: SearchAfterStoryDashboardModel)
+    func setup(models: [SearchStory])
 }
 
-protocol SearchAfterStoryDashboardListener: AnyObject { }
+protocol SearchAfterStoryDashboardListener: AnyObject { 
+    var searchResultStoriesPublisher: AnyPublisher<[SearchStory], Never> { get }
+}
 
 final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAfterStoryDashboardPresentable>, SearchAfterStoryDashboardInteractable, SearchAfterStoryDashboardPresentableListener {
     
     weak var router: SearchAfterStoryDashboardRouting?
     weak var listener: SearchAfterStoryDashboardListener?
+    
+    private var cancellables = Set<AnyCancellable>()
     
     override init(presenter: SearchAfterStoryDashboardPresentable) {
         super.init(presenter: presenter)
@@ -29,28 +40,16 @@ final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAft
     
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(model: .init(
-            contentList: [
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-                .init(stroyId: 1, title: "윈터", address: "서울시", thumbnailImage: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg", likeCount: 99, commentCount: 99),
-            ]
-        ))
         
+        listener?.searchResultStoriesPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] stories in
+                self?.presenter.setup(models: stories)
+            }.store(in: &cancellables)
     }
     
     override func willResignActive() {
         super.willResignActive()
-        
     }
     
     func searchAfterHeaderViewSeeAllViewDidTap() {

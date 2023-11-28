@@ -14,10 +14,11 @@ protocol SearchBeforeDashboardDependency: Dependency {
 }
 
 final class SearchBeforeDashboardComponent: Component<SearchBeforeDashboardDependency>,
-                                            SearchBeforeDashboardInteractorDependency,
                                             SearchBeforeRecentSearchesDashboardDependency,
                                             SearchBeforeCategoryDashboardDependency {
-    var searhResultSearchBeforeUseCase: SearhResultSearchBeforeUseCaseInterface { dependency.searhResultSearchBeforeUseCase }
+    
+    var searchBeforeRecentSearchesUsecase: SearchBeforeRecentSearchesUseCaseInterface { dependency.searhResultSearchBeforeUseCase }
+    
 }
 
 final class SearchBeforeDashboardRouterComponent: SearchBeforeDashboardRouterDependency {
@@ -48,7 +49,7 @@ final class SearchBeforeDashboardBuilder: Builder<SearchBeforeDashboardDependenc
         let component = SearchBeforeDashboardComponent(dependency: dependency)
         let routerComponent = SearchBeforeDashboardRouterComponent(component: component)
         let viewController = SearchBeforeDashboardViewController()
-        let interactor = SearchBeforeDashboardInteractor(presenter: viewController, dependency: component)
+        let interactor = SearchBeforeDashboardInteractor(presenter: viewController)
         interactor.listener = listener
         return SearchBeforeDashboardRouter(
             interactor: interactor,

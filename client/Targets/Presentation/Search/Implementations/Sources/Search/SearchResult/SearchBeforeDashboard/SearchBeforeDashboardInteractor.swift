@@ -6,6 +6,7 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
 import ModernRIBs
 import DomainInterfaces
 
@@ -20,26 +21,23 @@ protocol SearchBeforeDashboardPresentable: Presentable {
     var listener: SearchBeforeDashboardPresentableListener? { get set }
 }
 
-protocol SearchBeforeDashboardListener: AnyObject { }
-
-protocol SearchBeforeDashboardInteractorDependency: AnyObject {
-    var searhResultSearchBeforeUseCase: SearhResultSearchBeforeUseCaseInterface { get }
+protocol SearchBeforeDashboardListener: AnyObject {
+    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
 }
 
+
 final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeDashboardPresentable>,
-                                                SearchBeforeDashboardInteractable,
+                                             SearchBeforeDashboardInteractable,
                                              SearchBeforeDashboardPresentableListener {
+    
+    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { endEditingSearchTextSubject.eraseToAnyPublisher() }
+    private var endEditingSearchTextSubject: PassthroughSubject<String, Never> = .init()
+    private var cancellables = Set<AnyCancellable>()
     
     weak var router: SearchBeforeDashboardRouting?
     weak var listener: SearchBeforeDashboardListener?
     
-    private let dependecy: SearchBeforeDashboardInteractorDependency
-    
-    init(
-        presenter: SearchBeforeDashboardPresentable,
-        dependency: SearchBeforeDashboardInteractorDependency
-    ) {
-        self.dependecy = dependency
+    override init(presenter: SearchBeforeDashboardPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -48,6 +46,10 @@ final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeD
         super.didBecomeActive()
         router?.attachSearchBeforeRecentSearchesDashboard()
         router?.attachSearchBeforeCategoryDashboard()
+        
+        listener?.endEditingSearchTextPublisher
+            .sink(receiveValue: endEditingSearchTextSubject.send)
+            .store(in: &cancellables)
     }
     
     override func willResignActive() {

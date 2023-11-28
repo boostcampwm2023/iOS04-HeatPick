@@ -7,14 +7,9 @@
 //
 
 import UIKit
-import CoreKit
-import DesignKit
 
-struct SearchAfterUserViewModel {
-    let profileImageURL: String?
-    let nickname: String
-    let badge: String
-}
+import DesignKit
+import DomainEntities
 
 final class SearchAfterUserView: UIView {
     
@@ -74,10 +69,10 @@ final class SearchAfterUserView: UIView {
         setupViews()
     }
     
-    func setup(model: SearchAfterUserViewModel) {
-        profileImageView.load(from: model.profileImageURL)
-        nicknameLabel.text = model.nickname
-        badgeLabel.text = model.badge
+    func setup(model: SearchUser) {
+        profileImageView.load(from: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg")
+        nicknameLabel.text = model.username
+        badgeLabel.text = model.username
     }
     
 }
