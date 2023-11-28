@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Story } from './story.entity';
 import { User } from './user.entity';
 
@@ -15,4 +15,8 @@ export class Comment {
 
   @Column()
   content: string;
+
+  @ManyToMany(() => User, (user) => user.comments)
+  @JoinTable()
+  mentions: User[];
 }

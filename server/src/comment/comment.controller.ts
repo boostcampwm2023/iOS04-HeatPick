@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateCommentDto } from './dto/commnet.create.dto';
+import { CreateCommentDto } from './dto/request/commnet.create.dto';
 import { CommentService } from './comment.service';
-import { UpdateCommentDto } from './dto/comment.update.dto';
-import { DeleteCommentDto } from './dto/comment.delete.dto';
+import { UpdateCommentDto } from './dto/request/comment.update.dto';
+import { DeleteCommentDto } from './dto/request/comment.delete.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
-import { GetMentionableDto } from './dto/comment.mentionable.dto';
+import { GetMentionableDto } from './dto/request/comment.mentionable.dto';
 
 @ApiTags('comment')
 @Controller('comment')
