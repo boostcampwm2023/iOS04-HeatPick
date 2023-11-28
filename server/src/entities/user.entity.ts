@@ -63,4 +63,9 @@ export class User {
   @JoinTable()
   @ApiProperty({ description: '유저 팔로워 목록' })
   followers: User[];
+
+  @ManyToMany(() => Comment, (comment) => comment.mentions)
+  @JoinTable()
+  @ApiProperty({ description: '댓글에 언급된 목록' })
+  mentions: Comment[];
 }

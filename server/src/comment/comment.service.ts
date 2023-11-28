@@ -1,10 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { createCommentEntity } from '../util/util.create.comment.entity';
 import { StoryRepository } from '../story/story.repository';
+import { UserRepository } from '../user/user.repository';
+import { Story } from '../entities/story.entity';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class CommentService {
-  constructor(private storyRepository: StoryRepository) {}
+  constructor(
+    private storyRepository: StoryRepository,
+    private userRepository: UserRepository,
+  ) {}
+
+  public async getMentionable({ storyId, userId }) {
+    const mentionables: { userId: number; username: string }[] = [];
+    const story: Story = await this.storyRepository.findOneByIdWithUserAndComments(storyId);
+    mentionables.push({ userId: story.user.userId, username: story.user.username });
+
+    (await story.comments).forEach((comment) => {
+      mentionables.push({ userId: comment.user.userId, username: comment.user.username });
+    });
+
+    const user: User = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['following'] });
+    user.following.forEach((user) => {
+      mentionables.push({ userId: user.userId, username: user.username });
+    });
+
+    return [...new Set(mentionables)];
+  }
 
   public async create({ storyId, content }) {
     const story = await this.storyRepository.findById(storyId);

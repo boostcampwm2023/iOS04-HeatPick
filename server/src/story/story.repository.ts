@@ -16,6 +16,14 @@ export class StoryRepository {
     return await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
   }
 
+  async findOneByIdWithUserAndComments(storyId: number): Promise<Story> {
+    return await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['user', 'comments', 'comments.user'] });
+  }
+
+  async findByOption(findManyOptions: FindManyOptions) {
+    return await this.storyRepository.find(findManyOptions);
+  }
+
   async saveStory(story: Story) {
     await this.storyRepository.save(story);
   }
