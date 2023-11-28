@@ -10,6 +10,7 @@ import Foundation
 
 import ModernRIBs
 
+import CoreKit
 import DomainEntities
 import DomainInterfaces
 import StoryInterfaces
@@ -32,7 +33,8 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
     weak var router: StoryDetailRouting?
     weak var listener: StoryDetailListener?
     private var dependency: StoryDetailInteractorDependency
-
+    private var cancelBag: CancelBag = CancelBag()
+    
     init(presenter: StoryDetailPresentable, dependency: StoryDetailInteractorDependency) {
         self.dependency = dependency
         super.init(presenter: presenter)
@@ -54,8 +56,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
                     print(error.localizedDescription)
                     this.presenter.showFailure(error)
                 }
-            
-        }
+        }.store(in: cancelBag)
     }
 
     override func willResignActive() {
@@ -64,6 +65,9 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
     
     func storyDetailDidTapClose() {
         listener?.storyDetailDidTapClose()
+    }
+    
+    func followButtonDidTap(userId: Int, userStatus: UserStatus) {
     }
 }
 
@@ -75,7 +79,8 @@ fileprivate extension Story {
                                                         .month(.abbreviated)
                                                         .day(.twoDigits)
         
-        return StoryDetailViewModel(userProfileViewModel: SimpleUserProfileViewModel(nickname: author.nickname,
+        return StoryDetailViewModel(userProfileViewModel: SimpleUserProfileViewModel(id: author.id,
+                                                                                     nickname: author.nickname,
                                                                                      subtitle: "\(content.date.formatted(dateFormat)) | \(content.category.title)",
                                                                                      profileImageUrl: author.profileImageUrl,
                                                                                      userStatus: author.authorStatus),

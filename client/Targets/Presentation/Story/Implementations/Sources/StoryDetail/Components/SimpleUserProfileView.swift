@@ -6,7 +6,6 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import Combine
 import UIKit
 
 import ModernRIBs
@@ -17,12 +16,14 @@ import DomainEntities
 
 struct SimpleUserProfileViewModel {
     
+    let id: Int
     let nickname: String
     let subtitle: String
     let profileImageUrl: String?
     let userStatus: UserStatus
     
-    init(nickname: String, subtitle: String, profileImageUrl: String?, userStatus: UserStatus) {
+    init(id: Int, nickname: String, subtitle: String, profileImageUrl: String?, userStatus: UserStatus) {
+        self.id = id
         self.nickname = nickname
         self.subtitle = subtitle
         self.profileImageUrl = profileImageUrl
@@ -46,12 +47,22 @@ fileprivate extension UserStatus {
     
 }
 
+protocol SimpleUserProfileViewDelegate: AnyObject {
+    func followButtonDidTap(userId: Int, userStatus: UserStatus)
+}
+
 final class SimpleUserProfileView: UIView {
     
-    private var cancellables = Set<AnyCancellable>()
+    weak var delegate: SimpleUserProfileViewDelegate?
     
     private let padding: CGFloat = 10
     private let titlePadding: CGFloat = 2
+    private var userId: Int = 0
+    private var userStatus: UserStatus = .me {
+        didSet {
+            followButton.image = userStatus.image
+        }
+    }
     
     private lazy var userStackView: UIStackView = {
         let stackView = UIStackView()
@@ -105,7 +116,7 @@ final class SimpleUserProfileView: UIView {
     
     private lazy var followButton: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UserStatus.nonFollowing.image
+        imageView.image = userStatus.image
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .hpBlack
         imageView.isUserInteractionEnabled = true
@@ -137,8 +148,16 @@ final class SimpleUserProfileView: UIView {
         nicknameLabel.text = model.nickname
         subtitleLabel.text = model.subtitle
         profileImage.load(from: model.profileImageUrl)
+        userStatus = model.userStatus
     }
     
+    func didFollow() {
+        userStatus = .following
+    }
+    
+    func didUnfollow() {
+        userStatus = .nonFollowing
+    }
 }
 
 private extension SimpleUserProfileView {
@@ -168,6 +187,8 @@ private extension SimpleUserProfileView {
 // MARK: objc
 private extension SimpleUserProfileView {
     
-    @objc func followButtonDidTap() { }
+    @objc func followButtonDidTap() { 
+        delegate?.followButtonDidTap(userId: userId, userStatus: userStatus)
+    }
     
 }
