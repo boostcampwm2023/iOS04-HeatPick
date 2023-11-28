@@ -10,7 +10,7 @@ import UIKit
 import DesignKit
 
 protocol searchBeforeRecentSearchesViewDelegate: AnyObject {
-    func didTapSearchBeforeRecentSearchesView(text: String?)
+    func didTapSearchBeforeRecentSearchesView(searchText: String)
 }
 
 final class SearchBeforeRecentSearchesView: UIView {
@@ -87,7 +87,8 @@ private extension SearchBeforeRecentSearchesView {
 private extension SearchBeforeRecentSearchesView {
     
     @objc func didTapSearchBeforeRecentSearchesView() {
-        delegate?.didTapSearchBeforeRecentSearchesView(text: searchText)
+        guard let searchText else { return }
+        delegate?.didTapSearchBeforeRecentSearchesView(searchText: searchText)
     }
     
 }

@@ -25,6 +25,7 @@ protocol SearchBeforeRecentSearchesDashboardPresentable: Presentable {
 
 protocol SearchBeforeRecentSearchesDashboardListener: AnyObject {
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
+    func showSearchAfterDashboard(_ searchText: String)
 }
 
 protocol SearchBeforeRecentSearchesDashboardInteractorDependency: AnyObject {
@@ -54,20 +55,20 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
         
         listener?.endEditingSearchTextPublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] text in
+            .sink { [weak self] searchText in
+                Log.make(message: "\(String(describing: self)), searchText: \(searchText)", log: .default)
                 guard let self,
-                      let text = self.dependecy.searchBeforeRecentSearchesUsecase.appendRecentSearch(searchText: text) else { return }
+                      let text = self.dependecy.searchBeforeRecentSearchesUsecase.appendRecentSearch(searchText: searchText) else { return }
                 self.presenter.append(model: text)
             }.store(in: &cancellables)
-        
     }
     
     override func willResignActive() {
         super.willResignActive()
     }
     
-    func didTapSearchBeforeRecentSearchesView(text: String?) {
-        
+    func didTapSearchBeforeRecentSearchesView(searchText: String) {
+        listener?.showSearchAfterDashboard(searchText)
     }
     
 }

@@ -16,19 +16,17 @@ import DesignKit
 
 
 protocol SearchResultPresentableListener: AnyObject {
-    func editing(_ text: String)
-    func endEditing(_ text: String)
+    func editing(_ searchText: String)
+    
+    func showSearchBeforeDashboard()
+    func showSearchingDashboard()
+    func showSearchAfterDashboard(_ searchText: String)
+    
     func detachSearchResult()
-    func attachSearchBeforeDashboard()
-    func detachSearchBeforeDashboard()
-    func attachSearchingDashboard()
-    func detachSearchingDashboard()
-    func attachSearchAfterDashboard()
-    func detachSearchAfterDashboard()
 }
 
 final class SearchResultViewController: UIViewController, SearchResultPresentable, SearchResultViewControllable {
-
+    
     weak var listener: SearchResultPresentableListener?
     
     private lazy var searchNavigationView: SearchNavigationView = {
@@ -50,7 +48,7 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        listener?.attachSearchBeforeDashboard()
+        listener?.showSearchBeforeDashboard()
     }
     
     func appendDashboard(_ viewControllable: ViewControllable) {
@@ -69,6 +67,10 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
         let viewController = viewControllable.uiviewController
         stackView.removeArrangedSubview(viewController.view)
         viewController.removeFromParent()
+    }
+    
+    func setSearchText(_ searchText: String) {
+        searchNavigationView.setSearchText(searchText)
     }
     
 }
@@ -96,28 +98,20 @@ private extension SearchResultViewController {
 
 extension SearchResultViewController: SearchNavigationViewDelegate {
     
-    func editing(_ text: String) {
-        listener?.editing(text)
+    func editing(_ searchText: String) {
+        listener?.editing(searchText)
     }
     
     func showSearchBeforeDashboard() {
-        Log.make(message: "\(String(describing: self)) \(#function)", log: .default)
-        listener?.detachSearchingDashboard()
-        listener?.attachSearchBeforeDashboard()
+        listener?.showSearchBeforeDashboard()
     }
     
     func showSearchingDashboard() {
-        Log.make(message: "\(String(describing: self)) \(#function)", log: .default)
-        listener?.detachSearchAfterDashboard()
-        listener?.detachSearchBeforeDashboard()
-        listener?.attachSearchingDashboard()
+        listener?.showSearchingDashboard()
     }
     
-    func showSearchAfterDashboard(_ text: String) {
-        Log.make(message: "\(String(describing: self)) \(#function)", log: .default)
-        listener?.endEditing(text)
-        listener?.detachSearchingDashboard()
-        listener?.attachSearchAfterDashboard()
+    func showSearchAfterDashboard(_ searchText: String) {
+        listener?.showSearchAfterDashboard(searchText)
     }
     
     func leftButtonDidTap() {
