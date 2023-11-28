@@ -17,10 +17,11 @@ public protocol SearchDependency: Dependency {
 }
 
 final class SearchComponent: Component<SearchDependency>,
-                             SearchMapDependency,
+                             SearchInteractorDependency,
                              SearchCurrentLocationStoryListDependency,
                              SearchResultDependency {
     
+    var searchUseCase: SearchUseCaseInterface { dependency.searchUseCase }
     var searchCurrentLocationStoryListUseCase: SearchCurrentLocationStoryListUseCaseInterface { dependency.searchUseCase }
     var searResultUseCase: SearchResultUseCaseInterface { dependency.searchUseCase }
     var searchMapUseCase: SearchMapUseCaseInterface { dependency.searchUseCase }
@@ -30,13 +31,11 @@ final class SearchComponent: Component<SearchDependency>,
 
 final class SearchRouterComponent: SearchRouterDependency {
     
-    let searchMapBuilder: SearchMapBuildable
     let searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable
     let searchResultBuilder: SearchResultBuildable
     let storyDeatilBuilder: StoryDetailBuildable
     
     init(component: SearchComponent) {
-        self.searchMapBuilder = SearchMapBuilder(dependency: component)
         self.searchCurrentLocationBuilder = SearchCurrentLocationStoryListBuilder(dependency: component)
         self.searchResultBuilder = SearchResultBuilder(dependency: component)
         self.storyDeatilBuilder = component.storyDeatilBuilder
@@ -58,7 +57,7 @@ public final class SearchBuilder: Builder<SearchDependency>, SearchBuildable {
         let component = SearchComponent(dependency: dependency)
         let routerComponent = SearchRouterComponent(component: component)
         let viewController = SearchViewController()
-        let interactor = SearchInteractor(presenter: viewController)
+        let interactor = SearchInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return SearchRouter(
             interactor: interactor,

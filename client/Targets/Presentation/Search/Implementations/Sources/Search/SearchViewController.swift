@@ -18,12 +18,15 @@ import ModernRIBs
 
 protocol SearchPresentableListener: AnyObject {
     func didTapCurrentLocation()
-    func attachSearchResult()
+    func didTapSearch()
     func didTapStory(storyID: Int)
+    func didAppear()
+    func didTapMarker(place: Place)
+    func mapWillMove()
 }
 
-public final class SearchViewController: UIViewController, SearchPresentable, SearchViewControllable {
-
+final class SearchViewController: UIViewController, SearchPresentable, SearchViewControllable {
+    
     private enum Constant {
         enum TabBar {
             static let title = "검색"
@@ -32,7 +35,7 @@ public final class SearchViewController: UIViewController, SearchPresentable, Se
         
         enum SearchTextField {
             static let placeholder = "위치, 장소 검색"
-            static let topSpacing: CGFloat = 35
+            static let topSpacing: CGFloat = 20
         }
         
         enum ShowSearchHomeListButton {
@@ -40,18 +43,19 @@ public final class SearchViewController: UIViewController, SearchPresentable, Se
             static let length: CGFloat = 45
             static let offset: CGFloat = -25
         }
-        
     }
     
     weak var listener: SearchPresentableListener?
+
+    private var markerStorage: [SearchMapMarkerAdapter] = []
     
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
+    private lazy var naverMap: NMFNaverMapView = {
+        let map = NMFNaverMapView(frame: view.frame)
+        map.backgroundColor = .hpWhite
+        map.showLocationButton = true
+        map.mapView.addCameraDelegate(delegate: self)
+        map.mapView.translatesAutoresizingMaskIntoConstraints = false
+        return map
     }()
     
     private lazy var searchTextField: SearchTextField = {
@@ -92,32 +96,47 @@ public final class SearchViewController: UIViewController, SearchPresentable, Se
         return storyView
     }()
     
-    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         setupTabBar()
     }
     
-    required public init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupTabBar()
     }
     
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
     
-    func appendDashboard(_ viewControllable: ViewControllable) {
-        let viewController = viewControllable.uiviewController
-        addChild(viewController)
-        stackView.addArrangedSubview(viewController.view)
-        viewController.didMove(toParent: self)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        listener?.didAppear()
     }
     
-    func removeDashboard(_ viewControllable: ViewControllable) {
-        let viewController = viewControllable.uiviewController
-        stackView.removeArrangedSubview(viewController.view)
-        viewController.removeFromParent()
+    func moveMap(lat: Double, lng: Double) {
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
+        naverMap.mapView.moveCamera(cameraUpdate)
+    }
+    
+    func updateMarkers(places: [Place]) {
+        let overlay = NMFOverlayImage(image: .marker)
+        
+        places.forEach {
+            let adapter = makeMarkerAdapter(overlay: overlay, place: $0)
+            adapter.marker.mapView = naverMap.mapView
+            adapter.delegate = self
+            markerStorage.append(adapter)
+        }
+    }
+    
+    func removeAllMarker() {
+        markerStorage.forEach {
+            $0.clear()
+        }
+        markerStorage.removeAll()
     }
     
     func showStoryView(model: SearchMapStoryViewModel) {
@@ -132,6 +151,22 @@ public final class SearchViewController: UIViewController, SearchPresentable, Se
     
 }
 
+extension SearchViewController: SearchMapMarkerAdapterDelegate {
+    
+    func searchMapMarkerDidTap(place: Place) {
+        listener?.didTapMarker(place: place)
+    }
+    
+}
+
+extension SearchViewController: NMFMapViewCameraDelegate {
+    
+    func mapView(_ mapView: NMFMapView, cameraWillChangeByReason reason: Int, animated: Bool) {
+        listener?.mapWillMove()
+    }
+    
+}
+
 private extension SearchViewController {
     
     @objc func storyViewDidTap() {
@@ -142,28 +177,24 @@ private extension SearchViewController {
 }
 
 private extension SearchViewController {
+    
     func setupTabBar() {
-        // TODO: tag 수정
         tabBarItem = .init(
             title: Constant.TabBar.title,
-            image: .init(systemName: Constant.TabBar.image),
-            tag: 1
+            image: .init(systemName: Constant.TabBar.image)?.withRenderingMode(.alwaysTemplate),
+            selectedImage: .init(systemName: Constant.TabBar.image)?.withRenderingMode(.alwaysTemplate)
         )
     }
     
     func setupViews() {
-        view.backgroundColor = .hpWhite
-        [stackView, searchTextField, showSearchHomeListButton, storyView].forEach { view.addSubview($0) }
+        view = naverMap
+        [searchTextField, showSearchHomeListButton, storyView].forEach(view.addSubview)
+        
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: view.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
             searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
-            searchTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
-            searchTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            searchTextField.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
+            searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            searchTextField.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
             
             showSearchHomeListButton.widthAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
             showSearchHomeListButton.heightAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
@@ -176,12 +207,20 @@ private extension SearchViewController {
         ])
     }
     
+    func makeMarkerAdapter(overlay: NMFOverlayImage, place: Place) -> SearchMapMarkerAdapter {
+        let marker = NMFMarker(position: .init(lat: place.lat, lng: place.lng))
+        marker.iconImage = overlay
+        marker.captionText = place.title
+        let adapter = SearchMapMarkerAdapter(marker: marker, place: place)
+        return adapter
+    }
+    
 }
 
 private extension SearchViewController {
     
     @objc func searchTextFieldDidTap() {
-        listener?.attachSearchResult()
+        listener?.didTapSearch()
     }
     
     @objc func showSearchHomeListButtonDidTap() {

@@ -12,7 +12,6 @@ import BasePresentation
 import StoryInterfaces
 
 protocol SearchInteractable: Interactable,
-                             SearchMapListener,
                              SearchCurrentLocationStoryListListener,
                              SearchResultListener,
                              StoryDetailListener {
@@ -21,22 +20,15 @@ protocol SearchInteractable: Interactable,
     var presentationAdapter: AdaptivePresentationControllerDelegateAdapter { get }
 }
 
-protocol SearchViewControllable: ViewControllable {
-    func appendDashboard(_ viewControllable: ViewControllable)
-    func removeDashboard(_ viewControllable: ViewControllable)
-}
+protocol SearchViewControllable: ViewControllable {}
 
 protocol SearchRouterDependency {
-    var searchMapBuilder: SearchMapBuildable { get }
     var searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable { get }
     var searchResultBuilder: SearchResultBuildable { get }
     var storyDeatilBuilder: StoryDetailBuildable { get }
 }
 
 final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControllable>, SearchRouting {
-    
-    private let searchMapBuilder: SearchMapBuildable
-    private var searchMapRouter: SearchMapRouting?
     
     private let searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable
     private var searchCurrentLocationRouter: ViewableRouting?
@@ -52,28 +44,12 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         viewController: SearchViewControllable,
         dependency: SearchRouterDependency
     ) {
-        self.searchMapBuilder = dependency.searchMapBuilder
         self.searchCurrentLocationBuilder = dependency.searchCurrentLocationBuilder
         self.searchResultBuilder = dependency.searchResultBuilder
         self.storyDeatilBuilder = dependency.storyDeatilBuilder
         
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
-    }
-    
-    func attachSearchMap() {
-        guard searchMapRouter == nil else { return }
-        let router = searchMapBuilder.build(withListener: interactor)
-        attachChild(router)
-        searchMapRouter = router
-        viewController.appendDashboard(router.viewControllable)
-    }
-    
-    func detachSearchMap() {
-        guard let router = searchMapRouter else { return }
-        viewController.removeDashboard(router.viewControllable)
-        detachChild(router)
-        searchMapRouter = nil
     }
     
     func attachSearchCurrentLocation() {
