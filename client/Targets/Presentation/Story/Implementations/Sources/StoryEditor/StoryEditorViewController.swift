@@ -16,13 +16,18 @@ import DomainEntities
 
 protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
+    func viewDidAppear()
+    
     func titleDidChange(_ title: String)
     func descriptionDidChange(_ description: String)
+    func categoryDidChange(_ category: StoryCategory?)
     func locationDidChange(_ location: Location?)
+    func badgeDidChange(_ badge: Badge?)
+    
     func didTapSave(content: StoryContent)
 }
 
-final class StoryEditorViewController: UIViewController, StoryEditorPresentable, StoryEditorViewControllable {
+final class StoryEditorViewController: UIViewController, StoryEditorViewControllable {
     
     private enum Constant {
         static let navBarTitle = "스토리 생성"
@@ -117,12 +122,26 @@ final class StoryEditorViewController: UIViewController, StoryEditorPresentable,
         setupViews()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        listener?.viewDidAppear()
+    }
+    
+}
+
+// MARK: - StoryEditorPresentable
+extension StoryEditorViewController: StoryEditorPresentable {
+    
+    func setupMetadata(badges: [Badge], categories: [StoryCategory]) {
+        attributeField.setup(badges: badges, categories: categories)
+    }
+    
     func setSaveButton(_ enabled: Bool) {
         saveButton.isEnabled = enabled
     }
     
-    func showFailure(_ error: Error) {
-        let alert = UIAlertController(title: "스토리 생성 실패", message: "\(error.localizedDescription)", preferredStyle: .alert)
+    func showFailure(_ error: Error, with title: String) {
+        let alert = UIAlertController(title: title, message: "\(error.localizedDescription)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .default))
         present(alert, animated: true, completion: nil)
     }
@@ -137,7 +156,7 @@ private extension StoryEditorViewController {
         scrollView.addSubview(stackView)
         [titleField, imageField, descriptionField, attributeField, saveButton].forEach(stackView.addArrangedSubview)
         view.keyboardLayoutGuide.followsUndockedKeyboard = true
-
+        
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -176,21 +195,27 @@ private extension StoryEditorViewController {
         
         view.addTapGesture(target: self, action: #selector(dismissKeyboard))
     }
+}
+
+// MARK: - objc
+private extension StoryEditorViewController {
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
     
     @objc func didTapSave() {
-        guard let location = attributeField.location else { return }
+        guard let badge = attributeField.badge,
+              let location = attributeField.location,
+              let category = attributeField.category  else { return }
         
         listener?.didTapSave(content: StoryContent(title: titleField.text,
                                                    content: descriptionField.text,
                                                    date: attributeField.date,
                                                    images: imageField.images,
-                                                   category: StoryCategory.allCases[attributeField.categoryIndex].title,
+                                                   category: category,
                                                    place: location,
-                                                   badgeId: attributeField.badgeIndex))
+                                                   badge: badge))
     }
     
 }
@@ -231,11 +256,19 @@ extension StoryEditorViewController: DescriptionFieldDelegate {
     
 }
 
-// MARK: - LocationPicker Delegate
+// MARK: - AttributeField Delegate
 extension StoryEditorViewController: AttributeFieldDelegate {
+    
+    func categoryDidChange(_ category: StoryCategory?) {
+        listener?.categoryDidChange(category)
+    }
     
     func locationDidChange(_ location: Location?) {
         listener?.locationDidChange(location)
+    }
+    
+    func badgeDidChange(_ badge: Badge?) {
+        listener?.badgeDidChange(badge)
     }
     
 }

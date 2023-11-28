@@ -13,15 +13,15 @@ public struct NewStoryRequestDTO: Encodable {
     
     let title: String
     let content: String
-    let category: String
+    let categoryId: Int
     let place: PlaceDTO
     let date: Date
     let badgeId: Int
     
-    public init(title: String, content: String, category: String, place: PlaceDTO, date: Date, badgeId: Int) {
+    public init(title: String, content: String, categoryId: Int, place: PlaceDTO, date: Date, badgeId: Int) {
         self.title = title
         self.content = content
-        self.category = category
+        self.categoryId = categoryId
         self.place = place
         self.date = date
         self.badgeId = badgeId
@@ -31,9 +31,9 @@ public struct NewStoryRequestDTO: Encodable {
         
         self.init(title: storyContent.title,
                   content: storyContent.content,
-                  category: storyContent.category,
+                  categoryId: storyContent.category.id,
                   place: PlaceDTO(latitude: Double(storyContent.place.lat), longitude: Double(storyContent.place.lng)),
                   date: storyContent.date,
-                  badgeId: storyContent.badgeId)
+                  badgeId: storyContent.badge.id)
     }
 }

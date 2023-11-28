@@ -11,10 +11,15 @@ import UIKit
 import DesignKit
 import DomainEntities
 
+protocol CategoryPickerDelegate: AnyObject {
+    func categoryDidChange(_ category: StoryCategory?)
+}
+
 final class CategoryPicker: UIView {
 
-    private(set) var selectedIndex: Int = 0
-    let items = StoryCategory.allCases.map { $0.title }
+    weak var delegate: CategoryPickerDelegate?
+    private(set) var selectedItem: StoryCategory?
+    private var items: [StoryCategory] = []
  
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -28,7 +33,7 @@ final class CategoryPicker: UIView {
     
     private lazy var valueLabel: UITextField = {
         let textField = UITextField()
-        textField.text = items[selectedIndex]
+        textField.text = "없음"
         textField.font = .smallRegular
         textField.textColor = .hpGray1
         textField.tintColor = .clear
@@ -69,6 +74,12 @@ final class CategoryPicker: UIView {
         setupViews()
     }
     
+    func setup(_ categories: [StoryCategory]) {
+        items = categories
+        selectedItem = items[safe: 0]
+        valueLabel.text = selectedItem?.title
+        delegate?.categoryDidChange(selectedItem)
+    }
 }
 
 private extension CategoryPicker {
@@ -106,8 +117,9 @@ private extension CategoryPicker {
 
 extension CategoryPicker: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        selectedIndex = row
-        valueLabel.text = items[selectedIndex]
+        selectedItem = items[safe: row]
+        valueLabel.text = selectedItem?.title
+        delegate?.categoryDidChange(selectedItem)
     }
 }
 
@@ -121,6 +133,6 @@ extension CategoryPicker: UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return items[row]
+        return items[safe: row]?.title ?? "Error"
     }
 }

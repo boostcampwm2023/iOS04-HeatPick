@@ -12,15 +12,17 @@ import DesignKit
 import DomainEntities
 
 protocol AttributeFieldDelegate: AnyObject {
+    func categoryDidChange(_ category: StoryCategory?)
     func locationDidChange(_ location: Location?)
+    func badgeDidChange(_ badge: Badge?)
 }
 
 final class AttributeField: UIView {
 
     weak var delegate: AttributeFieldDelegate?
     
-    var categoryIndex: Int { categoryPicker.selectedIndex }
-    var badgeIndex: Int { badgePicker.selectedIndex }
+    var category: StoryCategory? { categoryPicker.selectedItem }
+    var badge: Badge? { badgePicker.selectedItem }
     var date: Date { datePicker.selectedDate }
     var location: Location? { locationPicker.selectedLocation }
     
@@ -35,8 +37,9 @@ final class AttributeField: UIView {
         return stackView
     }()
     
-    private let categoryPicker: CategoryPicker = {
+    private lazy var categoryPicker: CategoryPicker = {
         let categoryPicker = CategoryPicker()
+        categoryPicker.delegate = self
         
         categoryPicker.translatesAutoresizingMaskIntoConstraints = false
         return categoryPicker
@@ -58,8 +61,9 @@ final class AttributeField: UIView {
         return locationPicker
     }()
     
-    private let badgePicker: BadgePicker = {
+    private lazy var badgePicker: BadgePicker = {
         let badgePicker = BadgePicker()
+        badgePicker.delegate = self
         
         badgePicker.translatesAutoresizingMaskIntoConstraints = false
         return badgePicker
@@ -75,8 +79,13 @@ final class AttributeField: UIView {
         setupViews()
     }
     
+    func setup(badges: [Badge], categories: [StoryCategory]) {
+        badgePicker.setup(badges)
+        categoryPicker.setup(categories)
+    }
 }
 
+// MARK: - Setup Views
 private extension AttributeField {
     
     func setupViews() {
@@ -92,10 +101,29 @@ private extension AttributeField {
     
 }
 
-extension AttributeField: LocationPickerDelegate {
+// MARK: - CategoryPicker delegate
+extension AttributeField: CategoryPickerDelegate {
     
+    func categoryDidChange(_ category: StoryCategory?) {
+        delegate?.categoryDidChange(category)
+    }
+    
+}
+
+// MARK: - LocationPicker delegate
+extension AttributeField: LocationPickerDelegate {
+
     func locationDidChange(_ location: Location?) {
         delegate?.locationDidChange(location)
+    }
+    
+}
+
+// MARK: - BadgePicker delegate
+extension AttributeField: BadgePickerDelegate {
+    
+    func badgeDidChange(_ badge: Badge?) {
+        delegate?.badgeDidChange(badge)
     }
     
 }
