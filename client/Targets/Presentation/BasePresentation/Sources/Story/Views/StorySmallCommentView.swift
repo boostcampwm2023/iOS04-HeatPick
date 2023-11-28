@@ -16,6 +16,8 @@ public final class StorySmallCommentView: UIView {
         static let commentImageName = "bubble"
         static let imageWidth: CGFloat = 13
         static let imageHeight: CGFloat = 13
+        static let spacing: CGFloat = 10
+        static let contentSpacing: CGFloat = 2
     }
     
     private let likeImageView: UIImageView = {
@@ -79,16 +81,16 @@ private extension StorySmallCommentView {
             likeImageView.heightAnchor.constraint(equalToConstant: Constant.imageHeight),
             
             likeLabel.topAnchor.constraint(equalTo: topAnchor),
-            likeLabel.leadingAnchor.constraint(equalTo: likeImageView.trailingAnchor),
+            likeLabel.leadingAnchor.constraint(equalTo: likeImageView.trailingAnchor, constant: Constant.contentSpacing),
             likeLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             commentImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            commentImageView.leadingAnchor.constraint(equalTo: likeLabel.trailingAnchor, constant: 10),
+            commentImageView.leadingAnchor.constraint(equalTo: likeLabel.trailingAnchor, constant: Constant.spacing),
             commentImageView.widthAnchor.constraint(equalToConstant: Constant.imageWidth),
             commentImageView.heightAnchor.constraint(equalToConstant: Constant.imageHeight),
             
             commentLabel.topAnchor.constraint(equalTo: topAnchor),
-            commentLabel.leadingAnchor.constraint(equalTo: commentImageView.trailingAnchor),
+            commentLabel.leadingAnchor.constraint(equalTo: commentImageView.trailingAnchor, constant: Constant.contentSpacing),
             commentLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             commentLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor)
         ])

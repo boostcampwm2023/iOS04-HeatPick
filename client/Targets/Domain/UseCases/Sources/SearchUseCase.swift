@@ -42,6 +42,10 @@ public final class SearchUseCase: SearchUseCaseInterface {
         await repository.fetchRecommendText(searchText: searchText)
     }
     
+    public func fetchPlaces(lat: Double, lng: Double) async -> Result<[Place], Error> {
+        await repository.fetchPlaces(lat: lat, lng: lng)
+    }
+    
     public func fetchRecentSearches() -> [String] {
         repository.loadRecentSearches()
         return repository.fetchRecentSearches()

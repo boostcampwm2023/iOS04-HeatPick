@@ -68,10 +68,17 @@ public final class SearchRepository: SearchRepositoryInterface {
     public func loadRecentSearches() {
         self.recentSearches = UserDefaults.standard.array(forKey: userDefaultsKey) as? [String] ?? []
     }
-
+    
+    public func fetchPlaces(lat: Double, lng: Double) async -> Result<[Place], Error> {
+        let target = PlaceAPI.place(lat: lat, lng: lng)
+        let request: Result<PlaceResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
     
     deinit {
         saveRecentSearches()
     }
+    
+    
     
 }

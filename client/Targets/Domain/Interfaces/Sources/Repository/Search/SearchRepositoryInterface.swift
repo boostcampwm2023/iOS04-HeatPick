@@ -9,6 +9,7 @@
 import Foundation
 
 public protocol SearchRepositoryInterface: AnyObject,
-                                           SearchResultRepositoryInterface  {
+                                           SearchResultRepositoryInterface,
+                                           SearchPlaceRepositoryInterface {
     
 }

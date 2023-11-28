@@ -17,5 +17,6 @@ public extension UIImage {
     static let congratulation: UIImage = .init(resource: .congratulation)
     static let map: UIImage = .init(resource: .map)
     static let spinner: UIImage = .init(resource: .spinner)
+    static let marker: UIImage = .init(resource: .marker)
     
 }
