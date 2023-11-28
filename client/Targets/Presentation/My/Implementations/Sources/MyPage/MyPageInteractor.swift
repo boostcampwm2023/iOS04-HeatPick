@@ -37,6 +37,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     weak var listener: MyPageListener?
     
     private let depedency: MyPageInteractorDependency
+    private let cancelBag = CancelBag()
     
     init(
         presenter: MyPagePresentable,
@@ -97,7 +98,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
-        }
+        }.store(in: cancelBag)
     }
     
 }

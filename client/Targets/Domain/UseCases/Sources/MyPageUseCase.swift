@@ -44,8 +44,9 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
                 profileImageURL: page.profileImageURL,
                 followerCount: page.followerCount,
                 storyCount: page.storyCount,
-                experience: page.experience
-                , maxExperience: page.maxExperience
+                experience: page.experience,
+                maxExperience: page.maxExperience,
+                mainBadge: page.mainBadge
             )
             profileSubject.send(profile)
             

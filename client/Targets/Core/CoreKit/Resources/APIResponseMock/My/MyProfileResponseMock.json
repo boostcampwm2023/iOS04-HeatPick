@@ -1,50 +1,15 @@
 {
-    "username": "힛픽",
-    "profileURL": "https://avatars.githubusercontent.com/u/51906365?v=4",
-    "followerCount": 4,
-    "storyCount": 5,
-    "experience": 6,
-    "maxExperience": 100,
-    "storyList": [
-        {
-            "storyId": 1,
-            "title": "타이틀입니다",
-            "content": "컨텐츠입니다",
-            "storyImages": ["https://avatars.githubusercontent.com/u/125888614?v=4"],
-            "likeCount": 100,
-            "createAt" : "2023-11-23T03:11:58.868Z"
-        },
-        {
-            "storyId": 2,
-            "title": "타이틀입니다 123123123123 123123123123 123123123123 123123123123 123123123123 ",
-            "content": "컨텐츠입니다 123123123123 123123123123 123123123123 123123123123 123123123123",
-            "storyImages": ["https://avatars.githubusercontent.com/u/125888614?v=4"],
-            "likeCount": 100,
-            "createAt" : "2023-11-23T03:11:58.868Z"
-        },
-        {
-            "storyId": 3,
-            "title": "타이틀입니다 123123123123 123123123123",
-            "content": "컨텐츠입니다 123123123123 123123123123 123123123123",
-            "storyImages": ["https://avatars.githubusercontent.com/u/125888614?v=4"],
-            "likeCount": 100,
-            "createAt" : "2023-11-23T03:11:58.868Z"
-        },
-        {
-            "storyId": 4,
-            "title": "타이틀입니다 123123123123",
-            "content": "컨텐츠입니다 123123123123",
-            "storyImages": ["https://avatars.githubusercontent.com/u/125888614?v=4"],
-            "likeCount": 100,
-            "createAt" : "2023-11-23T03:11:58.868Z"
-        },
-        {
-            "storyId": 5,
-            "title": "타이틀입니다 123123",
-            "content": "컨텐츠입니다 123123",
-            "storyImages": ["https://avatars.githubusercontent.com/u/125888614?v=4"],
-            "likeCount": 100,
-            "createAt" : "2023-11-23T03:11:58.868Z"
-        }
-    ]
+    "username": "S042",
+    "profileURL": "",
+    "followerCount": 0,
+    "storyCount": 0,
+    "experience": 0,
+    "maxExperience": 999,
+    "mainBadge": {
+        "badgeId": 2,
+        "badgeName": "뉴비",
+        "badgeExp": 0,
+        "emoji": "🍼"
+    },
+    "storyList": []
 }

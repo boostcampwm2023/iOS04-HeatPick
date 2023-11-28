@@ -17,9 +17,16 @@ public struct MyProfileResponseDTO: Decodable {
     public let storyCount: Int
     public let experience: Int
     public let maxExperience: Int
-//    public let mainBadge: 뱃지
+    public let mainBadge: MyProfileBadgeResponseDTO
     public let storyList: [MyProfileStoryResponseDTO]
     
+}
+
+public struct MyProfileBadgeResponseDTO: Decodable {
+    let badgeId: Int
+    let badgeName: String
+    let badgeExp: Int
+    let emoji: String
 }
 
 public struct MyProfileStoryResponseDTO: Decodable {
@@ -41,7 +48,21 @@ public extension MyProfileResponseDTO {
             storyCount: storyCount,
             experience: experience,
             maxExperience: maxExperience,
+            mainBadge: mainBadge.toDomain(),
             stories: storyList.map { $0.toDomain() }
+        )
+    }
+    
+}
+
+public extension MyProfileBadgeResponseDTO {
+    
+    func toDomain() -> MyPageBadge {
+        return .init(
+            id: badgeId,
+            name: badgeName,
+            experience: badgeExp,
+            emoji: emoji
         )
     }
     

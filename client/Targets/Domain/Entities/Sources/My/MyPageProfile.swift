@@ -16,14 +16,16 @@ public struct MyPageProfile {
     public let storyCount: Int
     public let experience: Int
     public let maxExperience: Int
+    public let mainBadge: MyPageBadge
     
-    public init(userName: String, profileImageURL: String?, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int) {
+    public init(userName: String, profileImageURL: String?, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, mainBadge: MyPageBadge) {
         self.userName = userName
         self.profileImageURL = profileImageURL
         self.followerCount = followerCount
         self.storyCount = storyCount
         self.experience = experience
         self.maxExperience = maxExperience
+        self.mainBadge = mainBadge
     }
     
 }

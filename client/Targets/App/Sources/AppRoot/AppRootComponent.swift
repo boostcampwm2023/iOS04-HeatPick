@@ -100,7 +100,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [StoryURLProtocol.self])
         self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider))
         
-        let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [MyURLProtocol.self])
+        let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [MyURLProtocol.self])
         self.myPageUseCase = MyPageUseCase(repository: MyPageRepository(session: myPageNetworkProvider))
         self.signOutRequestService = SignoutService.shared
         
