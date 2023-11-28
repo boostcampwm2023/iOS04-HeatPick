@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserResultDto } from './user.result.dto';
 
 export class StoryResultDto {
   @ApiProperty({ description: 'user id' })
@@ -21,4 +22,7 @@ export class StoryResultDto {
 
   @ApiProperty({ description: '카테고리의 id' })
   categoryId: number;
+
+  @ApiProperty({ description: '스토리를 작성한 유저 정보', type: () => UserResultDto })
+  user: UserResultDto;
 }
