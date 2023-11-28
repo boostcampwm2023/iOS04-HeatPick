@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards, ValidationPipe, Request } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCommentDto } from './dto/request/commnet.create.dto';
 import { CommentService } from './comment.service';
@@ -25,17 +25,19 @@ export class CommentController {
   @Post('create')
   @ApiOperation({ summary: '댓글 생성 API' })
   @ApiResponse({ status: 201, description: 'commentId' })
-  async create(@Body(new ValidationPipe({ transform: true })) createCommentDto: CreateCommentDto) {
+  async create(@Request() req: any, @Body(new ValidationPipe({ transform: true })) createCommentDto: CreateCommentDto) {
     const { storyId, content, mentions } = createCommentDto;
-    return this.commentService.create({ storyId, content, mentions });
+    const userId = req.user.id;
+    return this.commentService.create({ storyId, userId, content, mentions });
   }
 
   @Patch('update')
   @ApiOperation({ summary: '댓글 수정 API' })
   @ApiResponse({ status: 201, description: 'commentId' })
-  async update(@Body(new ValidationPipe({ transform: true })) updateCommentDto: UpdateCommentDto) {
-    const { storyId, commentId, content } = updateCommentDto;
-    return this.commentService.update({ storyId, commentId, content });
+  async update(@Request() req: any, @Body(new ValidationPipe({ transform: true })) updateCommentDto: UpdateCommentDto) {
+    const { storyId, commentId, content, mentions } = updateCommentDto;
+    const userId = req.user.id;
+    return this.commentService.update({ storyId, userId, commentId, content, mentions });
   }
 
   @Delete('delete')
