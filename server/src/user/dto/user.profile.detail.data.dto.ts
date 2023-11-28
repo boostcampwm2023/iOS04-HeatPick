@@ -25,6 +25,6 @@ export class UserProfileDetailDataDto {
   @ApiProperty()
   mainBadge: Badge;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => UserProfileDetailStoryDto })
   storyList: UserProfileDetailStoryDto[];
 }

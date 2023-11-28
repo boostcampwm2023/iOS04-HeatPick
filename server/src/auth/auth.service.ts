@@ -48,7 +48,7 @@ export class AuthService {
     userBadges.push(newBadge);
 
     const profileObj = new profileImage();
-    profileObj.imageUrl = imagePath;
+    profileObj.imageUrl = `https://server.bc8heatpick.store/image/profile?name=${imagePath}`;
     userObj.profileImage = profileObj;
     userObj.temperature = 0;
 
