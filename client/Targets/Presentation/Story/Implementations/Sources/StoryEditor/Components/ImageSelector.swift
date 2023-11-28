@@ -32,7 +32,7 @@ final class ImageSelector: UIView {
     }
     
     var image: Data? {
-        imageView.image?.jpegData(compressionQuality: 1.0)
+        imageView.image?.jpegData(compressionQuality: 0.3)
     }
     
     private lazy var plusImageView: UIImageView = {

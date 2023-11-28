@@ -1,29 +1,29 @@
 {
     "story": {
-        "storyId": 1,
-        "createdAt": "2023-11-23T12:23:28Z",
-        "category": "asffsa",
+        "storyId": 25,
+        "createdAt": "2023-11-28T02:41:13Z",
+        "category": "맛집",
         "storyImageURL": [
-            "c15fa423a5742100ae7e5f5f495f3eeb2.png",
-            "e5917f32e9ac51aa3c53751f9f972954.png",
-            "9104ecf5e5a14f6ee99dd1ac6ee99bebc.png"
+            "https://server.bc8heatpick.store/image?name=37b8105210e7176b76c56bb1ec44a02151.png",
+            "https://server.bc8heatpick.store/image?name=4f952e523a1fb8d4c5b13424a4a3df4c.png",
+            "https://server.bc8heatpick.store/image?name=547f4e8617fa1b10910a8ee30353102269c.png"
         ],
-        "title": "test123",
-        "badgeName": "뉴비",
+        "title": "Hello world!",
+        "badgeName": "🍼뉴비",
         "likeCount": 0,
         "commentCount": 0,
-        "content": "aaa",
+        "content": "Testing story creation",
         "place": {
-            "title": "abc",
-            "address": "fsafsa",
-            "latitude": 1,
-            "longitude": 2
+            "title": "test",
+            "address": "test",
+            "latitude": 37.3586,
+            "longitude": 127.105
         }
     },
     "author": {
-        "userId": 2,
-        "username": "sayho",
-        "profileImageUrl": "9104ecf5e5a14f6ee99dd1ac6ee99bebc.png",
-        "status": 1
+        "userId": 4,
+        "username": "jungmin",
+        "profileImageUrl": "",
+        "status": 0
     }
 }

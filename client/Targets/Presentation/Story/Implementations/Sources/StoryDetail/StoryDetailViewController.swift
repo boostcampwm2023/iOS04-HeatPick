@@ -160,14 +160,14 @@ private extension StoryDetailViewController {
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            navigationView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
             
             scrollView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             scrollView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),

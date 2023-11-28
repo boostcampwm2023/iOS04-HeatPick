@@ -15,12 +15,11 @@ public struct StoryContent {
     public let date: Date
     public let images: [Data]
     public let imageUrls: [String]
-    public let category: String
+    public let category: StoryCategory
     public let place: Location
-    public let badgeId: Int
-    public let badgeName: String
+    public let badge: Badge
     
-    public init(title: String, content: String, date: Date, images: [Data] = [], imageUrls: [String] = [], category: String, place: Location, badgeId: Int = 0, badgeName: String = "") {
+    public init(title: String, content: String, date: Date, images: [Data] = [], imageUrls: [String] = [], category: StoryCategory, place: Location, badge: Badge) {
         self.title = title
         self.content = content
         self.date = date
@@ -28,8 +27,7 @@ public struct StoryContent {
         self.imageUrls = imageUrls
         self.category = category
         self.place = place
-        self.badgeId = badgeId
-        self.badgeName = badgeName
+        self.badge = badge
     }
     
 }

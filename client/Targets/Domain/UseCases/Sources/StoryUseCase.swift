@@ -21,6 +21,10 @@ public final class StoryUseCase: StoryUseCaseInterface {
         self.repository = repository
     }
     
+    public func requestMetaData() async -> Result<([StoryCategory], [Badge]), Error> {
+        return await repository.requestMetaData()
+    }
+    
     public func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error> {
         return await repository.requestCreateStory(storyContent: storyContent)
     }

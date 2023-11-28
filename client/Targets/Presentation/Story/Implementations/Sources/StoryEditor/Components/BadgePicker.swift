@@ -11,10 +11,15 @@ import UIKit
 import DesignKit
 import DomainEntities
 
+protocol BadgePickerDelegate: AnyObject {
+    func badgeDidChange(_ badge: Badge?)
+}
+
 final class BadgePicker: UIView {
 
-    private(set) var selectedIndex: Int = 0
-    let items = Badge.allCases.map { $0.title }
+    weak var delegate: BadgePickerDelegate?
+    private(set) var selectedItem: Badge?
+    private var items: [Badge] = []
  
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -28,7 +33,7 @@ final class BadgePicker: UIView {
     
     private lazy var valueLabel: UITextField = {
         let textField = UITextField()
-        textField.text = items[selectedIndex]
+        textField.text = "없음"
         textField.font = .smallRegular
         textField.textColor = .hpGray1
         textField.tintColor = .clear
@@ -69,6 +74,12 @@ final class BadgePicker: UIView {
         setupViews()
     }
     
+    func setup(_ badges: [Badge]) {
+        items = badges
+        selectedItem = items[safe: 0]
+        valueLabel.text = selectedItem?.title
+        delegate?.badgeDidChange(selectedItem)
+    }
 }
 
 private extension BadgePicker {
@@ -106,8 +117,9 @@ private extension BadgePicker {
 
 extension BadgePicker: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        selectedIndex = row
-        valueLabel.text = items[selectedIndex]
+        selectedItem = items[safe: row]
+        valueLabel.text = selectedItem?.title
+        delegate?.badgeDidChange(selectedItem)
     }
 }
 
@@ -121,6 +133,6 @@ extension BadgePicker: UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return items[row]
+        return items[safe: row]?.title
     }
 }

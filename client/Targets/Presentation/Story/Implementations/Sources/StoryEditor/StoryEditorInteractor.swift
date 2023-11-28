@@ -19,8 +19,9 @@ protocol StoryEditorRouting: ViewableRouting {}
 
 protocol StoryEditorPresentable: Presentable {
     var listener: StoryEditorPresentableListener? { get set }
+    func setupMetadata(badges: [Badge], categories: [StoryCategory])
     func setSaveButton(_ enabled: Bool)
-    func showFailure(_ error: Error)
+    func showFailure(_ error: Error, with title: String)
 }
 
 protocol StoryEditorInteractorDependency: AnyObject {
@@ -35,7 +36,15 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     
     private var title: String = ""
     private var description: String = ""
+    private var category: StoryCategory?
     private var location: Location?
+    private var badge: Badge?
+    
+    private var isButtonEnabled: Bool {
+        guard let category, let location, let badge else { return false }
+        
+        return !(title.isEmpty || description.isEmpty)
+    }
     
     init(
         presenter: StoryEditorPresentable,
@@ -48,16 +57,18 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
     }
     
     func didTapClose() {
         listener?.storyEditorDidTapClose()
+    }
+    
+    func viewDidAppear() {
+        loadMetadata()
     }
     
     func titleDidChange(_ title: String) {
@@ -70,8 +81,18 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
         presenter.setSaveButton(isButtonEnabled)
     }
     
+    func categoryDidChange(_ category: StoryCategory?) {
+        self.category = category
+        presenter.setSaveButton(isButtonEnabled)
+    }
+    
     func locationDidChange(_ location: Location?) {
         self.location = location
+        presenter.setSaveButton(isButtonEnabled)
+    }
+    
+    func badgeDidChange(_ badge: Badge?) {
+        self.badge = badge
         presenter.setSaveButton(isButtonEnabled)
     }
     
@@ -85,12 +106,28 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
                 })
                 .onFailure(on: .main, with: self, { this, error in
                     Log.make(message: error.localizedDescription, log: .interactor)
-                    this.presenter.showFailure(error)
+                    this.presenter.showFailure(error, with: "스토리 생성에 실패했어요.")
                 })
         }
     }
     
-    private var isButtonEnabled: Bool {
-        !title.isEmpty && !description.isEmpty && location != nil
+}
+
+
+private extension StoryEditorInteractor {
+    func loadMetadata() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestMetaData()
+                .onSuccess(on: .main, with: self) { this, metadata in
+                    let (categories, badges) = metadata
+                    this.presenter.setupMetadata(badges: badges, categories: categories)
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    this.presenter.showFailure(error, with: "사용자 칭호 정보를 가져오는데 실패했어요.")
+                }
+            
+        }
     }
 }
