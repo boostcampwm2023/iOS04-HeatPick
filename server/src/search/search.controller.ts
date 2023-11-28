@@ -16,6 +16,7 @@ import { SearchParameterDto } from './dto/search.parameter.dto';
 import { UserResultDto } from './dto/user.result.dto';
 import { StoryResultDto } from './dto/story.result.dto';
 import { SearchHistoryResultDto } from './dto/search.history.result.dto';
+import { SearchUserResultDto } from './dto/search.user.result.dto';
 
 @ApiTags('search')
 @Controller('search')
@@ -48,7 +49,7 @@ export class SearchController {
   @ApiResponse({
     status: 201,
     description: '파라미터로 넘겨받은 searchText 값을 바탕으로 Username이 유사한 유저를 가져옵니다.',
-    type: [UserResultDto],
+    type: SearchUserResultDto,
   })
   async getUserSearchResult(@Query('searchText') searchText: string) {
     const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 10);
