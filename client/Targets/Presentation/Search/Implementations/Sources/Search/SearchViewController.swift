@@ -10,6 +10,8 @@ import UIKit
 
 import CoreKit
 import DesignKit
+import DomainEntities
+import BasePresentation
 
 import NMapsMap
 import ModernRIBs
@@ -17,6 +19,7 @@ import ModernRIBs
 protocol SearchPresentableListener: AnyObject {
     func didTapCurrentLocation()
     func attachSearchResult()
+    func didTapStory(storyID: Int)
 }
 
 public final class SearchViewController: UIViewController, SearchPresentable, SearchViewControllable {
@@ -78,6 +81,17 @@ public final class SearchViewController: UIViewController, SearchPresentable, Se
         return button
     }()
     
+    private lazy var storyView: SearchMapStoryView = {
+        let storyView = SearchMapStoryView()
+        storyView.isHidden = true
+        storyView.layer.cornerRadius = Constants.cornerRadiusMedium
+        storyView.layer.borderColor = UIColor.hpGray3.cgColor
+        storyView.layer.borderWidth = 1
+        storyView.translatesAutoresizingMaskIntoConstraints = false
+        storyView.addTapGesture(target: self, action: #selector(storyViewDidTap))
+        return storyView
+    }()
+    
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         setupTabBar()
@@ -105,7 +119,26 @@ public final class SearchViewController: UIViewController, SearchPresentable, Se
         stackView.removeArrangedSubview(viewController.view)
         viewController.removeFromParent()
     }
+    
+    func showStoryView(model: SearchMapStoryViewModel) {
+        storyView.setup(model: model)
+        storyView.isHidden = false
+    }
+    
+    func hideStoryView() {
+        guard storyView.isHidden == false else { return }
+        storyView.isHidden = true
+    }
+    
+}
 
+private extension SearchViewController {
+    
+    @objc func storyViewDidTap() {
+        guard let storyID = storyView.storyID else { return }
+        listener?.didTapStory(storyID: storyID)
+    }
+    
 }
 
 private extension SearchViewController {
@@ -120,7 +153,7 @@ private extension SearchViewController {
     
     func setupViews() {
         view.backgroundColor = .hpWhite
-        [stackView, searchTextField, showSearchHomeListButton].forEach { view.addSubview($0) }
+        [stackView, searchTextField, showSearchHomeListButton, storyView].forEach { view.addSubview($0) }
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: view.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -135,7 +168,11 @@ private extension SearchViewController {
             showSearchHomeListButton.widthAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
             showSearchHomeListButton.heightAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
             showSearchHomeListButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constant.ShowSearchHomeListButton.offset),
-            showSearchHomeListButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.ShowSearchHomeListButton.offset)
+            showSearchHomeListButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.ShowSearchHomeListButton.offset),
+            
+            storyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            storyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            storyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
     

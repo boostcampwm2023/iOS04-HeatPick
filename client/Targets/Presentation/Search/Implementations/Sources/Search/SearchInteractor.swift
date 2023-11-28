@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import DomainEntities
 import BasePresentation
 
 protocol SearchRouting: ViewableRouting {
@@ -22,6 +23,8 @@ protocol SearchRouting: ViewableRouting {
 
 protocol SearchPresentable: Presentable {
     var listener: SearchPresentableListener? { get set }
+    func showStoryView(model: SearchMapStoryViewModel)
+    func hideStoryView()
 }
 
 public protocol SearchListener: AnyObject { }
@@ -63,8 +66,29 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         router?.attachSearchCurrentLocation()
     }
     
+    func didTapStory(storyID: Int) {
+        print("# ATTACH STORY DETAIL")
+    }
+    
     func controllerDidDismiss() {
         router?.detachSearchCurrentLocation()
+    }
+    
+    // MARK: - Search Map
+    
+    func searchMapDidTapMarker(place: Place) {
+        presenter.showStoryView(model: .init(
+            storyID: place.storyID,
+            thumbnailImageURL: place.storyImageURLs.first ?? "",
+            title: place.storyTitle,
+            subtitle: place.storyContent,
+            likes: place.likeCount,
+            comments: place.commentCount
+        ))
+    }
+    
+    func searchMapWillMove() {
+        presenter.hideStoryView()
     }
     
 }
