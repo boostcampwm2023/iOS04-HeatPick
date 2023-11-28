@@ -106,7 +106,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
                 })
                 .onFailure(on: .main, with: self, { this, error in
                     Log.make(message: error.localizedDescription, log: .interactor)
-                    this.presenter.showFailure(error, with: "스토리 생성에 실패했습니다.")
+                    this.presenter.showFailure(error, with: "스토리 생성에 실패했어요.")
                 })
         }
     }
@@ -125,8 +125,7 @@ private extension StoryEditorInteractor {
                     this.presenter.setupMetadata(badges: badges, categories: categories)
                 }
                 .onFailure(on: .main, with: self) { this, error in
-                    print(error)
-                    this.presenter.showFailure(error, with: "메타 데이터 로드에 실패했습니다.")
+                    this.presenter.showFailure(error, with: "사용자 칭호 정보를 가져오는데 실패했어요.")
                 }
             
         }
