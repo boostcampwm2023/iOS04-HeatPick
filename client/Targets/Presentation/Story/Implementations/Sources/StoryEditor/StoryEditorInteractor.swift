@@ -33,6 +33,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     weak var router: StoryEditorRouting?
     weak var listener: StoryEditorListener?
     private var dependency: StoryEditorInteractorDependency
+    private var cancelBag: CancelBag = CancelBag()
     
     private var title: String = ""
     private var description: String = ""
@@ -108,7 +109,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
                     Log.make(message: error.localizedDescription, log: .interactor)
                     this.presenter.showFailure(error, with: "스토리 생성에 실패했어요.")
                 })
-        }
+        }.store(in: cancelBag)
     }
     
 }
@@ -128,6 +129,6 @@ private extension StoryEditorInteractor {
                     this.presenter.showFailure(error, with: "사용자 칭호 정보를 가져오는데 실패했어요.")
                 }
             
-        }
+        }.store(in: cancelBag)
     }
 }
