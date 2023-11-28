@@ -16,7 +16,7 @@ export const createStoryEntity = async ({ title, content, category, place, image
   const storyImageArr = await story.storyImages;
   savedImageNames.forEach((name) => {
     const storyImageObj = new StoryImage();
-    storyImageObj.imageUrl = `https://server.bc8heatpick.store/image?name=${name}`;
+    storyImageObj.imageUrl = `https://server.bc8heatpick.store/image/story?name=${name}`;
     storyImageArr.push(storyImageObj);
   });
   story.badge = badge;
