@@ -56,10 +56,10 @@ final class SearchMapInteractor: PresentableInteractor<SearchMapPresentable>, Se
     }
     
     func didAppear() {
-        if !isInitialCameraMoved {
+        if let location = dependency.searchMapUseCase.location, !isInitialCameraMoved {
             isInitialCameraMoved = true
-            presenter.moveMap(lat: 37, lng: 127)
-            fetchPlaces(lat: 37, lng: 127)
+            presenter.moveMap(lat: location.latitude, lng: location.longitude)
+            fetchPlaces(lat: location.latitude, lng: location.longitude)
         }
     }
     
