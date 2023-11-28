@@ -16,7 +16,6 @@ export class CommentService {
     const mentionables: { userId: number; username: string }[] = [];
     const story: Story = await this.storyRepository.findOneByIdWithUserAndComments(storyId);
     mentionables.push({ userId: story.user.userId, username: story.user.username });
-
     (await story.comments).forEach((comment) => {
       mentionables.push({ userId: comment.user.userId, username: comment.user.username });
     });
@@ -25,22 +24,37 @@ export class CommentService {
     user.following.forEach((user) => {
       mentionables.push({ userId: user.userId, username: user.username });
     });
-
-    return [...new Set(mentionables)];
+    return Array.from(new Set(mentionables.map((user) => user.userId))).map((userId) => {
+      return mentionables.find((user) => user.userId === userId);
+    });
   }
 
-  public async create({ storyId, content }) {
+  public async create({ storyId, userId, content, mentions }) {
     const story = await this.storyRepository.findById(storyId);
-    const comment = createCommentEntity(content);
+
+    const mentionedUsers: User[] = mentions.map(async (userId: number) => {
+      await this.userRepository.findOneByUserId(userId);
+    });
+
+    const user = await this.userRepository.findOneByUserId(userId);
+
+    const comment = createCommentEntity(content, user, mentionedUsers);
 
     story.comments = Promise.resolve([...(await story.comments), comment]);
     await this.storyRepository.addStory(story);
     return comment.commentId;
   }
 
-  public async update({ storyId, commentId, content }) {
+  public async update({ storyId, userId, commentId, content, mentions }) {
     const story = await this.storyRepository.findById(storyId);
-    const newComment = createCommentEntity(content);
+
+    const mentionedUsers: User[] = mentions.map(async (userId: number) => {
+      await this.userRepository.findOneByUserId(userId);
+    });
+
+    const user = await this.userRepository.findOneByUserId(userId);
+
+    const newComment = createCommentEntity(content, user, mentionedUsers);
 
     story.comments = Promise.resolve(
       (await story.comments).map((comment) => {

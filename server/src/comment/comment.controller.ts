@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards, ValidationPipe, Request } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCommentDto } from './dto/request/commnet.create.dto';
 import { CommentService } from './comment.service';
@@ -6,6 +6,7 @@ import { UpdateCommentDto } from './dto/request/comment.update.dto';
 import { DeleteCommentDto } from './dto/request/comment.delete.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { GetMentionableDto } from './dto/request/comment.mentionable.dto';
+import { MentionableResponseDto } from './dto/response/comment.mentionable.response.dto';
 
 @ApiTags('comment')
 @Controller('comment')
@@ -15,26 +16,28 @@ export class CommentController {
 
   @Get('mentionable')
   @ApiOperation({ summary: '멘션할 유저를 불러오는 API' })
-  @ApiResponse({ status: 201, description: '멘션 가능한 유저의 리스트' })
+  @ApiResponse({ status: 201, description: '멘션 가능한 유저의 리스트', type: MentionableResponseDto })
   async mentions(@Query(new ValidationPipe({ transform: true })) getMentionableDto: GetMentionableDto) {
     const { storyId, userId } = getMentionableDto;
-    return this.commentService.getMentionable({ storyId, userId });
+    return { mentionables: await this.commentService.getMentionable({ storyId, userId }) };
   }
 
   @Post('create')
   @ApiOperation({ summary: '댓글 생성 API' })
   @ApiResponse({ status: 201, description: 'commentId' })
-  async create(@Body(new ValidationPipe({ transform: true })) createCommentDto: CreateCommentDto) {
-    const { storyId, content } = createCommentDto;
-    return this.commentService.create({ storyId, content });
+  async create(@Request() req: any, @Body(new ValidationPipe({ transform: true })) createCommentDto: CreateCommentDto) {
+    const { storyId, content, mentions } = createCommentDto;
+    const userId = req.user.id;
+    return this.commentService.create({ storyId, userId, content, mentions });
   }
 
   @Patch('update')
   @ApiOperation({ summary: '댓글 수정 API' })
   @ApiResponse({ status: 201, description: 'commentId' })
-  async update(@Body(new ValidationPipe({ transform: true })) updateCommentDto: UpdateCommentDto) {
-    const { storyId, commentId, content } = updateCommentDto;
-    return this.commentService.update({ storyId, commentId, content });
+  async update(@Request() req: any, @Body(new ValidationPipe({ transform: true })) updateCommentDto: UpdateCommentDto) {
+    const { storyId, commentId, content, mentions } = updateCommentDto;
+    const userId = req.user.id;
+    return this.commentService.update({ storyId, userId, commentId, content, mentions });
   }
 
   @Delete('delete')
