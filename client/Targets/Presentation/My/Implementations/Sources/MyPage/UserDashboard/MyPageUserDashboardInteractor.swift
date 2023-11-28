@@ -76,8 +76,8 @@ private extension MyPageProfile {
             experience: "\(experience)/\(maxExperience)", // 경험치 변환 로직 추가
             temperatureTitle: "따뜻해요", // 온도가 필요할 듯
             temperature: "몇도씨", // 온도가 필요할 듯
-            badgeTitle: "아직 뱃지 없음",
-            badgeContent: "뱃지 주세요"
+            badgeTitle: mainBadge.emoji + " " + mainBadge.name,
+            badgeContent: mainBadge.name
         )
     }
     
