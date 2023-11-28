@@ -4,8 +4,8 @@
             "placeId": 1,
             "title": "위치 타이틀입니다.",
             "address": "경기도 의정부시 호국로 땡땡 아파트",
-            "latitude": 37.01,
-            "longitude": 127.01,
+            "latitude": 37.65576171875,
+            "longitude": 127.06402472959361,
             "story": {
                 "storyId": 1,
                 "title": "스토리 타이틀입니다.",
@@ -19,8 +19,8 @@
             "placeId": 2,
             "title": "위치 타이틀입니다22.",
             "address": "경기도 의정부시 호국로 땡땡 아파트22",
-            "latitude": 40.01,
-            "longitude": 140.01,
+            "latitude": 37.62576141795,
+            "longitude": 127.06802589075166,
             "story": {
                 "storyId": 2,
                 "title": "스토리 타이틀입니다.22",

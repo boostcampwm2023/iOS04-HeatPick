@@ -7,23 +7,31 @@
 //
 
 import ModernRIBs
+import CoreKit
+import DomainEntities
 import DomainInterfaces
+import BasePresentation
 
 protocol SearchMapRouting: ViewableRouting { }
 
 protocol SearchMapPresentable: Presentable {
     var listener: SearchMapPresentableListener? { get set }
     func moveMap(lat: Double, lng: Double)
+    func updateMarkers(places: [Place])
+    func removeAllMarker()
 }
 
-protocol SearchMapListener: AnyObject { }
+protocol SearchMapListener: AnyObject { 
+    func searchMapDidTapMarker(place: Place)
+    func searchMapWillMove()
+}
 
 protocol SearchMapInteractorDependency: AnyObject {
     var searchMapUseCase: SearchMapUseCaseInterface { get }
 }
 
 final class SearchMapInteractor: PresentableInteractor<SearchMapPresentable>, SearchMapInteractable, SearchMapPresentableListener {
-
+    
     weak var router: SearchMapRouting?
     weak var listener: SearchMapListener?
 
@@ -48,9 +56,31 @@ final class SearchMapInteractor: PresentableInteractor<SearchMapPresentable>, Se
     }
     
     func didAppear() {
-        if let location = dependency.searchMapUseCase.location, !isInitialCameraMoved {
+        if !isInitialCameraMoved {
             isInitialCameraMoved = true
-            presenter.moveMap(lat: location.latitude, lng: location.longitude)
+            presenter.moveMap(lat: 37, lng: 127)
+            fetchPlaces(lat: 37, lng: 127)
+        }
+    }
+    
+    func didTapMarker(place: Place) {
+        listener?.searchMapDidTapMarker(place: place)
+    }
+    
+    func mapWillMove() {
+        listener?.searchMapWillMove()
+    }
+    
+    private func fetchPlaces(lat: Double, lng: Double) {
+        presenter.removeAllMarker()
+        
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.searchMapUseCase
+                .fetchPlaces(lat: lat, lng: lng)
+                .onSuccess(on: .main, with: self) { this, places in
+                    this.presenter.updateMarkers(places: places)
+                }
         }
     }
     
