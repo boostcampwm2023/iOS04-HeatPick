@@ -24,6 +24,7 @@ import { CategoryRepository } from '../category/category.repository';
 import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 import { Category } from '../entities/category.entity';
 import { UserService } from 'src/user/user.service';
+import { removeMillisecondsFromISOString } from '../util/util.date.format.to.ISO8601';
 
 @Injectable()
 export class StoryService {
@@ -77,10 +78,10 @@ export class StoryService {
       latitude: place.latitude,
       longitude: place.longitude,
     };
-    console.log(story);
+
     const storyDetailStoryData: StoryDetailStoryDataDto = {
       storyId: story.storyId,
-      createdAt: story.createAt,
+      createdAt: removeMillisecondsFromISOString(story.createAt.toISOString()),
       category: story.category.categoryName,
       storyImageURL: (await story.storyImages).map((storyImage: StoryImage) => storyImage.imageUrl),
       title: story.title,

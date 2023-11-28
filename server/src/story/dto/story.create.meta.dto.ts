@@ -4,6 +4,6 @@ export class CreateStoryMetaDto {
   @ApiProperty({ example: `[ { categoryId: 10, categoryName: '카페' }, ]`, description: '카테고리 리스트' })
   categories: { categoryId: number; categoryName: string }[];
 
-  @ApiProperty({ example: `[ badgeId: 3; badgeName: '카페인 중독', ]`, description: '뱃지 리스트' })
+  @ApiProperty({ example: `[ { badgeId: 3; badgeName: '카페인 중독' }, ]`, description: '뱃지 리스트' })
   badges: { badgeId: number; badgeName: string }[];
 }

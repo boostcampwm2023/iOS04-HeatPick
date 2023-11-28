@@ -6,7 +6,7 @@ export class StoryDetailStoryDataDto {
   storyId: number;
 
   @ApiProperty()
-  createdAt: Date;
+  createdAt: string;
 
   @ApiProperty()
   category: string;

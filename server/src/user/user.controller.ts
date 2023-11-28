@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put, ParseIntPipe, ValidationPipe, Param, UseGuards, Req } from '@nestjs/common';
 
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/addBadge.dto';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
@@ -36,14 +36,14 @@ export class UserController {
 
   @Get('profile')
   @ApiOperation({ summary: '유저 ID로 Profile를 불러옵니다.' })
-  @ApiResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
+  @ApiCreatedResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getProfile(@Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
     return this.userService.getProfile(undefined, userId);
   }
 
   @Get('myProfile')
   @ApiOperation({ summary: '자신의 토큰으로 자신의 Profile을 불러옵니다.' })
-  @ApiResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
+  @ApiCreatedResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getMyProfile(@Req() req: any): Promise<UserProfileDetailDataDto> {
     return this.userService.getProfile(req.user.userId, undefined);
   }
