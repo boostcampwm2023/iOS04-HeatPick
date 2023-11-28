@@ -55,6 +55,7 @@ final class StoryImagesView: UIView {
             let imageView = UIImageView()
             imageView.load(from: imageUrl)
             imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
             stackView.addArrangedSubview(imageView)
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
