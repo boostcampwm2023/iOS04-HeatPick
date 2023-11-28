@@ -8,18 +8,14 @@
 
 import ModernRIBs
 import DomainEntities
+import DomainInterfaces
 import BasePresentation
 
 protocol SearchRouting: ViewableRouting {
-    func attachSearchMap()
-    func detachSearchMap()
-    
     func attachSearchCurrentLocation()
     func detachSearchCurrentLocation()
-    
     func attachSearchResult()
     func detachSearchResult()
-    
     func attachStoryDetail(storyID: Int)
     func detachStoryDetail()
 }
@@ -28,9 +24,16 @@ protocol SearchPresentable: Presentable {
     var listener: SearchPresentableListener? { get set }
     func showStoryView(model: SearchMapStoryViewModel)
     func hideStoryView()
+    func moveMap(lat: Double, lng: Double)
+    func updateMarkers(places: [Place])
+    func removeAllMarker()
 }
 
 public protocol SearchListener: AnyObject { }
+
+protocol SearchInteractorDependency: AnyObject {
+    var searchUseCase: SearchUseCaseInterface { get }
+}
 
 final class SearchInteractor: PresentableInteractor<SearchPresentable>,
                               AdaptivePresentationControllerDelegate,
@@ -41,7 +44,14 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     weak var listener: SearchListener?
     let presentationAdapter: AdaptivePresentationControllerDelegateAdapter
     
-    override init(presenter: SearchPresentable) {
+    private let dependency: SearchInteractorDependency
+    private var isInitialCameraMoved = false
+    
+    init(
+        presenter: SearchPresentable,
+        dependency: SearchInteractorDependency
+    ) {
+        self.dependency = dependency
         self.presentationAdapter = AdaptivePresentationControllerDelegateAdapter()
         super.init(presenter: presenter)
         presenter.listener = self
@@ -50,14 +60,38 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     override func didBecomeActive() {
         super.didBecomeActive()
-        router?.attachSearchMap()
     }
     
     override func willResignActive() {
         super.willResignActive()
     }
     
-    func attachSearchResult() {
+    func didAppear() {
+        if !isInitialCameraMoved {
+            let location = dependency.searchUseCase.location ?? .init(latitude: 37, longitude: 127)
+            isInitialCameraMoved = true
+            presenter.moveMap(lat: location.latitude, lng: location.longitude)
+            fetchPlaces(lat: location.latitude, lng: location.longitude)
+        }
+    }
+    
+    func didTapMarker(place: Place) {
+        let story = place.story
+        presenter.showStoryView(model: .init(
+            storyID: story.id,
+            thumbnailImageURL: story.imageURLs.first ?? "",
+            title: story.title,
+            subtitle: story.content,
+            likes: story.likeCount,
+            comments: story.commentCount
+        ))
+    }
+    
+    func mapWillMove() {
+        presenter.hideStoryView()
+    }
+    
+    func didTapSearch() {
         router?.attachSearchResult()
     }
     
@@ -77,26 +111,21 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         router?.detachSearchCurrentLocation()
     }
     
-    // MARK: - Search Map
-    
-    func searchMapDidTapMarker(place: Place) {
-        let story = place.story
-        presenter.showStoryView(model: .init(
-            storyID: story.id,
-            thumbnailImageURL: story.imageURLs.first ?? "",
-            title: story.title,
-            subtitle: story.content,
-            likes: story.likeCount,
-            comments: story.commentCount
-        ))
-    }
-    
-    func searchMapWillMove() {
-        presenter.hideStoryView()
-    }
-    
     func storyDetailDidTapClose() {
         router?.detachStoryDetail()
+    }
+    
+    private func fetchPlaces(lat: Double, lng: Double) {
+        presenter.removeAllMarker()
+        
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.searchUseCase
+                .fetchPlaces(lat: lat, lng: lng)
+                .onSuccess(on: .main, with: self) { this, places in
+                    this.presenter.updateMarkers(places: places)
+                }
+        }
     }
     
 }
