@@ -13,7 +13,13 @@ import DomainEntities
 public final class StoryURLProtocol: URLProtocol {
     
     private lazy var mocks: [String: Data?] = [
-        StoryAPI.newStory(StoryContent(title: "", content: "", date: .now, category: "", place: .init(lat: 0, lng: 0), badgeId: 0)).path: loadMockData(fileName: "StoryCreateResponseMock"),
+        StoryAPI.metaData.path: loadMockData(fileName: "MetadataResponseMock"),
+        StoryAPI.newStory(StoryContent(title: "",
+                                       content: "",
+                                       date: .now,
+                                       category: StoryCategory(id: 0, title: ""),
+                                       place: Location(lat: 0, lng: 0),
+                                       badge: Badge(id: 0, title: ""))).path: loadMockData(fileName: "StoryCreateResponseMock"),
         StoryAPI.storyDetail(0).path: loadMockData(fileName: "StoryDetailResponseMock")
     ]
     

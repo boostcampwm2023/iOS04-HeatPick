@@ -14,6 +14,7 @@ import DomainEntities
 import NetworkAPIKit
 
 public enum StoryAPI {
+    case metaData
     case newStory(StoryContent)
     case storyDetail(Int)
 }
@@ -26,6 +27,7 @@ extension StoryAPI: Target {
     
     public var path: String {
         switch self {
+        case .metaData: return "/story/meta"
         case .newStory: return "/story/create"
         case .storyDetail: return "/story/detail"
         }
@@ -33,6 +35,7 @@ extension StoryAPI: Target {
     
     public var method: HTTPMethod {
         switch self {
+        case .metaData: return .get
         case .newStory: return .post
         case .storyDetail: return .get
         }
@@ -44,6 +47,8 @@ extension StoryAPI: Target {
     
     public var task: Task {
         switch self {
+        case .metaData:
+            return .plain
         case .newStory(let content):
             let request = NewStoryRequestDTO(storyContent: content)
             let mediaList = content.images.map { imageData in
