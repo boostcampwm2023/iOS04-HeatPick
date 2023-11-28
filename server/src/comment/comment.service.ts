@@ -61,6 +61,7 @@ export class CommentService {
         (await story.comments).map(async (comment) => {
           return {
             commentId: comment.commentId,
+            userId: comment.user.userId,
             userProfileImageURL: comment.user.profileImage.imageUrl,
             username: comment.user.username,
             createdAt: removeMillisecondsFromISOString(comment.createdAt.toISOString()),

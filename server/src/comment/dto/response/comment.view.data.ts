@@ -5,6 +5,9 @@ export class CommentViewData {
   commentId: number;
 
   @ApiProperty()
+  userId: number;
+
+  @ApiProperty()
   userProfileImageURL: string;
 
   @ApiProperty()
