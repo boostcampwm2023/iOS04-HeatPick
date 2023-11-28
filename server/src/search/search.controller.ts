@@ -93,7 +93,7 @@ export class SearchController {
     );
 
     const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchStatement), 100);
-    console.log(users);
+
     const userArr = [];
     if (!categoryId) {
       await Promise.all(

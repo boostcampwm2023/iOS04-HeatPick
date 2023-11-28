@@ -33,7 +33,7 @@ export class StoryRepository {
       where: {
         storyId: In(ids),
       },
-      relations: ['category'],
+      relations: ['category', 'user'],
     });
   }
 }
