@@ -17,6 +17,7 @@ import { UserResultDto } from './dto/user.result.dto';
 import { StoryResultDto } from './dto/story.result.dto';
 import { SearchHistoryResultDto } from './dto/search.history.result.dto';
 import { SearchUserResultDto } from './dto/search.user.result.dto';
+import { SearchStoryResultDto } from './dto/search.story.result.dto';
 
 @ApiTags('search')
 @Controller('search')
@@ -36,11 +37,15 @@ export class SearchController {
   @ApiResponse({
     status: 201,
     description: '파라미터로 넘겨받은 searchText 값을 바탕으로 제목이 유사한 스토리를 가져옵니다.',
-    type: [StoryResultDto],
+    type: SearchStoryResultDto,
   })
-  async getStorySearchResult(@Query('searchText') searchText: string) {
+  async getStorySearchResult(@Query('searchText') searchText: string): Promise<SearchStoryResultDto> {
     const stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 10);
-    const transformedStories = stories.map((story) => storyEntityToObjWithOneImg(story));
+    const transformedStories = await Promise.all(
+      stories.map(async (story) => {
+        return await storyEntityToObjWithOneImg(story);
+      }),
+    );
     return { stories: transformedStories };
   }
 
@@ -51,7 +56,7 @@ export class SearchController {
     description: '파라미터로 넘겨받은 searchText 값을 바탕으로 Username이 유사한 유저를 가져옵니다.',
     type: SearchUserResultDto,
   })
-  async getUserSearchResult(@Query('searchText') searchText: string) {
+  async getUserSearchResult(@Query('searchText') searchText: string): Promise<SearchUserResultDto> {
     const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 10);
     const transfromedUsers = users.map((user) => userEntityToUserObj(user));
     return { users: transfromedUsers };
