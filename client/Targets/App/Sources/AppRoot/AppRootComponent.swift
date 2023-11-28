@@ -104,7 +104,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         self.myPageUseCase = MyPageUseCase(repository: MyPageRepository(session: myPageNetworkProvider))
         self.signOutRequestService = SignoutService.shared
         
-        let searchNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [SearchURLProtocol.self])
+        let searchNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [SearchURLProtocol.self])
         self.searchUseCase = SearchUseCase(repository: SearchRepository(session: searchNetworkProvider), locationService: locationService)
         
         super.init(dependency: dependency)

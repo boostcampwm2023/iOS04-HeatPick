@@ -26,6 +26,8 @@ final class SearchAfterStoryView: UIView {
         }
     }
     
+    private var storyId: Int?
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -82,7 +84,8 @@ final class SearchAfterStoryView: UIView {
     }
     
     func setup(model: SearchStory) {
-        imageView.load(from: model.imageURLs.first)
+        self.storyId = model.storyId
+        imageView.load(from: model.storyImage)
         titleLabel.text = model.title
         addressLabel.text = model.content
         commentView.setup(likes: model.likeCount, comments: model.commentCount)
