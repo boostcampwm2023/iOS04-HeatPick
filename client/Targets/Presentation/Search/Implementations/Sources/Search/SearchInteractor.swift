@@ -19,6 +19,9 @@ protocol SearchRouting: ViewableRouting {
     
     func attachSearchResult()
     func detachSearchResult()
+    
+    func attachStoryDetail(storyID: Int)
+    func detachStoryDetail()
 }
 
 protocol SearchPresentable: Presentable {
@@ -67,7 +70,7 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     }
     
     func didTapStory(storyID: Int) {
-        print("# ATTACH STORY DETAIL")
+        router?.attachStoryDetail(storyID: storyID)
     }
     
     func controllerDidDismiss() {
@@ -89,6 +92,10 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     func searchMapWillMove() {
         presenter.hideStoryView()
+    }
+    
+    func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
     }
     
 }
