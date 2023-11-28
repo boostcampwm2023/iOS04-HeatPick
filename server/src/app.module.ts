@@ -15,22 +15,37 @@ import { CommentModule } from './comment/comment.module';
 import { SlackService } from './slack/slack.service';
 import { APP_FILTER } from '@nestjs/core';
 import { SlackExceptionFilter } from './exception/slack-exception.filter';
+import axios from 'axios';
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
   private logger = new Logger('HTTP');
 
-  use(request: Request, response: Response, next: NextFunction): void {
-    const { ip, method, originalUrl } = request;
-    const userAgent = request.get('user-agent') || '';
+  async use(request: Request, response: Response, next: NextFunction) {
+    try {
+      const { ip, method, originalUrl } = request;
+      const clientIP = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
+      const userAgent = request.get('user-agent') || '';
 
-    response.on('finish', () => {
-      const { statusCode } = response;
-      const contentLength = response.get('content-length');
-      this.logger.log(`${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`);
-    });
+      response.on('finish', () => {
+        const { statusCode } = response;
+        const contentLength = response.get('content-length');
+        this.logger.log(`${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip} ${clientIP}`);
+      });
 
-    next();
+      const countryResponse = await axios.get(`https://ipinfo.io/${clientIP}/json`);
+      const country = countryResponse.data.country;
+
+      const allowedCountries = ['KR'];
+      if (!allowedCountries.includes(country)) {
+        return response.status(403).send('Access denied By IP control policy');
+      }
+
+      next();
+    } catch (error) {
+      console.error('error while processing country IP');
+      next();
+    }
   }
 }
 @Module({
