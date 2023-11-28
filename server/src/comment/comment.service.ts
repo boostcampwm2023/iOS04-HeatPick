@@ -29,9 +29,14 @@ export class CommentService {
     return [...new Set(mentionables)];
   }
 
-  public async create({ storyId, content }) {
+  public async create({ storyId, content, mentions }) {
     const story = await this.storyRepository.findById(storyId);
-    const comment = createCommentEntity(content);
+
+    const mentionedUsers: User[] = mentions.map(async (userId: number) => {
+      await this.userRepository.findOneByUserId(userId);
+    });
+
+    const comment = createCommentEntity(content, mentionedUsers);
 
     story.comments = Promise.resolve([...(await story.comments), comment]);
     await this.storyRepository.addStory(story);
