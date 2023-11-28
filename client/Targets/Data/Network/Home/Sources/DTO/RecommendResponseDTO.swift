@@ -14,14 +14,17 @@ public struct RecommendResponseDTO: Decodable {
     public struct RecommendStoryResponse: Decodable {
         public let storyId: Int
         public let title: String
-        public let storyImages: [String]
+        public let content: String
+        public let likeCount: Int
+        public let commentCount: Int
+        public let storyImage: String
         public let user: RecommendUserResponse
     }
     
     public struct RecommendUserResponse: Decodable {
         public let userId: Int
         public let username: String
-        public let profileImage: String?
+        public let profileUrl: String?
     }
     
     public let recommededStories: [RecommendStoryResponse]
@@ -35,10 +38,10 @@ public extension RecommendResponseDTO {
             .map { HotPlace(
                 id: $0.storyId,
                 title: $0.title,
-                imageURLs: $0.storyImages,
+                imageURL: $0.storyImage,
                 userId: $0.user.userId,
                 username: $0.user.username,
-                userProfileImageURL: $0.user.profileImage
+                userProfileImageURL: $0.user.profileUrl
             )}
     }
     

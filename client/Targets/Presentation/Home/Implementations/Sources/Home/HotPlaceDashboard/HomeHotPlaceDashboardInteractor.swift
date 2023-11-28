@@ -88,7 +88,7 @@ private extension HotPlace {
     var toModel: HomeHotPlaceContentViewModel {
         return .init(
             id: id,
-            thumbnailImageURL: imageURLs.first ?? "",
+            thumbnailImageURL: imageURL,
             title: title,
             nickname: username,
             profileImageURL: userProfileImageURL
