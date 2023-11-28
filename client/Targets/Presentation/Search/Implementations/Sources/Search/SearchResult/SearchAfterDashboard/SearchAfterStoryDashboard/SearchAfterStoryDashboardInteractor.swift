@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 
 import ModernRIBs
 
@@ -41,6 +42,7 @@ final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAft
         super.didBecomeActive()
         
         listener?.searchResultStoriesPublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] stories in
                 self?.presenter.setup(models: stories)
             }.store(in: &cancellables)

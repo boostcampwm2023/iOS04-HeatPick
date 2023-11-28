@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 
 import ModernRIBs
 
@@ -30,14 +31,14 @@ protocol SearchingDashboardInteractorDependency: AnyObject {
 }
 
 final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboardPresentable>, SearchingDashboardInteractable, SearchingDashboardPresentableListener {
-
+    
     weak var router: SearchingDashboardRouting?
     weak var listener: SearchingDashboardListener?
     
     private let dependecy: SearchingDashboardInteractorDependency
     
     private var cancellables = Set<AnyCancellable>()
-
+    
     init(
         presenter: SearchingDashboardPresentable,
         dependency: SearchingDashboardInteractorDependency
@@ -46,25 +47,26 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
+        
         listener?.editingSearchTextPublisher
             .sink { editingText in
                 Task { [weak self] in
-                    let result = await self?.dependecy.searhResultsearchingUseCase.fetchRecommendTexts(searchText:editingText)
-                    switch result {
-                    case .success(let recommendTexts):
-                        self?.presenter.setup(recommendTexts: recommendTexts)
-                    case .failure(let error):
-                        Log.make(message: error.localizedDescription, log: .network)
-                    default: break
-                    }
-                    
+                    guard let self else { return }
+                    await self.dependecy.searhResultsearchingUseCase
+                        .fetchRecommendTexts(searchText:editingText)
+                        .onSuccess(on: .main, with: self) { this, recommentTexts in
+                            this.presenter.setup(recommendTexts: recommentTexts)
+                        }
+                        .onFailure { error in
+                            Log.make(message: error.localizedDescription, log: .network)
+                        }
                 }
             }.store(in: &cancellables)
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
         

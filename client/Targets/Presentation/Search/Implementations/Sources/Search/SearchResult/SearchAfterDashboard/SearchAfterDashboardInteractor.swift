@@ -64,16 +64,16 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
         listener?.endEditingSearchTextPublisher
             .sink { searchText in
                 Task { [weak self] in
-                    let result = await self?.dependency.searhResultSearchAfterUseCase.fetchResult(searchText: searchText)
-                    switch result {
-                    case .success(let searchResult):
-                        self?.searchResultStoriesSubject.send(searchResult.stories)
-                        self?.searchResultUsersSubject.send(searchResult.users)
-                    case .failure(let error):
-                        Log.make(message: error.localizedDescription, log: .network)
-                    case .none:
-                        break
-                    }
+                    guard let self else { return }
+                    await self.dependency.searhResultSearchAfterUseCase
+                        .fetchResult(searchText: searchText)
+                        .onSuccess { searchResult in
+                            self.searchResultStoriesSubject.send(searchResult.stories)
+                            self.searchResultUsersSubject.send(searchResult.users)
+                        }
+                        .onFailure { error in
+                            Log.make(message: error.localizedDescription, log: .network)
+                        }
                 }
             }.store(in: &cancellables)
     }

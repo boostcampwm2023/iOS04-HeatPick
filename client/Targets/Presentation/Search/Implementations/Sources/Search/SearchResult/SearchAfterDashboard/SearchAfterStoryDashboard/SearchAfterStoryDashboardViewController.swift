@@ -82,17 +82,14 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
     }
     
     func setup(models: [SearchStory]) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            let isEmpty = models.isEmpty
-            headerView.isHiddenSeeAllView(isEmpty)
-            emptyView.isHidden = !isEmpty
-            scrollView.isHidden = isEmpty
-            models.forEach { model in
-                let contentView = SearchAfterStoryView()
-                contentView.setup(model: model)
-                self.stackView.addArrangedSubview(contentView)
-            }
+        let isEmpty = models.isEmpty
+        headerView.isHiddenSeeAllView(isEmpty)
+        emptyView.isHidden = !isEmpty
+        scrollView.isHidden = isEmpty
+        models.forEach { model in
+            let contentView = SearchAfterStoryView()
+            contentView.setup(model: model)
+            self.stackView.addArrangedSubview(contentView)
         }
     }
     

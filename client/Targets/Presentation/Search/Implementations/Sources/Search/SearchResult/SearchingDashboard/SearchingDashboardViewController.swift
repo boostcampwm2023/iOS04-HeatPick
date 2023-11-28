@@ -35,11 +35,8 @@ final class SearchingDashboardViewController: UIViewController, SearchingDashboa
     }
     
     func setup(recommendTexts: [String]) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            models = recommendTexts
-            tableView.reloadData()
-        }
+        models = recommendTexts
+        tableView.reloadData()
     }
     
 }

@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 
 import ModernRIBs
 
@@ -49,12 +50,19 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
     
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(models: dependecy.searchBeforeRecentSearchesUsecase.fetchRecentSearches())
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            presenter.setup(models: dependecy.searchBeforeRecentSearchesUsecase.fetchRecentSearches())
+        }
+        
         listener?.endEditingSearchTextPublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] text in
-                guard let text = self?.dependecy.searchBeforeRecentSearchesUsecase.appendRecentSearch(searchText: text) else { return }
-                self?.presenter.append(model: text)
+                guard let self,
+                      let text = self.dependecy.searchBeforeRecentSearchesUsecase.appendRecentSearch(searchText: text) else { return }
+                self.presenter.append(model: text)
             }.store(in: &cancellables)
+        
     }
     
     override func willResignActive() {

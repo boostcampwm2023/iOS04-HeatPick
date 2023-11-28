@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 
 import ModernRIBs
 
@@ -40,6 +41,7 @@ final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfte
     override func didBecomeActive() {
         super.didBecomeActive()
         listener?.searchResultUsersPublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] users in
                 self?.presenter.setup(models: users)
             }.store(in: &cancellables)
