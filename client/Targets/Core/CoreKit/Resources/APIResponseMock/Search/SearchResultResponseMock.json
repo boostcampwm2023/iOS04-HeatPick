@@ -4,128 +4,78 @@
           "storyId": 1,
           "title": "타이틀 1",
           "content": "content",
-          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
-          ],
+          "storyImage":  "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ,
           "likeCount": 100,
           "commentCount": 100,
-          "createAt": "2023-11-23T16:57:07.208Z"
+          "categoryId": 1
         },
         {
           "storyId": 2,
           "title": "타이틀 2",
           "content": "content",
-          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
-          ],
+          "storyImage":  "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ,
           "likeCount": 200,
           "commentCount": 200,
-          "createAt": "2023-11-23T16:57:07.208Z"
+          "categoryId": 2
         },
         {
           "storyId": 3,
           "title": "타이틀 3",
           "content": "content",
-          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
-          ],
+          "storyImage":  "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ,
           "likeCount": 300,
           "commentCount": 300,
-          "createAt": "2023-11-23T16:57:07.208Z"
+          "categoryId": 3
         },
         {
           "storyId": 4,
           "title": "타이틀 4",
           "content": "content",
-          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
-          ],
+          "storyImage":  "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ,
           "likeCount": 400,
           "commentCount": 400,
-          "createAt": "2023-11-23T16:57:07.208Z"
+          "categoryId": 4
         },
         {
           "storyId": 5,
           "title": "타이틀 5",
           "content": "content",
-          "storyImages": [ "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
-          ],
+          "storyImage":  "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
+          ,
           "likeCount": 500,
           "commentCount": 500,
-          "createAt": "2023-11-23T16:57:07.208Z"
+          "categoryId": 5
         },
       ],
     "users": [
         {
             "userId": 1,
             "username": "유저1",
-            "oauthId": "1",
-            "temperature": 1,
-            "createAt": "2023-11-23T17:01:30.743Z",
-            "deletedAt": "2023-11-23T17:01:30.743Z",
-            "recentActive": "2023-11-23T17:01:30.743Z",
-            "following": [
-                "string"
-            ],
-            "followers": [
-                "string"
-            ]
+            "profileUrl": "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
         },
         {
             "userId": 2,
-            "username": "유저2",
-            "oauthId": "2",
-            "temperature": 2,
-            "createAt": "2023-11-23T17:01:30.743Z",
-            "deletedAt": "2023-11-23T17:01:30.743Z",
-            "recentActive": "2023-11-23T17:01:30.743Z",
-            "following": [
-                "string"
-            ],
-            "followers": [
-                "string"
-            ]
+            "username": "유저3",
+            "profileUrl": "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
         },
         {
             "userId": 3,
             "username": "유저3",
-            "oauthId": "3",
-            "temperature": 3,
-            "createAt": "2023-11-23T17:01:30.743Z",
-            "deletedAt": "2023-11-23T17:01:30.743Z",
-            "recentActive": "2023-11-23T17:01:30.743Z",
-            "following": [
-                "string"
-            ],
-            "followers": [
-                "string"
-            ]
+            "profileUrl": "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
         },
         {
             "userId": 4,
             "username": "유저4",
-            "oauthId": "4",
-            "temperature": 4,
-            "createAt": "2023-11-23T17:01:30.743Z",
-            "deletedAt": "2023-11-23T17:01:30.743Z",
-            "recentActive": "2023-11-23T17:01:30.743Z",
-            "following": [
-                "string"
-            ],
-            "followers": [
-                "string"
-            ]
+            "profileUrl": "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
         },
         {
             "userId": 5,
             "username": "유저5",
-            "oauthId": "5",
-            "temperature": 5,
-            "createAt": "2023-11-23T17:01:30.743Z",
-            "deletedAt": "2023-11-23T17:01:30.743Z",
-            "recentActive": "2023-11-23T17:01:30.743Z",
-            "following": [
-                "string"
-            ],
-            "followers": [
-                "string"
-            ]
+            "profileUrl": "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg"
         },
     ]
 

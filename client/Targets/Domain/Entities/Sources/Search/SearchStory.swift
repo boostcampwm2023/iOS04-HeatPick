@@ -10,30 +10,22 @@ import Foundation
 
 public struct SearchStory {
     
-    public let id: Int
+    public let storyId: Int
     public let title: String
     public let content: String
-    public let imageURLs: [String]
     public let likeCount: Int
     public let commentCount: Int
-    public let createAt: String
-    
-    public init(
-        id: Int,
-        title: String,
-        content: String,
-        imageURLs: [String],
-        likeCount: Int,
-        commentCount: Int,
-        createAt: String
-    ) {
-        self.id = id
+    public let storyImage: String
+    public let categoryId: Int
+
+    public init(storyId: Int, title: String, content: String, likeCount: Int, commentCount: Int, storyImage: String, categoryId: Int) {
+        self.storyId = storyId
         self.title = title
         self.content = content
-        self.imageURLs = imageURLs
         self.likeCount = likeCount
         self.commentCount = commentCount
-        self.createAt = createAt
+        self.storyImage = storyImage
+        self.categoryId = categoryId
     }
     
 }

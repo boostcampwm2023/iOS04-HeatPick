@@ -70,7 +70,7 @@ final class SearchAfterUserView: UIView {
     }
     
     func setup(model: SearchUser) {
-        profileImageView.load(from: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg")
+        profileImageView.load(from: model.profileUrl)
         nicknameLabel.text = model.username
         badgeLabel.text = model.username
     }
