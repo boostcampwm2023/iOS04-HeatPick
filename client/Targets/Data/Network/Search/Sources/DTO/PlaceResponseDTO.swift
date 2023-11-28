@@ -42,14 +42,25 @@ public extension PlaceResponseDTO.PlaceContentResponseDTO {
             address: address,
             lat: latitude,
             lng: longitude,
-            storyID: story.storyId,
-            storyTitle: story.title,
-            storyContent: story.content,
-            storyImageURLs: story.storyImages,
-            likeCount: story.likeCount,
-            commentCount: story.commentCount
+            story: story.toDomain()
         )
     }
+    
+}
+
+public extension PlaceResponseDTO.PlaceStoryResponseDTO {
+    
+    func toDomain() -> PlaceStory {
+        return .init(
+            id: storyId,
+            title: title,
+            content: content,
+            imageURLs: storyImages,
+            likeCount: likeCount,
+            commentCount: commentCount
+        )
+    }
+    
 }
 
 public extension PlaceResponseDTO {

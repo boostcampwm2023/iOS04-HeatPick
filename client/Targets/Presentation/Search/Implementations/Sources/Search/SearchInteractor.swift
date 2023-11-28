@@ -80,13 +80,14 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     // MARK: - Search Map
     
     func searchMapDidTapMarker(place: Place) {
+        let story = place.story
         presenter.showStoryView(model: .init(
-            storyID: place.storyID,
-            thumbnailImageURL: place.storyImageURLs.first ?? "",
-            title: place.storyTitle,
-            subtitle: place.storyContent,
-            likes: place.likeCount,
-            comments: place.commentCount
+            storyID: story.id,
+            thumbnailImageURL: story.imageURLs.first ?? "",
+            title: story.title,
+            subtitle: story.content,
+            likes: story.likeCount,
+            comments: story.commentCount
         ))
     }
     
