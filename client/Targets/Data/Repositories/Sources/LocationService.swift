@@ -53,19 +53,26 @@ public final class LocationService: NSObject, LocationServiceInterface {
     
     public func requestLocality() async throws -> String? {
         guard let location = manager.location else { return nil }
-        let geoCoder: CLGeocoder = CLGeocoder()
-        let place = try await geoCoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "ko_kr"))
+        let place = try await reverseGeocode(location)
+        
         if let subLocality = place.last?.subLocality { return subLocality }
         return place.last?.locality
     }
     
-    public func requestAddress(of location: CLLocation) async throws -> String? {
-        let geoCoder: CLGeocoder = CLGeocoder()
-        let place = try await geoCoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "ko_kr"))
+    public func requestAddress(lat: Double, lng: Double) async throws -> String? {
+        let place = try await reverseGeocode(CLLocation(latitude: lat, longitude: lng))
         let formatter = CNPostalAddressFormatter()
         
         guard let postalAddress = place.last?.postalAddress else { return nil }
         return formatter.string(from: postalAddress).split(separator: "\n").joined(separator: " ")
+    }
+    
+    private func reverseGeocode(_ location: CLLocation,
+                                preferredLocale: Locale = Locale(identifier: "ko_kr")) async throws -> [CLPlacemark] {
+        let geoCoder: CLGeocoder = CLGeocoder()
+        let place = try await geoCoder.reverseGeocodeLocation(location, preferredLocale: preferredLocale)
+        
+        return place
     }
 }
 
