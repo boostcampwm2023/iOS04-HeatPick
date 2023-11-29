@@ -12,5 +12,6 @@ import DomainEntities
 public protocol SearchUseCaseInterface: AnyObject,
                                         SearchMapUseCaseInterface,
                                         SearchCurrentLocationStoryListUseCaseInterface,
-                                        SearchResultUseCaseInterface { }
+                                        SearchResultUseCaseInterface,
+                                        SearchSeeAllUseCaseInterface { }
 

@@ -1,5 +1,5 @@
 //
-//  SearhResultSearchAfterUserUseCaseInterface.swift
+//  SearchUserSeeAllUseCaseInterface.swift
 //  DomainInterfaces
 //
 //  Created by 이준복 on 11/28/23.
@@ -9,7 +9,7 @@
 import Foundation
 import DomainEntities
 
-public protocol SearhResultSearchAfterUserUseCaseInterface {
+public protocol SearchUserSeeAllUseCaseInterface {
     
     func fetchUser(searchText: String) async -> Result<[SearchUser], Error>
     
