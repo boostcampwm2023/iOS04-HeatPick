@@ -22,7 +22,7 @@ protocol SearchAfterStoryDashboardPresentable: Presentable {
     func setup(models: [SearchStory])
 }
 
-protocol SearchAfterStoryDashboardListener: AnyObject { 
+protocol SearchAfterStoryDashboardListener: AnyObject {
     var searchResultStoriesPublisher: AnyPublisher<[SearchStory], Never> { get }
     
     func searchAfterHeaderViewSeeAllViewDidTap()

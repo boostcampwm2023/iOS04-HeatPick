@@ -12,6 +12,7 @@ import DomainEntities
 public struct SearchUserResponseDTO: Decodable {
     
     public let users: [SearchUserDTO]
+    public let isLastPage: Bool
     
 }
 

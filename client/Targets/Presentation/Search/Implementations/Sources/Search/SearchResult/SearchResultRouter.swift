@@ -137,23 +137,3 @@ extension SearchResultRouter {
     }
 
 }
-
-// MARK: StoryDetail
-extension SearchResultRouter {
-    
-    func attachStoryDetail(storyId: Int) {
-    }
-    
-    func detachStroyDetail() {
-        
-    }
-    
-    func attachStroySeeAll(searchText: String) {
-        
-    }
-    
-    func detailStroySeeAll() {
-        
-    }
-    
-}

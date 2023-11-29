@@ -9,11 +9,8 @@
 import ModernRIBs
 import DomainInterfaces
 
-protocol SearchAfterDashboardDependency: Dependency {
-    var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { get }
-}
-
-final class SearchAfterDashboardComponent: Component<SearchAfterDashboardDependency>, SearchAfterDashboardInteractorDependency,
+final class SearchAfterDashboardComponent: Component<SearchAfterDashboardDependency>,
+                                           SearchAfterDashboardInteractorDependency,
                                            SearchAfterStoryDashboardDependency,
                                            SearchAfterUserDashboardDependency {
     var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { dependency.searhResultSearchAfterUseCase }
@@ -30,9 +27,6 @@ final class SearchAfterDashboardRouterComponent: SearchAfterDashboardRouterDepen
     }
     
 }
-
-
-// MARK: - Builder
 
 protocol SearchAfterDashboardBuildable: Buildable {
     func build(withListener listener: SearchAfterDashboardListener) -> SearchAfterDashboardRouting

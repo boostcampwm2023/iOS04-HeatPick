@@ -21,6 +21,8 @@ protocol SearchRouting: ViewableRouting {
     func detachSearchResult()
     func attachStoryDetail(storyID: Int)
     func detachStoryDetail()
+    func attachSearchStorySeeAll(searchText: String)
+    func detachSearchStorySeeAll()
 }
 
 protocol SearchPresentable: Presentable {
@@ -102,7 +104,7 @@ extension SearchInteractor: SearchPresentableListener {
         router?.attachSearchCurrentLocation()
     }
     
-    func didTapSearch() {
+    func didTapSearchTextField() {
         router?.attachSearchResult()
     }
     
@@ -208,5 +210,24 @@ private extension SearchInteractor {
         return distance >= 0.02
     }
     
+    
+}
+
+
+// MARK: StorySeeAll
+extension SearchInteractor {
+    
+    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String) {
+        router?.attachSearchStorySeeAll(searchText: searchText)
+    }
+    
+    func searchStorySeeAllDidTapClose() {
+        router?.detachSearchStorySeeAll()
+    }
+    
+    func searchStorySeeAllDidTap(storyId: Int) {
+        router?.attachStoryDetail(storyID: storyId)
+    }
+
     
 }

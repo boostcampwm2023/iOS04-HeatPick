@@ -15,7 +15,8 @@ import StoryInterfaces
 protocol SearchInteractable: Interactable,
                              SearchCurrentLocationStoryListListener,
                              SearchResultListener,
-                             StoryDetailListener {
+                             StoryDetailListener,
+                             SearchStorySeeAllListener {
     var router: SearchRouting? { get set }
     var listener: SearchListener? { get set }
     var presentationAdapter: AdaptivePresentationControllerDelegateAdapter { get }
@@ -27,6 +28,7 @@ protocol SearchRouterDependency {
     var searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable { get }
     var searchResultBuilder: SearchResultBuildable { get }
     var storyDeatilBuilder: StoryDetailBuildable { get }
+    var searchStorySeeAllBuilder: SearchStorySeeAllBuildable { get }
 }
 
 final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControllable>, SearchRouting {
@@ -36,6 +38,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     private var searchCurrentLocationRouter: ViewableRouting?
     private var searchResultRouter: SearchResultRouting?
     private var storyDeatilRouter: ViewableRouting?
+    private var searchSeeAllRouter: ViewableRouting?
     
     init(
         interactor: SearchInteractable,
@@ -92,5 +95,21 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         storyDeatilRouter = nil
         viewController.popViewController(animated: true)
     }
+    
+    func attachSearchStorySeeAll(searchText: String) {
+        guard searchSeeAllRouter == nil else { return }
+        let router = dependency.searchStorySeeAllBuilder.build(withListener: interactor, searchText: searchText)
+        attachChild(router)
+        searchSeeAllRouter = router
+        viewController.pushViewController(router.viewControllable, animated: true)
+    }
+    
+    func detachSearchStorySeeAll() {
+        guard let router = searchSeeAllRouter else { return }
+        detachChild(router)
+        searchSeeAllRouter = nil
+        viewController.popViewController(animated: true)
+    }
+
     
 }
