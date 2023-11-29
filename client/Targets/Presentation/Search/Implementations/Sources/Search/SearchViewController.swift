@@ -18,7 +18,7 @@ import ModernRIBs
 
 protocol SearchPresentableListener: AnyObject {
     func didTapCurrentLocation()
-    func didTapSearch()
+    func didTapSearchTextField()
     func didTapStory(storyID: Int)
     func didAppear()
     func didTapMarker(place: Place)
@@ -220,7 +220,7 @@ private extension SearchViewController {
 private extension SearchViewController {
     
     @objc func searchTextFieldDidTap() {
-        listener?.didTapSearch()
+        listener?.didTapSearchTextField()
     }
     
     @objc func showSearchHomeListButtonDidTap() {

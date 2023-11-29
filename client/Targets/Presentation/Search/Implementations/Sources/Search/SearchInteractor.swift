@@ -92,14 +92,6 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         presenter.hideStoryView()
     }
     
-    func didTapSearch() {
-        router?.attachSearchResult()
-    }
-    
-    func detachSearchResult() {
-        router?.detachSearchResult()
-    }
-    
     func didTapCurrentLocation() {
         router?.attachSearchCurrentLocation()
     }
@@ -129,16 +121,46 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         }
     }
     
+    
+}
+
+// MARK: SearchViewController
+extension SearchInteractor {
+    
+    func didTapSearchTextField() {
+        router?.attachSearchResult()
+    }
+    
+    func detachSearchResult() {
+        router?.detachSearchResult()
+    }
+    
+}
+
+// MARK: SearchAfterSotry
+extension SearchInteractor {
+    
     func searchAfterStoryViewDidTap(storyId: Int) {
         router?.attachStoryDetail(storyID: storyId)
     }
+    
+}
+
+
+// MARK: StorySeeAll
+extension SearchInteractor {
     
     func searchAfterHeaderViewSeeAllViewDidTap(searchText: String) {
         router?.attachSearchStorySeeAll(searchText: searchText)
     }
     
-    func searchStorySeelAllDidTapClose() {
+    func searchStorySeeAllDidTapClose() {
         router?.detachSearchStorySeeAll()
     }
+    
+    func searchStorySeeAllDidTap(storyId: Int) {
+        router?.attachStoryDetail(storyID: storyId)
+    }
+
     
 }

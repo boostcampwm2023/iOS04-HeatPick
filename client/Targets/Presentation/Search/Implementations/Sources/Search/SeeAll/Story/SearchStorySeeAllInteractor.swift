@@ -21,8 +21,8 @@ typealias SearchStorySeeAllPresentable = StorySeeAllPresentable
 typealias SearchStroySeeAllPresentableListener = StorySeeAllPresentableListener
 
 protocol SearchStorySeeAllListener: AnyObject {
-    func searchStorySeelAllDidTapClose()
-    func searchStorySeelAllDidTap(storyId: Int)
+    func searchStorySeeAllDidTapClose()
+    func searchStorySeeAllDidTap(storyId: Int)
 }
 
 protocol SearchStorySeeAllInteractorDependency: AnyObject {
@@ -58,6 +58,7 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
                 .onSuccess(on: .main, with: self) { this, models in 
                     self.presenter.setup(models: models.map {
                         StorySmallTableViewCellModel.init(
+                            storyId: $0.storyId,
                             thumbnailImageURL: $0.storyImage,
                             title: $0.title,
                             subtitle: $0.content,
@@ -77,11 +78,11 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
     }
     
     func didTapClose() {
-        listener?.searchStorySeelAllDidTapClose()
+        listener?.searchStorySeeAllDidTapClose()
     }
     
     func didTapItem(model: StorySmallTableViewCellModel) {
-        
+        listener?.searchStorySeeAllDidTap(storyId: model.storyId)
     }
     
     func willDisplay(at indexPath: IndexPath) {
