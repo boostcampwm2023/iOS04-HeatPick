@@ -46,6 +46,9 @@ export class CommentService {
 
     const comment = createCommentEntity(content, user, story);
     await this.commentRepository.save(comment);
+    story.commentCount += 1;
+    await this.storyRepository.saveStory(story);
+
     for (const mentionedUser of mentionedUsers) {
       mentionedUser.mentions = [...mentionedUser.mentions, comment];
       await this.userRepository.save(mentionedUser);
