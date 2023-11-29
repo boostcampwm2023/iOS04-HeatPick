@@ -13,8 +13,8 @@ import NMapsMap
 
 struct StoryMapViewModel {
     
-    let latitude: CGFloat
-    let longitude: CGFloat
+    let latitude: Double
+    let longitude: Double
     let address: String
     
 }

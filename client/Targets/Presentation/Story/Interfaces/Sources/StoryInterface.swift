@@ -26,10 +26,10 @@ public protocol StoryCreatorListener: AnyObject {
 }
 
 public protocol StoryEditorBuildable: Buildable {
-    func build(withListener listener: StoryEditorListener) -> ViewableRouting
+    func build(withListener listener: StoryEditorListener, location: Location) -> ViewableRouting
 }
 
 public protocol StoryEditorListener: AnyObject {
     func storyEditorDidTapClose()
-    func storyDidCreate(_ story: Story)
+    func storyDidCreate(_ storyId: Int)
 }
