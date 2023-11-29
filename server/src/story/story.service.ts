@@ -26,9 +26,11 @@ import { Category } from '../entities/category.entity';
 import { UserService } from 'src/user/user.service';
 import { removeMillisecondsFromISOString } from '../util/util.date.format.to.ISO8601';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
+import { search } from 'hangul-js';
 
 @Injectable()
 export class StoryService {
+  private searchStoryResultCache = {};
   constructor(
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
@@ -41,6 +43,7 @@ export class StoryService {
 
   @Cron(CronExpression.EVERY_HOUR)
   async loadSearchHistoryTrie() {
+    this.searchStoryResultCache = {};
     this.storyRepository.loadEveryStory().then((everyStory) => {
       everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
     });
@@ -131,10 +134,16 @@ export class StoryService {
     await this.userRepository.createUser(user);
   }
 
-  async getStoriesFromTrie(seperatedStatement: string[], limit: number) {
-    const ids = this.storyTitleJasoTrie.search(seperatedStatement, limit);
-    const stories = await this.storyRepository.getStoriesByIds(ids);
-    return stories;
+  async getStoriesFromTrie(searchText: string, offset: number, limit: number): Promise<Story[]> {
+    if (!this.searchStoryResultCache.hasOwnProperty(searchText)) {
+      const seperatedStatement = graphemeSeperation(searchText);
+      const ids = this.storyTitleJasoTrie.search(seperatedStatement, 100);
+      const stories = await this.storyRepository.getStoriesByIds(ids);
+      this.searchStoryResultCache[searchText] = stories;
+    }
+
+    const results = this.searchStoryResultCache[searchText];
+    return results.slice(offset, offset + limit);
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO) {
@@ -184,5 +193,9 @@ export class StoryService {
     } catch (error) {
       throw error;
     }
+  }
+  getCachedSearchStoryResult(searchText: string, offset: number, limit: number) {
+    if (this.searchStoryResultCache.hasOwnProperty(searchText)) return this.searchStoryResultCache[searchText].slice(offset, offset + limit);
+    return [];
   }
 }

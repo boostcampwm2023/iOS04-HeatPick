@@ -39,14 +39,15 @@ export class SearchController {
     description: '파라미터로 넘겨받은 searchText 값을 바탕으로 제목이 유사한 스토리를 가져옵니다.',
     type: SearchStoryResultDto,
   })
-  async getStorySearchResult(@Query('searchText') searchText: string): Promise<SearchStoryResultDto> {
-    const stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 10);
+  async getStorySearchResult(@Query('searchText') searchText: string, @Query('offset') offset: number, @Query('limit') limit: number): Promise<SearchStoryResultDto> {
+    const stories = await this.storyService.getStoriesFromTrie(searchText, offset, limit);
     const transformedStories = await Promise.all(
       stories.map(async (story) => {
         return await storyEntityToObjWithOneImg(story);
       }),
     );
-    return { stories: transformedStories };
+    const isLastPage = transformedStories.length < limit ? true : false;
+    return { stories: transformedStories, isLastPage: isLastPage };
   }
 
   @Get('user')
@@ -83,7 +84,7 @@ export class SearchController {
     const numericCategoryId: number | undefined = categoryId !== undefined ? +categoryId : undefined;
 
     const searchStatement = searchText ? searchText : '';
-    let stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchStatement), 100);
+    let stories = await this.storyService.getStoriesFromTrie(searchStatement, 100, 5);
     if (categoryId) stories = stories.filter((story) => story.category && story.category.categoryId === numericCategoryId);
 
     const storyArr = await Promise.all(
