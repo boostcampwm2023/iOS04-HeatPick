@@ -19,6 +19,8 @@ protocol SearchRouting: ViewableRouting {
     func detachSearchResult()
     func attachStoryDetail(storyID: Int)
     func detachStoryDetail()
+    func attachSearchStorySeeAll(searchText: String)
+    func detachSearchStorySeeAll()
 }
 
 protocol SearchPresentable: Presentable {
@@ -129,6 +131,14 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     func searchAfterStoryViewDidTap(storyId: Int) {
         router?.attachStoryDetail(storyID: storyId)
+    }
+    
+    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String) {
+        router?.attachSearchStorySeeAll(searchText: searchText)
+    }
+    
+    func searchStorySeelAllDidTapClose() {
+        router?.detachSearchStorySeeAll()
     }
     
 }
