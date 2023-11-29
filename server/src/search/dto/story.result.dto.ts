@@ -27,8 +27,8 @@ export class StoryResultDto {
   user: UserResultDto;
 }
 
-export class StoryRecommendByLocationResponseDto {
-  @ApiProperty({ description: 'StoryResultDto 배열', isArray: true })
+export class StoryRecommendResponseDto {
+  @ApiProperty({ description: 'StoryResultDto 배열', type: StoryResultDto, isArray: true })
   recommededStories: StoryResultDto[];
 
   @ApiProperty({ description: '마지막 페이지인지 여부' })

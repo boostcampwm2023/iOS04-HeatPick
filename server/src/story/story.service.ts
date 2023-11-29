@@ -172,10 +172,10 @@ export class StoryService {
       }),
     );
     const transformedStoryArr = storyArr.filter((result) => result !== null);
-    return transformedStoryArr.slice(offset, offset + limit);
+    return transformedStoryArr.slice(offset * limit, offset * limit + limit);
   }
 
-  async getRecommendedStory() {
+  async getRecommendedStory(offset: number, limit: number) {
     try {
       const stories = await this.storyRepository.getStoryByCondition({
         order: {
@@ -191,7 +191,7 @@ export class StoryService {
         }),
       );
 
-      return storyArr;
+      return storyArr.slice(offset * limit, offset * limit + limit);
     } catch (error) {
       throw error;
     }
