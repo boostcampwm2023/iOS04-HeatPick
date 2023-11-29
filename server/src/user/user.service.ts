@@ -13,11 +13,14 @@ import { nextBadge, strToEmoji } from 'src/util/util.string.to.badge.content';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 import { getTemperatureFeeling } from '../constant/temperature';
+import { User } from 'src/entities/user.entity';
 import { profileImage } from '../entities/profileImage.entity';
 import { saveImageToLocal } from '../util/util.save.image.local';
 
 @Injectable()
 export class UserService {
+  private searchUserResultCache = {};
+
   constructor(
     private userRepository: UserRepository,
     private userJasoTrie: UserJasoTrie,
@@ -35,10 +38,16 @@ export class UserService {
     return badges;
   }
 
-  async getUsersFromTrie(seperatedStatement: string[], limit: number) {
-    const ids = this.userJasoTrie.search(seperatedStatement, limit);
-    const users = await this.userRepository.getStoriesByIds(ids);
-    return users;
+  async getUsersFromTrie(searchText: string, offset: number, limit: number): Promise<User[]> {
+    if (!this.searchUserResultCache.hasOwnProperty(searchText)) {
+      const seperatedStatement = graphemeSeperation(searchText);
+      const ids = this.userJasoTrie.search(seperatedStatement, 100);
+      const stories = await this.userRepository.getStoriesByIds(ids);
+      this.searchUserResultCache[searchText] = stories;
+    }
+
+    const results = this.searchUserResultCache[searchText];
+    return results.slice(offset * limit, offset * limit + limit);
   }
 
   async addNewBadge(addBadgeDto: AddBadgeDto) {

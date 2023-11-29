@@ -39,14 +39,15 @@ export class SearchController {
     description: '파라미터로 넘겨받은 searchText 값을 바탕으로 제목이 유사한 스토리를 가져옵니다.',
     type: SearchStoryResultDto,
   })
-  async getStorySearchResult(@Query('searchText') searchText: string): Promise<SearchStoryResultDto> {
-    const stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchText), 10);
+  async getStorySearchResult(@Query('searchText') searchText: string, @Query('offset') offset: number, @Query('limit') limit: number): Promise<SearchStoryResultDto> {
+    const stories = await this.storyService.getStoriesFromTrie(searchText, offset, limit);
     const transformedStories = await Promise.all(
       stories.map(async (story) => {
         return await storyEntityToObjWithOneImg(story);
       }),
     );
-    return { stories: transformedStories };
+    const isLastPage = transformedStories.length < limit ? true : false;
+    return { stories: transformedStories, isLastPage: isLastPage };
   }
 
   @Get('user')
@@ -56,10 +57,11 @@ export class SearchController {
     description: '파라미터로 넘겨받은 searchText 값을 바탕으로 Username이 유사한 유저를 가져옵니다.',
     type: SearchUserResultDto,
   })
-  async getUserSearchResult(@Query('searchText') searchText: string): Promise<SearchUserResultDto> {
-    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchText), 10);
+  async getUserSearchResult(@Query('searchText') searchText: string, @Query('offset') offset: number, @Query('limit') limit: number): Promise<SearchUserResultDto> {
+    const users = await this.userService.getUsersFromTrie(searchText, offset, limit);
     const transfromedUsers = users.map((user) => userEntityToUserObj(user));
-    return { users: transfromedUsers };
+    const isLastPage = transfromedUsers.length < limit ? true : false;
+    return { users: transfromedUsers, isLastPage: isLastPage };
   }
 
   @ApiOperation({ summary: '검색어 추천 기능' })
@@ -83,7 +85,7 @@ export class SearchController {
     const numericCategoryId: number | undefined = categoryId !== undefined ? +categoryId : undefined;
 
     const searchStatement = searchText ? searchText : '';
-    let stories = await this.storyService.getStoriesFromTrie(graphemeSeperation(searchStatement), 100);
+    let stories = await this.storyService.getStoriesFromTrie(searchStatement, 0, 5);
     if (categoryId) stories = stories.filter((story) => story.category && story.category.categoryId === numericCategoryId);
 
     const storyArr = await Promise.all(
@@ -92,7 +94,7 @@ export class SearchController {
       }),
     );
 
-    const users = await this.userService.getUsersFromTrie(graphemeSeperation(searchStatement), 100);
+    const users = await this.userService.getUsersFromTrie(searchStatement, 0, 5);
 
     const userArr = [];
     if (!categoryId) {
