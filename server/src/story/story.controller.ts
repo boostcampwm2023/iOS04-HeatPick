@@ -95,7 +95,7 @@ export class StoryController {
     return { storyId: storyId };
   }
 
-  @Post('addLike')
+  @Post('like')
   @ApiOperation({ summary: '스토리 좋아요' })
   @ApiCreatedResponse({
     status: 200,
@@ -108,7 +108,7 @@ export class StoryController {
     },
   })
   async addLike(@Request() req: any, @Query('storyId') storyId: number) {
-    const likeCounts = await this.storyService.addLike(req.user.userRecordId, storyId);
+    const likeCounts = await this.storyService.like(req.user.userRecordId, storyId);
     return { likeCount: likeCounts };
   }
 

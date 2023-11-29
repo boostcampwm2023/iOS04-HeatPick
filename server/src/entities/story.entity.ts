@@ -60,5 +60,5 @@ export class Story {
 
   @ManyToMany(() => User, (user) => user.likedStories)
   @JoinTable()
-  usersWhoLiked: User[];
+  usersWhoLiked: Promise<User[]>;
 }

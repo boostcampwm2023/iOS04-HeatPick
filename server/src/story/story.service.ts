@@ -131,17 +131,34 @@ export class StoryService {
     await this.userRepository.createUser(user);
   }
 
-  public async addLike(userId: number, storyId: number) {
+  public async like(userId: number, storyId: number) {
     const story = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
     const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['likedStories'] });
 
     story.likeCount += 1;
-    user.likedStories.push(story);
+    (await user.likedStories).push(story);
 
     await this.storyRepository.saveStory(story);
     await this.userRepository.save(user);
 
-    return story.likeCount;
+    const updatedStory = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+
+    return updatedStory.likeCount;
+  }
+
+  public async unlike(userId: number, storyId: number) {
+    const story = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['likedStories'] });
+
+    story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
+    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId === storyId));
+
+    await this.storyRepository.saveStory(story);
+    await this.userRepository.save(user);
+
+    const updatedStory = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+
+    return updatedStory.likeCount;
   }
 
   async getStoriesFromTrie(seperatedStatement: string[], limit: number) {
