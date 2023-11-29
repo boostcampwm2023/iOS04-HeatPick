@@ -31,7 +31,7 @@ import { search } from 'hangul-js';
 @Injectable()
 export class StoryService {
   private searchStoryResultCache = {};
-  private recommendStoryCache = {};
+  private recommendStoryCache = [];
   constructor(
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
@@ -44,6 +44,7 @@ export class StoryService {
 
   @Cron(CronExpression.EVERY_HOUR)
   async loadSearchHistoryTrie() {
+    this.recommendStoryCache = [];
     this.searchStoryResultCache = {};
     this.storyRepository.loadEveryStory().then((everyStory) => {
       everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
@@ -177,21 +178,25 @@ export class StoryService {
 
   async getRecommendedStory(offset: number, limit: number) {
     try {
-      const stories = await this.storyRepository.getStoryByCondition({
-        order: {
-          likeCount: 'DESC',
-        },
-        take: 10,
-        relations: ['user', 'user.profileImage', 'storyImages', 'category'],
-      });
+      if (this.recommendStoryCache.length <= 0) {
+        const stories = await this.storyRepository.getStoryByCondition({
+          order: {
+            likeCount: 'DESC',
+          },
+          take: 10,
+          relations: ['user', 'user.profileImage', 'storyImages', 'category'],
+        });
 
-      const storyArr = await Promise.all(
-        stories.map(async (story) => {
-          return storyEntityToObjWithOneImg(story);
-        }),
-      );
+        const storyArr = await Promise.all(
+          stories.map(async (story) => {
+            return storyEntityToObjWithOneImg(story);
+          }),
+        );
 
-      return storyArr.slice(offset * limit, offset * limit + limit);
+        this.recommendStoryCache = storyArr;
+      }
+
+      return this.recommendStoryCache.slice(offset * limit, offset * limit + limit);
     } catch (error) {
       throw error;
     }
