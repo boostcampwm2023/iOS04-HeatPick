@@ -13,6 +13,8 @@ import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { Badge } from 'src/entities/badge.entity';
+import { BadgeJsonDto, BadgeReturnDto } from './dto/badge.return.dto';
+import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 
 @ApiTags('user')
 @Controller('user')
@@ -22,9 +24,13 @@ export class UserController {
 
   @Get('badge')
   @ApiOperation({ summary: '유저의 모든 뱃지를 리턴합니다..' })
-  @ApiResponse({ status: 200, type: Badge })
-  async getBadges(@Req() req: any) {
-    return this.userService.getBadges(req.user.userRecordId);
+  @ApiResponse({ status: 200, type: BadgeReturnDto, isArray: true })
+  async getBadges(@Req() req: any): Promise<BadgeJsonDto> {
+    const badges = await this.userService.getBadges(req.user.userRecordId);
+    const transformedBadges: BadgeReturnDto[] = badges.map((badge) => {
+      return { badgeId: badge.badgeId, badgeName: badge.badgeName, emoji: strToEmoji[badge.badgeName], description: strToExplain[badge.badgeName] };
+    });
+    return { badges: transformedBadges };
   }
 
   @Post('badge')

@@ -71,7 +71,7 @@ export class SearchController {
   })
   async recommendSearch(@Query('searchText') searchText: string): Promise<SearchHistoryResultDto> {
     const results = this.searchService.searchHistoryTree(graphemeSeperation(searchText));
-    return { histories: results };
+    return { recommends: results };
   }
 
   @ApiOperation({ summary: '검색 기능' })

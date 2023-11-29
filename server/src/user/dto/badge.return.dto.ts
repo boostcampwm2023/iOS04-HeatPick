@@ -13,3 +13,8 @@ export class BadgeReturnDto {
   @ApiProperty({ description: '뱃지의 설명입니다.' })
   description: string;
 }
+
+export class BadgeJsonDto {
+  @ApiProperty({ description: '뱃지 정보를 담은 배열.', isArray: true })
+  badges: BadgeReturnDto[];
+}
