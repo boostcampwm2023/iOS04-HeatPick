@@ -15,6 +15,7 @@ import DomainEntities
 
 protocol SearchAfterStoryDashboardPresentableListener: AnyObject {
     func searchAfterHeaderViewSeeAllViewDidTap()
+    func searchAfterStoryViewDidTap(storyId: Int)
 }
 
 final class SearchAfterStoryDashboardViewController: UIViewController, SearchAfterStoryDashboardPresentable, SearchAfterStoryDashboardViewControllable {
@@ -85,13 +86,14 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let isEmpty = models.isEmpty
         headerView.isHiddenSeeAllView(isEmpty)
-        emptyView.isHidden = !isEmpty
-        scrollView.isHidden = isEmpty
         models.forEach { model in
             let contentView = SearchAfterStoryView()
             contentView.setup(model: model)
+            contentView.delegate = self
             self.stackView.addArrangedSubview(contentView)
         }
+        emptyView.isHidden = !isEmpty
+        scrollView.isHidden = isEmpty
     }
     
 }
@@ -129,6 +131,15 @@ extension SearchAfterStoryDashboardViewController: SearchAfterHeaderViewDelegate
     
     func searchAfterHeaderViewSeeAllViewDidTap() {
         listener?.searchAfterHeaderViewSeeAllViewDidTap()
+    }
+    
+}
+
+
+extension SearchAfterStoryDashboardViewController: SearchAfterStoryViewDelegate {
+    
+    func searchAfterStoryViewDidTap(storyId: Int) {
+        listener?.searchAfterStoryViewDidTap(storyId: storyId)
     }
     
 }

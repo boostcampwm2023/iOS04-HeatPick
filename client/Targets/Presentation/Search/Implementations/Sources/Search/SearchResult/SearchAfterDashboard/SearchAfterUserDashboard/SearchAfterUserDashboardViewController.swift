@@ -52,7 +52,6 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
             title: Constant.EmptyView.title,
             subtitle: Constant.EmptyView.subTitle)
         )
-        emptyView.isHidden = true
         emptyView.translatesAutoresizingMaskIntoConstraints = false
         return emptyView
     }()
@@ -85,14 +84,13 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let isEmpty = models.isEmpty
         headerView.isHiddenSeeAllView(isEmpty)
-        emptyView.isHidden = !isEmpty
-        scrollView.isHidden = isEmpty
         models.forEach { model in
             let contentView = SearchAfterUserView()
             contentView.setup(model: model)
             self.stackView.addArrangedSubview(contentView)
         }
-        
+        emptyView.isHidden = !isEmpty
+        scrollView.isHidden = isEmpty
     }
     
 }

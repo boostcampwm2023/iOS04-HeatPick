@@ -12,6 +12,10 @@ import DesignKit
 import DomainEntities
 import BasePresentation
 
+protocol SearchAfterStoryViewDelegate: AnyObject {
+    func searchAfterStoryViewDidTap(storyId: Int)
+}
+
 final class SearchAfterStoryView: UIView {
     
     private enum Constant {
@@ -25,6 +29,8 @@ final class SearchAfterStoryView: UIView {
             static let spacing: CGFloat = 5
         }
     }
+    
+    weak var delegate: SearchAfterStoryViewDelegate?
     
     private var storyId: Int?
     
@@ -75,11 +81,13 @@ final class SearchAfterStoryView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupConfiguration()
         setupViews()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setupConfiguration()
         setupViews()
     }
     
@@ -109,6 +117,23 @@ private extension SearchAfterStoryView {
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
+    }
+    
+    func setupConfiguration() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(searchAfterStoryViewDidTap)
+        )
+        addGestureRecognizer(tapGesture)
+    }
+    
+}
+
+private extension SearchAfterStoryView {
+    
+    @objc func searchAfterStoryViewDidTap() {
+        guard let storyId else { return }
+        delegate?.searchAfterStoryViewDidTap(storyId: storyId)
     }
     
 }

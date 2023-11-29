@@ -11,9 +11,9 @@ import ModernRIBs
 import CoreKit
 import AuthInterfaces
 import HomeInterfaces
-import SearchImplementations
 import StoryInterfaces
 import MyInterfaces
+import SearchInterfaces
 
 protocol AppRootInteractable: Interactable,
                               SignInListener,

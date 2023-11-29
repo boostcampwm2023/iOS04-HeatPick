@@ -27,6 +27,9 @@ protocol SearchAfterDashboardPresentable: Presentable {
 
 protocol SearchAfterDashboardListener: AnyObject {
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
+    
+    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String)
+    func searchAfterStoryViewDidTap(storyId: Int)
 }
 
 protocol SearchAfterDashboardInteractorDependency: AnyObject {
@@ -47,6 +50,7 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
     private var searchResultUsersSubject: PassthroughSubject<[SearchUser], Never> = .init()
     private var cancellables: Set<AnyCancellable> = []
     private var cancelTaskBag: CancelBag = .init()
+    private var searchText: String = ""
     
     init(
         presenter: SearchAfterDashboardPresentable,
@@ -65,6 +69,7 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
         listener?.endEditingSearchTextPublisher
             .sink { [weak self] searchText in
                 guard let self else { return }
+                self.searchText = searchText
                 Task {
                     await self.dependency.searhResultSearchAfterUseCase
                         .fetchResult(searchText: searchText)
@@ -83,6 +88,14 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
         super.willResignActive()
         router?.detachSearchAfterStoryDashboard()
         router?.detachSearchAfterUserDashboard()
+    }
+    
+    func searchAfterHeaderViewSeeAllViewDidTap() {
+        listener?.searchAfterHeaderViewSeeAllViewDidTap(searchText: searchText)
+    }
+    
+    func searchAfterStoryViewDidTap(storyId: Int) {
+        listener?.searchAfterStoryViewDidTap(storyId: storyId)
     }
     
 }

@@ -8,6 +8,7 @@
 
 import ModernRIBs
 import HomeInterfaces
+import SearchInterfaces
 import StoryInterfaces
 import DomainInterfaces
 
@@ -41,10 +42,6 @@ final class SearchRouterComponent: SearchRouterDependency {
         self.storyDeatilBuilder = component.storyDeatilBuilder
     }
     
-}
-
-public protocol SearchBuildable: Buildable {
-    func build(withListener listener: SearchListener) -> ViewableRouting
 }
 
 public final class SearchBuilder: Builder<SearchDependency>, SearchBuildable {

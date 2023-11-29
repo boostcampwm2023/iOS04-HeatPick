@@ -56,7 +56,6 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
         listener?.endEditingSearchTextPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] searchText in
-                Log.make(message: "\(String(describing: self)), searchText: \(searchText)", log: .default)
                 guard let self,
                       let text = self.dependecy.searchBeforeRecentSearchesUsecase.appendRecentSearch(searchText: searchText) else { return }
                 self.presenter.append(model: text)

@@ -10,14 +10,14 @@ import Foundation
 
 public struct SearchRecommendResponseDTO: Decodable {
     
-    public let recommendTexts: [String]
+    public let recommends: [String]
     
 }
 
 public extension SearchRecommendResponseDTO {
     
     func toDmain() -> [String] {
-        recommendTexts
+        recommends
     }
     
 }
