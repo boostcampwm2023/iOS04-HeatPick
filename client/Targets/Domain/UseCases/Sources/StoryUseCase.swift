@@ -32,4 +32,12 @@ public final class StoryUseCase: StoryUseCaseInterface {
     public func requestStoryDetail(storyId: Int) async -> Result<Story, Error> {
         return await repository.requestStoryDetail(storyId: storyId)
     }
+    
+    public func requestFollow(userId: Int) async -> Result<Void, Error> {
+        return await repository.requestFollow(userId: userId)
+    }
+    
+    public func requestUnfollow(userId: Int) async -> Result<Void, Error> {
+        return await repository.requestUnfollow(userId: userId)
+    }
 }

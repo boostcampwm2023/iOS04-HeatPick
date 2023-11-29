@@ -44,14 +44,14 @@ export class UserController {
   @ApiOperation({ summary: '유저 ID로 Profile를 불러옵니다.' })
   @ApiCreatedResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getProfile(@Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(undefined, userId);
+    return this.userService.getProfile(userId);
   }
 
   @Get('myProfile')
   @ApiOperation({ summary: '자신의 토큰으로 자신의 Profile을 불러옵니다.' })
   @ApiCreatedResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getMyProfile(@Req() req: any): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(req.user.userId, undefined);
+    return this.userService.getProfile(req.user.userRecordId);
   }
 
   @Put('badge')
@@ -78,10 +78,20 @@ export class UserController {
   @Patch('update')
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: `자신의 프로필을 수정합니다.` })
-  @ApiResponse({ status: 201, description: '사용자의 정보를 성공적으로 수정했습니다.' })
+  @ApiResponse({
+    status: 200,
+    description: '유저 아이디',
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'number' },
+      },
+    },
+  })
   async update(@UploadedFile() image: Express.Multer.File, @Req() req: any, @Body(new ValidationPipe({ transform: true })) updateUserDto: UserUpdateDto) {
     const { username, selectedBadgeId } = updateUserDto;
-    return this.userService.update(req.user.userId, image, { username, selectedBadgeId });
+    const userId = await this.userService.update(req.user.userRecordId, { image, username, selectedBadgeId });
+    return { userId: userId };
   }
 
   @Delete('resign')

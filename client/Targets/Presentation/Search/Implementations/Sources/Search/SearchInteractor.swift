@@ -9,6 +9,7 @@
 import ModernRIBs
 import DomainEntities
 import DomainInterfaces
+import SearchInterfaces
 import BasePresentation
 
 protocol SearchRouting: ViewableRouting {
@@ -28,8 +29,6 @@ protocol SearchPresentable: Presentable {
     func updateMarkers(places: [Place])
     func removeAllMarker()
 }
-
-public protocol SearchListener: AnyObject { }
 
 protocol SearchInteractorDependency: AnyObject {
     var searchUseCase: SearchUseCaseInterface { get }
@@ -126,6 +125,10 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
                     this.presenter.updateMarkers(places: places)
                 }
         }
+    }
+    
+    func searchAfterStoryViewDidTap(storyId: Int) {
+        router?.attachStoryDetail(storyID: storyId)
     }
     
 }

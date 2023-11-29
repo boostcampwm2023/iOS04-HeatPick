@@ -9,11 +9,13 @@
 import Foundation
 
 public struct Author {
+    public let id: Int
     public let nickname: String
     public let profileImageUrl: String?
     public let authorStatus: UserStatus
     
-    public init(nickname: String, profileImageUrl: String?, authorStatus: UserStatus) {
+    public init(id: Int, nickname: String, profileImageUrl: String?, authorStatus: UserStatus) {
+        self.id = id
         self.nickname = nickname
         self.profileImageUrl = profileImageUrl
         self.authorStatus = authorStatus

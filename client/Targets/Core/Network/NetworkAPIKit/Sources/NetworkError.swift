@@ -11,6 +11,8 @@ import Foundation
 public enum NetworkError: Error {
     
     case invalidURL
+    case internalServer
+    case failureResponse(Int)
     case emptyRequest
     case emptyResponse
     case unauthorized

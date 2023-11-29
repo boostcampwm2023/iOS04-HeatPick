@@ -12,5 +12,6 @@ import Combine
 public protocol Network {
     
     func request<T: Decodable>(_ target: any Target) async -> Result<T, Error>
+    func request(_ target: any Target) async -> Result<Void, Error>
     
 }

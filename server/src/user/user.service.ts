@@ -14,6 +14,8 @@ import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 import { getTemperatureFeeling } from '../constant/temperature';
 import { User } from 'src/entities/user.entity';
+import { profileImage } from '../entities/profileImage.entity';
+import { saveImageToLocal } from '../util/util.save.image.local';
 
 @Injectable()
 export class UserService {
@@ -66,10 +68,8 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
-  async getProfile(oauthId?: string, userId?: number): Promise<UserProfileDetailDataDto> {
-    const user = oauthId
-      ? await this.userRepository.findOneByOption({ where: { oauthId: oauthId }, relations: ['stories', 'stories.storyImages', 'profileImage'] })
-      : await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['stories', 'stories.storyImages', 'profileImage'] });
+  async getProfile(userId: number): Promise<UserProfileDetailDataDto> {
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
     const mainBadge = await user.representativeBadge;
     const stories = await user.stories;
 
@@ -86,7 +86,15 @@ export class UserService {
       mainBadge: mainBadge,
       storyList: await Promise.all(
         stories.map(async (story: Story) => {
-          return { storyId: story.storyId, thumbnailImageURL: (await story.storyImages)[0].imageUrl, title: story.title, content: story.content, likeCount: story.likeCount, commentCount: story.commentCount };
+          return {
+            storyId: story.storyId,
+            thumbnailImageURL: (await story.storyImages)[0].imageUrl,
+            title: story.title,
+            content: story.content,
+            likeState: (await story.usersWhoLiked).some((user) => user.userId === userId) ? 0 : 1,
+            likeCount: story.likeCount,
+            commentCount: story.commentCount,
+          };
         }),
       ),
     };
@@ -115,11 +123,21 @@ export class UserService {
     return await user.stories;
   }
 
-  async update(oauthId: string, image: Express.Multer.File, { username, selectedBadgeId }) {
-    const userWithBadges = await this.userRepository.findOneByIdWithBadges(oauthId);
-    const badges = await userWithBadges.badges;
-    const selectedBadge = badges.filter((badge) => badge.badgeId === selectedBadgeId);
-    return await this.userRepository.update({ oauthId: oauthId }, { username: username, representativeBadge: selectedBadge });
+  async update(userId: number, { image, username, selectedBadgeId }) {
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['profileImage', 'badges', 'representativeBadge'] });
+    const badges = await user.badges;
+    const selectedBadge = badges.find((badge) => badge.badgeId === selectedBadgeId);
+
+    user.username = username;
+    user.representativeBadge = Promise.resolve(selectedBadge);
+    const profileObj = new profileImage();
+    const imageName = await saveImageToLocal('./images/profile', image.buffer);
+    profileObj.imageUrl = `https://server.bc8heatpick.store/image/profile?name=${imageName}`;
+    user.profileImage = profileObj;
+
+    await this.userRepository.save(user);
+
+    return user.userId;
   }
 
   async resign(accessToken: string, message: string) {

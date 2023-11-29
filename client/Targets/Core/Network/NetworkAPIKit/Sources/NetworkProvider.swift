@@ -45,9 +45,33 @@ public final class NetworkProvider: Network {
         }
     }
     
+    public func request(_ target: Target) async -> Result<Void, Error> {
+        let isMultipartFormData: Bool = {
+            switch target.task {
+            case .multipart: return true
+            default: return false
+            }
+        }()
+        
+        do {
+            let networkRequest = try makeRequest(target, isMultipartFormData: isMultipartFormData)
+            switch networkRequest {
+            case .request(let request):
+                return try await executeRequest(request)
+                
+            case .upload(let request, let body):
+                return try await executeUpload(request, from: body)
+            }
+        } catch {
+            return .failure(error)
+        }
+    }
+    
     private func executeRequest<T: Decodable>(_ request: URLRequest) async throws -> Result<T, Error> {
         let (data, urlResponse) = try await session.data(for: request)
-        interceptResponseIfNeeded(urlResponse)
+        if let error = interceptResponseIfNeeded(urlResponse) {
+            return .failure(error)
+        }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let response =  try decoder.decode(T.self, from: data)
@@ -56,13 +80,33 @@ public final class NetworkProvider: Network {
     
     private func executeUpload<T: Decodable>(_ request: URLRequest, from body: Data) async throws -> Result<T, Error> {
         let (data, urlResponse) = try await session.upload(for: request, from: body)
-        interceptResponseIfNeeded(urlResponse)
+        if let error = interceptResponseIfNeeded(urlResponse) {
+            return .failure(error)
+        }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let response = try decoder.decode(T.self, from: data)
         return .success(response)
     }
         
+    private func executeRequest(_ request: URLRequest) async throws -> Result<Void, Error> {
+        let (_, urlResponse) = try await session.data(for: request)
+        if let error = interceptResponseIfNeeded(urlResponse) {
+            return .failure(error)
+        }
+        
+        return .success(Void())
+    }
+    
+    private func executeUpload(_ request: URLRequest, from body: Data) async throws -> Result<Void, Error> {
+        let (_, urlResponse) = try await session.upload(for: request, from: body)
+        if let error = interceptResponseIfNeeded(urlResponse) {
+            return .failure(error)
+        }
+        
+        return .success(Void())
+    }
+    
     private func makeRequest(_ target: Target, isMultipartFormData: Bool = false) throws -> NetworkRequest {
         let boundary = UUID().uuidString
         let components: URLComponents? = {
@@ -119,20 +163,24 @@ public final class NetworkProvider: Network {
         }
     }
     
-    private func interceptResponseIfNeeded(_ response: URLResponse) {
+    private func interceptResponseIfNeeded(_ response: URLResponse) -> Error? {
         guard let httpResponse = response as? HTTPURLResponse,
-              let errorCode = NetworkErrorCode(rawValue: httpResponse.statusCode)
+              !((200...299) ~= httpResponse.statusCode)
         else {
-            return
+            return nil
         }
         
-        switch errorCode {
-        case .invalidToken:
-            SignoutService.shared.signOut(type: .invalidToken)
-            
-        default:
-            return
+        if let errorCode = NetworkErrorCode(rawValue: httpResponse.statusCode) {
+            switch errorCode {
+            case .invalidToken:
+                SignoutService.shared.signOut(type: .invalidToken)
+                return nil
+            case .internalServcerError:
+                return NetworkError.internalServer
+            }
         }
+        
+        return NetworkError.failureResponse(httpResponse.statusCode)
     }
     
 }

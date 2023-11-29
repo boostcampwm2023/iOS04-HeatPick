@@ -56,7 +56,7 @@ export class StoryController {
     type: StoryDetailViewDataDto,
   })
   async read(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
-    return await this.storyService.read(req.user.userId, storyId);
+    return await this.storyService.read(req.user.userRecordId, storyId);
   }
 
   @Patch('edit')
@@ -93,6 +93,40 @@ export class StoryController {
   async delete(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
     await this.storyService.delete(req.user.userId, storyId);
     return { storyId: storyId };
+  }
+
+  @Post('like')
+  @ApiOperation({ summary: '스토리 좋아요' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '성공',
+    schema: {
+      type: 'object',
+      properties: {
+        likeCounts: { type: 'number' },
+      },
+    },
+  })
+  async addLike(@Request() req: any, @Query('storyId') storyId: number) {
+    const likeCount = await this.storyService.like(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
+  }
+
+  @Post('unlike')
+  @ApiOperation({ summary: '스토리 좋아요 취소' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '성공',
+    schema: {
+      type: 'object',
+      properties: {
+        likeCounts: { type: 'number' },
+      },
+    },
+  })
+  async unlike(@Request() req: any, @Query('storyId') storyId: number) {
+    const likeCount = await this.storyService.unlike(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
   }
 
   @Get('recommend/location')

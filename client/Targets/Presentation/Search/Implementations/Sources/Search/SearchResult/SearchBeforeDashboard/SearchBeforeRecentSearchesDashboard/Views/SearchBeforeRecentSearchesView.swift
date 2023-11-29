@@ -72,8 +72,10 @@ private extension SearchBeforeRecentSearchesView {
     
     func setupConfiguration() {
         clipsToBounds = true
-        backgroundColor = .hpGray3
+        backgroundColor = .hpGray5
         layer.cornerRadius = Constants.cornerRadiusSmall
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.hpGray3.cgColor
         
         let tapGesture = UITapGestureRecognizer(
             target: self,

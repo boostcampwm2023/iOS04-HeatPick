@@ -41,4 +41,14 @@ public final class StoryRepository: StoryRepositoryInterface {
         
         return request.map { $0.toDomain() }
     }
+    
+    public func requestFollow(userId: Int) async -> Result<Void, Error> {
+        let target = StoryAPI.follow(userId)
+        return await session.request(target)
+    }
+    
+    public func requestUnfollow(userId: Int) async -> Result<Void, Error> {
+        let target = StoryAPI.unfollow(userId)
+        return await session.request(target)
+    }
 }

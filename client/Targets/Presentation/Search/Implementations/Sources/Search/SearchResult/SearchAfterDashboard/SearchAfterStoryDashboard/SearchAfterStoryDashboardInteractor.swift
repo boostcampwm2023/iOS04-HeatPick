@@ -24,6 +24,9 @@ protocol SearchAfterStoryDashboardPresentable: Presentable {
 
 protocol SearchAfterStoryDashboardListener: AnyObject { 
     var searchResultStoriesPublisher: AnyPublisher<[SearchStory], Never> { get }
+    
+    func searchAfterHeaderViewSeeAllViewDidTap()
+    func searchAfterStoryViewDidTap(storyId: Int)
 }
 
 final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAfterStoryDashboardPresentable>, SearchAfterStoryDashboardInteractable, SearchAfterStoryDashboardPresentableListener {
@@ -53,6 +56,10 @@ final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAft
     }
     
     func searchAfterHeaderViewSeeAllViewDidTap() {
-        // TODO: 성준님이 작성하신 뷰 연결
+        listener?.searchAfterHeaderViewSeeAllViewDidTap()
+    }
+    
+    func searchAfterStoryViewDidTap(storyId: Int) {
+        listener?.searchAfterStoryViewDidTap(storyId: storyId)
     }
 }

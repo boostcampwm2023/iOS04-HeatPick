@@ -27,6 +27,7 @@ import { UserService } from 'src/user/user.service';
 import { removeMillisecondsFromISOString } from '../util/util.date.format.to.ISO8601';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 import { search } from 'hangul-js';
+import { updateStory } from '../util/util.story.update';
 
 @Injectable()
 export class StoryService {
@@ -74,8 +75,8 @@ export class StoryService {
     return story.storyId;
   }
 
-  public async read(userId: string, storyId: number) {
-    const story: Story = await this.storyRepository.findById(storyId);
+  public async read(userId: number, storyId: number) {
+    const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge', 'usersWhoLiked'] });
     const place: Place = await story.place;
 
     const storyDetailPlaceData: StoryDetailPlaceDataDto = {
@@ -93,6 +94,7 @@ export class StoryService {
       title: story.title,
       badgeName: `${strToEmoji[story.badge?.badgeName]}${story.badge?.badgeName}`,
       badgeDescription: strToExplain[`${story.badge?.badgeName}`],
+      likeState: (await story.usersWhoLiked).some((user) => user.userId === userId) ? 0 : 1,
       likeCount: story.likeCount,
       commentCount: story.commentCount,
       content: story.content,
@@ -103,7 +105,7 @@ export class StoryService {
       userId: story.user.userId,
       username: story.user.username,
       profileImageUrl: story.user.profileImage.imageUrl,
-      status: userId === story.user.oauthId ? 0 : 1,
+      status: userId === story.user.userId ? 0 : 1,
     };
 
     const storyDetailViewData: StoryDetailViewDataDto = {
@@ -116,18 +118,15 @@ export class StoryService {
 
   public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOneById(userId);
+    const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['storyImages', 'category', 'badge', 'place'] });
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
     const category: Category = await this.categoryRepository.findById(categoryId);
-    const newStory: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
 
-    user.stories = Promise.resolve(
-      (await user.stories).map((story: Story): Story => {
-        if (story.storyId === storyId) return newStory;
-        return story;
-      }),
-    );
-    await this.userRepository.createUser(user);
-    return newStory.storyId;
+    const updatedStory = await updateStory(story, { title, content, category, place, images, badge });
+
+    await this.storyRepository.saveStory(updatedStory);
+
+    return story.storyId;
   }
 
   public async delete(userId: string, storyId: number) {
@@ -146,6 +145,36 @@ export class StoryService {
 
     const results = this.searchStoryResultCache[searchText];
     return results.slice(offset * limit, offset * limit + limit);
+  }
+
+  public async like(userId: number, storyId: number) {
+    const story = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['likedStories'] });
+
+    story.likeCount += 1;
+    (await user.likedStories).push(story);
+
+    await this.storyRepository.saveStory(story);
+    await this.userRepository.save(user);
+
+    const updatedStory = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+
+    return updatedStory.likeCount;
+  }
+
+  public async unlike(userId: number, storyId: number) {
+    const story = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['likedStories'] });
+
+    story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
+    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId === storyId));
+
+    await this.storyRepository.saveStory(story);
+    await this.userRepository.save(user);
+
+    const updatedStory = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+
+    return updatedStory.likeCount;
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number) {
