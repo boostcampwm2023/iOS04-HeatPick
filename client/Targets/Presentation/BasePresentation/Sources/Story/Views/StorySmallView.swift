@@ -12,20 +12,22 @@ import DesignKit
 
 public struct StorySmallViewModel {
     
+    public let storyId: Int
     public let thumbnailImageURL: String
     public let title: String
     public let subtitle: String
     public let likes: Int
     public let comments: Int
     
-    public init(thumbnailImageURL: String, title: String, subtitle: String, likes: Int, comments: Int) {
+    public init(storyId: Int, thumbnailImageURL: String, title: String, subtitle: String, likes: Int, comments: Int) {
+        self.storyId = storyId
         self.thumbnailImageURL = thumbnailImageURL
         self.title = title
         self.subtitle = subtitle
         self.likes = likes
         self.comments = comments
     }
-    
+
 }
 
 public final class StorySmallView: UIView {

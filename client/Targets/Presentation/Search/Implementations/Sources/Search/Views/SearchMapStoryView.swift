@@ -63,6 +63,7 @@ final class SearchMapStoryView: UIView {
     func setup(model: SearchMapStoryViewModel) {
         storyID = model.storyID
         storyView.setup(model: .init(
+            storyId: model.storyID,
             thumbnailImageURL: model.thumbnailImageURL,
             title: model.title,
             subtitle: model.subtitle,

@@ -71,6 +71,7 @@ private extension Array where Element == MyPageStory {
     func toModel() -> MyPageStoryDashboardViewControllerModel {
         return MyPageStoryDashboardViewControllerModel(
             contentModels: self.map { .init(
+                storyId: $0.storyId,
                 thumbnailImageURL: $0.thumbnailImageURL ?? "",
                 title: $0.title,
                 subtitle: $0.content,

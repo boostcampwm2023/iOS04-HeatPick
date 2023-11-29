@@ -104,7 +104,7 @@ extension SearchInteractor: SearchPresentableListener {
         router?.attachSearchCurrentLocation()
     }
     
-    func didTapSearch() {
+    func didTapSearchTextField() {
         router?.attachSearchResult()
     }
     
