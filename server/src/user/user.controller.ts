@@ -12,7 +12,6 @@ import { FollowRequest } from './dto/follow.request.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { Badge } from 'src/entities/badge.entity';
 import { BadgeJsonDto, BadgeReturnDto } from './dto/badge.return.dto';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 
@@ -43,15 +42,15 @@ export class UserController {
   @Get('profile')
   @ApiOperation({ summary: '유저 ID로 Profile를 불러옵니다.' })
   @ApiCreatedResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
-  async getProfile(@Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(userId);
+  async getProfile(@Req() req: any, @Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
+    return this.userService.getProfile(req.user.userRecordId, userId);
   }
 
   @Get('myProfile')
   @ApiOperation({ summary: '자신의 토큰으로 자신의 Profile을 불러옵니다.' })
   @ApiCreatedResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getMyProfile(@Req() req: any): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(req.user.userRecordId);
+    return this.userService.getProfile(req.user.userRecordId, req.user.userRecordId);
   }
 
   @Put('badge')
