@@ -6,4 +6,12 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import Foundation
+import ModernRIBs
+
+public protocol SearchBuildable: Buildable {
+    func build(withListener listener: SearchListener) -> ViewableRouting
+}
+
+public protocol SearchListener: AnyObject {
+    
+}
