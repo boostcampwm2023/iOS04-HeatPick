@@ -26,6 +26,7 @@ import { Category } from '../entities/category.entity';
 import { UserService } from 'src/user/user.service';
 import { removeMillisecondsFromISOString } from '../util/util.date.format.to.ISO8601';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
+import { updateStory } from '../util/util.story.update';
 
 @Injectable()
 export class StoryService {
@@ -112,18 +113,15 @@ export class StoryService {
 
   public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOneById(userId);
+    const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['storyImages', 'category', 'badge', 'place'] });
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
     const category: Category = await this.categoryRepository.findById(categoryId);
-    const newStory: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
 
-    user.stories = Promise.resolve(
-      (await user.stories).map((story: Story): Story => {
-        if (story.storyId === storyId) return newStory;
-        return story;
-      }),
-    );
-    await this.userRepository.createUser(user);
-    return newStory.storyId;
+    const updatedStory = await updateStory(story, { title, content, category, place, images, badge });
+
+    await this.storyRepository.saveStory(updatedStory);
+
+    return story.storyId;
   }
 
   public async delete(userId: string, storyId: number) {
