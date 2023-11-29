@@ -30,13 +30,10 @@ protocol SearchRouterDependency {
 
 final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControllable>, SearchRouting {
     
-    private let searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable
+    private let dependency: SearchRouterDependency
+    
     private var searchCurrentLocationRouter: ViewableRouting?
-    
-    private let searchResultBuilder: SearchResultBuildable
     private var searchResultRouter: SearchResultRouting?
-    
-    private let storyDeatilBuilder: StoryDetailBuildable
     private var storyDeatilRouter: ViewableRouting?
     
     init(
@@ -44,17 +41,14 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         viewController: SearchViewControllable,
         dependency: SearchRouterDependency
     ) {
-        self.searchCurrentLocationBuilder = dependency.searchCurrentLocationBuilder
-        self.searchResultBuilder = dependency.searchResultBuilder
-        self.storyDeatilBuilder = dependency.storyDeatilBuilder
-        
+        self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
     func attachSearchCurrentLocation() {
         guard searchCurrentLocationRouter == nil else { return }
-        let router = searchCurrentLocationBuilder.build(withListener: interactor)
+        let router = dependency.searchCurrentLocationBuilder.build(withListener: interactor)
         attachChild(router)
         router.viewControllable.uiviewController.presentationController?.delegate = interactor.presentationAdapter
         viewController.present(router.viewControllable, animated: true)
@@ -70,7 +64,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     
     func attachSearchResult() {
         guard searchResultRouter == nil else { return }
-        let router = searchResultBuilder.build(withListener: interactor)
+        let router = dependency.searchResultBuilder.build(withListener: interactor)
         attachChild(router)
         searchResultRouter = router
         viewController.pushViewController(router.viewControllable, animated: true)
@@ -85,7 +79,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     
     func attachStoryDetail(storyID: Int) {
         guard storyDeatilRouter == nil else { return }
-        let router = storyDeatilBuilder.build(withListener: interactor, storyId: storyID)
+        let router = dependency.storyDeatilBuilder.build(withListener: interactor, storyId: storyID)
         attachChild(router)
         storyDeatilRouter = router
         viewController.pushViewController(router.viewControllable, animated: true)
