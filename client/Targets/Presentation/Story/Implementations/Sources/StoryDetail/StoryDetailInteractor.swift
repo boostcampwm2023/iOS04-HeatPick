@@ -133,8 +133,8 @@ fileprivate extension Story {
                                                                           commentsCount: commentsCount),
                                     images: content.imageUrls,
                                     content: content.content,
-                                    storyMapViewModel: StoryMapViewModel(latitude: CGFloat(content.place.lat),
-                                                                         longitude: CGFloat(content.place.lng),
+                                    storyMapViewModel: StoryMapViewModel(latitude: content.place.lat,
+                                                                         longitude: content.place.lng,
                                                                          address: content.place.address))
         
     }

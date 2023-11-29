@@ -89,6 +89,6 @@ private extension LocationField {
     }
     
     func makeNMLocation(from location: Location) -> NMGLatLng {
-        return NMGLatLng(lat: Double(location.lat), lng: Double(location.lng))
+        return NMGLatLng(lat: location.lat, lng: location.lng)
     }
 }

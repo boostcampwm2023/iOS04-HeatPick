@@ -32,7 +32,7 @@ public struct NewStoryRequestDTO: Encodable {
         self.init(title: storyContent.title,
                   content: storyContent.content,
                   categoryId: storyContent.category.id,
-                  place: PlaceDTO(latitude: Double(storyContent.place.lat), longitude: Double(storyContent.place.lng)),
+                  place: PlaceDTO(latitude: storyContent.place.lat, longitude: storyContent.place.lng),
                   date: storyContent.date,
                   badgeId: storyContent.badge.id)
     }
