@@ -131,6 +131,19 @@ export class StoryService {
     await this.userRepository.createUser(user);
   }
 
+  public async addLike(userId: number, storyId: number) {
+    const story = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['likedStories'] });
+
+    story.likeCount += 1;
+    user.likedStories.push(story);
+
+    await this.storyRepository.saveStory(story);
+    await this.userRepository.save(user);
+
+    return story.likeCount;
+  }
+
   async getStoriesFromTrie(seperatedStatement: string[], limit: number) {
     const ids = this.storyTitleJasoTrie.search(seperatedStatement, limit);
     const stories = await this.storyRepository.getStoriesByIds(ids);
