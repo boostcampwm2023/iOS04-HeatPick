@@ -57,7 +57,7 @@ final class SimpleUserProfileView: UIView {
     
     private let padding: CGFloat = 10
     private let titlePadding: CGFloat = 2
-    private var userId: Int = 0
+    private var userId: Int?
     private var userStatus: UserStatus = .me {
         didSet {
             followButton.image = userStatus.image
@@ -148,6 +148,7 @@ final class SimpleUserProfileView: UIView {
         nicknameLabel.text = model.nickname
         subtitleLabel.text = model.subtitle
         profileImage.load(from: model.profileImageUrl)
+        userId = model.id
         userStatus = model.userStatus
     }
     
@@ -188,6 +189,7 @@ private extension SimpleUserProfileView {
 private extension SimpleUserProfileView {
     
     @objc func followButtonDidTap() { 
+        guard let userId else { return }
         delegate?.followButtonDidTap(userId: userId, userStatus: userStatus)
     }
     
