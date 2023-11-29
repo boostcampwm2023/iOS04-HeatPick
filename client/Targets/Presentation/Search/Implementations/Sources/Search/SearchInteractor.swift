@@ -88,6 +88,10 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         router?.detachStoryDetail()
     }
     
+    func searchAfterStoryViewDidTap(storyId: Int) {
+        router?.attachStoryDetail(storyID: storyId)
+    }
+    
 }
 
 // MARK: - PresentableListener
@@ -204,8 +208,5 @@ private extension SearchInteractor {
         return distance >= 0.02
     }
     
-    func searchAfterStoryViewDidTap(storyId: Int) {
-        router?.attachStoryDetail(storyID: storyId)
-    }
     
 }
