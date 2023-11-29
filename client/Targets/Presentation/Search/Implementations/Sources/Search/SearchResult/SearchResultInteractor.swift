@@ -27,6 +27,11 @@ protocol SearchResultRouting: ViewableRouting {
     func detachSearchAfterDashboard()
     func showSearchAfterDashboard()
     func hideSearchAfterDashboard()
+    
+    func attachStoryDetail(storyId: Int)
+    func detachStroyDetail()
+    func attachStroySeeAll(searchText: String)
+    func detailStroySeeAll()
 }
 
 protocol SearchResultPresentable: Presentable {
@@ -37,10 +42,11 @@ protocol SearchResultPresentable: Presentable {
 
 protocol SearchResultListener: AnyObject { 
     func detachSearchResult()
+    func searchAfterStoryViewDidTap(storyId: Int)
 }
 
-final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {    
-
+final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {
+    
     weak var router: SearchResultRouting?
     weak var listener: SearchResultListener?
     
@@ -108,6 +114,20 @@ extension SearchResultInteractor {
         router?.hideSearchBeforeDashboard()
         router?.hideSearchingDashboard()
         router?.showSearchAfterDashboard()
+    }
+    
+}
+
+
+// MARK: SearchAfter
+extension SearchResultInteractor {
+    
+    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String) {
+        router?.attachStroySeeAll(searchText: searchText)
+    }
+    
+    func searchAfterStoryViewDidTap(storyId: Int) {
+        listener?.searchAfterStoryViewDidTap(storyId: storyId)
     }
     
 }

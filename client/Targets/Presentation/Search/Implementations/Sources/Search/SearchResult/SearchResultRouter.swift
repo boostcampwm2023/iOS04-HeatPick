@@ -9,6 +9,7 @@
 import Combine
 import ModernRIBs
 import CoreKit
+import StoryInterfaces
 
 protocol SearchResultInteractable: Interactable,
                                    SearchBeforeDashboardListener,
@@ -135,5 +136,24 @@ extension SearchResultRouter {
         searchAfterDashboardRouter?.viewControllable.uiviewController.view.isHidden = true
     }
 
+}
+
+// MARK: StoryDetail
+extension SearchResultRouter {
+    
+    func attachStoryDetail(storyId: Int) {
+    }
+    
+    func detachStroyDetail() {
+        
+    }
+    
+    func attachStroySeeAll(searchText: String) {
+        
+    }
+    
+    func detailStroySeeAll() {
+        
+    }
     
 }
