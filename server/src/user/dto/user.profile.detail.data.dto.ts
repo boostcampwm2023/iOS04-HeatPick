@@ -1,5 +1,4 @@
 import { Badge } from '../../entities/badge.entity';
-import { Story } from '../../entities/story.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserProfileDetailStoryDto } from './user.profile.detail.story.dto';
 
