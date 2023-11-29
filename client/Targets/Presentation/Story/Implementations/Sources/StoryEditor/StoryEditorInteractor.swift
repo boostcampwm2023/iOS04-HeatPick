@@ -26,7 +26,7 @@ protocol StoryEditorPresentable: Presentable {
 }
 
 protocol StoryEditorInteractorDependency: AnyObject {
-    var location: Location { get set }
+    var location: Location { get }
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
@@ -126,8 +126,10 @@ private extension StoryEditorInteractor {
                 .requestAddress(of: dependency.location)
                 .onSuccess(on: .main, with: self) { this, address in
                     guard let address else { return }
-                    this.dependency.location.address = address
-                    this.presenter.setupLocation(this.dependency.location)
+                    var location = this.dependency.location
+                    location.address = address
+                    
+                    this.presenter.setupLocation(location)
                 }
                 .onFailure { error in
                     print(error)
