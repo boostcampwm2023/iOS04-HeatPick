@@ -1,6 +1,6 @@
 import { StoryService } from './story.service';
 import { Body, Controller, Delete, Get, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDto } from './dto/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UpdateStoryDto } from './dto/story.update.dto';
@@ -10,7 +10,7 @@ import { plainToClass } from 'class-transformer';
 import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
-import { StoryResultDto } from 'src/search/dto/story.result.dto';
+import { StoryRecommendResponseDto, StoryResultDto } from 'src/search/dto/story.result.dto';
 
 @ApiTags('story')
 @Controller('story')
@@ -56,7 +56,7 @@ export class StoryController {
     type: StoryDetailViewDataDto,
   })
   async read(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
-    return await this.storyService.read(req.user.userId, storyId);
+    return await this.storyService.read(req.user.userRecordId, storyId);
   }
 
   @Patch('edit')
@@ -95,21 +95,60 @@ export class StoryController {
     return { storyId: storyId };
   }
 
+  @Post('like')
+  @ApiOperation({ summary: '스토리 좋아요' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '성공',
+    schema: {
+      type: 'object',
+      properties: {
+        likeCounts: { type: 'number' },
+      },
+    },
+  })
+  async addLike(@Request() req: any, @Query('storyId') storyId: number) {
+    const likeCount = await this.storyService.like(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
+  }
+
+  @Post('unlike')
+  @ApiOperation({ summary: '스토리 좋아요 취소' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '성공',
+    schema: {
+      type: 'object',
+      properties: {
+        likeCounts: { type: 'number' },
+      },
+    },
+  })
+  async unlike(@Request() req: any, @Query('storyId') storyId: number) {
+    const likeCount = await this.storyService.unlike(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
+  }
+
   @Get('recommend/location')
-  @ApiOperation({ summary: '현재 위치를 기반으로 추천 장소를 가져옵니다. 기본적으로, 좋아요가 10개 초과인 경우만 리턴됩니다.' })
-  @ApiResponse({ status: 200, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: StoryResultDto, isArray: true })
-  async recommendStoryByLocation(@Query() locationDto: LocationDTO) {
+  @ApiOperation({ summary: '현재 위치를 기반으로 추천 장소를 가져옵니다. ' })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({ status: 200, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: StoryRecommendResponseDto })
+  async recommendStoryByLocation(@Query() locationDto: LocationDTO, @Query('offset') offset: number = 0, @Query('limit') limit: number = 5): Promise<StoryRecommendResponseDto> {
     const transformedDto = plainToClass(LocationDTO, locationDto);
-    const recommededStory = await this.storyService.getRecommendByLocationStory(transformedDto);
-    return { recommededStories: recommededStory };
+    const recommededStories = await this.storyService.getRecommendByLocationStory(transformedDto, offset, limit);
+    const isLastPage = recommededStories.length < limit ? true : false;
+    return { recommededStories: recommededStories, isLastPage: isLastPage };
   }
 
   @Get('recommend')
-  @ApiOperation({ summary: '위치와 관계 없이, 추천 장소를 가져옵니다. 기본적으로, 좋아요가 10개 초과인 경우만 리턴됩니다.' })
-  @ApiResponse({ status: 200, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: StoryResultDto, isArray: true })
-  async recommendStory() {
-    const recommededStory = await this.storyService.getRecommendedStory();
-
-    return { recommededStories: recommededStory };
+  @ApiOperation({ summary: '위치와 관계 없이, 추천 장소를 가져옵니다. ' })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({ status: 200, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: StoryRecommendResponseDto })
+  async recommendStory(@Query('offset') offset: number = 0, @Query('limit') limit: number = 5): Promise<StoryRecommendResponseDto> {
+    const recommededStories = await this.storyService.getRecommendedStory(offset, limit);
+    const isLastPage = recommededStories.length < limit ? true : false;
+    return { recommededStories: recommededStories, isLastPage: isLastPage };
   }
 }

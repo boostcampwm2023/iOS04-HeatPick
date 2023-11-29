@@ -19,12 +19,14 @@ protocol StoryEditorRouting: ViewableRouting {}
 
 protocol StoryEditorPresentable: Presentable {
     var listener: StoryEditorPresentableListener? { get set }
+    func setupLocation(_ location: Location)
     func setupMetadata(badges: [Badge], categories: [StoryCategory])
     func setSaveButton(_ enabled: Bool)
     func showFailure(_ error: Error, with title: String)
 }
 
 protocol StoryEditorInteractorDependency: AnyObject {
+    var location: Location { get }
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
@@ -69,6 +71,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     }
     
     func viewDidAppear() {
+        loadAddress()
         loadMetadata()
     }
     
@@ -103,7 +106,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
             await dependency.storyUseCase
                 .requestCreateStory(storyContent: content)
                 .onSuccess(on: .main, with: self, { this, story in
-                    this.listener?.storyDidCreate(story)
+                    this.listener?.storyDidCreate(story.id)
                 })
                 .onFailure(on: .main, with: self, { this, error in
                     Log.make(message: error.localizedDescription, log: .interactor)
@@ -116,6 +119,28 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
 
 
 private extension StoryEditorInteractor {
+    func loadAddress() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestAddress(of: dependency.location)
+                .onSuccess(on: .main, with: self) { this, address in
+                    guard let address else { return }
+                    var location = this.dependency.location
+                    location.address = address
+                    
+                    this.presenter.setupLocation(location)
+                }
+                .onFailure { error in
+                    print(error)
+                    Log.make(message: "fail to load address with \(error.localizedDescription)", log: .interactor)
+                }
+        }.store(in: cancelBag)
+        
+        presenter.setupLocation(dependency.location)
+    }
+    
+    
     func loadMetadata() {
         Task { [weak self] in
             guard let self else { return }

@@ -14,6 +14,9 @@ export class UserProfileDetailStoryDto {
   content: string;
 
   @ApiProperty()
+  likeState: number;
+
+  @ApiProperty()
   likeCount: number;
 
   @ApiProperty()

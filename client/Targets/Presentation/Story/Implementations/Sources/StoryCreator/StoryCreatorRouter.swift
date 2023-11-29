@@ -51,7 +51,8 @@ final class StoryCreatorRouter: ViewableRouter<StoryCreatorInteractable,
     
     func attachStoryEditor() {
         guard storyEditorRouter == nil else { return }
-        let storyEditorRouting = storyEditorBuilder.build(withListener: interactor)
+        let storyEditorRouting = storyEditorBuilder.build(withListener: interactor,
+                                                          location: Location(lat: 37.3586, lng: 127.105))
         self.storyEditorRouter = storyEditorRouting
         attachChild(storyEditorRouting)
         let storyEditorViewController = NavigationControllable(viewControllable: storyEditorRouting.viewControllable)
@@ -81,9 +82,9 @@ final class StoryCreatorRouter: ViewableRouter<StoryCreatorInteractable,
         detachChild(router)
     }
     
-    func routeToDetail(of story: Story) {
+    func routeToDetail(of storyId: Int) {
         detachStoryEditor()
-        attachStoryDetail(story.id)
+        attachStoryDetail(storyId)
     }
     
 }

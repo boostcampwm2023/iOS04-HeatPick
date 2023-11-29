@@ -16,9 +16,20 @@ import NetworkAPIKit
 public final class StoryUseCase: StoryUseCaseInterface {
     
     private let repository: StoryRepositoryInterface
+    private let locationService: LocationServiceInterface
     
-    public init(repository: StoryRepositoryInterface) {
+    public init(repository: StoryRepositoryInterface, locationService: LocationServiceInterface) {
         self.repository = repository
+        self.locationService = locationService
+    }
+    
+    public func requestAddress(of location: Location) async -> Result<String?, Error> {
+        do {
+            let address = try await locationService.requestAddress(lat: location.lat, lng: location.lng)
+            return .success(address)
+        } catch {
+            return .failure(error)
+        }
     }
     
     public func requestMetaData() async -> Result<([StoryCategory], [Badge]), Error> {
