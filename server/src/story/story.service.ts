@@ -73,8 +73,6 @@ export class StoryService {
     const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge', 'usersWhoLiked'] });
     const place: Place = await story.place;
 
-    console.log(story);
-
     const storyDetailPlaceData: StoryDetailPlaceDataDto = {
       title: place.title,
       address: place.address,
