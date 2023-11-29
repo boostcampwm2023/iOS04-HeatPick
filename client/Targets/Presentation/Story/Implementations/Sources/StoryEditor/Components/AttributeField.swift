@@ -13,7 +13,6 @@ import DomainEntities
 
 protocol AttributeFieldDelegate: AnyObject {
     func categoryDidChange(_ category: StoryCategory?)
-    func locationDidChange(_ location: Location?)
     func badgeDidChange(_ badge: Badge?)
 }
 
@@ -24,7 +23,6 @@ final class AttributeField: UIView {
     var category: StoryCategory? { categoryPicker.selectedItem }
     var badge: Badge? { badgePicker.selectedItem }
     var date: Date { datePicker.selectedDate }
-    var location: Location? { locationPicker.selectedLocation }
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -51,14 +49,6 @@ final class AttributeField: UIView {
         
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         return datePicker
-    }()
-    
-    private lazy var locationPicker: LocationPicker = {
-        let locationPicker = LocationPicker()
-        locationPicker.delegate = self
-        
-        locationPicker.translatesAutoresizingMaskIntoConstraints = false
-        return locationPicker
     }()
     
     private lazy var badgePicker: BadgePicker = {
@@ -90,7 +80,7 @@ private extension AttributeField {
     
     func setupViews() {
         addSubview(stackView)
-        [categoryPicker, Separator(), datePicker, Separator(), locationPicker, Separator(), badgePicker].forEach(stackView.addArrangedSubview)
+        [categoryPicker, Separator(), datePicker, Separator(), badgePicker, Separator()].forEach(stackView.addArrangedSubview)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor),
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -106,15 +96,6 @@ extension AttributeField: CategoryPickerDelegate {
     
     func categoryDidChange(_ category: StoryCategory?) {
         delegate?.categoryDidChange(category)
-    }
-    
-}
-
-// MARK: - LocationPicker delegate
-extension AttributeField: LocationPickerDelegate {
-
-    func locationDidChange(_ location: Location?) {
-        delegate?.locationDidChange(location)
     }
     
 }

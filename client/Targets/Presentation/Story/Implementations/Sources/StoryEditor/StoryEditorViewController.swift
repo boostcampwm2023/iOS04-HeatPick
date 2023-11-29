@@ -99,6 +99,13 @@ final class StoryEditorViewController: UIViewController, StoryEditorViewControll
         return attributeField
     }()
     
+    private var locationField: LocationField = {
+        let locationField = LocationField()
+        
+        locationField.translatesAutoresizingMaskIntoConstraints = false
+        return locationField
+    }()
+    
     private lazy var saveButton: ActionButton = {
         let button = ActionButton()
         button.setTitle("저장하기", for: .normal)
@@ -132,6 +139,10 @@ final class StoryEditorViewController: UIViewController, StoryEditorViewControll
 // MARK: - StoryEditorPresentable
 extension StoryEditorViewController: StoryEditorPresentable {
     
+    func setupLocation(_ location: Location) {
+        locationField.setup(location: location)
+    }
+    
     func setupMetadata(badges: [Badge], categories: [StoryCategory]) {
         attributeField.setup(badges: badges, categories: categories)
     }
@@ -154,7 +165,7 @@ private extension StoryEditorViewController {
         view.backgroundColor = .hpWhite
         [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
-        [titleField, imageField, descriptionField, attributeField, saveButton].forEach(stackView.addArrangedSubview)
+        [titleField, imageField, descriptionField, attributeField, locationField, saveButton].forEach(stackView.addArrangedSubview)
         view.keyboardLayoutGuide.followsUndockedKeyboard = true
         
         NSLayoutConstraint.activate([
@@ -182,6 +193,8 @@ private extension StoryEditorViewController {
             descriptionField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
             attributeField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
             attributeField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
+            locationField.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
+            locationField.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
             saveButton.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.leadingOffset),
             saveButton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Constants.traillingOffset),
             
@@ -206,7 +219,7 @@ private extension StoryEditorViewController {
     
     @objc func didTapSave() {
         guard let badge = attributeField.badge,
-              let location = attributeField.location,
+              let location = locationField.location,
               let category = attributeField.category  else { return }
         
         listener?.didTapSave(content: StoryContent(title: titleField.text,
