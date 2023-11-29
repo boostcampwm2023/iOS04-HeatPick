@@ -9,6 +9,7 @@
 import CoreKit
 import ModernRIBs
 import BasePresentation
+import SearchInterfaces
 import StoryInterfaces
 
 protocol SearchInteractable: Interactable,

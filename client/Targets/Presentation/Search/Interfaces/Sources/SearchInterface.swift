@@ -12,6 +12,4 @@ public protocol SearchBuildable: Buildable {
     func build(withListener listener: SearchListener) -> ViewableRouting
 }
 
-public protocol SearchListener: AnyObject {
-    
-}
+public protocol SearchListener: AnyObject { }
