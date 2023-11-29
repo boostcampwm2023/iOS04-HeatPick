@@ -12,5 +12,8 @@ export class ProfileUpdateMetaDataDto {
   username: string;
 
   @ApiProperty({ type: () => ProfileUpdateMetaBadgeData })
-  badges: ProfileUpdateMetaBadgeData;
+  nowBadge: ProfileUpdateMetaBadgeData;
+
+  @ApiProperty({ type: () => ProfileUpdateMetaBadgeData })
+  badges: ProfileUpdateMetaBadgeData[];
 }

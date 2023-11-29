@@ -82,7 +82,7 @@ export class UserController {
     description: '유저 아이디',
     type: ProfileUpdateMetaDataDto,
   })
-  async updateMetaData(@Req() req: any) {
+  async updateMetaData(@Req() req: any): Promise<ProfileUpdateMetaDataDto> {
     return await this.userService.getUpdateMetaData(req.user.userRecordId);
   }
 
