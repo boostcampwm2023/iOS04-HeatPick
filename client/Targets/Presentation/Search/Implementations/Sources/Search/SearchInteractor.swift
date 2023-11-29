@@ -10,6 +10,7 @@ import ModernRIBs
 import DomainEntities
 import DomainInterfaces
 import BasePresentation
+import CoreLocation
 
 protocol SearchRouting: ViewableRouting {
     func attachSearchCurrentLocation()
@@ -27,6 +28,10 @@ protocol SearchPresentable: Presentable {
     func moveMap(lat: Double, lng: Double)
     func updateMarkers(places: [Place])
     func removeAllMarker()
+    func updateSelectedMarker(title: String, lat: Double, lng: Double)
+    func hideSelectedMarker()
+    func showSelectedView(title: String)
+    func hideSelectedView()
 }
 
 public protocol SearchListener: AnyObject { }
@@ -45,6 +50,7 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     let presentationAdapter: AdaptivePresentationControllerDelegateAdapter
     
     private let dependency: SearchInteractorDependency
+    private var selectedLocation: SearchMapLocation?
     private var isInitialCameraMoved = false
     
     init(
@@ -68,6 +74,7 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     func didAppear() {
         if !isInitialCameraMoved {
+            // TODO: - Default Location 설정하기
             let location = dependency.searchUseCase.location ?? .init(latitude: 37, longitude: 127)
             isInitialCameraMoved = true
             presenter.moveMap(lat: location.latitude, lng: location.longitude)
@@ -85,10 +92,15 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
             likes: story.likeCount,
             comments: story.commentCount
         ))
+        presenter.hideSelectedView()
+        selectedLocation = .init(lat: place.lat, lng: place.lng)
     }
     
     func mapWillMove() {
+        selectedLocation = nil
         presenter.hideStoryView()
+        presenter.hideSelectedView()
+        presenter.hideSelectedMarker()
     }
     
     func didTapSearch() {
@@ -113,6 +125,34 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     func storyDetailDidTapClose() {
         router?.detachStoryDetail()
+    }
+    
+    func didTapSymbol(symbol: SearchMapSymbol) {
+        presenter.updateSelectedMarker(
+            title: symbol.title,
+            lat: symbol.lat,
+            lng: symbol.lng
+        )
+        presenter.hideStoryView()
+        presenter.showSelectedView(title: symbol.title)
+        selectedLocation = .init(lat: symbol.lat, lng: symbol.lng)
+    }
+    
+    func didTapLocation(location: SearchMapLocation) {
+        let title = "위치 정보가 없어요"
+        presenter.updateSelectedMarker(
+            title: "",
+            lat: location.lat,
+            lng: location.lng
+        )
+        presenter.hideStoryView()
+        presenter.showSelectedView(title: title)
+        selectedLocation = location
+    }
+    
+    func didTapStoryCreate() {
+        guard let selectedLocation else { return }
+        print("# Attach Story Create: \(selectedLocation)")
     }
     
     private func fetchPlaces(lat: Double, lng: Double) {

@@ -22,7 +22,10 @@ protocol SearchPresentableListener: AnyObject {
     func didTapStory(storyID: Int)
     func didAppear()
     func didTapMarker(place: Place)
+    func didTapSymbol(symbol: SearchMapSymbol)
+    func didTapLocation(location: SearchMapLocation)
     func mapWillMove()
+    func didTapStoryCreate()
 }
 
 final class SearchViewController: UIViewController, SearchPresentable, SearchViewControllable {
@@ -46,7 +49,7 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
     }
     
     weak var listener: SearchPresentableListener?
-
+    
     private var markerStorage: [SearchMapMarkerAdapter] = []
     
     private lazy var naverMap: NMFNaverMapView = {
@@ -54,6 +57,7 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
         map.backgroundColor = .hpWhite
         map.showLocationButton = true
         map.mapView.addCameraDelegate(delegate: self)
+        map.mapView.touchDelegate = self
         map.mapView.translatesAutoresizingMaskIntoConstraints = false
         return map
     }()
@@ -87,6 +91,7 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
     
     private lazy var storyView: SearchMapStoryView = {
         let storyView = SearchMapStoryView()
+        storyView.delegate = self
         storyView.isHidden = true
         storyView.layer.cornerRadius = Constants.cornerRadiusMedium
         storyView.layer.borderColor = UIColor.hpGray3.cgColor
@@ -94,6 +99,20 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
         storyView.translatesAutoresizingMaskIntoConstraints = false
         storyView.addTapGesture(target: self, action: #selector(storyViewDidTap))
         return storyView
+    }()
+    
+    private let selectedMarker: NMFMarker = {
+        let marker = NMFMarker()
+        marker.iconImage = NMFOverlayImage(image: .markerBlue)
+        return marker
+    }()
+    
+    private lazy var selectedView: SearchMapSelectedView = {
+        let selectedView = SearchMapSelectedView()
+        selectedView.delegate = self
+        selectedView.isHidden = true
+        selectedView.translatesAutoresizingMaskIntoConstraints = false
+        return selectedView
     }()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -139,6 +158,16 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
         markerStorage.removeAll()
     }
     
+    func updateSelectedMarker(title: String, lat: Double, lng: Double) {
+        selectedMarker.position = .init(lat: lat, lng: lng)
+        selectedMarker.captionText = title
+        selectedMarker.mapView = naverMap.mapView
+    }
+    
+    func hideSelectedMarker() {
+        selectedMarker.mapView = nil
+    }
+    
     func showStoryView(model: SearchMapStoryViewModel) {
         storyView.setup(model: model)
         storyView.isHidden = false
@@ -147,6 +176,15 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
     func hideStoryView() {
         guard storyView.isHidden == false else { return }
         storyView.isHidden = true
+    }
+    
+    func showSelectedView(title: String) {
+        selectedView.setup(title: title)
+        selectedView.isHidden = false
+    }
+    
+    func hideSelectedView() {
+        selectedView.isHidden = true
     }
     
 }
@@ -159,10 +197,35 @@ extension SearchViewController: SearchMapMarkerAdapterDelegate {
     
 }
 
-extension SearchViewController: NMFMapViewCameraDelegate {
+extension SearchViewController: SearchMapSelectedViewDelegate, SearchMapStoryViewDelegate {
+    
+    func searchMapSelectedViewDidTapCreate(_ view: SearchMapSelectedView) {
+        listener?.didTapStoryCreate()
+    }
+    
+    func searchMapStoryViewDidTapCreate(_ view: SearchMapStoryView) {
+        listener?.didTapStoryCreate()
+    }
+    
+}
+
+extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegate {
     
     func mapView(_ mapView: NMFMapView, cameraWillChangeByReason reason: Int, animated: Bool) {
         listener?.mapWillMove()
+    }
+    
+    func mapView(_ mapView: NMFMapView, didTap symbol: NMFSymbol) -> Bool {
+        listener?.didTapSymbol(symbol: .init(
+            title: symbol.caption, 
+            lat: symbol.position.lat,
+            lng: symbol.position.lng
+        ))
+        return true
+    }
+    
+    func mapView(_ mapView: NMFMapView, didTapMap latlng: NMGLatLng, point: CGPoint) {
+        listener?.didTapLocation(location: .init(lat: latlng.lat, lng: latlng.lng))
     }
     
 }
@@ -188,7 +251,7 @@ private extension SearchViewController {
     
     func setupViews() {
         view = naverMap
-        [searchTextField, showSearchHomeListButton, storyView].forEach(view.addSubview)
+        [searchTextField, showSearchHomeListButton, storyView, selectedView].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
             searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
@@ -203,7 +266,11 @@ private extension SearchViewController {
             
             storyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             storyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            storyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            storyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            
+            selectedView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            selectedView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            selectedView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
     
