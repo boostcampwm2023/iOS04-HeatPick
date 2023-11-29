@@ -16,6 +16,7 @@ import DomainEntities
 
 protocol StoryDetailPresentableListener: AnyObject {
     func storyDetailDidTapClose()
+    func followButtonDidTap(userId: Int, userStatus: UserStatus)
 }
 
 struct StoryDetailViewModel {
@@ -41,7 +42,7 @@ struct StoryDetailViewModel {
     
 }
 
-public final class StoryDetailViewController: UIViewController, StoryDetailPresentable, StoryDetailViewControllable {
+final class StoryDetailViewController: UIViewController, StoryDetailPresentable, StoryDetailViewControllable {
     
     private enum Constant {
         static let navBarTitle = ""
@@ -86,6 +87,7 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
     
     private lazy var simpleUserProfileView: SimpleUserProfileView = {
         let profileView = SimpleUserProfileView()
+        profileView.delegate = self
         
         profileView.translatesAutoresizingMaskIntoConstraints = false
         return profileView
@@ -128,7 +130,7 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
         return mapView
     }()
     
-    override public func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
@@ -141,8 +143,16 @@ public final class StoryDetailViewController: UIViewController, StoryDetailPrese
         mapView.setup(model: model.mapViewModel)
     }
     
+    func didFollow() {
+        simpleUserProfileView.didFollow()
+    }
+    
+    func didUnfollow() {
+        simpleUserProfileView.didUnfollow()
+    }
+    
     func showFailure(_ error: Error) {
-        let alert = UIAlertController(title: "스토리 로드 실패", message: "\(error.localizedDescription)", preferredStyle: .alert)
+        let alert = UIAlertController(title: "스토리 로드에 실패했어요", message: "\(error.localizedDescription)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .default))
         present(alert, animated: true, completion: nil)
     }
@@ -183,8 +193,16 @@ private extension StoryDetailViewController {
 
 extension StoryDetailViewController: NavigationViewDelegate {
    
-    public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
+    func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         listener?.storyDetailDidTapClose()
     }
 
+}
+
+extension StoryDetailViewController: SimpleUserProfileViewDelegate {
+    
+    func followButtonDidTap(userId: Int, userStatus: UserStatus) {
+        listener?.followButtonDidTap(userId: userId, userStatus: userStatus)
+    }
+    
 }
