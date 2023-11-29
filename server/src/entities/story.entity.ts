@@ -57,4 +57,8 @@ export class Story {
 
   @OneToMany(() => Comment, (comment) => comment.story, { cascade: true })
   comments: Promise<Comment[]>;
+
+  @ManyToMany(() => User, (user) => user.likedStories)
+  @JoinTable()
+  usersWhoLiked: Promise<User[]>;
 }

@@ -95,6 +95,40 @@ export class StoryController {
     return { storyId: storyId };
   }
 
+  @Post('like')
+  @ApiOperation({ summary: '스토리 좋아요' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '성공',
+    schema: {
+      type: 'object',
+      properties: {
+        likeCounts: { type: 'number' },
+      },
+    },
+  })
+  async addLike(@Request() req: any, @Query('storyId') storyId: number) {
+    const likeCount = await this.storyService.like(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
+  }
+
+  @Post('unlike')
+  @ApiOperation({ summary: '스토리 좋아요 취소' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '성공',
+    schema: {
+      type: 'object',
+      properties: {
+        likeCounts: { type: 'number' },
+      },
+    },
+  })
+  async unlike(@Request() req: any, @Query('storyId') storyId: number) {
+    const likeCount = await this.storyService.unlike(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
+  }
+
   @Get('recommend/location')
   @ApiOperation({ summary: '현재 위치를 기반으로 추천 장소를 가져옵니다. 기본적으로, 좋아요가 10개 초과인 경우만 리턴됩니다.' })
   @ApiResponse({ status: 200, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다(value는 array)', type: StoryResultDto, isArray: true })

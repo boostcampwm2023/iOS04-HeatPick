@@ -16,8 +16,8 @@ export class StoryRepository {
     return await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
   }
 
-  async findOneByIdWithUserAndComments(storyId: number): Promise<Story> {
-    return await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['user', 'user.profileImage', 'comments', 'comments.user', 'comments.mentions'] });
+  async update(where: object, value: object) {
+    return await this.storyRepository.update(where, value);
   }
 
   async findOneByOption(findOneOptions: FindOneOptions) {
