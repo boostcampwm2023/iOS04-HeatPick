@@ -11,6 +11,13 @@ import DesignKit
 
 final class SearchMapReSearchView: UIView {
     
+    private enum Constant {
+        static let imageWidth: CGFloat = 15
+        static let imageHeight: CGFloat = 15
+        static let offset: CGFloat = 10
+        static let spacing: CGFloat = 5
+    }
+    
     private let refreshImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "arrow.clockwise")?.withRenderingMode(.alwaysTemplate)
@@ -53,15 +60,15 @@ private extension SearchMapReSearchView {
         [refreshImageView, titleLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
-            refreshImageView.widthAnchor.constraint(equalToConstant: 15),
-            refreshImageView.heightAnchor.constraint(equalToConstant: 15),
-            refreshImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            refreshImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            refreshImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            refreshImageView.widthAnchor.constraint(equalToConstant: Constant.imageWidth),
+            refreshImageView.heightAnchor.constraint(equalToConstant: Constant.imageHeight),
+            refreshImageView.topAnchor.constraint(equalTo: topAnchor, constant: Constant.offset),
+            refreshImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constant.offset),
+            refreshImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constant.offset),
             
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: refreshImageView.trailingAnchor, constant: 5),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15)
+            titleLabel.leadingAnchor.constraint(equalTo: refreshImageView.trailingAnchor, constant: Constant.spacing),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constant.spacing - Constant.offset)
         ])
     }
     
