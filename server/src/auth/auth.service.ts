@@ -7,7 +7,7 @@ import { profileImage } from 'src/entities/profileImage.entity';
 import { ImageService } from '../image/image.service';
 import { invalidTokenException } from 'src/exception/custom.exception/token.invalid.exception';
 import { Badge } from 'src/entities/badge.entity';
-import { strToEmoji } from 'src/util/util.string.to.emoji';
+import { strToEmoji } from 'src/util/util.string.to.badge.content';
 
 @Injectable()
 export class AuthService {

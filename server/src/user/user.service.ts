@@ -9,7 +9,7 @@ import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ImageService } from '../image/image.service';
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
-import { nextBadge, strToEmoji } from 'src/util/util.string.to.emoji';
+import { nextBadge, strToEmoji } from 'src/util/util.string.to.badge.content';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 import { getTemperatureFeeling } from '../constant/temperature';
