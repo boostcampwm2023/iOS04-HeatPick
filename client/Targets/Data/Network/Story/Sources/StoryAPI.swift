@@ -17,6 +17,8 @@ public enum StoryAPI {
     case metaData
     case newStory(StoryContent)
     case storyDetail(Int)
+    case follow(Int)
+    case unfollow(Int)
 }
 
 extension StoryAPI: Target {
@@ -30,6 +32,7 @@ extension StoryAPI: Target {
         case .metaData: return "/story/meta"
         case .newStory: return "/story/create"
         case .storyDetail: return "/story/detail"
+        case .follow, .unfollow: return "/user/follow"
         }
     }
     
@@ -38,6 +41,8 @@ extension StoryAPI: Target {
         case .metaData: return .get
         case .newStory: return .post
         case .storyDetail: return .get
+        case .follow: return .post
+        case .unfollow: return .delete
         }
     }
     
@@ -60,6 +65,8 @@ extension StoryAPI: Target {
             let request = StoryDetailRequestDTO(storyId: storyId)
             
             return .url(parameters: request.parameters())
+        case .follow(let userId), .unfollow(let userId):
+            return .json(FollowRequestDTO(followId: userId))
         }
     }
     

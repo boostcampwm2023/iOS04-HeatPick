@@ -20,6 +20,8 @@ protocol StoryDetailRouting: ViewableRouting {}
 protocol StoryDetailPresentable: Presentable {
     var listener: StoryDetailPresentableListener? { get set }
     func setup(model: StoryDetailViewModel)
+    func didFollow()
+    func didUnfollow()
     func showFailure(_ error: Error)
 }
 
@@ -68,6 +70,47 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
     }
     
     func followButtonDidTap(userId: Int, userStatus: UserStatus) {
+        switch userStatus {
+        case .me: 
+            return
+        case .nonFollowing:
+            requestFollow(userId)
+        case .following:
+            requestUnfollow(userId)
+        }
+    }
+}
+
+private extension StoryDetailInteractor {
+    
+    func requestFollow(_ userId: Int) {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestFollow(userId: userId)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.presenter.didFollow()
+                }
+                .onFailure { error in
+                    Log.make(message: "fail to follow \(userId) with \(error.localizedDescription)",
+                             log: .interactor)
+                }
+        }.store(in: cancelBag)
+    }
+    
+    func requestUnfollow(_ userId: Int) {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestUnfollow(userId: userId)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.presenter.didUnfollow()
+                }
+                .onFailure { error in
+                    Log.make(message: "fail to unfollow \(userId) with \(error.localizedDescription)",
+                             log: .interactor)
+                }
+        }.store(in: cancelBag)
     }
 }
 
