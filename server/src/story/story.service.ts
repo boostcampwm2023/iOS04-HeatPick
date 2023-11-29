@@ -183,7 +183,6 @@ export class StoryService {
           order: {
             likeCount: 'DESC',
           },
-          take: 10,
           relations: ['user', 'user.profileImage', 'storyImages', 'category'],
         });
 
