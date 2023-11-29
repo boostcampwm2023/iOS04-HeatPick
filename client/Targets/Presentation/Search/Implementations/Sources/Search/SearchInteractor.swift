@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import CoreKit
 import DomainEntities
 import DomainInterfaces
 import BasePresentation
@@ -32,6 +33,8 @@ protocol SearchPresentable: Presentable {
     func hideSelectedMarker()
     func showSelectedView(title: String)
     func hideSelectedView()
+    func showReSearchView()
+    func hideReSearchView()
 }
 
 public protocol SearchListener: AnyObject { }
@@ -42,8 +45,7 @@ protocol SearchInteractorDependency: AnyObject {
 
 final class SearchInteractor: PresentableInteractor<SearchPresentable>,
                               AdaptivePresentationControllerDelegate,
-                              SearchInteractable,
-                              SearchPresentableListener {
+                              SearchInteractable {
     
     weak var router: SearchRouting?
     weak var listener: SearchListener?
@@ -51,7 +53,10 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     private let dependency: SearchInteractorDependency
     private var selectedLocation: SearchMapLocation?
+    private var watchingLocation: SearchMapLocation?
+    private var fetchedLocation: SearchMapLocation?
     private var isInitialCameraMoved = false
+    private let cancelBag = CancelBag()
     
     init(
         presenter: SearchPresentable,
@@ -70,6 +75,36 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     override func willResignActive() {
         super.willResignActive()
+    }
+    
+    func detachSearchResult() {
+        router?.detachSearchResult()
+    }
+    
+    func controllerDidDismiss() {
+        router?.detachSearchCurrentLocation()
+    }
+    
+    func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
+    }
+    
+}
+
+// MARK: - PresentableListener
+
+extension SearchInteractor: SearchPresentableListener {
+    
+    func didTapCurrentLocation() {
+        router?.attachSearchCurrentLocation()
+    }
+    
+    func didTapSearch() {
+        router?.attachSearchResult()
+    }
+    
+    func didTapStory(storyID: Int) {
+        router?.attachStoryDetail(storyID: storyID)
     }
     
     func didAppear() {
@@ -96,37 +131,6 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         selectedLocation = .init(lat: place.lat, lng: place.lng)
     }
     
-    func mapWillMove() {
-        selectedLocation = nil
-        presenter.hideStoryView()
-        presenter.hideSelectedView()
-        presenter.hideSelectedMarker()
-    }
-    
-    func didTapSearch() {
-        router?.attachSearchResult()
-    }
-    
-    func detachSearchResult() {
-        router?.detachSearchResult()
-    }
-    
-    func didTapCurrentLocation() {
-        router?.attachSearchCurrentLocation()
-    }
-    
-    func didTapStory(storyID: Int) {
-        router?.attachStoryDetail(storyID: storyID)
-    }
-    
-    func controllerDidDismiss() {
-        router?.detachSearchCurrentLocation()
-    }
-    
-    func storyDetailDidTapClose() {
-        router?.detachStoryDetail()
-    }
-    
     func didTapSymbol(symbol: SearchMapSymbol) {
         presenter.updateSelectedMarker(
             title: symbol.title,
@@ -150,14 +154,39 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         selectedLocation = location
     }
     
+    func mapWillMove() {
+        selectedLocation = nil
+        presenter.hideStoryView()
+        presenter.hideSelectedView()
+        presenter.hideSelectedMarker()
+    }
+    
+    func mapDidChangeLocation(location: SearchMapLocation) {
+        self.watchingLocation = location
+        if isReSearchEnabled(location: location) {
+            presenter.showReSearchView()
+        }
+    }
+    
     func didTapStoryCreate() {
         guard let selectedLocation else { return }
         print("# Attach Story Create: \(selectedLocation)")
     }
     
-    private func fetchPlaces(lat: Double, lng: Double) {
+    func didTapReSearch() {
+        guard let watchingLocation else { return }
+        cancelBag.cancel()
+        presenter.hideReSearchView()
+        fetchPlaces(lat: watchingLocation.lat, lng: watchingLocation.lng)
+    }
+    
+}
+
+private extension SearchInteractor {
+    
+    func fetchPlaces(lat: Double, lng: Double) {
         presenter.removeAllMarker()
-        
+        fetchedLocation = SearchMapLocation(lat: lat, lng: lng)
         Task { [weak self] in
             guard let self else { return }
             await dependency.searchUseCase
@@ -165,7 +194,15 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
                 .onSuccess(on: .main, with: self) { this, places in
                     this.presenter.updateMarkers(places: places)
                 }
-        }
+        }.store(in: cancelBag)
+    }
+    
+    // TODO: - Scale에 따른 로직 추가
+    
+     func isReSearchEnabled(location: SearchMapLocation) -> Bool {
+        guard let fetchedLocation else { return false }
+        let distance = abs(fetchedLocation.lat - location.lat) + abs(fetchedLocation.lng - location.lng)
+        return distance >= 0.02
     }
     
 }

@@ -25,7 +25,9 @@ protocol SearchPresentableListener: AnyObject {
     func didTapSymbol(symbol: SearchMapSymbol)
     func didTapLocation(location: SearchMapLocation)
     func mapWillMove()
+    func mapDidChangeLocation(location: SearchMapLocation)
     func didTapStoryCreate()
+    func didTapReSearch()
 }
 
 final class SearchViewController: UIViewController, SearchPresentable, SearchViewControllable {
@@ -115,6 +117,14 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
         return selectedView
     }()
     
+    private lazy var reSearchView: SearchMapReSearchView = {
+        let reSearchView = SearchMapReSearchView()
+        reSearchView.isHidden = true
+        reSearchView.addTapGesture(target: self, action: #selector(reSearchViewDidTap))
+        reSearchView.translatesAutoresizingMaskIntoConstraints = false
+        return reSearchView
+    }()
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         setupTabBar()
@@ -187,6 +197,14 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
         selectedView.isHidden = true
     }
     
+    func showReSearchView() {
+        reSearchView.isHidden = false
+    }
+    
+    func hideReSearchView() {
+        reSearchView.isHidden = true
+    }
+    
 }
 
 extension SearchViewController: SearchMapMarkerAdapterDelegate {
@@ -215,6 +233,13 @@ extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegat
         listener?.mapWillMove()
     }
     
+    func mapView(_ mapView: NMFMapView, cameraDidChangeByReason reason: Int, animated: Bool) {
+        listener?.mapDidChangeLocation(location: .init(
+            lat: mapView.cameraPosition.target.lat,
+            lng: mapView.cameraPosition.target.lng
+        ))
+    }
+    
     func mapView(_ mapView: NMFMapView, didTap symbol: NMFSymbol) -> Bool {
         listener?.didTapSymbol(symbol: .init(
             title: symbol.caption, 
@@ -237,6 +262,10 @@ private extension SearchViewController {
         listener?.didTapStory(storyID: storyID)
     }
     
+    @objc func reSearchViewDidTap() {
+        listener?.didTapReSearch()
+    }
+    
 }
 
 private extension SearchViewController {
@@ -251,13 +280,16 @@ private extension SearchViewController {
     
     func setupViews() {
         view = naverMap
-        [searchTextField, showSearchHomeListButton, storyView, selectedView].forEach(view.addSubview)
+        [searchTextField, reSearchView, showSearchHomeListButton, storyView, selectedView].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
             searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
             searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             searchTextField.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
+            reSearchView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
+            reSearchView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             showSearchHomeListButton.widthAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
             showSearchHomeListButton.heightAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
