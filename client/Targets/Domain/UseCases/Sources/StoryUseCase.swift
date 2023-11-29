@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreLocation
 
 import CoreKit
 import DomainEntities
@@ -26,8 +25,7 @@ public final class StoryUseCase: StoryUseCaseInterface {
     
     public func requestAddress(of location: Location) async -> Result<String?, Error> {
         do {
-            let location = CLLocation(latitude: CLLocationDegrees(location.lat), longitude: CLLocationDegrees(location.lng))
-            let address = try await locationService.requestAddress(of: location)
+            let address = try await locationService.requestAddress(lat: location.lat, lng: location.lng)
             return .success(address)
         } catch {
             return .failure(error)

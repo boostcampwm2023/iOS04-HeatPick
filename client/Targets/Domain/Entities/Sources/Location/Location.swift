@@ -10,11 +10,11 @@ import Foundation
 
 public struct Location {
     
-    public let lat: Float
-    public let lng: Float
+    public let lat: Double
+    public let lng: Double
     public var address: String
     
-    public init(lat: Float, lng: Float, address: String = "") {
+    public init(lat: Double, lng: Double, address: String = "") {
         self.lat = lat
         self.lng = lng
         self.address = address

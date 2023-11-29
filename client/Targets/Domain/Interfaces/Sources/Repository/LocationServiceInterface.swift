@@ -20,5 +20,5 @@ public protocol LocationServiceInterface: AnyObject {
     func requestLocation() -> AnyPublisher<CLLocationCoordinate2D, Error>
     func requestPermssion()
     func requestLocality() async throws -> String?
-    func requestAddress(of location: CLLocation) async throws -> String?
+    func requestAddress(lat: Double, lng: Double) async throws -> String?
 }
