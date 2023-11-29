@@ -68,4 +68,8 @@ export class User {
   @JoinTable()
   @ApiProperty({ description: '댓글에 언급된 목록' })
   mentions: Comment[];
+
+  @ManyToMany(() => Story, (story) => story.usersWhoLiked)
+  @JoinTable()
+  likedStories: Story[];
 }
