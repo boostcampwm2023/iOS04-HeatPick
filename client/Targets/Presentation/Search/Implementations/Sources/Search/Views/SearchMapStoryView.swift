@@ -20,6 +20,10 @@ struct SearchMapStoryViewModel {
     let comments: Int
 }
 
+protocol SearchMapStoryViewDelegate: AnyObject {
+    func searchMapStoryViewDidTapCreate(_ view: SearchMapStoryView)
+}
+
 final class SearchMapStoryView: UIView {
     
     private enum Constant {
@@ -27,12 +31,23 @@ final class SearchMapStoryView: UIView {
         static let yOffset: CGFloat = 15
     }
     
+    weak var delegate: SearchMapStoryViewDelegate?
     var storyID: Int?
     
     private lazy var storyView: StorySmallView = {
         let storyView = StorySmallView()
         storyView.translatesAutoresizingMaskIntoConstraints = false
         return storyView
+    }()
+    
+    private lazy var createButton: ActionButton = {
+        let button = ActionButton()
+        button.style = .smallNormal
+        button.setTitle("스토리 작성하기", for: .normal)
+        button.addTarget(self, action: #selector(createButtonDidTap), for: .touchUpInside)
+        button.layer.cornerRadius = Constants.cornerRadiusSmall
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     override init(frame: CGRect) {
@@ -62,14 +77,23 @@ private extension SearchMapStoryView {
     
     func setupViews() {
         backgroundColor = .hpWhite
-        addSubview(storyView)
+        [storyView, createButton].forEach(addSubview)
         
         NSLayoutConstraint.activate([
+            createButton.heightAnchor.constraint(equalToConstant: 30),
+            createButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constant.xOffset),
+            createButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constant.xOffset),
+            createButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constant.yOffset),
+            
             storyView.topAnchor.constraint(equalTo: topAnchor, constant: Constant.yOffset),
             storyView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constant.xOffset),
             storyView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constant.xOffset),
-            storyView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constant.yOffset)
+            storyView.bottomAnchor.constraint(equalTo: createButton.topAnchor, constant: -Constant.yOffset)
         ])
+    }
+    
+    @objc func createButtonDidTap() {
+        delegate?.searchMapStoryViewDidTapCreate(self)
     }
     
 }
