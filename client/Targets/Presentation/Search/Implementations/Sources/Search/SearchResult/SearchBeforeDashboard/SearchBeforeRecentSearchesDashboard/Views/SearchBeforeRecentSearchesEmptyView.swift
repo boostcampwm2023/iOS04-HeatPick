@@ -11,6 +11,13 @@ import DesignKit
 
 final class SearchBeforeRecentSearchesEmptyView: UIView {
     
+    private enum Constant {
+        static let topOffset: CGFloat = 10
+        static let bottomOffset: CGFloat = -topOffset
+        static let leadingOffset: CGFloat = 10
+        static let trailingOffset: CGFloat = -leadingOffset
+    }
+    
     private let titleLabel: UILabel = {
        let label = UILabel()
         label.font = .bodyRegular
@@ -38,9 +45,6 @@ private extension SearchBeforeRecentSearchesEmptyView {
     
     func setupViews() {
         clipsToBounds = true
-        layer.cornerRadius = Constants.cornerRadiusMedium
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.lightGray.cgColor
         
         addSubview(titleLabel)
         

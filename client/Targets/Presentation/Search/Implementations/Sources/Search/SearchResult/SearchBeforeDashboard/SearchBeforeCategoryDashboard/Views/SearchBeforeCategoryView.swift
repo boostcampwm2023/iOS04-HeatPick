@@ -40,7 +40,7 @@ final class SearchBeforeCategoryView: UIView {
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = .captionBold
+        label.font = .captionRegular
         label.text = "내용"
         label.numberOfLines = 0
         label.textColor = .hpGray1
@@ -89,7 +89,7 @@ private extension SearchBeforeCategoryView {
         clipsToBounds = true
         layer.cornerRadius = Constants.cornerRadiusMedium
         layer.borderWidth = 1
-        layer.borderColor = UIColor.lightGray.cgColor
+        layer.borderColor = UIColor.hpGray3.cgColor
         
         let tapGesture = UITapGestureRecognizer(
             target: self,
