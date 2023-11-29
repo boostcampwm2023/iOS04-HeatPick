@@ -149,7 +149,7 @@ export class StoryService {
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number) {
-    const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10, relations: ['user', 'category'] });
+    const stories = await this.storyRepository.getStoryByCondition({ relations: ['user', 'category'] });
 
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;
@@ -167,13 +167,15 @@ export class StoryService {
         return null;
       }),
     );
+
+    const transformedStoryArr = results.filter((result) => result !== null);
+
     const storyArr = await Promise.all(
-      results.map(async (story) => {
+      transformedStoryArr.map(async (story) => {
         return storyEntityToObjWithOneImg(story);
       }),
     );
-    const transformedStoryArr = storyArr.filter((result) => result !== null);
-    return transformedStoryArr.slice(offset * limit, offset * limit + limit);
+    return storyArr.slice(offset * limit, offset * limit + limit);
   }
 
   async getRecommendedStory(offset: number, limit: number) {
