@@ -135,7 +135,6 @@ extension SearchAfterStoryDashboardViewController: SearchAfterHeaderViewDelegate
     
 }
 
-
 extension SearchAfterStoryDashboardViewController: SearchAfterStoryViewDelegate {
     
     func searchAfterStoryViewDidTap(storyId: Int) {

@@ -10,7 +10,7 @@ import ModernRIBs
 
 protocol SearchAfterDashboardInteractable: Interactable,
                                            SearchAfterStoryDashboardListener,
-                                           SearchAfterUserDashboardListener  {
+                                           SearchAfterUserDashboardListener {
     var router: SearchAfterDashboardRouting? { get set }
     var listener: SearchAfterDashboardListener? { get set }
 }
@@ -20,17 +20,12 @@ protocol SearchAfterDashboardViewControllable: ViewControllable {
     func removeDashboard(_ viewControllable: ViewControllable)
 }
 
-protocol SearchAfterDashboardRouterDependency {
-    var searchAfterStoryDashboardBuilder: SearchAfterStoryDashboardBuildable { get }
-    var searchAfterUserDashboardBuilder: SearchAfterUserDashboardBuildable { get }
-}
-
 final class SearchAfterDashboardRouter: ViewableRouter<SearchAfterDashboardInteractable, SearchAfterDashboardViewControllable>, SearchAfterDashboardRouting {
-
+    
     private let dependency: SearchAfterDashboardRouterDependency
     
-    private var searchAfterStoryDashboardRouter: SearchAfterStoryDashboardRouting?
-    private var searchAfterUserDashboardRouter: SearchAfterUserDashboardRouting?
+    private var searchAfterStoryDashboardRouter: ViewableRouting?
+    private var searchAfterUserDashboardRouter: ViewableRouting?
     
     init(
         interactor: SearchAfterDashboardInteractable,

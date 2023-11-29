@@ -17,6 +17,7 @@ import DomainInterfaces
 protocol SearchAfterDashboardRouting: ViewableRouting { 
     func attachSearchAfterStoryDashboard()
     func detachSearchAfterStoryDashboard()
+    
     func attachSearchAfterUserDashboard()
     func detachSearchAfterUserDashboard()
 }
@@ -28,16 +29,12 @@ protocol SearchAfterDashboardPresentable: Presentable {
 protocol SearchAfterDashboardListener: AnyObject {
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
     
-    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String)
     func searchAfterStoryViewDidTap(storyId: Int)
-}
-
-protocol SearchAfterDashboardInteractorDependency: AnyObject {
-    var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { get }
+    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String)
 }
 
 final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDashboardPresentable>, SearchAfterDashboardInteractable, SearchAfterDashboardPresentableListener {
-
+    
     weak var router: SearchAfterDashboardRouting?
     weak var listener: SearchAfterDashboardListener?
 
@@ -50,7 +47,7 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
     private var searchResultUsersSubject: PassthroughSubject<[SearchUser], Never> = .init()
     private var cancellables: Set<AnyCancellable> = []
     private var cancelTaskBag: CancelBag = .init()
-    private var searchText: String = ""
+    private var searchText: String?
     
     init(
         presenter: SearchAfterDashboardPresentable,
@@ -69,16 +66,17 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
         listener?.endEditingSearchTextPublisher
             .sink { [weak self] searchText in
                 guard let self else { return }
-                self.searchText = searchText
                 Task {
                     await self.dependency.searhResultSearchAfterUseCase
                         .fetchResult(searchText: searchText)
                         .onSuccess { searchResult in
+                            self.searchText = searchText
                             self.searchResultStoriesSubject.send(searchResult.stories)
                             self.searchResultUsersSubject.send(searchResult.users)
                         }
                         .onFailure { error in
                             Log.make(message: error.localizedDescription, log: .network)
+                            self.searchText = nil
                         }
                 }.store(in: cancelTaskBag)
             }.store(in: &cancellables)
@@ -91,11 +89,13 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
     }
     
     func searchAfterHeaderViewSeeAllViewDidTap() {
+        guard let searchText else { return }
         listener?.searchAfterHeaderViewSeeAllViewDidTap(searchText: searchText)
     }
     
     func searchAfterStoryViewDidTap(storyId: Int) {
         listener?.searchAfterStoryViewDidTap(storyId: storyId)
     }
+
     
 }
