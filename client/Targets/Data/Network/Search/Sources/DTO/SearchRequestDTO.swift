@@ -11,5 +11,7 @@ import Foundation
 public struct SearchRequestDTO: Encodable {
 
     let searchText: String
+    let offset: Int = 0
+    let limit: Int = 25
     
 }
