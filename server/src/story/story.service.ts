@@ -31,6 +31,7 @@ import { search } from 'hangul-js';
 @Injectable()
 export class StoryService {
   private searchStoryResultCache = {};
+  private recommendStoryCache = {};
   constructor(
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
@@ -143,10 +144,10 @@ export class StoryService {
     }
 
     const results = this.searchStoryResultCache[searchText];
-    return results.slice(offset, offset + limit);
+    return results.slice(offset * limit, offset * limit + limit);
   }
 
-  async getRecommendByLocationStory(locationDto: LocationDTO) {
+  async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number) {
     const stories = await this.storyRepository.getStoryByCondition({ where: { likeCount: MoreThan(10) }, take: 10, relations: ['user', 'category'] });
 
     const userLatitude = locationDto.latitude;
@@ -170,7 +171,8 @@ export class StoryService {
         return storyEntityToObjWithOneImg(story);
       }),
     );
-    return storyArr.filter((result) => result !== null);
+    const transformedStoryArr = storyArr.filter((result) => result !== null);
+    return transformedStoryArr.slice(offset, offset + limit);
   }
 
   async getRecommendedStory() {

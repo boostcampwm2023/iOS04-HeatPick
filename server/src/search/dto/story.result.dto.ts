@@ -26,3 +26,11 @@ export class StoryResultDto {
   @ApiProperty({ description: '스토리를 작성한 유저 정보', type: () => UserResultDto })
   user: UserResultDto;
 }
+
+export class StoryRecommendByLocationResponseDto {
+  @ApiProperty({ description: 'StoryResultDto 배열', isArray: true })
+  recommededStories: StoryResultDto[];
+
+  @ApiProperty({ description: '마지막 페이지인지 여부' })
+  isLastPage: boolean;
+}

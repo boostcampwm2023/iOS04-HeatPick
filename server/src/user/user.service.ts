@@ -45,7 +45,7 @@ export class UserService {
     }
 
     const results = this.searchUserResultCache[searchText];
-    return results.slice(offset, offset + limit);
+    return results.slice(offset * limit, offset * limit + limit);
   }
 
   async addNewBadge(addBadgeDto: AddBadgeDto) {
