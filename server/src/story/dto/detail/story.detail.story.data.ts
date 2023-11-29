@@ -24,6 +24,9 @@ export class StoryDetailStoryDataDto {
   badgeDescription: string;
 
   @ApiProperty()
+  likeState: number;
+
+  @ApiProperty()
   likeCount: number;
 
   @ApiProperty()
