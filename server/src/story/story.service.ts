@@ -194,8 +194,4 @@ export class StoryService {
       throw error;
     }
   }
-  getCachedSearchStoryResult(searchText: string, offset: number, limit: number) {
-    if (this.searchStoryResultCache.hasOwnProperty(searchText)) return this.searchStoryResultCache[searchText].slice(offset, offset + limit);
-    return [];
-  }
 }
