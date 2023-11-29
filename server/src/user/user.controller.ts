@@ -78,10 +78,20 @@ export class UserController {
   @Patch('update')
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: `자신의 프로필을 수정합니다.` })
-  @ApiResponse({ status: 201, description: '사용자의 정보를 성공적으로 수정했습니다.' })
+  @ApiResponse({
+    status: 200,
+    description: '유저 아이디',
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'number' },
+      },
+    },
+  })
   async update(@UploadedFile() image: Express.Multer.File, @Req() req: any, @Body(new ValidationPipe({ transform: true })) updateUserDto: UserUpdateDto) {
     const { username, selectedBadgeId } = updateUserDto;
-    return this.userService.update(req.user.userId, image, { username, selectedBadgeId });
+    const userId = await this.userService.update(req.user.userRecordId, { image, username, selectedBadgeId });
+    return { userId: userId };
   }
 
   @Delete('resign')
