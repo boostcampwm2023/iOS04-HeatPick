@@ -69,8 +69,8 @@ export class StoryService {
     return story.storyId;
   }
 
-  public async read(userId: string, storyId: number) {
-    const story: Story = await this.storyRepository.findById(storyId);
+  public async read(userId: number, storyId: number) {
+    const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge', 'usersWhoLiked'] });
     const place: Place = await story.place;
 
     const storyDetailPlaceData: StoryDetailPlaceDataDto = {
@@ -88,6 +88,7 @@ export class StoryService {
       title: story.title,
       badgeName: `${strToEmoji[story.badge?.badgeName]}${story.badge?.badgeName}`,
       badgeDescription: strToExplain[`${story.badge?.badgeName}`],
+      likeState: (await story.usersWhoLiked).some((user) => user.userId === userId) ? 0 : 1,
       likeCount: story.likeCount,
       commentCount: story.commentCount,
       content: story.content,
@@ -98,7 +99,7 @@ export class StoryService {
       userId: story.user.userId,
       username: story.user.username,
       profileImageUrl: story.user.profileImage.imageUrl,
-      status: userId === story.user.oauthId ? 0 : 1,
+      status: userId === story.user.userId ? 0 : 1,
     };
 
     const storyDetailViewData: StoryDetailViewDataDto = {

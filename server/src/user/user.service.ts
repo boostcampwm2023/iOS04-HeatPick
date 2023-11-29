@@ -57,10 +57,8 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
-  async getProfile(oauthId?: string, userId?: number): Promise<UserProfileDetailDataDto> {
-    const user = oauthId
-      ? await this.userRepository.findOneByOption({ where: { oauthId: oauthId }, relations: ['stories', 'stories.storyImages', 'profileImage'] })
-      : await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['stories', 'stories.storyImages', 'profileImage'] });
+  async getProfile(userId: number): Promise<UserProfileDetailDataDto> {
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
     const mainBadge = await user.representativeBadge;
     const stories = await user.stories;
 
@@ -77,7 +75,15 @@ export class UserService {
       mainBadge: mainBadge,
       storyList: await Promise.all(
         stories.map(async (story: Story) => {
-          return { storyId: story.storyId, thumbnailImageURL: (await story.storyImages)[0].imageUrl, title: story.title, content: story.content, likeCount: story.likeCount, commentCount: story.commentCount };
+          return {
+            storyId: story.storyId,
+            thumbnailImageURL: (await story.storyImages)[0].imageUrl,
+            title: story.title,
+            content: story.content,
+            likeState: (await story.usersWhoLiked).some((user) => user.userId === userId) ? 0 : 1,
+            likeCount: story.likeCount,
+            commentCount: story.commentCount,
+          };
         }),
       ),
     };

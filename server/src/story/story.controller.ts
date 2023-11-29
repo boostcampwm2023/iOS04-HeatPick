@@ -56,7 +56,7 @@ export class StoryController {
     type: StoryDetailViewDataDto,
   })
   async read(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
-    return await this.storyService.read(req.user.userId, storyId);
+    return await this.storyService.read(req.user.userRecordId, storyId);
   }
 
   @Patch('edit')

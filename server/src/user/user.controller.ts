@@ -44,14 +44,14 @@ export class UserController {
   @ApiOperation({ summary: '유저 ID로 Profile를 불러옵니다.' })
   @ApiCreatedResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getProfile(@Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(undefined, userId);
+    return this.userService.getProfile(userId);
   }
 
   @Get('myProfile')
   @ApiOperation({ summary: '자신의 토큰으로 자신의 Profile을 불러옵니다.' })
   @ApiCreatedResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
   async getMyProfile(@Req() req: any): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(req.user.userId, undefined);
+    return this.userService.getProfile(req.user.userRecordId);
   }
 
   @Put('badge')
