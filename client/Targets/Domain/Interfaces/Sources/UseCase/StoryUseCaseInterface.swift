@@ -12,6 +12,7 @@ import DomainEntities
 
 public protocol StoryUseCaseInterface: AnyObject {
     
+    func requestAddress(of location: Location) async -> Result<String?, Error>
     func requestMetaData() async -> Result<([StoryCategory], [Badge]), Error>
     func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error>
     func requestStoryDetail(storyId: Int) async -> Result<Story, Error>

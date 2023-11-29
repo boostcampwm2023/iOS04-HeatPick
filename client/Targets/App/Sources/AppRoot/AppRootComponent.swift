@@ -97,8 +97,8 @@ final class AppRootComponent: Component<AppRootDependency>,
         self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider), locationService: locationService)
         self.locationAuthorityUseCase = LocationAuthorityUseCase(service: locationService)
         
-        let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: true, protocols: [StoryURLProtocol.self])
-        self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider))
+        let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [StoryURLProtocol.self])
+        self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider), locationService: locationService)
         
         let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [MyURLProtocol.self])
         self.myPageUseCase = MyPageUseCase(repository: MyPageRepository(session: myPageNetworkProvider))

@@ -9,6 +9,7 @@
 import Combine
 import Foundation
 import CoreLocation
+import Contacts
 import DomainInterfaces
 
 public final class LocationService: NSObject, LocationServiceInterface {
@@ -58,6 +59,14 @@ public final class LocationService: NSObject, LocationServiceInterface {
         return place.last?.locality
     }
     
+    public func requestAddress(of location: CLLocation) async throws -> String? {
+        let geoCoder: CLGeocoder = CLGeocoder()
+        let place = try await geoCoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "ko_kr"))
+        let formatter = CNPostalAddressFormatter()
+        
+        guard let postalAddress = place.last?.postalAddress else { return nil }
+        return formatter.string(from: postalAddress).split(separator: "\n").joined(separator: " ")
+    }
 }
 
 extension LocationService: CLLocationManagerDelegate {

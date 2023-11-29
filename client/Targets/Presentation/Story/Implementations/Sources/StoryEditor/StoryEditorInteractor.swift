@@ -26,7 +26,7 @@ protocol StoryEditorPresentable: Presentable {
 }
 
 protocol StoryEditorInteractorDependency: AnyObject {
-    var location: Location { get }
+    var location: Location { get set }
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
@@ -71,7 +71,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     }
     
     func viewDidAppear() {
-        presenter.setupLocation(dependency.location)
+        loadAddress()
         loadMetadata()
     }
     
@@ -119,6 +119,26 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
 
 
 private extension StoryEditorInteractor {
+    func loadAddress() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestAddress(of: dependency.location)
+                .onSuccess(on: .main, with: self) { this, address in
+                    guard let address else { return }
+                    this.dependency.location.address = address
+                    this.presenter.setupLocation(this.dependency.location)
+                }
+                .onFailure { error in
+                    print(error)
+                    Log.make(message: "fail to load address with \(error.localizedDescription)", log: .interactor)
+                }
+        }.store(in: cancelBag)
+        
+        presenter.setupLocation(dependency.location)
+    }
+    
+    
     func loadMetadata() {
         Task { [weak self] in
             guard let self else { return }

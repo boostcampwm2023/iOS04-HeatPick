@@ -12,7 +12,7 @@ public struct Location {
     
     public let lat: Float
     public let lng: Float
-    public let address: String
+    public var address: String
     
     public init(lat: Float, lng: Float, address: String = "") {
         self.lat = lat
