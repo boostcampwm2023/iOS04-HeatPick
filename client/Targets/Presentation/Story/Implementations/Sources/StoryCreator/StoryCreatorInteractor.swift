@@ -18,7 +18,7 @@ protocol StoryCreatorRouting: ViewableRouting {
     func attachStoryDetail(_ id: Int)
     func detachStoryDetail()
     
-    func routeToDetail(of story: Story)
+    func routeToDetail(of storyId: Int)
 }
 
 protocol StoryCreatorPresentable: Presentable {
@@ -52,8 +52,8 @@ final class StoryCreatorInteractor: PresentableInteractor<StoryCreatorPresentabl
         listener?.storyCreatorDidComplete()
     }
     
-    func storyDidCreate(_ story: Story) {
-        router?.routeToDetail(of: story)
+    func storyDidCreate(_ storyId: Int) {
+        router?.routeToDetail(of: storyId)
     }
     
     func storyDetailDidTapClose() {
