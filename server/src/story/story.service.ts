@@ -25,6 +25,7 @@ import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 import { Category } from '../entities/category.entity';
 import { UserService } from 'src/user/user.service';
 import { removeMillisecondsFromISOString } from '../util/util.date.format.to.ISO8601';
+import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 
 @Injectable()
 export class StoryService {
@@ -85,7 +86,8 @@ export class StoryService {
       category: story.category.categoryName,
       storyImageURL: (await story.storyImages).map((storyImage: StoryImage) => storyImage.imageUrl),
       title: story.title,
-      badgeName: `${story.badge?.emoji}${story.badge?.badgeName}`,
+      badgeName: `${strToEmoji[story.badge?.badgeName]}${story.badge?.badgeName}`,
+      badgeDescription: strToExplain[`${story.badge?.badgeName}`],
       likeCount: story.likeCount,
       commentCount: story.commentCount,
       content: story.content,
