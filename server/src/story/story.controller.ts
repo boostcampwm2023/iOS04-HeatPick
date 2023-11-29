@@ -108,8 +108,8 @@ export class StoryController {
     },
   })
   async addLike(@Request() req: any, @Query('storyId') storyId: number) {
-    const likeCounts = await this.storyService.like(req.user.userRecordId, storyId);
-    return { likeCount: likeCounts };
+    const likeCount = await this.storyService.like(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
   }
 
   @Post('unlike')
@@ -125,8 +125,8 @@ export class StoryController {
     },
   })
   async unlike(@Request() req: any, @Query('storyId') storyId: number) {
-    const likeCounts = await this.storyService.unlike(req.user.userRecordId, storyId);
-    return { likeCount: likeCounts };
+    const likeCount = await this.storyService.unlike(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
   }
 
   @Get('recommend/location')
