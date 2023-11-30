@@ -21,6 +21,8 @@ protocol MyPageRouting: ViewableRouting {
     func detachStorySeeAll()
     func attachSetting()
     func detachSetting()
+    func attachStoryDetail(id: Int)
+    func detachStoryDetail()
 }
 
 protocol MyPagePresentable: Presentable {
@@ -75,6 +77,10 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.attachStorySeeAll()
     }
     
+    func storyDashboardDidTapStory(id: Int) {
+        router?.attachStoryDetail(id: id)
+    }
+    
     // MARK: - StorySeeAll
     
     func myPageStorySeeAllDidTapClose() {
@@ -99,6 +105,12 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
         }.store(in: cancelBag)
+    }
+    
+    // MARK: - StoryDetail
+    
+    func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
     }
     
 }

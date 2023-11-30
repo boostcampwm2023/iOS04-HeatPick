@@ -13,6 +13,7 @@ import BasePresentation
 
 protocol MyPageStoryDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
+    func didTapStory(id: Int)
 }
 
 struct MyPageStoryDashboardViewControllerModel {
@@ -26,6 +27,8 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
     }
     
     weak var listener: MyPageStoryDashboardPresentableListener?
+    
+    private var models: [StorySmallViewModel] = []
     
     private lazy var seeAllView: SeeAllView = {
         let seeAllView = SeeAllView()
@@ -56,6 +59,7 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
     }
     
     func setup(model: MyPageStoryDashboardViewControllerModel) {
+        models = model.contentModels
         stackView.subviews.forEach { $0.removeFromSuperview() }
         
         if model.contentModels.isEmpty {
@@ -63,6 +67,7 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
         } else {
             model.contentModels.forEach {
                 let storyView = StorySmallView()
+                storyView.delegate = self
                 storyView.setup(model: $0)
                 stackView.addArrangedSubview(storyView)
             }
@@ -75,6 +80,14 @@ extension MyPageStoryDashboardViewController: SeeAllViewDelegate {
     
     func seeAllViewDidTapSeeAll() {
         listener?.didTapSeeAll()
+    }
+    
+}
+
+extension MyPageStoryDashboardViewController: StorySmallViewDelegate {
+    
+    func storySmallViewDidTap(_ view: StorySmallView, storyId: Int) {
+        listener?.didTapStory(id: storyId)
     }
     
 }

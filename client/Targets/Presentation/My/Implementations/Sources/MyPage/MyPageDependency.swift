@@ -9,12 +9,14 @@
 import ModernRIBs
 import FoundationKit
 import MyInterfaces
+import StoryInterfaces
 import DomainInterfaces
 
 public protocol MyPageDependency: Dependency {
     
     var myPageUseCase: MyPageUseCaseInterface { get }
     var signOutRequestService: SignOutRequestServiceInterface { get }
+    var storyDetailBuilder: StoryDetailBuildable { get }
     
 }
 
@@ -29,6 +31,7 @@ final class MyPageComponent: Component<MyPageDependency>,
     var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
     var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
+    var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
     
 }
 
@@ -38,6 +41,7 @@ protocol MypageRouterDependency: AnyObject {
     var storyDashboardBuilder: MyPageStoryDashboardBuildable { get }
     var storySeeAllBuilder: MyPageStorySeeAllBuildable { get }
     var settingBuilder: SettingBuildable { get }
+    var storyDetailBuilder: StoryDetailBuildable { get }
     
 }
 
@@ -47,12 +51,14 @@ final class MyPageRouterComponent: MypageRouterDependency {
     let storyDashboardBuilder: MyPageStoryDashboardBuildable
     let storySeeAllBuilder: MyPageStorySeeAllBuildable
     let settingBuilder: SettingBuildable
+    let storyDetailBuilder: StoryDetailBuildable
     
     init(component: MyPageComponent) {
         self.userDashboardBuilder = MyPageUserDashboardBuilder(dependency: component)
         self.storyDashboardBuilder = MyPageStoryDashboardBuilder(dependency: component)
         self.storySeeAllBuilder = MyPageStorySeeAllBuilder(dependency: component)
         self.settingBuilder = SettingBuilder(dependency: component)
+        self.storyDetailBuilder = component.storyDetailBuilder
     }
     
     
