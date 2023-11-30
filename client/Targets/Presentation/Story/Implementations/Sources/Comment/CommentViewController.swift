@@ -10,15 +10,22 @@ import UIKit
 
 import ModernRIBs
 
+import CoreKit
 import DesignKit
+import DomainEntities
 
 protocol CommentPresentableListener: AnyObject {
     func navigationViewButtonDidTap()
 }
 
 final class CommentViewController: UIViewController, CommentPresentable, CommentViewControllable {
-
+    
     weak var listener: CommentPresentableListener?
+    private var commentViewModels: [CommentTableViewCellModel] = []
+    
+    private enum Constant {
+        static let commentInputFieldHeight: CGFloat = 50
+    }
     
     private lazy var navigationView: NavigationView = {
         let navigation = NavigationView()
@@ -31,6 +38,26 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
         return navigation
     }()
     
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.backgroundColor = .white
+        tableView.register(CommentTableViewCell.self)
+        tableView.allowsSelection = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorStyle = .singleLine
+        tableView.contentInset = .init(top: -35, left: 0, bottom: -35, right: 0)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
+    private lazy var commentInputField: CommentInputField = {
+        let commentInputField = CommentInputField()
+        
+        commentInputField.translatesAutoresizingMaskIntoConstraints = false
+        return commentInputField
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -41,13 +68,23 @@ private extension CommentViewController {
     
     func setupViews() {
         view.backgroundColor = .hpWhite
-        [navigationView].forEach(view.addSubview)
+        [navigationView, tableView, commentInputField].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             navigationView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight)
+            navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
+            tableView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+            commentInputField.topAnchor.constraint(equalTo: tableView.bottomAnchor),
+            commentInputField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            commentInputField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            commentInputField.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            commentInputField.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }
@@ -57,5 +94,32 @@ extension CommentViewController: NavigationViewDelegate {
     func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         listener?.navigationViewButtonDidTap()
     }
+    
+}
+
+extension CommentViewController: UITableViewDelegate {
+    
+}
+
+extension CommentViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        commentViewModels.count
+    }
+    
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let model = commentViewModels[safe: indexPath.row] else { return .init() }
+        
+        let cell = tableView.dequeue(CommentTableViewCell.self, for: indexPath)
+        cell.prepareForReuse()
+        cell.setup(model)
+        
+        return cell
+    }
+    
     
 }
