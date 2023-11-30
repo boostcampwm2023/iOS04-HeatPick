@@ -22,7 +22,7 @@ final class ImageCountButton: UIButton {
         }
     }
     
-    enum Constant {
+    private enum Constant {
         static let topSpacing: CGFloat = 5
         static let bottomSpacing: CGFloat = -Constant.topSpacing
         static let leadingSpacing: CGFloat = 5
@@ -31,7 +31,7 @@ final class ImageCountButton: UIButton {
     
     private var type: ButtonType?
     
-    private var image: UIImageView = {
+    private let typeImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.tintColor = .hpBlack
@@ -61,7 +61,7 @@ final class ImageCountButton: UIButton {
     }
     
     func setup(type: ButtonType) {
-        image.image = UIImage(systemName: type.imageName)
+        typeImageView.image = UIImage(systemName: type.imageName)
         countLabel.text = "0"
         
     }
@@ -75,15 +75,15 @@ final class ImageCountButton: UIButton {
 private extension ImageCountButton {
     
     func setupViews() {
-        [image, countLabel].forEach(addSubview)
+        [typeImageView, countLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topSpacing),
-            image.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constant.leadingSpacing),
-            image.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomSpacing),
+            typeImageView.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topSpacing),
+            typeImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constant.leadingSpacing),
+            typeImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomSpacing),
             
             countLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topSpacing),
-            countLabel.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: Constant.leadingSpacing),
+            countLabel.leadingAnchor.constraint(equalTo: typeImageView.trailingAnchor, constant: Constant.leadingSpacing),
             countLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomSpacing),
             countLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constant.trailingSpacing)
         ])

@@ -25,7 +25,7 @@ protocol StoryHeaderViewDelegate: AnyObject {
 
 final class StoryHeaderView: UIView {
     
-    enum Constant {
+    private enum Constant {
         static let spacing: CGFloat = 10
     }
     

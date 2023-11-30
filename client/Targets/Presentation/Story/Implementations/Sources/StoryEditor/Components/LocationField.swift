@@ -15,7 +15,7 @@ import DomainEntities
 
 final class LocationField: UIView {
     
-    enum Constant {
+    private enum Constant {
         static let spacing: CGFloat = 10
         static let mapHeight: CGFloat = 153
     }

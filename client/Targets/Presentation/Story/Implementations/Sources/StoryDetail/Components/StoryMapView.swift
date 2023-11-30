@@ -21,7 +21,7 @@ struct StoryMapViewModel {
 
 final class StoryMapView: UIView {
     
-    enum Constant {
+    private enum Constant {
         static let addressSpacing: CGFloat = 10
         static let spacing: CGFloat = 20
         static let mapHeight: CGFloat = 153
