@@ -16,6 +16,8 @@ import { getTemperatureFeeling } from '../constant/temperature';
 import { User } from 'src/entities/user.entity';
 import { profileImage } from '../entities/profileImage.entity';
 import { saveImageToLocal } from '../util/util.save.image.local';
+import { ProfileUpdateMetaBadgeData } from './dto/response/profile.update.meta.badge.data';
+import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
 
 @Injectable()
 export class UserService {
@@ -123,6 +125,33 @@ export class UserService {
   async getStoryList(userId: number): Promise<Story[]> {
     const user = await this.userRepository.findOneByUserIdWithStory(userId);
     return await user.stories;
+  }
+
+  async getUpdateMetaData(userId: number): Promise<ProfileUpdateMetaDataDto> {
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'profileImage'] });
+    const representativeBadge = await user.representativeBadge;
+
+    const nowBadge: ProfileUpdateMetaBadgeData = {
+      ...representativeBadge,
+      badgeExplain: strToExplain[representativeBadge.badgeName],
+    };
+
+    const badges = await Promise.all(
+      (await user.badges).map((badge) => {
+        return {
+          ...badge,
+          badgeExplain: strToExplain[badge.badgeName],
+        };
+      }),
+    );
+
+    return {
+      userId: userId,
+      profileImageURL: user.profileImage.imageUrl,
+      username: user.username,
+      nowBadge: nowBadge,
+      badges: badges,
+    };
   }
 
   async update(userId: number, { image, username, selectedBadgeId }) {

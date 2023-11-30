@@ -14,6 +14,7 @@ import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { BadgeJsonDto, BadgeReturnDto } from './dto/badge.return.dto';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
+import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -72,6 +73,17 @@ export class UserController {
   @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [Story] })
   async getStoryList(@Query('userId', ParseIntPipe) userId: number): Promise<Story[]> {
     return this.userService.getStoryList(userId);
+  }
+
+  @Get('updateMetaData')
+  @ApiOperation({ summary: `업데이트 할 프로필 데이터를 불러옵니다.` })
+  @ApiResponse({
+    status: 200,
+    description: '유저 아이디',
+    type: ProfileUpdateMetaDataDto,
+  })
+  async updateMetaData(@Req() req: any): Promise<ProfileUpdateMetaDataDto> {
+    return await this.userService.getUpdateMetaData(req.user.userRecordId);
   }
 
   @Patch('update')

@@ -76,7 +76,7 @@ export class StoryService {
   }
 
   public async read(userId: number, storyId: number) {
-    const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge', 'usersWhoLiked'] });
+    const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge', 'usersWhoLiked', 'user.followers'] });
     const place: Place = await story.place;
 
     const storyDetailPlaceData: StoryDetailPlaceDataDto = {
@@ -105,7 +105,7 @@ export class StoryService {
       userId: story.user.userId,
       username: story.user.username,
       profileImageUrl: story.user.profileImage.imageUrl,
-      status: userId === story.user.userId ? 0 : 1,
+      status: userId === story.user.userId ? 0 : story.user.followers.some((user) => user.userId === userId) ? 2 : 1,
     };
 
     const storyDetailViewData: StoryDetailViewDataDto = {
