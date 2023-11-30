@@ -19,12 +19,20 @@ public struct RecommendLocationResponseDTO: Decodable {
     }
     
     public let recommededStories: [RecommendStoryResponse]
+    public let isLastPage: Bool
     
 }
 
 public extension RecommendLocationResponseDTO {
     
-    func toDomain() -> [RecommendStory] {
+    func toDomain() -> RecommendStoryWithPaging {
+        return .init(
+            stories: makeRecommendStories(),
+            isLastPage: isLastPage
+        )
+    }
+    
+    func makeRecommendStories() -> [RecommendStory] {
         return recommededStories
             .map { RecommendStory(
                 id: $0.storyId,

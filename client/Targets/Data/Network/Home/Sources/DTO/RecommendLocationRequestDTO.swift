@@ -12,5 +12,7 @@ struct RecommendLocationRequestDTO: Encodable {
     
     let latitude: Double
     let longitude: Double
+    let offset: Int
+    let limit: Int
     
 }
