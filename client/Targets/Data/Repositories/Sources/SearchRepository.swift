@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import HomeAPI
 import SearchAPI
 import NetworkAPIKit
 import DomainEntities
@@ -69,16 +70,14 @@ public final class SearchRepository: SearchRepositoryInterface {
         self.recentSearches = UserDefaults.standard.array(forKey: userDefaultsKey) as? [String] ?? []
     }
     
-    public func fetchPlaces(lat: Double, lng: Double) async -> Result<[Place], Error> {
-        let target = PlaceAPI.place(lat: lat, lng: lng)
-        let request: Result<PlaceResponseDTO, Error> = await session.request(target)
+    public func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<RecommendStoryWithPaging, Error> {
+        let target = HomeAPI.recommendLocation(lat: lat, lng: lng)
+        let request: Result<RecommendLocationResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
     deinit {
         saveRecentSearches()
     }
-    
-    
     
 }

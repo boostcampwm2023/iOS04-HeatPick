@@ -139,14 +139,13 @@ extension SearchInteractor: SearchPresentableListener {
     }
     
     func didTapMarker(place: Place) {
-        let story = place.story
         presenter.showStoryView(model: .init(
-            storyID: story.id,
-            thumbnailImageURL: story.imageURLs.first ?? "",
-            title: story.title,
-            subtitle: story.content,
-            likes: story.likeCount,
-            comments: story.commentCount
+            storyID: place.storyId,
+            thumbnailImageURL: place.imageURL,
+            title: place.title,
+            subtitle: place.content,
+            likes: place.likes,
+            comments: place.comments
         ))
         presenter.hideSelectedView()
         selectedLocation = .init(lat: place.lat, lng: place.lng)
@@ -211,9 +210,12 @@ private extension SearchInteractor {
         Task { [weak self] in
             guard let self else { return }
             await dependency.searchUseCase
-                .fetchPlaces(lat: lat, lng: lng)
+                .fetchRecommendPlace(lat: lat, lng: lng)
                 .onSuccess(on: .main, with: self) { this, places in
                     this.presenter.updateMarkers(places: places)
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
                 }
         }.store(in: cancelBag)
     }
