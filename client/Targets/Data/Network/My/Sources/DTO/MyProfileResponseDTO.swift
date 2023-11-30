@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreKit
 import DomainEntities
 
 public struct MyProfileResponseDTO: Decodable {
@@ -74,7 +75,7 @@ public extension MyProfileStoryResponseDTO {
         return .init(
             storyId: storyId,
             title: title, 
-            content: content,
+            content: content.withLineBreak,
             thumbnailImageURL: nil,
             likeCount: likeCount
         )

@@ -24,7 +24,7 @@ public struct StoryDetailResponseDTO: Decodable {
     public func toDomain() -> Story {
         return Story(id: story.storyId,
                      storyContent: StoryContent(title: story.title,
-                                                content: story.content,
+                                                content: story.content.withLineBreak,
                                                 date: story.createdAt,
                                                 imageUrls: story.storyImageURL,
                                                 category: StoryCategory(id: 0, title: story.category),

@@ -30,7 +30,7 @@ public struct StoryResponseDTO: Decodable {
         self.badgeName = badgeName
         self.likeCount = likeCount
         self.commentCount = commentCount
-        self.content = content
+        self.content = content.withLineBreak
         self.place = place
     }
     
