@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum HomeFollowingSortOption: Int {
+public enum HomeFollowingSortOption: Int, CaseIterable {
     
     case recent = 0
     case like

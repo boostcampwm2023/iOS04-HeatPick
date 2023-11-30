@@ -28,6 +28,7 @@ protocol AppRootInteractable: Interactable,
 
 protocol AppRootViewControllable: ViewControllable {
     func setViewControllers(_ viewControllers: [ViewControllable])
+    func selectViewController(_ viewController: ViewControllable)
 }
 
 protocol AppRootRouterDependency: AnyObject {
@@ -45,7 +46,7 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     private var signInRouter: Routing?
     private var homeRouter: Routing?
     private var searchHomeRouter: Routing?
-    private var followingRouter: Routing?
+    private var followingRouter: ViewableRouting?
     private var myPageRouter: Routing?
     
     init(
@@ -107,6 +108,11 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         ]
         
         viewController.setViewControllers(viewControllers)
+    }
+    
+    func selectFollowing() {
+        guard let router = followingRouter else { return }
+        viewController.selectViewController(router.viewControllable)
     }
     
 }

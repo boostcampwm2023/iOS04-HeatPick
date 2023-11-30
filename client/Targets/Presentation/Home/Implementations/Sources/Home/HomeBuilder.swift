@@ -13,7 +13,7 @@ import StoryInterfaces
 
 public protocol HomeDependency: Dependency {
     var homeUseCase: HomeUseCaseInterface { get }
-    var storyDeatilBuilder: StoryDetailBuildable { get }
+    var storyDetailBuilder: StoryDetailBuildable { get }
 }
 
 final class HomeComponent: Component<HomeDependency>,
@@ -26,7 +26,7 @@ final class HomeComponent: Component<HomeDependency>,
     var recommendUseCase: RecommendUseCaseInterface { dependency.homeUseCase }
     var hotPlaceUseCase: HotPlaceUseCaseInterface { dependency.homeUseCase }
     var followingUseCase: HomeFollowingUseCaseInterface { dependency.homeUseCase }
-    var storyDeatilBuilder: StoryDetailBuildable { dependency.storyDeatilBuilder }
+    var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
 }
 
 public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {

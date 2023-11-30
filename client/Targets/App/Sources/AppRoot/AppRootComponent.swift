@@ -51,6 +51,7 @@ final class AppRootComponent: Component<AppRootDependency>,
     let storyUseCase: StoryUseCaseInterface
     let myPageUseCase: MyPageUseCaseInterface
     let searchUseCase: SearchUseCaseInterface
+    let followingUseCase: FollowingUseCaseInterface
     
     let naverLoginRepository: NaverLoginRepositoryInterface
     let signOutRequestService: SignOutRequestServiceInterface
@@ -79,7 +80,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         StoryEditorBuilder(dependency: self)
     }()
     
-    lazy var storyDeatilBuilder: StoryDetailBuildable = {
+    lazy var storyDetailBuilder: StoryDetailBuildable = {
         StoryDetailBuilder(dependency: self)
     }()
     
@@ -112,6 +113,9 @@ final class AppRootComponent: Component<AppRootDependency>,
         
         let searchNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [SearchURLProtocol.self])
         self.searchUseCase = SearchUseCase(repository: SearchRepository(session: searchNetworkProvider), locationService: locationService)
+        
+        let followingNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [])
+        self.followingUseCase = FollowingUseCase(repository: FollowingRepository(session: followingNetworkProvider))
         
         super.init(dependency: dependency)
     }

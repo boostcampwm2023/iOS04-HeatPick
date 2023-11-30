@@ -77,7 +77,7 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     // MARK: - Following
     
     func followingDashboardDidTapSeeAll() {
-        print("# Attach Following See All View")
+        listener?.homeDidTapFollowing()
     }
     
     func followingDashboardDidTapStory(id: Int) {
