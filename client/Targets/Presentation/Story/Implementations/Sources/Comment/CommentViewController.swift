@@ -40,7 +40,7 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .hpWhite
         tableView.register(CommentTableViewCell.self)
         tableView.allowsSelection = false
         tableView.delegate = self
@@ -84,7 +84,7 @@ private extension CommentViewController {
             commentInputField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             commentInputField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             commentInputField.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
-            commentInputField.heightAnchor.constraint(equalToConstant: 50)
+            commentInputField.heightAnchor.constraint(equalToConstant: Constant.commentInputFieldHeight)
         ])
     }
 }
@@ -115,7 +115,6 @@ extension CommentViewController: UITableViewDataSource {
         guard let model = commentViewModels[safe: indexPath.row] else { return .init() }
         
         let cell = tableView.dequeue(CommentTableViewCell.self, for: indexPath)
-        cell.prepareForReuse()
         cell.setup(model)
         
         return cell
