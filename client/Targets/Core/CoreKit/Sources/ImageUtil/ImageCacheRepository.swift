@@ -17,17 +17,12 @@ public final class ImageCacheRepository {
     
     public init(fileManager: FileManager) {
         self.fileManager = fileManager
-        cache.countLimit = 50
+        cache.countLimit = 200
     }
     
     public func fetch(_ cacheKey: String) -> Data? {
         if let cacheData = fetchMemoryData(cacheKey) {
             return cacheData
-        }
-        
-        if let diskData = fetchDiskData(cacheKey) {
-            setMemory(diskData, cacheKey: cacheKey)
-            return diskData
         }
         return nil
     }
