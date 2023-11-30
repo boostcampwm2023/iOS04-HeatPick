@@ -86,6 +86,7 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     func detachSearchResult() {
         router?.detachSearchResult()
+        dependency.searchUseCase.saveRecentSearches()
     }
     
     func controllerDidDismiss() {
