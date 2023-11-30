@@ -11,6 +11,6 @@ import DomainEntities
 
 public protocol SearchPlaceRepositoryInterface {
     
-    func fetchPlaces(lat: Double, lng: Double) async -> Result<[Place], Error>
+    func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<RecommendStoryWithPaging, Error>
     
 }

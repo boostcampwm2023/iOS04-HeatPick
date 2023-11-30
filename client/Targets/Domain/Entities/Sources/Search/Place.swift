@@ -10,20 +10,24 @@ import Foundation
 
 public struct Place {
     
-    public let placeID: Int
+    public let storyId: Int
     public let title: String
-    public let address: String
+    public let content: String
+    public let imageURL: String
     public let lat: Double
     public let lng: Double
-    public let story: PlaceStory
+    public let likes: Int
+    public let comments: Int
     
-    public init(placeID: Int, title: String, address: String, lat: Double, lng: Double, story: PlaceStory) {
-        self.placeID = placeID
+    public init(storyId: Int, title: String, content: String, imageURL: String, lat: Double, lng: Double, likes: Int, comments: Int) {
+        self.storyId = storyId
         self.title = title
-        self.address = address
+        self.content = content
+        self.imageURL = imageURL
         self.lat = lat
         self.lng = lng
-        self.story = story
+        self.likes = likes
+        self.comments = comments
     }
     
 }

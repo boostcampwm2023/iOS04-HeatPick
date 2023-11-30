@@ -11,5 +11,5 @@ import DomainEntities
 
 public protocol SearchMapUseCaseInterface {
     var location: LocationCoordinate? { get }
-    func fetchPlaces(lat: Double, lng: Double) async -> Result<[Place], Error>
+    func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<[Place], Error>
 }

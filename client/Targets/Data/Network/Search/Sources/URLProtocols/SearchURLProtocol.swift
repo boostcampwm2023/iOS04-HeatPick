@@ -15,7 +15,6 @@ public final class SearchURLProtocol: URLProtocol {
         SearchAPI.recommend(searchText: "text").path: loadMockData(fileName: "SearchRecommendResponseMock"),
         SearchAPI.story(searchText: "text").path: loadMockData(fileName: "SearchStoryResponseMock"),
         SearchAPI.user(searchText: "text").path: loadMockData(fileName: "SearchUserResponseMock"),
-        PlaceAPI.place(lat: 0, lng: 0).path: loadMockData(fileName: "PlaceResponseMock"),
         SearchAPI.searchResult(searchText: "text").path: loadMockData(fileName: "SearchResultResponseMock")
     ]
     

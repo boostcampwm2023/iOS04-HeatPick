@@ -16,6 +16,8 @@ public struct RecommendStory {
     public let imageURL: String
     public let likes: Int
     public let comments: Int
+    public let lat: Double
+    public let lng: Double
     
     public init(
         id: Int, 
@@ -23,7 +25,9 @@ public struct RecommendStory {
         content: String,
         imageURL: String,
         likes: Int,
-        comments: Int
+        comments: Int,
+        lat: Double,
+        lng: Double
     ) {
         self.id = id
         self.title = title
@@ -31,6 +35,8 @@ public struct RecommendStory {
         self.imageURL = imageURL
         self.likes = likes
         self.comments = comments
+        self.lat = lat
+        self.lng = lng
     }
     
 }
