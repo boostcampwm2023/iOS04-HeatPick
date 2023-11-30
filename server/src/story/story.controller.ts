@@ -103,7 +103,7 @@ export class StoryController {
     schema: {
       type: 'object',
       properties: {
-        likeCounts: { type: 'number' },
+        likeCount: { type: 'number' },
       },
     },
   })
@@ -120,7 +120,7 @@ export class StoryController {
     schema: {
       type: 'object',
       properties: {
-        likeCounts: { type: 'number' },
+        likeCount: { type: 'number' },
       },
     },
   })
