@@ -76,6 +76,12 @@ public final class SearchRepository: SearchRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
+    public func fetchSearchLocal(searchText: String) async -> Result<[SearchLocal], Error> {
+        let target = NaverSearchAPI.local(query: searchText)
+        let request: Result<NaverSearchLocalResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
     deinit {
         saveRecentSearches()
     }
