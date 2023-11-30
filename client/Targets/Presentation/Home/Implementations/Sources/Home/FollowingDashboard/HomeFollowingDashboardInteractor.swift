@@ -20,6 +20,7 @@ protocol HomeFollowingDashboardPresentable: Presentable {
 
 protocol HomeFollowingDashboardListener: AnyObject {
     func followingDashboardDidTapSeeAll()
+    func followingDashboardDidTapStory(id: Int)
 }
 
 protocol HomeFollowingDashboardInteractorDependency: AnyObject {
@@ -54,6 +55,10 @@ final class HomeFollowingDashboardInteractor: PresentableInteractor<HomeFollowin
         listener?.followingDashboardDidTapSeeAll()
     }
     
+    func didTap(storyId: Int) {
+        listener?.followingDashboardDidTapStory(id: storyId)
+    }
+    
     private func fetchFollowing() {
         Task { [weak self] in
             guard let self else { return }
@@ -80,10 +85,10 @@ private extension HomeFollowingStory {
     
     var toModel: HomeFollowingContentViewModel {
         return .init(
+            storyId: storyId,
             profileModel: .init(
                 profileImageURL: userProfileImageURL,
-                nickname: username,
-                place: "" // TODO: - 장소..?
+                nickname: username
             ),
             thumbnailImageURL: imageURL,
             likes: likes,

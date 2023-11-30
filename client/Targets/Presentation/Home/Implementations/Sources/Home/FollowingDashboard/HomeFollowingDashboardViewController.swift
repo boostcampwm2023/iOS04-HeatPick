@@ -17,6 +17,7 @@ struct HomeFollowingDashboardViewModel {
 
 protocol HomeFollowingDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
+    func didTap(storyId: Int)
 }
 
 final class HomeFollowingDashboardViewController: UIViewController, HomeFollowingDashboardPresentable, HomeFollowingDashboardViewControllable {
@@ -84,6 +85,7 @@ final class HomeFollowingDashboardViewController: UIViewController, HomeFollowin
         scrollView.isHidden = isEmpty
         model.contentList.forEach { contentModel in
             let contentView = HomeFollowingContentView()
+            contentView.delegate = self
             contentView.setup(model: contentModel)
             stackView.addArrangedSubview(contentView)
         }
@@ -95,6 +97,14 @@ extension HomeFollowingDashboardViewController: SeeAllViewDelegate {
     
     func seeAllViewDidTapSeeAll() {
         listener?.didTapSeeAll()
+    }
+    
+}
+
+extension HomeFollowingDashboardViewController: HomeFollowingContentViewDelegate {
+    
+    func homeFollowingContentViewDidTap(_ view: HomeFollowingContentView, storyId: Int) {
+        listener?.didTap(storyId: storyId)
     }
     
 }

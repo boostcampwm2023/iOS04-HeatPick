@@ -11,6 +11,7 @@ import CoreKit
 import DesignKit
 
 struct HomeFollowingContentViewModel {
+    let storyId: Int
     let profileModel: HomeFollwoingProfileViewModel
     let thumbnailImageURL: String
     let likes: Int
@@ -19,8 +20,16 @@ struct HomeFollowingContentViewModel {
     let subtitle: String
 }
 
+protocol HomeFollowingContentViewDelegate: AnyObject {
+    func homeFollowingContentViewDidTap(_ view: HomeFollowingContentView, storyId: Int)
+}
+
 final class HomeFollowingContentView: UIView {
-        
+    
+    weak var delegate: HomeFollowingContentViewDelegate?
+    
+    private var storyId: Int?
+    
     private let separator: UIView = {
         let view = UIView()
         view.backgroundColor = .hpGray4
@@ -76,6 +85,7 @@ final class HomeFollowingContentView: UIView {
     }
     
     func setup(model: HomeFollowingContentViewModel) {
+        storyId = model.storyId
         profileView.setup(model: model.profileModel)
         thumbnailImageView.load(from: model.thumbnailImageURL)
         commentView.setup(likes: model.likes, comments: model.comments)
@@ -88,6 +98,8 @@ final class HomeFollowingContentView: UIView {
 private extension HomeFollowingContentView {
     
     func setupViews() {
+        addTapGesture(target: self, action: #selector(didTap))
+        
         [separator, profileView, thumbnailImageView, commentView, titleLabel, subtitleLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
@@ -117,6 +129,11 @@ private extension HomeFollowingContentView {
             subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             subtitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+    
+    @objc func didTap() {
+        guard let storyId else { return }
+        delegate?.homeFollowingContentViewDidTap(self, storyId: storyId)
     }
     
 }
