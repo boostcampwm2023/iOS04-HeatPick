@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreKit
 import DomainEntities
 
 public struct SearchStroyDTO: Decodable {
@@ -28,7 +29,7 @@ public extension SearchStroyDTO {
         SearchStory(
             storyId: self.storyId,
             title: self.title,
-            content: self.content,
+            content: self.content.withLineBreak,
             likeCount: self.likeCount,
             commentCount: self.commentCount,
             storyImage: self.storyImage,

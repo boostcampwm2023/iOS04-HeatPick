@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreKit
 import DomainEntities
 
 public struct RecommendLocationResponseDTO: Decodable {
@@ -41,7 +42,7 @@ public extension RecommendLocationResponseDTO {
             .map { RecommendStory(
                 id: $0.storyId,
                 title: $0.title,
-                content: $0.content,
+                content: $0.content.withLineBreak,
                 imageURL: $0.storyImage ?? "",
                 likes: $0.likeCount,
                 comments: $0.commentCount,
