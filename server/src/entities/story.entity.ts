@@ -13,7 +13,7 @@ export class Story {
   storyId: number;
 
   @ManyToOne(() => User, (user) => user.stories)
-  user: User;
+  user: Promise<User>;
 
   @Column()
   @ApiProperty({ description: 'Story의 제목' })

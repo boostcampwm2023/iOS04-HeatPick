@@ -14,7 +14,7 @@ import { StoryRecommendResponseDto, StoryResultDto } from 'src/search/dto/story.
 
 @ApiTags('story')
 @Controller('story')
-@UseGuards(JwtAuthGuard)
+//@UseGuards(JwtAuthGuard)
 export class StoryController {
   constructor(private storyService: StoryService) {}
 
@@ -150,5 +150,13 @@ export class StoryController {
     const recommededStories = await this.storyService.getRecommendedStory(offset, limit);
     const isLastPage = recommededStories.length < limit ? true : false;
     return { recommededStories: recommededStories, isLastPage: isLastPage };
+  }
+
+  @Get('follow')
+  async getFollowStories(@Request() req: any, @Query('offset') offset: number = 0, @Query('limit') limit: number = 5, @Query('sortOption') sortOption: number = 0): Promise<StoryRecommendResponseDto> {
+    const userId = req.user.userRecordId;
+    const stories = await this.storyService.getFollowStories(userId, sortOption, offset, limit);
+    const isLastPage = stories.length < limit ? true : false;
+    return { recommededStories: stories, isLastPage: isLastPage };
   }
 }
