@@ -6,12 +6,17 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import BasePresentation
 import ModernRIBs
+import DomainInterfaces
+import BasePresentation
 
-protocol HotPlaceSeeAllDependency: Dependency {}
+protocol HotPlaceSeeAllDependency: Dependency {
+    var hotPlaceUseCase: HotPlaceUseCaseInterface { get }
+}
 
-final class HotPlaceSeeAllComponent: Component<HotPlaceSeeAllDependency> {}
+final class HotPlaceSeeAllComponent: Component<HotPlaceSeeAllDependency>, HotPlaceSeeAllInteractorDependency {
+    var hotPlaceUseCase: HotPlaceUseCaseInterface { dependency.hotPlaceUseCase }
+}
 
 protocol HotPlaceSeeAllBuildable: Buildable {
     func build(withListener listener: HotPlaceSeeAllListener) -> ViewableRouting
@@ -24,8 +29,9 @@ final class HotPlaceSeeAllBuilder: Builder<HotPlaceSeeAllDependency>, HotPlaceSe
     }
     
     func build(withListener listener: HotPlaceSeeAllListener) -> ViewableRouting {
+        let component = HotPlaceSeeAllComponent(dependency: dependency)
         let viewController = StorySeeAllViewController()
-        let interactor = HotPlaceSeeAllInteractor(presenter: viewController)
+        let interactor = HotPlaceSeeAllInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return HotPlaceSeeAllRouter(interactor: interactor, viewController: viewController)
     }

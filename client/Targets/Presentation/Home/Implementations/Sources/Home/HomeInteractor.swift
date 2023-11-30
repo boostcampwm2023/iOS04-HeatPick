@@ -73,6 +73,10 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         router?.attachStoryDetail(storyID: id)
     }
     
+    func hotPlaceSeeAllDidTapStory(storyID: Int) {
+        router?.attachStoryDetail(storyID: storyID)
+    }
+    
     // MARK: - Following
     
     func followingDashboardDidTapSeeAll() {
