@@ -94,7 +94,7 @@ export class UserService {
           stories.map(async (story: Story) => {
             return {
               storyId: story.storyId,
-              thumbnailImageURL: (await story.storyImages)[0].imageUrl,
+              thumbnailImageURL: (await story.storyImages).length > 0 ? (await story.storyImages)[0].imageUrl : '',
               title: story.title,
               content: story.content,
               likeState: (await story.usersWhoLiked).some((user) => user.userId === requestUserId) ? 0 : 1,
