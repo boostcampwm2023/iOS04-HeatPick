@@ -16,6 +16,7 @@ import { BadgeJsonDto, BadgeReturnDto } from './dto/badge.return.dto';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
 import { UserProfileDetailStoryDto } from './dto/user.profile.detail.story.dto';
+import { UserJsonResponseDto } from './dto/user.response.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -143,39 +144,39 @@ export class UserController {
 
   @Get('follow')
   @ApiOperation({ summary: '현재 유저의 팔로우 목록을 리턴합니다.' })
-  @ApiResponse({ status: 200, description: '현재 유저의 팔로우의 Id 목록입니다' })
-  async getMyFollows(@Req() req: any) {
+  @ApiResponse({ status: 200, description: '현재 유저의 팔로우의 목록입니다', type: UserJsonResponseDto })
+  async getMyFollows(@Req() req: any): Promise<UserJsonResponseDto> {
     const currentUserId = req.user.userRecordId;
     const follows = await this.userService.getFollows(currentUserId);
     const transformedFollows = follows.map((follow) => userEntityToUserObj(follow));
-    return { follows: transformedFollows };
+    return { users: transformedFollows };
   }
 
   @Get('follower')
   @ApiOperation({ summary: '현재 유저의 팔로워 목록을 리턴합니다.' })
-  @ApiResponse({ status: 200, description: '현재 유저의 팔로워들의 Id 목록입니다' })
-  async getMyFollowers(@Req() req: any) {
+  @ApiResponse({ status: 200, description: '현재 유저의 팔로워들의 목록입니다', type: UserJsonResponseDto })
+  async getMyFollowers(@Req() req: any): Promise<UserJsonResponseDto> {
     const currentUserId = req.user.userRecordId;
     const followers = await this.userService.getFollowers(currentUserId);
     const transformedFollowers = followers.map((follower) => userEntityToUserObj(follower));
-    return { followers: transformedFollowers };
+    return { users: transformedFollowers };
   }
 
   @Get('follow/:id')
   @ApiOperation({ summary: '특정 유저의 팔로잉 목록을 리턴합니다.' })
-  @ApiResponse({ status: 200, description: '특정 유저가 팔로우하는 유저들의 Id 목록입니다' })
-  async getOtherFollows(@Param('id') userId: number) {
+  @ApiResponse({ status: 200, description: '특정 유저가 팔로우하는 유저들의 목록입니다', type: UserJsonResponseDto })
+  async getOtherFollows(@Param('id') userId: number): Promise<UserJsonResponseDto> {
     const follows = await this.userService.getFollows(userId);
     const transformedFollows = follows.map((follow) => userEntityToUserObj(follow));
-    return { follows: transformedFollows };
+    return { users: transformedFollows };
   }
 
   @Get('follower/:id')
   @ApiOperation({ summary: '특정 유저의 팔로워 목록을 리턴합니다.' })
-  @ApiResponse({ status: 200, description: '특정 유저를 팔로우하는 유저들의 Id 목록입니다' })
-  async getOtherFollowers(@Param('id') userId: number) {
+  @ApiResponse({ status: 200, description: '특정 유저를 팔로우하는 유저들의 목록입니다', type: UserJsonResponseDto })
+  async getOtherFollowers(@Param('id') userId: number): Promise<UserJsonResponseDto> {
     const followers = await this.userService.getFollowers(userId);
     const transformedFollowers = followers.map((follower) => userEntityToUserObj(follower));
-    return { followers: transformedFollowers };
+    return { users: transformedFollowers };
   }
 }
