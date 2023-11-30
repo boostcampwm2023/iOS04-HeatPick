@@ -54,7 +54,7 @@ private extension CommentViewController {
 
 extension CommentViewController: NavigationViewDelegate {
     
-    func navigationViewButtonDidTap(_ view: DesignKit.NavigationView, type: DesignKit.NavigationViewButtonType) {
+    func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         listener?.navigationViewButtonDidTap()
     }
     
