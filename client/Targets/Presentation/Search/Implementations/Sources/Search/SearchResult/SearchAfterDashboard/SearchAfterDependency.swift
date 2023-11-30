@@ -18,6 +18,7 @@ protocol SearchAfterDashboardInteractorDependency: AnyObject {
 }
 
 protocol SearchAfterDashboardRouterDependency {
+    var searchAfterLocalDashboardBuilder: SearchAfterLocalDashboardBuildable { get }
     var searchAfterStoryDashboardBuilder: SearchAfterStoryDashboardBuildable { get }
     var searchAfterUserDashboardBuilder: SearchAfterUserDashboardBuildable { get }
 }

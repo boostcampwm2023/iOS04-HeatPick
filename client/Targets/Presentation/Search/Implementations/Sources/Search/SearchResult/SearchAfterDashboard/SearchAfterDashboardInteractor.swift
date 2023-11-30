@@ -20,6 +20,9 @@ protocol SearchAfterDashboardRouting: ViewableRouting {
     
     func attachSearchAfterUserDashboard()
     func detachSearchAfterUserDashboard()
+    
+    func attachSearchAfterLocalDasboard()
+    func detachSearchAfterLocalDasboard()
 }
 
 protocol SearchAfterDashboardPresentable: Presentable {
@@ -45,9 +48,11 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
     
     var searchResultStoriesPublisher: AnyPublisher<[SearchStory], Never> { searchResultStoriesSubject.eraseToAnyPublisher() }
     var searchResultUsersPublisher: AnyPublisher<[SearchUser], Never> { searchResultUsersSubject.eraseToAnyPublisher() }
+    var searchResultLocalsPublisher: AnyPublisher<[SearchLocal], Never> { searchResultLocalsSubject.eraseToAnyPublisher() }
     
     private var searchResultStoriesSubject: PassthroughSubject<[SearchStory], Never> = .init()
     private var searchResultUsersSubject: PassthroughSubject<[SearchUser], Never> = .init()
+    private var searchResultLocalsSubject: PassthroughSubject<[SearchLocal], Never> = .init()
     private var cancellables: Set<AnyCancellable> = []
     private var cancelTaskBag: CancelBag = .init()
     private var searchText: String?
@@ -63,6 +68,7 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
 
     override func didBecomeActive() {
         super.didBecomeActive()
+        router?.attachSearchAfterLocalDasboard()
         router?.attachSearchAfterStoryDashboard()
         router?.attachSearchAfterUserDashboard()
         
@@ -82,12 +88,25 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
                             self.searchText = nil
                         }
                 }.store(in: cancelTaskBag)
+                
+                Task {
+                    await self.dependency.searhResultSearchAfterUseCase
+                        .fetchNaverLocal(query: searchText)
+                        .onSuccess { naverSearchLocals in
+                            self.searchResultLocalsSubject.send(naverSearchLocals)
+                        }
+                        .onFailure { error in
+                            Log.make(message: error.localizedDescription, log: .network)
+                            self.searchText = nil
+                        }
+                }.store(in: cancelTaskBag)
             }.store(in: &cancellables)
     }
 
     override func willResignActive() {
         super.willResignActive()
         cancelTaskBag.cancel()
+        router?.detachSearchAfterLocalDasboard()
         router?.detachSearchAfterStoryDashboard()
         router?.detachSearchAfterUserDashboard()
     }
