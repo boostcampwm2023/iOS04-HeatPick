@@ -12,15 +12,19 @@ public struct MyPageProfile {
     
     public let userName: String
     public let profileImageURL: String?
+    public let temperature: Int
+    public let temperatureFeeling: String
     public let followerCount: Int
     public let storyCount: Int
     public let experience: Int
     public let maxExperience: Int
     public let mainBadge: MyPageBadge
     
-    public init(userName: String, profileImageURL: String?, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, mainBadge: MyPageBadge) {
+    public init(userName: String, profileImageURL: String?, temperature: Int, temperatureFeeling: String, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, mainBadge: MyPageBadge) {
         self.userName = userName
         self.profileImageURL = profileImageURL
+        self.temperature = temperature
+        self.temperatureFeeling = temperatureFeeling
         self.followerCount = followerCount
         self.storyCount = storyCount
         self.experience = experience

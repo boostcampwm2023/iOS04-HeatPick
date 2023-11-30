@@ -18,7 +18,10 @@ public struct MyProfileResponseDTO: Decodable {
     public let storyCount: Int
     public let experience: Int
     public let maxExperience: Int
+    public let temperature: Int
+    public let temperatureFeeling: String
     public let mainBadge: MyProfileBadgeResponseDTO
+    public let badgeExplain: String
     public let storyList: [MyProfileStoryResponseDTO]
     
 }
@@ -34,9 +37,9 @@ public struct MyProfileStoryResponseDTO: Decodable {
     public let storyId: Int
     public let title: String
     public let content: String
-    public let storyImages: [String]
+    public let thumbnailImageURL: String?
     public let likeCount: Int
-    public let createAt: String // 2023-11-23T03:11:58.868Z
+    public let commentCount: Int
 }
 
 public extension MyProfileResponseDTO {
@@ -45,11 +48,13 @@ public extension MyProfileResponseDTO {
         return .init(
             userName: username,
             profileImageURL: profileURL,
+            temperature: temperature,
+            temperatureFeeling: temperatureFeeling,
             followerCount: followerCount,
             storyCount: storyCount,
             experience: experience,
             maxExperience: maxExperience,
-            mainBadge: mainBadge.toDomain(),
+            mainBadge: mainBadge.toDomain(description: badgeExplain),
             stories: storyList.map { $0.toDomain() }
         )
     }
@@ -58,12 +63,13 @@ public extension MyProfileResponseDTO {
 
 public extension MyProfileBadgeResponseDTO {
     
-    func toDomain() -> MyPageBadge {
+    func toDomain(description: String) -> MyPageBadge {
         return .init(
             id: badgeId,
             name: badgeName,
             experience: badgeExp,
-            emoji: emoji
+            emoji: emoji,
+            description: description
         )
     }
     
@@ -76,7 +82,7 @@ public extension MyProfileStoryResponseDTO {
             storyId: storyId,
             title: title, 
             content: content.withLineBreak,
-            thumbnailImageURL: nil,
+            thumbnailImageURL: thumbnailImageURL,
             likeCount: likeCount
         )
     }

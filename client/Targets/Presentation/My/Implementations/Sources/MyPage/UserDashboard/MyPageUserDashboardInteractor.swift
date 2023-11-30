@@ -74,10 +74,10 @@ private extension MyPageProfile {
             follower: "\(followerCount)", // 팔로잉 변환 로직 추가
             storyCount: "\(storyCount)",
             experience: "\(experience)/\(maxExperience)", // 경험치 변환 로직 추가
-            temperatureTitle: "따뜻해요", // 온도가 필요할 듯
-            temperature: "몇도씨", // 온도가 필요할 듯
+            temperatureTitle: temperatureFeeling,
+            temperature: "\(temperature)℃",
             badgeTitle: mainBadge.emoji + " " + mainBadge.name,
-            badgeContent: mainBadge.name
+            badgeContent: mainBadge.description
         )
     }
     

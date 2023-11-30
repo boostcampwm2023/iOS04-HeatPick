@@ -42,6 +42,8 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
             let profile = MyPageProfile(
                 userName: page.userName,
                 profileImageURL: page.profileImageURL,
+                temperature: page.temperature,
+                temperatureFeeling: page.temperatureFeeling,
                 followerCount: page.followerCount,
                 storyCount: page.storyCount,
                 experience: page.experience,
