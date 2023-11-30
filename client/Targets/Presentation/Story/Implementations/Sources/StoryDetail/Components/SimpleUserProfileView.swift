@@ -34,14 +34,36 @@ struct SimpleUserProfileViewModel {
 
 fileprivate extension UserStatus {
     
-    var image: UIImage? {
+    var buttonConfiguration: UIButton.Configuration? {
         switch self {
         case .me:
             return nil
+            
         case .following:
-            return UIImage(systemName: "person.badge.minus")
+            var config = UIButton.Configuration.filled()
+            config.cornerStyle = .capsule
+            config.background.backgroundColor = .hpWhite
+            
+            var container = AttributeContainer()
+            container.font = .smallSemibold
+            container.foregroundColor = .hpBlack
+            config.attributedTitle = AttributedString("언팔로우", attributes: container)
+            config.contentInsets = .init(top: 8, leading: 10, bottom: 8, trailing: 10)
+            
+            return config
+            
         case .nonFollowing:
-            return UIImage(systemName: "person.badge.plus")
+            var config = UIButton.Configuration.filled()
+            config.cornerStyle = .capsule
+            config.background.backgroundColor = .hpBlack
+            
+            var container = AttributeContainer()
+            container.font = .smallSemibold
+            container.foregroundColor = .hpWhite
+            config.attributedTitle = AttributedString("팔로우", attributes: container)
+            config.contentInsets = .init(top: 8, leading: 10, bottom: 8, trailing: 10)
+            
+            return config
         }
     }
     
@@ -55,19 +77,23 @@ final class SimpleUserProfileView: UIView {
     
     weak var delegate: SimpleUserProfileViewDelegate?
     
-    private let padding: CGFloat = 10
-    private let titlePadding: CGFloat = 2
+    private enum Constant {
+        static let padding: CGFloat = 10
+        static let titlePadding: CGFloat = 2
+        static let followButtonHeight: CGFloat = 32
+    }
+    
     private var userId: Int?
-    private var userStatus: UserStatus = .me {
+    private var userStatus: UserStatus = .nonFollowing {
         didSet {
-            followButton.image = userStatus.image
+            followButton.configuration = userStatus.buttonConfiguration
         }
     }
     
     private lazy var userStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = padding
+        stackView.spacing = Constant.padding
         stackView.alignment = .center
         stackView.distribution = .fill
         
@@ -87,7 +113,7 @@ final class SimpleUserProfileView: UIView {
     private lazy var titleStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = titlePadding
+        stackView.spacing = Constant.titlePadding
         stackView.alignment = .leading
         stackView.distribution = .fill
         
@@ -114,18 +140,13 @@ final class SimpleUserProfileView: UIView {
         return label
     }()
     
-    private lazy var followButton: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = userStatus.image
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .hpBlack
-        imageView.isUserInteractionEnabled = true
+    private lazy var followButton: UIButton = {
+        let button = UIButton()
+        button.configuration = userStatus.buttonConfiguration
+        button.addTapGesture(target: self, action: #selector(followButtonDidTap))
         
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(followButtonDidTap))
-        imageView.addGestureRecognizer(gesture)
-        
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     override init(frame: CGRect) {
@@ -150,23 +171,23 @@ final class SimpleUserProfileView: UIView {
         profileImage.load(from: model.profileImageUrl)
         userId = model.id
         userStatus = model.userStatus
+        setupFollowButton()
     }
     
     func didFollow() {
         userStatus = .following
+        followButton.isEnabled = true
     }
     
     func didUnfollow() {
         userStatus = .nonFollowing
+        followButton.isEnabled = true
     }
 }
 
 private extension SimpleUserProfileView {
     
     func setupViews() {
-        let followButtonWidth: CGFloat = 24
-        let followButtonHeight: CGFloat = followButtonWidth
-        
         addSubview(userStackView)
         [nicknameLabel, subtitleLabel].forEach(titleStackView.addArrangedSubview)
         [profileImage, titleStackView, followButton].forEach(userStackView.addArrangedSubview)
@@ -177,12 +198,19 @@ private extension SimpleUserProfileView {
             userStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             userStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
             userStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-            
-            followButton.widthAnchor.constraint(equalToConstant: followButtonWidth),
-            followButton.heightAnchor.constraint(equalToConstant: followButtonHeight)
         ])
     }
 
+    func setupFollowButton() {
+        switch userStatus {
+        case .me:
+            return
+        case .following, .nonFollowing:
+            followButton.layer.borderWidth = 1
+            followButton.layer.borderColor = UIColor.hpBlack.cgColor
+            followButton.layer.cornerRadius = Constant.followButtonHeight / 2
+        }
+    }
 }
 
 // MARK: objc
@@ -190,6 +218,7 @@ private extension SimpleUserProfileView {
     
     @objc func followButtonDidTap() { 
         guard let userId else { return }
+        followButton.isEnabled = false
         delegate?.followButtonDidTap(userId: userId, userStatus: userStatus)
     }
     
