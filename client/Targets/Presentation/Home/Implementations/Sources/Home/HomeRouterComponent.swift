@@ -18,7 +18,7 @@ final class HomeRouterComponent: HomeRouterDependency {
     init(component: HomeComponent) {
         self.base = HomeBaseRouterComponent(component: component)
         self.seeAll = HomeSeeAllRouterComponent(component: component)
-        self.storyDetailBuilder = component.storyDeatilBuilder
+        self.storyDetailBuilder = component.storyDetailBuilder
     }
     
 }

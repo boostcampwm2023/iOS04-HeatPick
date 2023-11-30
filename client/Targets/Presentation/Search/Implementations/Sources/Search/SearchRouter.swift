@@ -30,7 +30,7 @@ protocol SearchRouterDependency {
     var searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable { get }
     var searchResultBuilder: SearchResultBuildable { get }
     var storyEditorBuilder: StoryEditorBuildable { get }
-    var storyDeatilBuilder: StoryDetailBuildable { get }
+    var storyDetailBuilder: StoryDetailBuildable { get }
     var searchStorySeeAllBuilder: SearchStorySeeAllBuildable { get }
 }
 
@@ -92,7 +92,7 @@ extension SearchRouter {
     
     func attachStoryDetail(storyId: Int) {
         guard storyDeatilRouter == nil else { return }
-        let router = dependency.storyDeatilBuilder.build(withListener: interactor, storyId: storyId)
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyId)
         attachChild(router)
         storyDeatilRouter = router
         viewController.pushViewController(router.viewControllable, animated: true)
