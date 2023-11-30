@@ -19,6 +19,8 @@ public enum StoryAPI {
     case storyDetail(Int)
     case follow(Int)
     case unfollow(Int)
+    case readComment(Int)
+    case newComment(CommentContent)
 }
 
 extension StoryAPI: Target {
@@ -33,6 +35,8 @@ extension StoryAPI: Target {
         case .newStory: return "/story/create"
         case .storyDetail: return "/story/detail"
         case .follow, .unfollow: return "/user/follow"
+        case .readComment: return "comment/read"
+        case .newComment: return "comment/create"
         }
     }
     
@@ -43,6 +47,8 @@ extension StoryAPI: Target {
         case .storyDetail: return .get
         case .follow: return .post
         case .unfollow: return .delete
+        case .readComment: return .get
+        case .newComment: return .post
         }
     }
     
@@ -67,6 +73,12 @@ extension StoryAPI: Target {
             return .url(parameters: request.parameters())
         case .follow(let userId), .unfollow(let userId):
             return .json(FollowRequestDTO(followId: userId))
+        case .readComment(let storyId):
+            let request = CommentReadRequestDTO(storyId: storyId)
+            
+            return .url(parameters: request.parameters())
+        case .newComment(let content):
+            return .json(NewCommentRequestDTO(content: content))
         }
     }
     

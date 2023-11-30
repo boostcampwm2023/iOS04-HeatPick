@@ -51,4 +51,12 @@ public final class StoryUseCase: StoryUseCaseInterface {
     public func requestUnfollow(userId: Int) async -> Result<Void, Error> {
         return await repository.requestUnfollow(userId: userId)
     }
+    
+    public func requestReadComment(storyId: Int) async -> Result<[Comment], Error> {
+        return await repository.requestReadComment(storyId: storyId)
+    }
+    
+    public func requestNewComment(content: CommentContent) async -> Result<Void, Error> {
+        return await repository.requestNewComment(content: content)
+    }
 }

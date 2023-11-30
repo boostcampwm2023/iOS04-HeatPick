@@ -51,4 +51,16 @@ public final class StoryRepository: StoryRepositoryInterface {
         let target = StoryAPI.unfollow(userId)
         return await session.request(target)
     }
+    
+    public func requestReadComment(storyId: Int) async -> Result<[Comment], Error> {
+        let target = StoryAPI.readComment(storyId)
+        let request: Result<CommentReadResponseDTO, Error> = await session.request(target)
+        
+        return request.map { $0.toDomain() }
+    }
+    
+    public func requestNewComment(content: CommentContent) async -> Result<Void, Error> {
+        let target = StoryAPI.newComment(content)
+        return await session.request(target)
+    }
 }
