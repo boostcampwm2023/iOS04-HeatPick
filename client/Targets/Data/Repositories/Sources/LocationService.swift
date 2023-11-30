@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import CoreLocation
 import Contacts
+import DomainEntities
 import DomainInterfaces
 
 public final class LocationService: NSObject, LocationServiceInterface {
@@ -18,14 +19,14 @@ public final class LocationService: NSObject, LocationServiceInterface {
         return manager.authorizationStatus
     }
     
-    public var location: CLLocationCoordinate2D? {
-        return manager.location?.coordinate
+    public var location: LocationCoordinate? {
+        return manager.location?.coordinate.toEntity()
     }
     
     private let manager: CLLocationManager
     
     private var permissionSubject = PassthroughSubject<CLAuthorizationStatus, Error>()
-    private var locationSubject = PassthroughSubject<CLLocationCoordinate2D, Error>()
+    private var locationSubject = PassthroughSubject<LocationCoordinate, Error>()
     
     public override init() {
         self.manager = CLLocationManager()
@@ -41,7 +42,7 @@ public final class LocationService: NSObject, LocationServiceInterface {
         manager.stopUpdatingLocation()
     }
     
-    public func requestLocation() -> AnyPublisher<CLLocationCoordinate2D, Error> {
+    public func requestLocation() -> AnyPublisher<LocationCoordinate, Error> {
         startUpdatingLocation()
         return locationSubject
             .eraseToAnyPublisher()
@@ -54,9 +55,8 @@ public final class LocationService: NSObject, LocationServiceInterface {
     public func requestLocality() async throws -> String? {
         guard let location = manager.location else { return nil }
         let place = try await reverseGeocode(location)
-        
-        if let subLocality = place.last?.subLocality { return subLocality }
-        return place.last?.locality
+        let locality = place.last?.subLocality ?? place.last?.locality
+        return locality
     }
     
     public func requestAddress(lat: Double, lng: Double) async throws -> String? {
@@ -67,12 +67,21 @@ public final class LocationService: NSObject, LocationServiceInterface {
         return formatter.string(from: postalAddress).split(separator: "\n").joined(separator: " ")
     }
     
-    private func reverseGeocode(_ location: CLLocation,
-                                preferredLocale: Locale = Locale(identifier: "ko_kr")) async throws -> [CLPlacemark] {
+    public func requestLocality(lat: Double, lng: Double) async -> String? {
+        let place = try? await reverseGeocode(CLLocation(latitude: lat, longitude: lng))
+        if let subLocality = place?.last?.subLocality { return subLocality }
+        return place?.last?.locality
+    }
+    
+    private func reverseGeocode(
+        _ location: CLLocation,
+        preferredLocale: Locale = Locale(identifier: "ko_kr")
+    ) async throws -> [CLPlacemark] {
         let geoCoder: CLGeocoder = CLGeocoder()
-        let place = try await geoCoder.reverseGeocodeLocation(location, preferredLocale: preferredLocale)
-        
-        return place
+        return try await geoCoder.reverseGeocodeLocation(
+            location,
+            preferredLocale: preferredLocale
+        )
     }
 }
 
@@ -84,8 +93,19 @@ extension LocationService: CLLocationManagerDelegate {
     
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
-        locationSubject.send(location.coordinate)
+        locationSubject.send(location.coordinate.toEntity())
         stopUpdatingLocation()
+    }
+    
+}
+
+private extension CLLocationCoordinate2D {
+    
+    func toEntity() -> LocationCoordinate {
+        return LocationCoordinate(
+            lat: latitude,
+            lng: longitude
+        )
     }
     
 }

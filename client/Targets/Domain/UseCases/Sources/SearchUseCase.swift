@@ -14,7 +14,7 @@ import DomainInterfaces
 
 public final class SearchUseCase: SearchUseCaseInterface {
     
-    public var location: CLLocationCoordinate2D? {
+    public var location: LocationCoordinate? {
         return locationService.location
     }
     

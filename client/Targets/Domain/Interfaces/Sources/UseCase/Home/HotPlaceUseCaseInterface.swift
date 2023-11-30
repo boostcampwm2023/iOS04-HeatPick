@@ -11,7 +11,7 @@ import DomainEntities
 
 public protocol HotPlaceUseCaseInterface: AnyObject {
     
-    var hasMore: Bool { get }
+    var hasMoreHotPlace: Bool { get }
     
     func fetchHotPlace() async -> Result<[HotPlaceStory], Error>
     func fetchHotPlaceWithPaging() async -> Result<HotPlace, Error>

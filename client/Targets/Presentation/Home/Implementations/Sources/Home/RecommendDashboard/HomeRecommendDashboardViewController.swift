@@ -19,6 +19,7 @@ struct HomeRecommendDashboardViewModel {
 protocol HomeRecommendDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
     func didTap(storyID: Int)
+    func didAppear()
 }
 
 final class HomeRecommendDashboardViewController: UIViewController, HomeRecommendDashboardPresentable, HomeRecommendDashboardViewControllable {
@@ -76,6 +77,11 @@ final class HomeRecommendDashboardViewController: UIViewController, HomeRecommen
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        listener?.didAppear()
     }
     
     func setup(model: HomeRecommendDashboardViewModel) {

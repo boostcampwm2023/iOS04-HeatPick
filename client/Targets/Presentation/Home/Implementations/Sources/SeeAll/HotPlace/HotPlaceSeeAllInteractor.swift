@@ -91,7 +91,7 @@ final class HotPlaceSeeAllInteractor: PresentableInteractor<HotPlaceSeeAllPresen
     }
     
     private func loadMoreIfNeeded() {
-        guard dependency.hotPlaceUseCase.hasMore, isLoading == false else { return }
+        guard dependency.hotPlaceUseCase.hasMoreHotPlace, isLoading == false else { return }
         startLoading()
         
         Task { [weak self] in
