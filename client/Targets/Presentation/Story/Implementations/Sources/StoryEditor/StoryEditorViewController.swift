@@ -21,7 +21,6 @@ protocol StoryEditorPresentableListener: AnyObject {
     func titleDidChange(_ title: String)
     func descriptionDidChange(_ description: String)
     func categoryDidChange(_ category: StoryCategory?)
-    func locationDidChange(_ location: Location?)
     func badgeDidChange(_ badge: Badge?)
     
     func didTapSave(content: StoryContent)
@@ -274,10 +273,6 @@ extension StoryEditorViewController: AttributeFieldDelegate {
     
     func categoryDidChange(_ category: StoryCategory?) {
         listener?.categoryDidChange(category)
-    }
-    
-    func locationDidChange(_ location: Location?) {
-        listener?.locationDidChange(location)
     }
     
     func badgeDidChange(_ badge: Badge?) {

@@ -40,11 +40,10 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     private var title: String = ""
     private var description: String = ""
     private var category: StoryCategory?
-    private var location: Location?
     private var badge: Badge?
     
     private var isButtonEnabled: Bool {
-        guard let category, let location, let badge else { return false }
+        guard let category, let badge else { return false }
         
         return !(title.isEmpty || description.isEmpty)
     }
@@ -88,11 +87,6 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     
     func categoryDidChange(_ category: StoryCategory?) {
         self.category = category
-        presenter.setSaveButton(isButtonEnabled)
-    }
-    
-    func locationDidChange(_ location: Location?) {
-        self.location = location
         presenter.setSaveButton(isButtonEnabled)
     }
     
