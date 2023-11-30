@@ -120,6 +120,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         viewController.popViewController(animated: true)
         self.storyDetailRouting = nil
         detachChild(router)
+    }
 
     func attachUserInfoEditDashboard() {
         guard userInfoEditDashboardRouting == nil else { return }
