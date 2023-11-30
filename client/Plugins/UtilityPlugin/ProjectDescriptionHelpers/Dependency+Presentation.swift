@@ -63,6 +63,19 @@ public extension TargetDependency.Target.Presentation.Search {
     static let Implementations = project(name: "Implementations")
 }
 
+public extension TargetDependency.Target.Presentation.Following {
+    static let group = "Following"
+    static func project(name: String) -> TargetDependency {
+        return .project(
+            target: "\(group)\(name)",
+            path: .relativeToRoot("Targets/Presentation/\(group)/\(name)")
+        )
+    }
+    static let Interfaces = project(name: "Interfaces")
+    static let Implementations = project(name: "Implementations")
+}
+
+
 public extension TargetDependency.Target.Presentation.My {
     static let group = "My"
     static func project(name: String) -> TargetDependency {

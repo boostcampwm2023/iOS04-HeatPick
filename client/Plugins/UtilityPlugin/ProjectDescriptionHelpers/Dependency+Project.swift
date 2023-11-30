@@ -22,6 +22,7 @@ extension TargetDependency {
             public struct Auth {}
             public struct Story {}
             public struct Search {}
+            public struct Following {}
             public struct My {}
         }
         
