@@ -18,9 +18,11 @@ public final class NetworkProvider: Network {
     }
     
     private let session: URLSession
+    private let signOutService: SignOutRequestServiceInterface
     
-    public init(session: URLSession) {
+    public init(session: URLSession, signOutService: SignOutRequestServiceInterface) {
         self.session = session
+        self.signOutService = signOutService
     }
     
     public func request<T: Decodable>(_ target: Target) async -> Result<T, Error> {
@@ -172,12 +174,8 @@ public final class NetworkProvider: Network {
         
         if let errorCode = NetworkErrorCode(rawValue: httpResponse.statusCode) {
             switch errorCode {
-            case .unauthorized:
-                SignoutService.shared.signOut(type: .invalidToken)
-                return nil
-                
-            case .invalidToken:
-                SignoutService.shared.signOut(type: .invalidToken)
+            case .unauthorized, .invalidToken:
+                signOutService.signOut(type: .invalidToken)
                 return nil
                 
             case .internalServcerError:
