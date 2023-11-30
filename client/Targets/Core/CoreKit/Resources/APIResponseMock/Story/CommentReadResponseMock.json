@@ -1,0 +1,19 @@
+{
+    "comments": [
+        {
+            "commentId": 1,
+            "userId": 1,
+            "userProfileImageURL": "https://server.bc8heatpick.store/image/profile?name=2af8171a1ebb27d5c813fe34f5592f29.png",
+            "username": "update sayho",
+            "createdAt": "2023-11-28T11:55:57Z",
+            "mentions": [
+                {
+                    "userId": 2,
+                    "username": "S042"
+                }
+            ],
+            "content": "안녕하세",
+            "status": 1
+        }
+    ]
+}

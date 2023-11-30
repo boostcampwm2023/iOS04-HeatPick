@@ -17,4 +17,7 @@ public protocol StoryRepositoryInterface: AnyObject {
     func requestStoryDetail(storyId: Int) async -> Result<Story, Error>
     func requestFollow(userId: Int) async -> Result<Void, Error>
     func requestUnfollow(userId: Int) async -> Result<Void, Error>
+    func requestReadComment(storyId: Int) async -> Result<[Comment], Error> 
+    func requestNewComment(content: CommentContent) async -> Result<Void, Error>
+    
 }

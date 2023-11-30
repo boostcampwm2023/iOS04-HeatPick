@@ -21,7 +21,12 @@ public final class StoryURLProtocol: URLProtocol {
                                        place: Location(lat: 0, lng: 0),
                                        badge: Badge(id: 0, title: ""))).path: loadMockData(fileName: "StoryCreateResponseMock"),
         StoryAPI.storyDetail(0).path: loadMockData(fileName: "StoryDetailResponseMock"),
-        StoryAPI.follow(0).path: loadMockData(fileName: "FollowResponseMock")
+        StoryAPI.follow(0).path: loadMockData(fileName: "FollowResponseMock"),
+        StoryAPI.unfollow(0).path: loadMockData(fileName: "EmptyResponseMock"),
+        StoryAPI.readComment(0).path: loadMockData(fileName: "CommentReadResponseMock"),
+        StoryAPI.newComment(CommentContent(storyId: 0,
+                                           content: "",
+                                           mentions: [])).path: loadMockData(fileName: "EmptyResponseMock")
     ]
     
     public override class func canInit(with request: URLRequest) -> Bool {

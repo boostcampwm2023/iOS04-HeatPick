@@ -16,6 +16,8 @@ import DomainEntities
 
 protocol CommentPresentableListener: AnyObject {
     func navigationViewButtonDidTap()
+    func commentButtonDidTap()
+    func commentTextDidChange(_ text: String)
 }
 
 final class CommentViewController: UIViewController, CommentPresentable, CommentViewControllable {
@@ -53,6 +55,7 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
     
     private lazy var commentInputField: CommentInputField = {
         let commentInputField = CommentInputField()
+        commentInputField.delegate = self
         
         commentInputField.translatesAutoresizingMaskIntoConstraints = false
         return commentInputField
@@ -61,6 +64,29 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+    }
+    
+    func setup(_ model: [CommentTableViewCellModel]) {
+        commentViewModels = model
+        tableView.reloadData()
+    }
+    
+    func showFailure(_ error: Error, with title: String) {
+        let alert = UIAlertController(title: title, message: "\(error.localizedDescription)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .default))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func setCommentButton(_ isEnabled: Bool) {
+        commentInputField.setButton(isEnabled)
+    }
+    
+    func clearInputField() {
+        commentInputField.clear()
+    }
+    
+    func resetInputField() {
+        commentInputField.reset()
     }
 }
 
@@ -86,9 +112,19 @@ private extension CommentViewController {
             commentInputField.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             commentInputField.heightAnchor.constraint(equalToConstant: Constant.commentInputFieldHeight)
         ])
+        
+        commentInputField.layer.borderWidth = 1
+        commentInputField.layer.borderColor = UIColor.hpGray4.cgColor
+        
+        view.addTapGesture(target: self, action: #selector(dismissKeyboard))
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 
+// MARK: - NavigationView delegate
 extension CommentViewController: NavigationViewDelegate {
     
     func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
@@ -97,6 +133,7 @@ extension CommentViewController: NavigationViewDelegate {
     
 }
 
+// MARK: - TableView delegate
 extension CommentViewController: UITableViewDelegate {
     
 }
@@ -120,5 +157,18 @@ extension CommentViewController: UITableViewDataSource {
         return cell
     }
     
+    
+}
+
+// MARK: - CommentInputField delegate
+extension CommentViewController: CommentInputFieldDelegate {
+    
+    func commentButtonDidTap() {
+        listener?.commentButtonDidTap()
+    }
+    
+    func commentTextDidChange(_ text: String) {
+        listener?.commentTextDidChange(text)
+    }
     
 }

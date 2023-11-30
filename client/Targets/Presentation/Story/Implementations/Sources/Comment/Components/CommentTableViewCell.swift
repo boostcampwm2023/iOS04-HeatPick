@@ -13,7 +13,7 @@ import DomainEntities
 
 struct CommentTableViewCellModel {
     let userId: Int
-    let profileImageUrl: String
+    let profileImageUrl: String?
     let username: String
     let userStatus: UserStatus
     let date: Date
