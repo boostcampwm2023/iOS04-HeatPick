@@ -7,5 +7,6 @@ let project = Project.framework(
     featureTargets: [.staticLibrary, .tests],
     dependencies: [
         .Target.Presentation.My.Interfaces,
+        .Target.Presentation.Story.Interfaces
     ]
 )

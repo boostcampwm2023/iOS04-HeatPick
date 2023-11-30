@@ -22,6 +22,7 @@ protocol MyPageStoryDashboardPresentable: Presentable {
 
 protocol MyPageStoryDashboardListener: AnyObject {
     func storyDashboardDidTapSeeAll()
+    func storyDashboardDidTapStory(id: Int)
 }
 
 protocol MyPageStoryDashboardInteractorDependency: AnyObject {
@@ -62,6 +63,10 @@ final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDas
     
     func didTapSeeAll() {
         listener?.storyDashboardDidTapSeeAll()
+    }
+    
+    func didTapStory(id: Int) {
+        listener?.storyDashboardDidTapStory(id: id)
     }
     
 }

@@ -12,5 +12,6 @@ import DomainEntities
 public protocol MyPageRepositoryInterface: AnyObject {
     
     func fetchMyPage() async -> Result<MyPage, Error>
+    func fetchUserStory(id: Int, offset: Int, limit: Int) async -> Result<[MyPageStory], Error>
     
 }

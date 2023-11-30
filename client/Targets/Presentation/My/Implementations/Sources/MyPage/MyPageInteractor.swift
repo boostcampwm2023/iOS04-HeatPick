@@ -17,12 +17,14 @@ protocol MyPageRouting: ViewableRouting {
     func detachUserDashboard()
     func attachStoryDashboard()
     func detachStoryDashboard()
-    func attachStorySeeAll()
+    func attachStorySeeAll(userId: Int)
     func detachStorySeeAll()
     func attachSetting()
     func detachSetting()
+    func attachStoryDetail(id: Int)
+    func detachStoryDetail()
     func attachUserInfoEditDashboard()
-    func detachUserInfoEditDashboard()
+    func detachUserInfoEditDashboard() 
 }
 
 protocol MyPagePresentable: Presentable {
@@ -40,6 +42,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     private let depedency: MyPageInteractorDependency
     private let cancelBag = CancelBag()
+    private var myPage: MyPage?
     
     init(
         presenter: MyPagePresentable,
@@ -78,13 +81,22 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     // MARK: - StoryDashboard
     
     func storyDashboardDidTapSeeAll() {
-        router?.attachStorySeeAll()
+        guard let myPage else { return }
+        router?.attachStorySeeAll(userId: myPage.userId)
+    }
+    
+    func storyDashboardDidTapStory(id: Int) {
+        router?.attachStoryDetail(id: id)
     }
     
     // MARK: - StorySeeAll
     
     func myPageStorySeeAllDidTapClose() {
         router?.detachStorySeeAll()
+    }
+    
+    func myPageStorySeeAllDidTapStory(id: Int) {
+        router?.attachStoryDetail(id: id)
     }
     
     // MARK: - Setting
@@ -99,12 +111,18 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
             await depedency.myPageUseCase
                 .fetchMyPage()
                 .onSuccess(on: .main, with: self) { this, myPage in
-                    // UseCase에서 분배하고 있어서 필요 없음
+                    this.myPage = myPage
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
         }.store(in: cancelBag)
+    }
+    
+    // MARK: - StoryDetail
+    
+    func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
     }
     
 }

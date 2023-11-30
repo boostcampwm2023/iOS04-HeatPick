@@ -27,4 +27,10 @@ public final class MyPageRepository: MyPageRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
+    public func fetchUserStory(id: Int, offset: Int, limit: Int) async -> Result<[MyPageStory], Error> {
+        let target = MyAPI.userStory(id: id, offset: offset, limit: limit)
+        let request: Result<[UserStoryResponseDTO], Error> = await session.request(target)
+        return request.map { $0.map { $0.toDomain() } }
+    }
+    
 }

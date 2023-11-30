@@ -13,6 +13,8 @@ import DomainInterfaces
 
 public final class MyPageUseCase: MyPageUseCaseInterface {
     
+    public var hasMore: Bool = false
+    
     public var profilePublisher: AnyPublisher<MyPageProfile, Never> {
         return profileSubject.eraseToAnyPublisher()
     }
@@ -24,6 +26,8 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
     private let repository: MyPageRepositoryInterface
     private let storyListSubject = PassthroughSubject<[MyPageStory], Never>()
     private let profileSubject = PassthroughSubject<MyPageProfile, Never>()
+    private var storyOffset = 0
+    private let pageLimit = 10
     
     public init(repository: MyPageRepositoryInterface) {
         self.repository = repository
@@ -36,12 +40,37 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         return result
     }
     
+    public func fetchMyPageStory(id: Int) async -> Result<[MyPageStory], Error> {
+        storyOffset = 0
+        return await fetchMyPageStory(id: id, offset: storyOffset)
+    }
+    
+    public func loadMoreMyPageStory(id: Int) async -> Result<[MyPageStory], Error> {
+        storyOffset += 1
+        return await fetchMyPageStory(id: id, offset: storyOffset)
+    }
+     
+    private func fetchMyPageStory(id: Int, offset: Int) async -> Result<[MyPageStory], Error> {
+        let result = await repository.fetchUserStory(id: id, offset: offset, limit: pageLimit)
+        switch result {
+        case .success(let stories):
+            hasMore = stories.count == pageLimit
+            
+        case .failure:
+            hasMore = false
+        }
+        return result
+    }
+    
     private func updateProfile(_ result: Result<MyPage, Error>) {
         switch result {
         case .success(let page):
             let profile = MyPageProfile(
+                userId: page.userId,
                 userName: page.userName,
                 profileImageURL: page.profileImageURL,
+                temperature: page.temperature,
+                temperatureFeeling: page.temperatureFeeling,
                 followerCount: page.followerCount,
                 storyCount: page.storyCount,
                 experience: page.experience,
@@ -64,7 +93,8 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
                     title: story.title,
                     content: story.content,
                     thumbnailImageURL: story.thumbnailImageURL,
-                    likeCount: story.likeCount
+                    likeCount: story.likeCount,
+                    commentCount: story.commentCount
                 )
             }
             storyListSubject.send(storyList)

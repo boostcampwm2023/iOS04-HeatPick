@@ -8,13 +8,15 @@
 
 import ModernRIBs
 import MyInterfaces
+import StoryInterfaces
 
 protocol MyPageInteractable: Interactable,
                              MyPageUserDashboardListener,
                              MyPageStoryDashboardListener,
                              MyPageStorySeeAllListener,
                              SettingListener,
-                             UserInfoEditDashboardListener {
+                             StoryDetailListener,
+                             UserInfoEditDashboardListener { 
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }
@@ -30,6 +32,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     private var storyDashboardRouting: ViewableRouting?
     private var storySeeAllRouting: ViewableRouting?
     private var settingRouting: ViewableRouting?
+    private var storyDetailRouting: ViewableRouting?
     private var userInfoEditDashboardRouting: ViewableRouting?
     
     private let dependency: MypageRouterDependency
@@ -74,9 +77,9 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         detachChild(router)
     }
     
-    func attachStorySeeAll() {
+    func attachStorySeeAll(userId: Int) {
         guard storySeeAllRouting == nil else { return }
-        let router = dependency.storySeeAllBuilder.build(withListener: interactor)
+        let router = dependency.storySeeAllBuilder.build(withListener: interactor, userId: userId)
         viewControllable.pushViewController(router.viewControllable, animated: true)
         self.storySeeAllRouting = router
         attachChild(router)
@@ -104,6 +107,21 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         detachChild(router)
     }
     
+    func attachStoryDetail(id: Int) {
+        guard storyDetailRouting == nil else { return }
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: id)
+        viewController.pushViewController(router.viewControllable, animated: true)
+        self.storyDetailRouting = router
+        attachChild(router)
+    }
+    
+    func detachStoryDetail() {
+        guard let router = storyDetailRouting else { return }
+        viewController.popViewController(animated: true)
+        self.storyDetailRouting = nil
+        detachChild(router)
+    }
+
     func attachUserInfoEditDashboard() {
         guard userInfoEditDashboardRouting == nil else { return }
         let router = dependency.userInfoEditDashboardBuilder.build(withListener: interactor)

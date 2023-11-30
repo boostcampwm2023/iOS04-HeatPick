@@ -14,12 +14,14 @@ public struct MyPageBadge {
     public let name: String
     public let experience: Int
     public let emoji: String
+    public let description: String
     
-    public init(id: Int, name: String, experience: Int, emoji: String) {
+    public init(id: Int, name: String, experience: Int, emoji: String, description: String) {
         self.id = id
         self.name = name
         self.experience = experience
         self.emoji = emoji
+        self.description = description
     }
     
 }

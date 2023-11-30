@@ -30,6 +30,12 @@ public struct StorySmallViewModel {
 
 }
 
+public protocol StorySmallViewDelegate: AnyObject {
+    
+    func storySmallViewDidTap(_ view: StorySmallView, storyId: Int)
+    
+}
+
 public final class StorySmallView: UIView {
     
     private enum Constant {
@@ -38,6 +44,10 @@ public final class StorySmallView: UIView {
         static let itemSpacing: CGFloat = 5
         static let bottomInset: CGFloat = 20
     }
+    
+    public weak var delegate: StorySmallViewDelegate?
+    
+    private var storyId: Int?
     
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
@@ -96,6 +106,7 @@ public final class StorySmallView: UIView {
     }
     
     public func setup(model: StorySmallViewModel) {
+        storyId = model.storyId
         thumbnailImageView.load(from: model.thumbnailImageURL)
         titleLabel.text = model.title
         subtitleLabel.text = model.subtitle
@@ -108,6 +119,7 @@ private extension StorySmallView {
     
     func setupViews() {
         backgroundColor = .hpWhite
+        addTapGesture(target: self, action: #selector(didTap))
         
         [thumbnailImageView, stackView].forEach(addSubview)
         [titleLabel, subtitleLabel, commentView].forEach(stackView.addArrangedSubview)
@@ -123,6 +135,11 @@ private extension StorySmallView {
             stackView.centerYAnchor.constraint(equalTo: thumbnailImageView.centerYAnchor),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
+    }
+    
+    @objc func didTap() {
+        guard let storyId else { return }
+        delegate?.storySmallViewDidTap(self, storyId: storyId)
     }
     
 }

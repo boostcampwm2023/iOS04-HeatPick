@@ -12,6 +12,9 @@ import DomainEntities
 
 public protocol MyPageStoryUseCaseInterface: AnyObject {
     
+    var hasMore: Bool { get }
     var storyListPubliser: AnyPublisher<[MyPageStory], Never> { get }
+    func fetchMyPageStory(id: Int) async -> Result<[MyPageStory], Error>
+    func loadMoreMyPageStory(id: Int) async -> Result<[MyPageStory], Error>
     
 }
