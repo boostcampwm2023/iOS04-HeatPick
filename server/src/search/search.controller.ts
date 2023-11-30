@@ -59,7 +59,7 @@ export class SearchController {
   })
   async getUserSearchResult(@Query('searchText') searchText: string, @Query('offset') offset: number, @Query('limit') limit: number): Promise<SearchUserResultDto> {
     const users = await this.userService.getUsersFromTrie(searchText, offset, limit);
-    const transfromedUsers = await Promise.all(users.map((user) => userEntityToUserObj(user)));
+    const transfromedUsers = await Promise.all(users.map(async (user) => await userEntityToUserObj(user)));
     const isLastPage = transfromedUsers.length < limit ? true : false;
     return { users: transfromedUsers, isLastPage: isLastPage };
   }
@@ -100,7 +100,7 @@ export class SearchController {
     if (!categoryId) {
       await Promise.all(
         users.map(async (user) => {
-          userArr.push(userEntityToUserObj(user));
+          userArr.push(await userEntityToUserObj(user));
         }),
       );
     }
