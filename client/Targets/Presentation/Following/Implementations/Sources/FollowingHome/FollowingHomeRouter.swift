@@ -7,13 +7,17 @@
 //
 
 import ModernRIBs
+import FollowingInterfaces
 
 protocol FollowingHomeInteractable: Interactable {
     var router: FollowingHomeRouting? { get set }
     var listener: FollowingHomeListener? { get set }
 }
 
-protocol FollowingHomeViewControllable: ViewControllable {}
+protocol FollowingHomeViewControllable: ViewControllable {
+    func setDashboard(_ viewControllable: ViewControllable)
+    func removeDashboard(_ viewControllable: ViewControllable)
+}
 
 final class FollowingHomeRouter: ViewableRouter<FollowingHomeInteractable, FollowingHomeViewControllable>, FollowingHomeRouting {
     

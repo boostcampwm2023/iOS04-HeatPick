@@ -28,6 +28,8 @@ import SearchInterfaces
 import SearchImplementations
 import StoryInterfaces
 import StoryImplementations
+import FollowingInterfaces
+import FollowingImplementations
 import MyInterfaces
 import MyImplementations
 
@@ -38,6 +40,7 @@ final class AppRootComponent: Component<AppRootDependency>,
                               SignInDependency,
                               HomeDependency,
                               SearchDependency,
+                              FollowingHomeDependency,
                               MyPageDependency,
                               StoryEditorDependency,
                               StoryDetailDependency {
@@ -62,6 +65,10 @@ final class AppRootComponent: Component<AppRootDependency>,
     
     lazy var searchBuilder: SearchBuildable = {
         SearchBuilder(dependency: self)
+    }()
+    
+    lazy var followingBuilder: FollowingHomeBuildable = {
+        FollowingHomeBuilder(dependency: self)
     }()
     
     lazy var myPageBuilder: MyPageBuildable = {
