@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreKit
 import DomainEntities
 
 public struct CommentReadResponseDTO: Decodable {
@@ -49,7 +50,7 @@ public struct CommentReadResponseDTO: Decodable {
                                           authorStatus: UserStatus.allCases[safe: status] ?? .nonFollowing),
                            date: createdAt,
                            mentionedUsers: mentions.map { $0.toDomain() },
-                           content: content)
+                           content: content.withLineBreak)
         }
     }
     
