@@ -69,6 +69,7 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     
     override func willResignActive() {
         super.willResignActive()
+        cancelTaskBag.cancel()
     }
     
     func didTapItem(_ item: String) {

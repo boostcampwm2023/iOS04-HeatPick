@@ -6,35 +6,83 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Foundation
+
 import ModernRIBs
 
-protocol SearchUserSeeAllRouting: Routing {
-    func cleanupViews()
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
-}
+import CoreKit
+import BasePresentation
+import DomainInterfaces
+
+
+protocol SearchUserSeeAllRouting: Routing { }
+
+typealias SearchUserSeeAllPresentable = UserSeeAllPresentable
+typealias SearchUserSeeAllPresentableListener = UserSeeAllPresentableListener
 
 protocol SearchUserSeeAllListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func searchUserSeeAllDidTapClose()
+    func didTapUser(userId: Int)
 }
 
-final class SearchUserSeeAllInteractor: Interactor, SearchUserSeeAllInteractable {
+protocol SearchUserSeeAllInteractorDependency: AnyObject {
+    var searchText: String { get }
+    var searchUserSeeAllUseCase: SearchUserSeeAllUseCaseInterface { get }
+}
+
+final class SearchUserSeeAllInteractor: PresentableInteractor<SearchUserSeeAllPresentable>,
+                                            SearchUserSeeAllInteractable,
+                                        SearchUserSeeAllPresentableListener{
 
     weak var router: SearchUserSeeAllRouting?
     weak var listener: SearchUserSeeAllListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init() {}
+    private let dependency: SearchUserSeeAllInteractorDependency
+    
+    private var cancelTaskBag: CancelBag = .init()
+    
+    init(
+        presenter: SearchUserSeeAllPresentable,
+        dependency: SearchUserSeeAllInteractorDependency
+    ) {
+        self.dependency = dependency
+        super.init(presenter: presenter)
+        presenter.listener = self
+    }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        presenter.updateTitle("사용자 검색")
+        Task { [weak self] in
+            guard let self else { return }
+            await self.dependency.searchUserSeeAllUseCase
+                .fetchUser(searchText: self.dependency.searchText)
+                .onSuccess(on: .main, with: self) { _, models in
+                    self.presenter.setup(models: models.map {
+                        UserSmallTableViewCellModel(
+                            userId: $0.userId,
+                            username: $0.username,
+                            profileUrl: $0.profileUrl
+                        )
+                    })
+                }
+                .onFailure { error in
+                    Log.make(message:"\(String(describing: self)) \(error.localizedDescription)", log: .network)
+                }
+        }.store(in: cancelTaskBag)
     }
 
     override func willResignActive() {
         super.willResignActive()
-
-        router?.cleanupViews()
-        // TODO: Pause any business logic.
+        cancelTaskBag.cancel()
     }
+    
+    func didTapClose() {
+        listener?.searchUserSeeAllDidTapClose()
+    }
+    
+    func didTapItem(model: UserSmallTableViewCellModel) {
+        listener?.didTapUser(userId: model.userId)
+    }
+    
 }

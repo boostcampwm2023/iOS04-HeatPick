@@ -24,6 +24,9 @@ protocol SearchAfterUserDashboardPresentable: Presentable {
 
 protocol SearchAfterUserDashboardListener: AnyObject {
     var searchResultUsersPublisher: AnyPublisher<[SearchUser], Never> { get }
+    
+    func searchUserSeeAllDidTap()
+    func didTapUser(userId: Int)
 }
 
 final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfterUserDashboardPresentable>, SearchAfterUserDashboardInteractable, SearchAfterUserDashboardPresentableListener {
@@ -49,10 +52,13 @@ final class SearchAfterUserDashboardInteractor: PresentableInteractor<SearchAfte
     
     override func willResignActive() {
         super.willResignActive()
-        
     }
     
-    func searchAfterHeaderViewSeeAllViewDidTap() {
-        // TODO: 성준님이 만드신 뷰와 연결
+    func searchUserSeeAllDidTap() {
+        listener?.searchUserSeeAllDidTap()
+    }
+    
+    func didTapUser(userId: Int) {
+        listener?.didTapUser(userId: userId)
     }
 }

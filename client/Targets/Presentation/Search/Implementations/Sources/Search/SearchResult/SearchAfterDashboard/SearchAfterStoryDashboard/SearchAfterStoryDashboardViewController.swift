@@ -14,8 +14,8 @@ import DesignKit
 import DomainEntities
 
 protocol SearchAfterStoryDashboardPresentableListener: AnyObject {
-    func searchAfterHeaderViewSeeAllViewDidTap()
-    func searchAfterStoryViewDidTap(storyId: Int)
+    func searchStorySeeAllDidTap()
+    func didTapStory(storyId: Int)
 }
 
 final class SearchAfterStoryDashboardViewController: UIViewController, SearchAfterStoryDashboardPresentable, SearchAfterStoryDashboardViewControllable {
@@ -129,16 +129,16 @@ private extension SearchAfterStoryDashboardViewController {
 
 extension SearchAfterStoryDashboardViewController: SearchAfterHeaderViewDelegate {
     
-    func searchAfterHeaderViewSeeAllViewDidTap() {
-        listener?.searchAfterHeaderViewSeeAllViewDidTap()
+    func searchAfterSeeAllViewDidTap() {
+        listener?.searchStorySeeAllDidTap()
     }
     
 }
 
 extension SearchAfterStoryDashboardViewController: SearchAfterStoryViewDelegate {
     
-    func searchAfterStoryViewDidTap(storyId: Int) {
-        listener?.searchAfterStoryViewDidTap(storyId: storyId)
+    func didTapStory(storyId: Int) {
+        listener?.didTapStory(storyId: storyId)
     }
     
 }

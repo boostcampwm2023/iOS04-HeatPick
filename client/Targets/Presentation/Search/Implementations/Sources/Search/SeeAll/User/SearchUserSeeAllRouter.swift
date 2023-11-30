@@ -7,33 +7,19 @@
 //
 
 import ModernRIBs
+import BasePresentation
 
 protocol SearchUserSeeAllInteractable: Interactable {
     var router: SearchUserSeeAllRouting? { get set }
     var listener: SearchUserSeeAllListener? { get set }
 }
 
-protocol SearchUserSeeAllViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy. Since
-    // this RIB does not own its own view, this protocol is conformed to by one of this
-    // RIB's ancestor RIBs' view.
-}
+typealias SearchUserSeeAllViewControllable = UserSeeAllViewControllable
 
-final class SearchUserSeeAllRouter: Router<SearchUserSeeAllInteractable>, SearchUserSeeAllRouting {
-
-    // TODO: Constructor inject child builder protocols to allow building children.
-    init(interactor: SearchUserSeeAllInteractable, viewController: SearchUserSeeAllViewControllable) {
-        self.viewController = viewController
-        super.init(interactor: interactor)
-        interactor.router = self
+final class SearchUserSeeAllRouter: ViewableRouter<SearchUserSeeAllInteractable, SearchUserSeeAllViewControllable>, SearchUserSeeAllRouting {
+        
+    override init(interactor: SearchUserSeeAllInteractable, viewController: SearchUserSeeAllViewControllable) {
+        super.init(interactor: interactor, viewController: viewController)
     }
-
-    func cleanupViews() {
-        // TODO: Since this router does not own its view, it needs to cleanup the views
-        // it may have added to the view hierarchy, when its interactor is deactivated.
-    }
-
-    // MARK: - Private
-
-    private let viewController: SearchUserSeeAllViewControllable
+    
 }

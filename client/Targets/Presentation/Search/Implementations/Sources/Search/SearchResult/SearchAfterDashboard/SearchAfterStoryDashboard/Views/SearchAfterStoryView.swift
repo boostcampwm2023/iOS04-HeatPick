@@ -13,7 +13,7 @@ import DomainEntities
 import BasePresentation
 
 protocol SearchAfterStoryViewDelegate: AnyObject {
-    func searchAfterStoryViewDidTap(storyId: Int)
+    func didTapStory(storyId: Int)
 }
 
 final class SearchAfterStoryView: UIView {
@@ -133,7 +133,7 @@ private extension SearchAfterStoryView {
     
     @objc func searchAfterStoryViewDidTap() {
         guard let storyId else { return }
-        delegate?.searchAfterStoryViewDidTap(storyId: storyId)
+        delegate?.didTapStory(storyId: storyId)
     }
     
 }

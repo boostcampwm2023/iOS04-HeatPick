@@ -16,7 +16,8 @@ protocol SearchInteractable: Interactable,
                              SearchCurrentLocationStoryListListener,
                              SearchResultListener,
                              StoryDetailListener,
-                             SearchStorySeeAllListener {
+                             SearchStorySeeAllListener,
+                             SearchUserSeeAllListener {
     var router: SearchRouting? { get set }
     var listener: SearchListener? { get set }
     var presentationAdapter: AdaptivePresentationControllerDelegateAdapter { get }
@@ -80,10 +81,15 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         searchResultRouter = nil
         viewController.popViewController(animated: true)
     }
+
+}
+
+// MARK: Story
+extension SearchRouter {
     
-    func attachStoryDetail(storyID: Int) {
+    func attachStoryDetail(storyId: Int) {
         guard storyDeatilRouter == nil else { return }
-        let router = dependency.storyDeatilBuilder.build(withListener: interactor, storyId: storyID)
+        let router = dependency.storyDeatilBuilder.build(withListener: interactor, storyId: storyId)
         attachChild(router)
         storyDeatilRouter = router
         viewController.pushViewController(router.viewControllable, animated: true)
@@ -110,6 +116,27 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         searchSeeAllRouter = nil
         viewController.popViewController(animated: true)
     }
-
     
 }
+
+// MARK: User
+extension SearchRouter {
+    
+    func attachUserDetail(userId: Int) {
+            
+    }
+    
+    func detachUserDetail() {
+        
+    }
+    
+    func attachSearchUserSeeAll(searchText: String) {
+        
+    }
+    
+    func detachSearchUserSeeAll() {
+        
+    }
+    
+}
+

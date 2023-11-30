@@ -19,10 +19,14 @@ protocol SearchRouting: ViewableRouting {
     func detachSearchCurrentLocation()
     func attachSearchResult()
     func detachSearchResult()
-    func attachStoryDetail(storyID: Int)
+    func attachStoryDetail(storyId: Int)
     func detachStoryDetail()
     func attachSearchStorySeeAll(searchText: String)
     func detachSearchStorySeeAll()
+    func attachUserDetail(userId: Int)
+    func detachUserDetail()
+    func attachSearchUserSeeAll(searchText: String)
+    func detachSearchUserSeeAll()
 }
 
 protocol SearchPresentable: Presentable {
@@ -47,7 +51,7 @@ protocol SearchInteractorDependency: AnyObject {
 final class SearchInteractor: PresentableInteractor<SearchPresentable>,
                               AdaptivePresentationControllerDelegate,
                               SearchInteractable {
-    
+
     weak var router: SearchRouting?
     weak var listener: SearchListener?
     let presentationAdapter: AdaptivePresentationControllerDelegateAdapter
@@ -90,10 +94,6 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         router?.detachStoryDetail()
     }
     
-    func searchAfterStoryViewDidTap(storyId: Int) {
-        router?.attachStoryDetail(storyID: storyId)
-    }
-    
 }
 
 // MARK: - PresentableListener
@@ -108,8 +108,12 @@ extension SearchInteractor: SearchPresentableListener {
         router?.attachSearchResult()
     }
     
-    func didTapStory(storyID: Int) {
-        router?.attachStoryDetail(storyID: storyID)
+    func didTapStory(storyId: Int) {
+        router?.attachStoryDetail(storyId: storyId)
+    }
+    
+    func didTapUser(userId: Int) {
+        router?.attachUserDetail(userId: userId)
     }
     
     func didAppear() {
@@ -214,20 +218,23 @@ private extension SearchInteractor {
 }
 
 
-// MARK: StorySeeAll
+// MARK: SeeAll
 extension SearchInteractor {
     
-    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String) {
+    func searchStorySeeAllDidTap(searchText: String) {
         router?.attachSearchStorySeeAll(searchText: searchText)
     }
     
     func searchStorySeeAllDidTapClose() {
         router?.detachSearchStorySeeAll()
     }
-    
-    func searchStorySeeAllDidTap(storyId: Int) {
-        router?.attachStoryDetail(storyID: storyId)
-    }
 
+    func searchUserSeeAllDidTap(searchText: String) {
+        router?.attachSearchUserSeeAll(searchText: searchText)
+    }
+    
+    func searchUserSeeAllDidTapClose() {
+        router?.detachSearchUserSeeAll()
+    }
     
 }
