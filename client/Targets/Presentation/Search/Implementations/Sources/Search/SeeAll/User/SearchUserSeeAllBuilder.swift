@@ -7,28 +7,28 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
+import BasePresentation
 
 protocol SearchUserSeeAllDependency: Dependency {
-    // TODO: Make sure to convert the variable into lower-camelcase.
-    var SearchUserSeeAllViewController: SearchUserSeeAllViewControllable { get }
-    // TODO: Declare the set of dependencies required by this RIB, but won't be
-    // created by this RIB.
+    var searchUserSeeAllUseCase: SearchUserSeeAllUseCaseInterface { get }
 }
 
-final class SearchUserSeeAllComponent: Component<SearchUserSeeAllDependency> {
+final class SearchUserSeeAllComponent: Component<SearchUserSeeAllDependency>, 
+                                        SearchUserSeeAllInteractorDependency {
+    
+    let searchText: String
+    var searchUserSeeAllUseCase: SearchUserSeeAllUseCaseInterface { dependency.searchUserSeeAllUseCase }
 
-    // TODO: Make sure to convert the variable into lower-camelcase.
-    fileprivate var SearchUserSeeAllViewController: SearchUserSeeAllViewControllable {
-        return dependency.SearchUserSeeAllViewController
+    init(dependency: SearchUserSeeAllDependency, searchText: String) {
+        self.searchText = searchText
+        super.init(dependency: dependency)
     }
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
 }
 
-// MARK: - Builder
 
 protocol SearchUserSeeAllBuildable: Buildable {
-    func build(withListener listener: SearchUserSeeAllListener) -> SearchUserSeeAllRouting
+    func build(withListener listener: SearchUserSeeAllListener, searchText: String) -> SearchUserSeeAllRouting
 }
 
 final class SearchUserSeeAllBuilder: Builder<SearchUserSeeAllDependency>, SearchUserSeeAllBuildable {
@@ -37,10 +37,11 @@ final class SearchUserSeeAllBuilder: Builder<SearchUserSeeAllDependency>, Search
         super.init(dependency: dependency)
     }
 
-    func build(withListener listener: SearchUserSeeAllListener) -> SearchUserSeeAllRouting {
-        let component = SearchUserSeeAllComponent(dependency: dependency)
-        let interactor = SearchUserSeeAllInteractor()
+    func build(withListener listener: SearchUserSeeAllListener, searchText: String) -> SearchUserSeeAllRouting {
+        let component = SearchUserSeeAllComponent(dependency: dependency, searchText: searchText)
+        let viewController = UserSeeAllViewController()
+        let interactor = SearchUserSeeAllInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
-        return SearchUserSeeAllRouter(interactor: interactor, viewController: component.SearchUserSeeAllViewController)
+        return SearchUserSeeAllRouter(interactor: interactor, viewController: viewController)
     }
 }
