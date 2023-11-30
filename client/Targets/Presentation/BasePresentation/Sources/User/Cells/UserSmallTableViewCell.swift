@@ -39,6 +39,7 @@ public final class UserSmallTableViewCell: UITableViewCell {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = .profileDefault
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constant.ProfileImageView.height / 2
         imageView.contentMode = .scaleAspectFill
@@ -64,7 +65,7 @@ public final class UserSmallTableViewCell: UITableViewCell {
     }()
     
     private lazy var stackView: UIStackView = {
-       let stackView = UIStackView(arrangedSubviews: [nicknameLabel, badgeLabel])
+        let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 3
         stackView.alignment = .center
@@ -88,7 +89,7 @@ public final class UserSmallTableViewCell: UITableViewCell {
         reset()
     }
     
-    func setup(model: UserSmallTableViewCellModel) {
+    public func setup(model: UserSmallTableViewCellModel) {
         profileImageView.load(from: model.profileUrl)
         nicknameLabel.text = model.username
         badgeLabel.text = model.username
@@ -101,6 +102,7 @@ private extension UserSmallTableViewCell {
     func setupViews() {
         selectionStyle = .none
         backgroundColor = .hpWhite
+        [nicknameLabel, badgeLabel].forEach(stackView.addArrangedSubview)
         [profileImageView, stackView].forEach(contentView.addSubview)
         
         NSLayoutConstraint.activate([
@@ -117,6 +119,7 @@ private extension UserSmallTableViewCell {
     }
     
     func reset() {
+        profileImageView.cancel()
         profileImageView.image = nil
         nicknameLabel.text = nil
         badgeLabel.text = nil

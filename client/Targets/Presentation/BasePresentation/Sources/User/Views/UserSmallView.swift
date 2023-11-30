@@ -37,6 +37,7 @@ public final class UserSmallView: UIView {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = .profileDefault
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constant.ProfileImageView.height / 2
         imageView.contentMode = .scaleAspectFill
@@ -62,7 +63,7 @@ public final class UserSmallView: UIView {
     }()
     
     private lazy var stackView: UIStackView = {
-       let stackView = UIStackView(arrangedSubviews: [nicknameLabel, badgeLabel])
+       let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 3
         stackView.alignment = .center
@@ -81,7 +82,7 @@ public final class UserSmallView: UIView {
         setupViews()
     }
     
-    func setup(model: UserSmallViewModel) {
+    public func setup(model: UserSmallViewModel) {
         profileImageView.load(from: model.profileUrl)
         nicknameLabel.text = model.username
         badgeLabel.text = model.username
@@ -92,6 +93,7 @@ public final class UserSmallView: UIView {
 private extension UserSmallView {
     
     func setupViews() {
+        [nicknameLabel, badgeLabel].forEach(stackView.addArrangedSubview)
         [profileImageView, stackView].forEach(addSubview)
         
         NSLayoutConstraint.activate([
