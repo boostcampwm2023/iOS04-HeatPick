@@ -11,7 +11,9 @@ import DomainEntities
 
 public protocol HomeRepositoryInterface: AnyObject {
     
-    func fetchRecommendPlace(lat: Double, lon: Double) async -> Result<[RecommendStory], Error>
-    func fetchHotPlace() async -> Result<[HotPlace], Error>
+    func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<RecommendStoryWithPaging, Error>
+    func fetchRecommendPlace(lat: Double, lng: Double, offset: Int, limit: Int) async -> Result<RecommendStoryWithPaging, Error>
+    func fetchHotPlace() async -> Result<HotPlace, Error>
+    func fetchHotPlace(offset: Int, limit: Int) async -> Result<HotPlace, Error>
     
 }

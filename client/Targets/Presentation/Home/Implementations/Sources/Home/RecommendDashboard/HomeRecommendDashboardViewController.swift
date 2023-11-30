@@ -18,7 +18,8 @@ struct HomeRecommendDashboardViewModel {
 
 protocol HomeRecommendDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
-    func didTap(storyID: Int)
+    func didTap(storyId: Int)
+    func didAppear()
 }
 
 final class HomeRecommendDashboardViewController: UIViewController, HomeRecommendDashboardPresentable, HomeRecommendDashboardViewControllable {
@@ -78,6 +79,11 @@ final class HomeRecommendDashboardViewController: UIViewController, HomeRecommen
         setupViews()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        listener?.didAppear()
+    }
+    
     func setup(model: HomeRecommendDashboardViewModel) {
         let isEmpty = model.contentList.isEmpty
         titleView.setup(model: .init(title: model.title, isButtonEnabled: !isEmpty))
@@ -108,10 +114,10 @@ private extension HomeRecommendDashboardViewController {
     
     @objc func contentViewDidTap(_ gesture: UITapGestureRecognizer) {
         guard let contentView = gesture.view as? HomeRecommendContentView,
-              let storyID = contentView.id else {
+              let storyId = contentView.id else {
             return
         }
-        listener?.didTap(storyID: storyID)
+        listener?.didTap(storyId: storyId)
     }
     
 }

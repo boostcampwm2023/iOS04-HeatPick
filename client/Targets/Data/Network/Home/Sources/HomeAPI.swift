@@ -11,8 +11,12 @@ import BaseAPI
 import NetworkAPIKit
 
 public enum HomeAPI {
+    
     case recommend
-    case recommendLocation(lat: Double, lon: Double)
+    case recommendSeeAll(offset: Int, limit: Int)
+    case recommendLocation(lat: Double, lng: Double)
+    case recommendLocationSeeAll(lat: Double, lng: Double, offset: Int, limit: Int)
+    
 }
 
 extension HomeAPI: Target {
@@ -24,15 +28,14 @@ extension HomeAPI: Target {
     public var path: String {
         switch self {
         case .recommend: return "/story/recommend"
+        case .recommendSeeAll: return "/story/recommend"
         case .recommendLocation: return "/story/recommend/location"
+        case .recommendLocationSeeAll: return "/story/recommend/location"
         }
     }
     
     public var method: HTTPMethod {
-        switch self {
-        case .recommend: return .get
-        case .recommendLocation: return .get
-        }
+        return .get
     }
     
     public var header: NetworkHeader {
@@ -44,8 +47,16 @@ extension HomeAPI: Target {
         case .recommend: 
             return .plain
             
-        case .recommendLocation(let lat, let lon):
-            let request = RecommendLocationRequestDTO(latitude: lat, longitude: lon)
+        case .recommendSeeAll(let offset, let limit):
+            let request = RecommendRequestDTO(offset: offset, limit: limit)
+            return .url(parameters: request.parameters())
+            
+        case .recommendLocation(let lat, let lng):
+            let request = RecommendLocationRequestDTO(latitude: lat, longitude: lng, offset: 0, limit: 5)
+            return .url(parameters: request.parameters())
+            
+        case let .recommendLocationSeeAll(lat, lng, offset, limit):
+            let request = RecommendLocationRequestDTO(latitude: lat, longitude: lng, offset: offset, limit: limit)
             return .url(parameters: request.parameters())
         }
     }

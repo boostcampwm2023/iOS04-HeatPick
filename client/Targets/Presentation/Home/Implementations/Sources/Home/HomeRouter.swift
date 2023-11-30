@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import DomainEntities
 import HomeInterfaces
 import StoryInterfaces
 
@@ -101,9 +102,12 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     // MARK: - SeeAll
     
-    func attachRecommendSeeAll() {
+    func attachRecommendSeeAll(location: LocationCoordinate) {
         guard recommendSeeAllRouting == nil else { return }
-        let router = dependency.seeAll.recommendSeeAllBuilder.build(withListener: interactor)
+        let router = dependency.seeAll.recommendSeeAllBuilder.build(
+            withListener: interactor,
+            location: location
+        )
         viewController.pushViewController(router.viewControllable, animated: true)
         self.recommendSeeAllRouting = router
         attachChild(router)
@@ -133,9 +137,9 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     // MARK: - Story
     
-    func attachStoryDetail(storyID: Int) {
+    func attachStoryDetail(storyId: Int) {
         guard storyDetailRouting == nil else { return }
-        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyID)
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyId)
         viewController.pushViewController(router.viewControllable, animated: true)
         self.storyDetailRouting = router
         attachChild(router)

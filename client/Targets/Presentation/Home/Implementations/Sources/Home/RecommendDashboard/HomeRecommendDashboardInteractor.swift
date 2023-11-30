@@ -6,6 +6,8 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
+import Foundation
 import ModernRIBs
 import CoreKit
 import DomainEntities
@@ -19,7 +21,7 @@ protocol HomeRecommendDashboardPresentable: Presentable {
 }
 
 protocol HomeRecommendDashboardListener: AnyObject {
-    func recommendDashboardDidTapSeeAll()
+    func recommendDashboardDidTapSeeAll(location: LocationCoordinate)
     func recommendDashboardDidTapStory(id: Int)
 }
 
@@ -33,6 +35,8 @@ final class HomeRecommendDashboardInteractor: PresentableInteractor<HomeRecommen
     weak var listener: HomeRecommendDashboardListener?
     
     private let dependency: HomeRecommendDashboardInteractorDependency
+    private let cancelBag = CancelBag()
+    private var cancellables = Set<AnyCancellable>()
 
     init(
         presenter: HomeRecommendDashboardPresentable,
@@ -45,31 +49,31 @@ final class HomeRecommendDashboardInteractor: PresentableInteractor<HomeRecommen
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        fetchRecommendPlace()
+        dependency.recommendUseCase
+            .currentRecommendPlace
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] place in
+                self?.performAfterFecthingRecommendPlace(place: place)
+            }
+            .store(in: &cancellables)
     }
     
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
     }
     
     func didTapSeeAll() {
-        listener?.recommendDashboardDidTapSeeAll()
+        guard let location = dependency.recommendUseCase.location else { return }
+        listener?.recommendDashboardDidTapSeeAll(location: location)
     }
     
-    func didTap(storyID: Int) {
-        listener?.recommendDashboardDidTapStory(id: storyID)
+    func didTap(storyId: Int) {
+        listener?.recommendDashboardDidTapStory(id: storyId)
     }
     
-    private func fetchRecommendPlace() {
-        Task {
-            await dependency.recommendUseCase.fetchRecommendPlace(lat: 30, lon: 40)
-                .onSuccess(on: .main, with: self) { this, place in
-                    this.performAfterFecthingRecommendPlace(place: place)
-                }
-                .onFailure { error in
-                    Log.make(message: error.localizedDescription, log: .interactor)
-                }
-        }
+    func didAppear() {
+        dependency.recommendUseCase.updateCurrentLocation()
     }
     
     private func performAfterFecthingRecommendPlace(place: RecommendPlace) {

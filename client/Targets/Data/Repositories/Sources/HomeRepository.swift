@@ -20,14 +20,26 @@ public final class HomeRepository: HomeRepositoryInterface {
         self.session = session
     }
     
-    public func fetchRecommendPlace(lat: Double, lon: Double) async -> Result<[RecommendStory], Error> {
-        let target = HomeAPI.recommendLocation(lat: lat, lon: lon)
+    public func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<RecommendStoryWithPaging, Error> {
+        let target = HomeAPI.recommendLocation(lat: lat, lng: lng)
         let request: Result<RecommendLocationResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
-    public func fetchHotPlace() async -> Result<[HotPlace], Error> {
+    public func fetchRecommendPlace(lat: Double, lng: Double, offset: Int, limit: Int) async -> Result<RecommendStoryWithPaging, Error> {
+        let target = HomeAPI.recommendLocationSeeAll(lat: lat, lng: lng, offset: offset, limit: limit)
+        let request: Result<RecommendLocationResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
+    public func fetchHotPlace() async -> Result<HotPlace, Error> {
         let target = HomeAPI.recommend
+        let request: Result<RecommendResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
+    public func fetchHotPlace(offset: Int, limit: Int) async -> Result<HotPlace, Error> {
+        let target = HomeAPI.recommendSeeAll(offset: offset, limit: limit)
         let request: Result<RecommendResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }

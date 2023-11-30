@@ -8,13 +8,28 @@
 
 import BasePresentation
 import ModernRIBs
+import DomainEntities
+import DomainInterfaces
 
-protocol RecommendSeeAllDependency: Dependency {}
+protocol RecommendSeeAllDependency: Dependency {
+    var recommendUseCase: RecommendUseCaseInterface { get }
+}
 
-final class RecommendSeeAllComponent: Component<RecommendSeeAllDependency> {}
+final class RecommendSeeAllComponent: Component<RecommendSeeAllDependency>, RecommendSeeAllInteractorDependency {
+    let location: LocationCoordinate
+    var recommendUseCase: RecommendUseCaseInterface { dependency.recommendUseCase }
+    
+    init(dependency: RecommendSeeAllDependency, location: LocationCoordinate) {
+        self.location = location
+        super.init(dependency: dependency)
+    }
+}
 
 protocol RecommendSeeAllBuildable: Buildable {
-    func build(withListener listener: RecommendSeeAllListener) -> RecommendSeeAllRouting
+    func build(
+        withListener listener: RecommendSeeAllListener,
+        location: LocationCoordinate
+    ) -> RecommendSeeAllRouting
 }
 
 final class RecommendSeeAllBuilder: Builder<RecommendSeeAllDependency>, RecommendSeeAllBuildable {
@@ -23,9 +38,10 @@ final class RecommendSeeAllBuilder: Builder<RecommendSeeAllDependency>, Recommen
         super.init(dependency: dependency)
     }
 
-    func build(withListener listener: RecommendSeeAllListener) -> RecommendSeeAllRouting {
+    func build(withListener listener: RecommendSeeAllListener, location: LocationCoordinate) -> RecommendSeeAllRouting {
+        let component = RecommendSeeAllComponent(dependency: dependency, location: location)
         let viewController = StorySeeAllViewController()
-        let interactor = RecommendSeeAllInteractor(presenter: viewController)
+        let interactor = RecommendSeeAllInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return RecommendSeeAllRouter(interactor: interactor, viewController: viewController)
     }

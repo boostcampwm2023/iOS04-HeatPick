@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import DomainEntities
 import HomeInterfaces
 import StoryInterfaces
 
@@ -16,11 +17,11 @@ protocol HomeRouting: ViewableRouting {
     func attachFollowingDashboard()
     func attachFriendDashboard()
     func detachFriendDashboard()
-    func attachRecommendSeeAll()
+    func attachRecommendSeeAll(location: LocationCoordinate)
     func detachRecommendSeeAll()
     func attachHotPlaceSeeAll()
     func detachHotPlaceSeeAll()
-    func attachStoryDetail(storyID: Int)
+    func attachStoryDetail(storyId: Int)
     func detachStoryDetail()
 }
 
@@ -55,12 +56,12 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     
     // MARK: - Recommend
     
-    func recommendDashboardDidTapSeeAll() {
-        router?.attachRecommendSeeAll()
+    func recommendDashboardDidTapSeeAll(location: LocationCoordinate) {
+        router?.attachRecommendSeeAll(location: location)
     }
     
     func recommendDashboardDidTapStory(id: Int) {
-        router?.attachStoryDetail(storyID: id)
+        router?.attachStoryDetail(storyId: id)
     }
     
     // MARK: - HotPlace
@@ -70,7 +71,7 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     }
     
     func hotPlaceDashboardDidTapStory(id: Int) {
-        router?.attachStoryDetail(storyID: id)
+        router?.attachStoryDetail(storyId: id)
     }
     
     // MARK: - Following
@@ -79,14 +80,22 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         print("# Attach Following See All View")
     }
     
-    // MARK: - Recommend See All
+    // MARK: - See All
     
     func recommendSeeAllDidTapClose() {
         router?.detachRecommendSeeAll()
     }
     
+    func recommendSeeAllDidTapStory(storyId: Int) {
+        router?.attachStoryDetail(storyId: storyId)
+    }
+    
     func hotPlaceSeeAllDidTapClose() {
         router?.detachHotPlaceSeeAll()
+    }
+    
+    func hotPlaceSeeAllDidTapStory(storyId: Int) {
+        router?.attachStoryDetail(storyId: storyId)
     }
     
     // MARK: - Story Detail

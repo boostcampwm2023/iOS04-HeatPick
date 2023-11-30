@@ -13,7 +13,7 @@ public final class HomeURLProtocol: URLProtocol {
     
     private lazy var mocks: [String: Data?] = [
         HomeAPI.recommend.path: loadMockData(fileName: "HomeRecommendResponseMock"),
-        HomeAPI.recommendLocation(lat: 0, lon: 0).path: loadMockData(fileName: "HomeRecommendLocationResponseMock")
+        HomeAPI.recommendLocation(lat: 0, lng: 0).path: loadMockData(fileName: "HomeRecommendLocationResponseMock")
     ]
     
     public override class func canInit(with request: URLRequest) -> Bool {

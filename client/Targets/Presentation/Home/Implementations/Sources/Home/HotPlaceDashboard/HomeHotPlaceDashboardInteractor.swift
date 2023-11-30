@@ -33,6 +33,7 @@ final class HomeHotPlaceDashboardInteractor: PresentableInteractor<HomeHotPlaceD
     weak var listener: HomeHotPlaceDashboardListener?
     
     private let dependency: HomeHotPlaceDashboardInteractorDependency
+    private let cancelBag = CancelBag()
     
     init(
         presenter: HomeHotPlaceDashboardPresentable, 
@@ -50,14 +51,15 @@ final class HomeHotPlaceDashboardInteractor: PresentableInteractor<HomeHotPlaceD
     
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
     }
     
     func didTapSeeAll() {
         listener?.hotPlaceDashboardDidTapSeeAll()
     }
     
-    func didTap(storyID: Int) {
-        listener?.hotPlaceDashboardDidTapStory(id: storyID)
+    func didTap(storyId: Int) {
+        listener?.hotPlaceDashboardDidTapStory(id: storyId)
     }
     
     private func fetchHotPlace() {
@@ -69,21 +71,21 @@ final class HomeHotPlaceDashboardInteractor: PresentableInteractor<HomeHotPlaceD
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
-        }
+        }.store(in: cancelBag)
     }
     
-    private func performAfterFetchingHotPlace(stories: [HotPlace]) {
+    private func performAfterFetchingHotPlace(stories: [HotPlaceStory]) {
         let model = makeModels(stories: stories)
         presenter.setup(model: model)
     }
     
-    private func makeModels(stories: [HotPlace]) -> HomeHotPlaceDashboardViewModel {
+    private func makeModels(stories: [HotPlaceStory]) -> HomeHotPlaceDashboardViewModel {
         return .init(contentList: stories.map(\.toModel))
     }
     
 }
 
-private extension HotPlace {
+private extension HotPlaceStory {
     
     var toModel: HomeHotPlaceContentViewModel {
         return .init(
