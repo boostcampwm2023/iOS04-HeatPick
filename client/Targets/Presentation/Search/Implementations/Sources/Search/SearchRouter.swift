@@ -6,8 +6,9 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import CoreKit
+import Foundation
 import ModernRIBs
+import CoreKit
 import BasePresentation
 import SearchInterfaces
 import StoryInterfaces
@@ -32,6 +33,7 @@ protocol SearchRouterDependency {
     var storyEditorBuilder: StoryEditorBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
     var searchStorySeeAllBuilder: SearchStorySeeAllBuildable { get }
+    var searchUserSeeAllBuilder: SearchUserSeeAllBuildable { get }
 }
 
 final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControllable>, SearchRouting {
@@ -42,7 +44,8 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     private var searchResultRouter: SearchResultRouting?
     private var storyEditorRouter: ViewableRouting?
     private var storyDeatilRouter: ViewableRouting?
-    private var searchSeeAllRouter: ViewableRouting?
+    private var searchStorySeeAllRouter: ViewableRouting?
+    private var searchUserSeeAllRouter: ViewableRouting?
     
     init(
         interactor: SearchInteractable,
@@ -106,17 +109,17 @@ extension SearchRouter {
     }
     
     func attachSearchStorySeeAll(searchText: String) {
-        guard searchSeeAllRouter == nil else { return }
+        guard searchStorySeeAllRouter == nil else { return }
         let router = dependency.searchStorySeeAllBuilder.build(withListener: interactor, searchText: searchText)
         attachChild(router)
-        searchSeeAllRouter = router
+        searchStorySeeAllRouter = router
         viewController.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSearchStorySeeAll() {
-        guard let router = searchSeeAllRouter else { return }
+        guard let router = searchStorySeeAllRouter else { return }
         detachChild(router)
-        searchSeeAllRouter = nil
+        searchStorySeeAllRouter = nil
         viewController.popViewController(animated: true)
     }
     
@@ -149,11 +152,18 @@ extension SearchRouter {
     }
     
     func attachSearchUserSeeAll(searchText: String) {
-        
+        guard searchUserSeeAllRouter == nil else { return }
+        let router = dependency.searchUserSeeAllBuilder.build(withListener: interactor, searchText: searchText)
+        attachChild(router)
+        searchUserSeeAllRouter = router
+        viewController.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSearchUserSeeAll() {
-        
+        guard let router = searchUserSeeAllRouter else { return }
+        detachChild(router)
+        searchUserSeeAllRouter = nil
+        viewController.popViewController(animated: true)
     }
     
 }

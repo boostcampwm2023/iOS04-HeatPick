@@ -107,9 +107,9 @@ private extension StoryDetailInteractor {
                 .onSuccess(on: .main, with: self) { this, _ in
                     this.presenter.didFollow()
                 }
-                .onFailure { error in
-                    Log.make(message: "fail to follow \(userId) with \(error.localizedDescription)",
-                             log: .interactor)
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "fail to follow \(userId) with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.didUnfollow()
                 }
         }.store(in: cancelBag)
     }
@@ -122,9 +122,9 @@ private extension StoryDetailInteractor {
                 .onSuccess(on: .main, with: self) { this, _ in
                     this.presenter.didUnfollow()
                 }
-                .onFailure { error in
-                    Log.make(message: "fail to unfollow \(userId) with \(error.localizedDescription)",
-                             log: .interactor)
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "fail to unfollow \(userId) with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.didFollow()
                 }
         }.store(in: cancelBag)
     }

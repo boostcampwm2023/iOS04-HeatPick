@@ -23,6 +23,8 @@ protocol MyPageRouting: ViewableRouting {
     func detachSetting()
     func attachStoryDetail(id: Int)
     func detachStoryDetail()
+    func attachUserInfoEditDashboard()
+    func detachUserInfoEditDashboard() 
 }
 
 protocol MyPagePresentable: Presentable {
@@ -69,7 +71,11 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     // MARK: - UserDashboard
     
     func userDashboardDidTapProfile() {
-        print("# 프로필 변경으로 이동")
+        router?.attachUserInfoEditDashboard()
+    }
+    
+    func didTapBackUserInfoEditDashboard() {
+        router?.detachUserInfoEditDashboard()
     }
     
     // MARK: - StoryDashboard
