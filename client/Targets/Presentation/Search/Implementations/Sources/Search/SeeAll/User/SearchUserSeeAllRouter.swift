@@ -17,7 +17,7 @@ protocol SearchUserSeeAllInteractable: Interactable {
 typealias SearchUserSeeAllViewControllable = UserSeeAllViewControllable
 
 final class SearchUserSeeAllRouter: ViewableRouter<SearchUserSeeAllInteractable, SearchUserSeeAllViewControllable>, SearchUserSeeAllRouting {
-        
+    
     override init(interactor: SearchUserSeeAllInteractable, viewController: SearchUserSeeAllViewControllable) {
         super.init(interactor: interactor, viewController: viewController)
     }

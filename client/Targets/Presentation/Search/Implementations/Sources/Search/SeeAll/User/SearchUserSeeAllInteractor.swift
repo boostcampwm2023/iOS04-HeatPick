@@ -15,7 +15,7 @@ import BasePresentation
 import DomainInterfaces
 
 
-protocol SearchUserSeeAllRouting: Routing { }
+protocol SearchUserSeeAllRouting: ViewableRouting { }
 
 typealias SearchUserSeeAllPresentable = UserSeeAllPresentable
 typealias SearchUserSeeAllPresentableListener = UserSeeAllPresentableListener
