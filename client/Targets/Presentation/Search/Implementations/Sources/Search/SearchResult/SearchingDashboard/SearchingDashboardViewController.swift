@@ -11,7 +11,7 @@ import UIKit
 
 
 protocol SearchingDashboardPresentableListener: AnyObject {
-    func didTapItem(_ item: String)
+    func didTapRecommendText(_ recommendText: String)
 }
 
 final class SearchingDashboardViewController: UIViewController, SearchingDashboardPresentable, SearchingDashboardViewControllable {
@@ -72,7 +72,7 @@ extension SearchingDashboardViewController: UITableViewDataSource {
 
 extension SearchingDashboardViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let item = models[safe: indexPath.row] else { return }
-        listener?.didTapItem(item)
+        guard let recommendText = models[safe: indexPath.row] else { return }
+        listener?.didTapRecommendText(recommendText)
     }
 }

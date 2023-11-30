@@ -13,7 +13,8 @@ protocol MyPageInteractable: Interactable,
                              MyPageUserDashboardListener,
                              MyPageStoryDashboardListener,
                              MyPageStorySeeAllListener,
-                             SettingListener {
+                             SettingListener,
+                             UserInfoEditDashboardListener {
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }
@@ -29,6 +30,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     private var storyDashboardRouting: ViewableRouting?
     private var storySeeAllRouting: ViewableRouting?
     private var settingRouting: ViewableRouting?
+    private var userInfoEditDashboardRouting: ViewableRouting?
     
     private let dependency: MypageRouterDependency
     
@@ -100,6 +102,21 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         viewController.popViewController(animated: true)
         self.settingRouting = nil
         detachChild(router)
+    }
+    
+    func attachUserInfoEditDashboard() {
+        guard userInfoEditDashboardRouting == nil else { return }
+        let router = dependency.userInfoEditDashboardBuilder.build(withListener: interactor)
+        viewController.pushViewController(router.viewControllable, animated: true)
+        userInfoEditDashboardRouting = router
+        attachChild(router)
+    }
+    
+    func detachUserInfoEditDashboard() {
+        guard let router = userInfoEditDashboardRouting else { return }
+        viewController.popViewController(animated: true)
+        detachChild(router)
+        userInfoEditDashboardRouting = nil
     }
     
 }

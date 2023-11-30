@@ -114,7 +114,7 @@ extension SearchResultViewController: SearchNavigationViewDelegate {
         listener?.showSearchAfterDashboard(searchText)
     }
     
-    func leftButtonDidTap() {
+    func didTapBack() {
         listener?.detachSearchResult()
     }
     
