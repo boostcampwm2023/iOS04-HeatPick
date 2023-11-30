@@ -115,7 +115,7 @@ extension SearchResultInteractor {
         router?.hideSearchingDashboard()
         router?.showSearchAfterDashboard()
     }
-    
+
 }
 
 

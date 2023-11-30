@@ -24,6 +24,7 @@ protocol SearchingDashboardPresentable: Presentable {
 
 protocol SearchingDashboardListener: AnyObject {
     var editingSearchTextPublisher: AnyPublisher<String, Never> { get }
+    func showSearchAfterDashboard(_ searchText: String)
 }
 
 protocol SearchingDashboardInteractorDependency: AnyObject {
@@ -52,6 +53,7 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     override func didBecomeActive() {
         super.didBecomeActive()
         listener?.editingSearchTextPublisher
+            .debounce(for: .seconds(0.05), scheduler: DispatchQueue.global())
             .sink { [weak self] editingText in
                 guard let self else { return }
                 Task {
@@ -73,6 +75,6 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     }
     
     func didTapRecommendText(_ recommendText: String) {
-        
+        listener?.showSearchAfterDashboard(recommendText)
     }
 }

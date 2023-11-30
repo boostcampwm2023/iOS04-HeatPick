@@ -69,6 +69,7 @@ public final class SearchNavigationView: UIView {
     
     func setSearchText(_ searchText: String) {
         searchTextField.text = searchText
+        searchTextField.resignFirstResponder()
     }
     
 }

@@ -21,4 +21,5 @@ final class SearchAfterStoryDashboardRouter: ViewableRouter<SearchAfterStoryDash
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
+    
 }

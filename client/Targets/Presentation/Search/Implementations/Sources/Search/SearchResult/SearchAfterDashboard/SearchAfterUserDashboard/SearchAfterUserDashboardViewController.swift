@@ -56,16 +56,7 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
         emptyView.translatesAutoresizingMaskIntoConstraints = false
         return emptyView
     }()
-    
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.isHidden = true
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-    
+
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -92,15 +83,13 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
             self.stackView.addArrangedSubview(contentView)
         }
         emptyView.isHidden = !isEmpty
-        scrollView.isHidden = isEmpty
     }
     
 }
 
 private extension SearchAfterUserDashboardViewController {
     func setupViews() {
-        [headerView, emptyView, scrollView].forEach { view.addSubview($0) }
-        scrollView.addSubview(stackView)
+        [headerView, emptyView, stackView].forEach { view.addSubview($0) }
         
         NSLayoutConstraint.activate([
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -112,15 +101,10 @@ private extension SearchAfterUserDashboardViewController {
             emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            scrollView.frameLayoutGuide.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.offset),
-            scrollView.frameLayoutGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            scrollView.frameLayoutGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            scrollView.frameLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
-            stackView.topAnchor.constraint(equalTo: scrollView.frameLayoutGuide.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.frameLayoutGuide.bottomAnchor)
+            stackView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.offset),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
     
