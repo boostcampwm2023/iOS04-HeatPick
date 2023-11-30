@@ -40,8 +40,8 @@ final class AppRootComponent: Component<AppRootDependency>,
                               SearchDependency,
                               StoryCreatorDependency,
                               MyPageDependency,
-                                StoryDetailDependency {
-    
+                              StoryEditorDependency,
+                              StoryDetailDependency {
     
     let authUseCase: AuthUseCaseInterface
     let homeUseCase: HomeUseCaseInterface
@@ -71,6 +71,10 @@ final class AppRootComponent: Component<AppRootDependency>,
     
     lazy var myPageBuilder: MyPageBuildable = {
         MyPageBuilder(dependency: self)
+    }()
+    
+    lazy var storyEditorBuilder: StoryEditorBuildable = {
+        StoryEditorBuilder(dependency: self)
     }()
     
     lazy var storyDeatilBuilder: StoryDetailBuildable = {

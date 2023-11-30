@@ -14,6 +14,7 @@ import DomainInterfaces
 
 public protocol SearchDependency: Dependency {
     var searchUseCase: SearchUseCaseInterface { get }
+    var storyEditorBuilder: StoryEditorBuildable { get }
     var storyDeatilBuilder: StoryDetailBuildable { get }
 }
 
@@ -27,6 +28,7 @@ final class SearchComponent: Component<SearchDependency>,
     var searchCurrentLocationStoryListUseCase: SearchCurrentLocationStoryListUseCaseInterface { dependency.searchUseCase }
     var searchResultUseCase: SearchResultUseCaseInterface { dependency.searchUseCase }
     var searchMapUseCase: SearchMapUseCaseInterface { dependency.searchUseCase }
+    var storyEditorBuilder: StoryEditorBuildable { dependency.storyEditorBuilder }
     var storyDeatilBuilder: StoryDetailBuildable { dependency.storyDeatilBuilder }
     var searchStorySeeAllUseCase: SearchStorySeeAllUseCaseInterface { dependency.searchUseCase }
     
@@ -36,12 +38,14 @@ final class SearchRouterComponent: SearchRouterDependency {
     
     let searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable
     let searchResultBuilder: SearchResultBuildable
+    let storyEditorBuilder: StoryEditorBuildable
     let storyDeatilBuilder: StoryDetailBuildable
     let searchStorySeeAllBuilder: SearchStorySeeAllBuildable
     
     init(component: SearchComponent) {
         self.searchCurrentLocationBuilder = SearchCurrentLocationStoryListBuilder(dependency: component)
         self.searchResultBuilder = SearchResultBuilder(dependency: component)
+        self.storyEditorBuilder = component.storyEditorBuilder
         self.storyDeatilBuilder = component.storyDeatilBuilder
         self.searchStorySeeAllBuilder = SearchStorySeeAllBuilder(dependency: component)
     }
