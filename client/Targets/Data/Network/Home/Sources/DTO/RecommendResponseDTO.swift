@@ -17,7 +17,7 @@ public struct RecommendResponseDTO: Decodable {
         public let content: String
         public let likeCount: Int
         public let commentCount: Int
-        public let storyImage: String
+        public let storyImage: String?
         public let user: RecommendUserResponse
     }
     
@@ -28,20 +28,31 @@ public struct RecommendResponseDTO: Decodable {
     }
     
     public let recommededStories: [RecommendStoryResponse]
+    public let isLastPage: Bool
     
 }
 
 public extension RecommendResponseDTO {
     
-    func toDomain() -> [HotPlace] {
+    func toDomain() -> HotPlace {
+        return .init(
+            stories: makeHotPlaceStories(),
+            isLastPage: isLastPage
+        )
+    }
+    
+    private func makeHotPlaceStories() -> [HotPlaceStory] {
         return recommededStories
-            .map { HotPlace(
+            .map { HotPlaceStory(
                 id: $0.storyId,
                 title: $0.title,
-                imageURL: $0.storyImage,
+                content: $0.content,
+                imageURL: $0.storyImage ?? "",
                 userId: $0.user.userId,
                 username: $0.user.username,
-                userProfileImageURL: $0.user.profileUrl
+                userProfileImageURL: $0.user.profileUrl,
+                likes: $0.likeCount,
+                comments: $0.commentCount
             )}
     }
     
