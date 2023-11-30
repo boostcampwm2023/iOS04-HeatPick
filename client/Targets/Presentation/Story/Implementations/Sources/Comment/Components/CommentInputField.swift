@@ -10,8 +10,26 @@ import UIKit
 
 import DesignKit
 
-class CommentInputField: UIView {
+protocol CommentInputFieldDelegate: AnyObject {
+    func commentTextDidChange(_ text: String)
+    func commentButtonDidTap()
+}
 
+final class CommentInputField: UIView {
+    
+    weak var delegate: CommentInputFieldDelegate?
+    private var isButtonEnabled: Bool = false {
+        didSet {
+            if isButtonEnabled {
+                commentImageView.isUserInteractionEnabled = true
+                commentImageView.tintColor = .hpBlack
+            } else {
+                commentImageView.isUserInteractionEnabled = false
+                commentImageView.tintColor = .hpGray4
+            }
+        }
+    }
+    
     private enum Constant {
         static let leadingOffset: CGFloat = 10
         static let trailingOffset: CGFloat = -leadingOffset
@@ -23,20 +41,34 @@ class CommentInputField: UIView {
         static let maximumCommentTextHeight: CGFloat = 100
         static let commentImageHieght: CGFloat = 40
         static let commentImageWidth: CGFloat = commentImageHieght
+        
+        static let textTopBottomInset: CGFloat = 10
+        static let textLeadingTrailingInset: CGFloat = 15
     }
     
-    private let commentTextView: UITextView = {
+    private lazy var commentTextView: UITextView = {
         let textView = UITextView()
         textView.font = .captionRegular
         textView.textColor = .hpBlack
         textView.isScrollEnabled = true
         textView.textContainer.lineBreakMode = .byCharWrapping
         textView.isUserInteractionEnabled = true
-        textView.textContainerInset = .init(top: 10, left: 15,
-                                            bottom: 10, right: 15)
+        textView.textContainerInset = .init(top: Constant.textTopBottomInset, left: Constant.textLeadingTrailingInset,
+                                            bottom: Constant.textTopBottomInset, right: Constant.textLeadingTrailingInset)
+        textView.delegate = self
         
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
+    }()
+    
+    private let placeHolderLabel: UILabel = {
+        let label = UILabel()
+        label.font = .captionRegular
+        label.textColor = .hpGray2
+        label.text = "댓글을 입력해주세요"
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private lazy var commentImageView: UIImageView = {
@@ -44,7 +76,7 @@ class CommentInputField: UIView {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.image = UIImage(systemName: "paperplane.circle.fill")
-        imageView.tintColor = .hpBlack
+        imageView.tintColor = .hpGray4
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -59,13 +91,16 @@ class CommentInputField: UIView {
         super.init(coder: coder)
         setupViews()
     }
-
+    
+    func setButton(_ isEnabled: Bool) {
+        isButtonEnabled = isEnabled
+    }
 }
 
 private extension CommentInputField {
     
     func setupViews() {
-        [commentTextView, commentImageView].forEach(addSubview)
+        [commentTextView, commentImageView, placeHolderLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
             commentTextView.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
@@ -76,11 +111,33 @@ private extension CommentInputField {
             commentImageView.leadingAnchor.constraint(equalTo: commentTextView.trailingAnchor, constant: Constant.spacing),
             commentImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constant.trailingOffset),
             commentImageView.heightAnchor.constraint(equalToConstant: Constant.commentImageHieght),
-            commentImageView.widthAnchor.constraint(equalToConstant: Constant.commentImageWidth)
+            commentImageView.widthAnchor.constraint(equalToConstant: Constant.commentImageWidth),
+            
+            placeHolderLabel.topAnchor.constraint(equalTo: commentTextView.topAnchor, constant: Constant.textTopBottomInset),
+            placeHolderLabel.leadingAnchor.constraint(equalTo: commentTextView.leadingAnchor, constant: Constant.textLeadingTrailingInset)
         ])
         
         commentTextView.layer.cornerRadius = Constants.cornerRadiusMedium
         commentTextView.layer.borderWidth = 1
         commentTextView.layer.borderColor = UIColor.hpGray4.cgColor
+    }
+    
+}
+
+extension CommentInputField: UITextViewDelegate {
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        placeHolderLabel.isHidden = true
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        guard let text = textView.text else { return }
+        delegate?.commentTextDidChange(text)
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if let text = textView.text, text.isEmpty {
+            placeHolderLabel.isHidden = false
+        }
     }
 }
