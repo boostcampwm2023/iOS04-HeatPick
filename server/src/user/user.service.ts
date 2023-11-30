@@ -9,7 +9,7 @@ import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ImageService } from '../image/image.service';
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
-import { nextBadge, strToEmoji } from 'src/util/util.string.to.badge.content';
+import { nextBadge, strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
 import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
 import { getTemperatureFeeling } from '../constant/temperature';
@@ -68,22 +68,24 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
-  async getProfile(userId: number): Promise<UserProfileDetailDataDto> {
-    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
+  async getProfile(requestUserId: number, targetUserId: number): Promise<UserProfileDetailDataDto> {
+    const user = await this.userRepository.findOneByOption({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
     const mainBadge = await user.representativeBadge;
     const stories = await user.stories;
 
     return {
       userId: user.userId,
       username: user.username,
-      profileURL: user.profileImage.imageUrl,
+      profileURL: user.profileImage?.imageUrl,
+      isFollow: user.followers.some((user) => user.userId === requestUserId) || requestUserId === targetUserId ? 0 : 1,
       temperature: user.temperature,
       temperatureFeeling: getTemperatureFeeling(user.temperature),
-      followerCount: 0,
+      followerCount: user.followers.length,
       storyCount: (await user.stories).length,
       experience: 0,
       maxExperience: 999,
       mainBadge: mainBadge,
+      badgeExplain: strToExplain[mainBadge.badgeName],
       storyList: await Promise.all(
         stories.map(async (story: Story) => {
           return {
@@ -91,7 +93,7 @@ export class UserService {
             thumbnailImageURL: (await story.storyImages)[0].imageUrl,
             title: story.title,
             content: story.content,
-            likeState: (await story.usersWhoLiked).some((user) => user.userId === userId) ? 0 : 1,
+            likeState: (await story.usersWhoLiked).some((user) => user.userId === requestUserId) ? 0 : 1,
             likeCount: story.likeCount,
             commentCount: story.commentCount,
           };

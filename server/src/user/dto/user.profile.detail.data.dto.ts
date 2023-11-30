@@ -14,6 +14,9 @@ export class UserProfileDetailDataDto {
   profileURL: string;
 
   @ApiProperty()
+  isFollow: number;
+
+  @ApiProperty()
   followerCount: number;
 
   @ApiProperty()
@@ -33,6 +36,9 @@ export class UserProfileDetailDataDto {
 
   @ApiProperty()
   mainBadge: Badge;
+
+  @ApiProperty()
+  badgeExplain: string;
 
   @ApiProperty({ type: () => UserProfileDetailStoryDto })
   storyList: UserProfileDetailStoryDto[];
