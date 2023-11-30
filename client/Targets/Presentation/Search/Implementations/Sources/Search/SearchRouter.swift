@@ -15,6 +15,7 @@ import StoryInterfaces
 protocol SearchInteractable: Interactable,
                              SearchCurrentLocationStoryListListener,
                              SearchResultListener,
+                             StoryEditorListener,
                              StoryDetailListener,
                              SearchStorySeeAllListener,
                              SearchUserSeeAllListener {
@@ -28,6 +29,7 @@ protocol SearchViewControllable: ViewControllable {}
 protocol SearchRouterDependency {
     var searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable { get }
     var searchResultBuilder: SearchResultBuildable { get }
+    var storyEditorBuilder: StoryEditorBuildable { get }
     var storyDeatilBuilder: StoryDetailBuildable { get }
     var searchStorySeeAllBuilder: SearchStorySeeAllBuildable { get }
 }
@@ -38,6 +40,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     
     private var searchCurrentLocationRouter: ViewableRouting?
     private var searchResultRouter: SearchResultRouting?
+    private var storyEditorRouter: ViewableRouting?
     private var storyDeatilRouter: ViewableRouting?
     private var searchSeeAllRouter: ViewableRouting?
     
@@ -81,7 +84,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         searchResultRouter = nil
         viewController.popViewController(animated: true)
     }
-
+    
 }
 
 // MARK: Story
@@ -117,13 +120,28 @@ extension SearchRouter {
         viewController.popViewController(animated: true)
     }
     
+    func attachStoryEditor(location: SearchMapLocation) {
+        guard storyEditorRouter == nil else { return }
+        let router = dependency.storyEditorBuilder.build(withListener: interactor, location: .init(lat: location.lat, lng: location.lng))
+        attachChild(router)
+        storyEditorRouter = router
+        viewController.pushViewController(router.viewControllable, animated: true)
+    }
+    
+    func detachStoryEditor(_ completion: (() -> Void)?) {
+        guard let router = storyEditorRouter else { return }
+        detachChild(router)
+        storyEditorRouter = nil
+        viewController.popViewController(animated: true, completion: completion)
+    }
+    
 }
 
 // MARK: User
 extension SearchRouter {
     
     func attachUserDetail(userId: Int) {
-            
+        
     }
     
     func detachUserDetail() {

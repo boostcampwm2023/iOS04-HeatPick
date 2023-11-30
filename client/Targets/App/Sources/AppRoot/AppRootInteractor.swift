@@ -13,7 +13,6 @@ protocol AppRootRouting: ViewableRouting {
     func attachSignIn()
     func detachSignIn()
     func attachTabs()
-    func routeToPreivousTab()
 }
 
 protocol AppRootPresentable: Presentable {
@@ -64,9 +63,4 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
         router?.attachTabs()
     }
     
-    // MARK: - Story Creator
-    func storyCreatorDidComplete() {
-        // TODO: Route to previous tab
-        router?.routeToPreivousTab()
-    }
 }

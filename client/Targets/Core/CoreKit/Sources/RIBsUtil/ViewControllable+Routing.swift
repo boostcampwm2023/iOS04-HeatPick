@@ -45,13 +45,13 @@ public extension ViewControllable {
         uiviewController.dismiss(animated: animated, completion: completion)
     }
     
-    func popViewController(animated: Bool) {
+    func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
         if let navigationController = uiviewController as? UINavigationController {
             navigationController.topViewController?.resign()
-            navigationController.popViewController(animated: animated)
+            navigationController.popViewController(animated: animated, completion: completion)
         } else {
             uiviewController.navigationController?.topViewController?.resign()
-            uiviewController.navigationController?.popViewController(animated: animated)
+            uiviewController.navigationController?.popViewController(animated: animated, completion: completion)
         }
     }
     
@@ -65,6 +65,21 @@ private extension UIViewController {
     /// 연관 링크: https://github.com/boostcampwm2023/iOS04-HeatPick/issues/149
     func resign() {
         view.endEditing(true)
+    }
+    
+}
+
+private extension UINavigationController {
+    
+    func popViewController(animated: Bool, completion: (() -> Void)?) {
+        popViewController(animated: animated)
+        guard animated, let coordinator = transitionCoordinator else {
+            DispatchQueue.main.async {
+                completion?()
+            }
+            return
+        }
+        coordinator.animate(alongsideTransition: nil) { _ in completion?() }
     }
     
 }

@@ -19,6 +19,8 @@ protocol SearchRouting: ViewableRouting {
     func detachSearchCurrentLocation()
     func attachSearchResult()
     func detachSearchResult()
+    func attachStoryEditor(location: SearchMapLocation)
+    func detachStoryEditor(_ completion: (() -> Void)?)
     func attachStoryDetail(storyId: Int)
     func detachStoryDetail()
     func attachSearchStorySeeAll(searchText: String)
@@ -92,6 +94,16 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     func storyDetailDidTapClose() {
         router?.detachStoryDetail()
+    }
+    
+    func storyDidCreate(_ storyId: Int) {
+        router?.detachStoryEditor { [weak self] in
+            self?.router?.attachStoryDetail(storyId: storyId)
+        }
+    }
+    
+    func storyEditorDidTapClose() {
+        router?.detachStoryEditor(nil)
     }
     
 }
@@ -179,7 +191,7 @@ extension SearchInteractor: SearchPresentableListener {
     
     func didTapStoryCreate() {
         guard let selectedLocation else { return }
-        print("# Attach Story Create: \(selectedLocation)")
+        router?.attachStoryEditor(location: selectedLocation)
     }
     
     func didTapReSearch() {

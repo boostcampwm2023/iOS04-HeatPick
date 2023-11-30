@@ -10,14 +10,11 @@ import ModernRIBs
 import DesignKit
 import UIKit
 
-protocol AppRootPresentableListener: AnyObject {
-    
-}
+protocol AppRootPresentableListener: AnyObject {}
 
 final class AppRootTabBarController: UITabBarController, AppRootPresentable, AppRootViewControllable {
-
+    
     weak var listener: AppRootPresentableListener?
-    private var previousTabIndex: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,14 +24,6 @@ final class AppRootTabBarController: UITabBarController, AppRootPresentable, App
     
     func setViewControllers(_ viewControllers: [ViewControllable]) {
         super.setViewControllers(viewControllers.map(\.uiviewController), animated: false)
-    }
-    
-    func selectPreviousTab() {
-        guard let numberOfTabs = viewControllers?.count,
-              (0..<numberOfTabs) ~= previousTabIndex else {
-            return
-        }
-        selectedIndex = previousTabIndex
     }
     
     private func setupTabBar() {
@@ -49,8 +38,4 @@ final class AppRootTabBarController: UITabBarController, AppRootPresentable, App
         tabBar.unselectedItemTintColor = .hpGray2
     }
     
-    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        guard let tabIndex = tabBar.items?.firstIndex(of: item), tabIndex != 2 else { return }
-        previousTabIndex = tabIndex
-    }
 }
