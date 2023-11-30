@@ -73,7 +73,7 @@ private extension MyPageProfile {
             profileImageURL: profileImageURL,
             follower: "\(followerCount)", // 팔로잉 변환 로직 추가
             storyCount: "\(storyCount)",
-            experience: "\(experience)/\(maxExperience)", // 경험치 변환 로직 추가
+            experience: "\((experience * 100) / maxExperience)%",
             temperatureTitle: temperatureFeeling,
             temperature: "\(temperature)℃",
             badgeTitle: mainBadge.emoji + " " + mainBadge.name,
