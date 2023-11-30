@@ -25,6 +25,7 @@ final class HomeComponent: Component<HomeDependency>,
                            HotPlaceSeeAllDependency {
     var recommendUseCase: RecommendUseCaseInterface { dependency.homeUseCase }
     var hotPlaceUseCase: HotPlaceUseCaseInterface { dependency.homeUseCase }
+    var followingUseCase: HomeFollowingUseCaseInterface { dependency.homeUseCase }
     var storyDeatilBuilder: StoryDetailBuildable { dependency.storyDeatilBuilder }
 }
 

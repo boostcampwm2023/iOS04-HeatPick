@@ -7,10 +7,15 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol HomeFollowingDashboardDependency: Dependency {}
+protocol HomeFollowingDashboardDependency: Dependency {
+    var followingUseCase: HomeFollowingUseCaseInterface { get }
+}
 
-final class HomeFollowingDashboardComponent: Component<HomeFollowingDashboardDependency> {}
+final class HomeFollowingDashboardComponent: Component<HomeFollowingDashboardDependency>, HomeFollowingDashboardInteractorDependency {
+    var followingUseCase: HomeFollowingUseCaseInterface { dependency.followingUseCase }
+}
 
 protocol HomeFollowingDashboardBuildable: Buildable {
     func build(withListener listener: HomeFollowingDashboardListener) -> HomeFollowingDashboardRouting
@@ -25,7 +30,7 @@ final class HomeFollowingDashboardBuilder: Builder<HomeFollowingDashboardDepende
     func build(withListener listener: HomeFollowingDashboardListener) -> HomeFollowingDashboardRouting {
         let component = HomeFollowingDashboardComponent(dependency: dependency)
         let viewController = HomeFollowingDashboardViewController()
-        let interactor = HomeFollowingDashboardInteractor(presenter: viewController)
+        let interactor = HomeFollowingDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return HomeFollowingDashboardRouter(interactor: interactor, viewController: viewController)
     }
