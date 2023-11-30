@@ -25,6 +25,12 @@ export class StoryResultDto {
 
   @ApiProperty({ description: '스토리를 작성한 유저 정보', type: () => UserResultDto })
   user: UserResultDto;
+
+  @ApiProperty({ description: '스토리의 latitude' })
+  latitude: number;
+
+  @ApiProperty({ description: '스토리의 longitude' })
+  longitude: number;
 }
 
 export class StoryRecommendResponseDto {
