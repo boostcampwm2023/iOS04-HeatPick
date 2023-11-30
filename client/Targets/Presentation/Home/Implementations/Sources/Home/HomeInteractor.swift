@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import DomainEntities
 import HomeInterfaces
 import StoryInterfaces
 
@@ -16,7 +17,7 @@ protocol HomeRouting: ViewableRouting {
     func attachFollowingDashboard()
     func attachFriendDashboard()
     func detachFriendDashboard()
-    func attachRecommendSeeAll()
+    func attachRecommendSeeAll(location: LocationCoordinate)
     func detachRecommendSeeAll()
     func attachHotPlaceSeeAll()
     func detachHotPlaceSeeAll()
@@ -55,8 +56,8 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     
     // MARK: - Recommend
     
-    func recommendDashboardDidTapSeeAll() {
-        router?.attachRecommendSeeAll()
+    func recommendDashboardDidTapSeeAll(location: LocationCoordinate) {
+        router?.attachRecommendSeeAll(location: location)
     }
     
     func recommendDashboardDidTapStory(id: Int) {
@@ -73,24 +74,28 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         router?.attachStoryDetail(storyID: id)
     }
     
-    func hotPlaceSeeAllDidTapStory(storyID: Int) {
-        router?.attachStoryDetail(storyID: storyID)
-    }
-    
     // MARK: - Following
     
     func followingDashboardDidTapSeeAll() {
         print("# Attach Following See All View")
     }
     
-    // MARK: - Recommend See All
+    // MARK: - See All
     
     func recommendSeeAllDidTapClose() {
         router?.detachRecommendSeeAll()
     }
     
+    func recommendSeeAllDidTapStory(storyID: Int) {
+        router?.attachStoryDetail(storyID: storyID)
+    }
+    
     func hotPlaceSeeAllDidTapClose() {
         router?.detachHotPlaceSeeAll()
+    }
+    
+    func hotPlaceSeeAllDidTapStory(storyID: Int) {
+        router?.attachStoryDetail(storyID: storyID)
     }
     
     // MARK: - Story Detail

@@ -12,7 +12,10 @@ import DomainEntities
 
 public protocol RecommendUseCaseInterface: AnyObject {
     
+    var location: LocationCoordinate? { get }
+    var hasMoreRecommendPlace: Bool { get }
     var currentRecommendPlace: AnyPublisher<RecommendPlace, Never> { get }
+    
     func fetchRecommendPlaceWithPaging(lat: Double, lng: Double) async -> Result<RecommendPlace, Error>
     func loadMoreRecommendPlace(lat: Double, lng: Double) async -> Result<RecommendPlace, Error>
     func updateCurrentLocation()

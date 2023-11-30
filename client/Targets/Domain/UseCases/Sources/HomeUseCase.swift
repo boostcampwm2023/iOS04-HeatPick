@@ -14,6 +14,10 @@ import DomainInterfaces
 
 public final class HomeUseCase: HomeUseCaseInterface {
     
+    public var location: LocationCoordinate? {
+        return locationService.location
+    }
+    
     public var hasMoreRecommendPlace: Bool {
         return !isRecommendPlageLastPage
     }

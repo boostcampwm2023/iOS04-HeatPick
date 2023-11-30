@@ -72,7 +72,6 @@ final class HotPlaceSeeAllInteractor: PresentableInteractor<HotPlaceSeeAllPresen
     
     private func fetchHotPlace() {
         startLoading()
-        presenter.startLoading()
         Task { [weak self] in
             guard let self else { return }
             await dependency.hotPlaceUseCase

@@ -21,7 +21,7 @@ protocol HomeRecommendDashboardPresentable: Presentable {
 }
 
 protocol HomeRecommendDashboardListener: AnyObject {
-    func recommendDashboardDidTapSeeAll()
+    func recommendDashboardDidTapSeeAll(location: LocationCoordinate)
     func recommendDashboardDidTapStory(id: Int)
 }
 
@@ -64,7 +64,8 @@ final class HomeRecommendDashboardInteractor: PresentableInteractor<HomeRecommen
     }
     
     func didTapSeeAll() {
-        listener?.recommendDashboardDidTapSeeAll()
+        guard let location = dependency.recommendUseCase.location else { return }
+        listener?.recommendDashboardDidTapSeeAll(location: location)
     }
     
     func didTap(storyID: Int) {
