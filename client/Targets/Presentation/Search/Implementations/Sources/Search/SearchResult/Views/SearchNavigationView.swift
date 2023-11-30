@@ -12,7 +12,7 @@ import Combine
 import DesignKit
 
 public protocol SearchNavigationViewDelegate: AnyObject {
-    func leftButtonDidTap()
+    func didTapBack()
     func editing(_ searchText: String)
     func showSearchBeforeDashboard()
     func showSearchingDashboard()
@@ -31,12 +31,12 @@ public final class SearchNavigationView: UIView {
     
     weak var delegate: SearchNavigationViewDelegate?
     
-    private lazy var leftButton: UIButton = {
+    private lazy var backButton: UIButton = {
         let button = UIButton()
         let config = UIImage.SymbolConfiguration(font: .bodySemibold)
         button.setImage(UIImage(systemName: Constant.backButtonImage , withConfiguration: config), for: .normal)
         button.tintColor = .hpBlack
-        button.addTarget(self, action: #selector(leftButtonDidTap), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -77,14 +77,14 @@ private extension SearchNavigationView {
     
     func setupViews() {
         backgroundColor = .white
-        [leftButton, searchTextField].forEach(addSubview)
+        [backButton, searchTextField].forEach(addSubview)
         
         NSLayoutConstraint.activate([
-            leftButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
-            leftButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            backButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            backButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             
             searchTextField.topAnchor.constraint(equalTo: topAnchor),
-            searchTextField.leadingAnchor.constraint(equalTo: leftButton.trailingAnchor, constant: Constants.leadingOffset),
+            searchTextField.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: Constants.leadingOffset),
             searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             searchTextField.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
@@ -94,8 +94,8 @@ private extension SearchNavigationView {
 
 private extension SearchNavigationView {
     
-    @objc func leftButtonDidTap() {
-        delegate?.leftButtonDidTap()
+    @objc func didTapBack() {
+        delegate?.didTapBack()
     }
     
     @objc func searchTextFieldValueChanged(_ sender: UITextField) {

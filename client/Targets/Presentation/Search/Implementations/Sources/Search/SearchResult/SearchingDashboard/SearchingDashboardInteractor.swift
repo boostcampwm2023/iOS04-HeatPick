@@ -72,7 +72,7 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
         cancelTaskBag.cancel()
     }
     
-    func didTapItem(_ item: String) {
+    func didTapRecommendText(_ recommendText: String) {
         
     }
 }

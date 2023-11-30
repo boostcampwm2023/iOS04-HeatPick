@@ -22,8 +22,9 @@ final class SearchComponent: Component<SearchDependency>,
                              SearchInteractorDependency,
                              SearchCurrentLocationStoryListDependency,
                              SearchResultDependency,
-                             SearchStorySeeAllDependency {
-    
+                             SearchStorySeeAllDependency,
+                             SearchUserSeeAllDependency {
+
     var searchUseCase: SearchUseCaseInterface { dependency.searchUseCase }
     var searchCurrentLocationStoryListUseCase: SearchCurrentLocationStoryListUseCaseInterface { dependency.searchUseCase }
     var searchResultUseCase: SearchResultUseCaseInterface { dependency.searchUseCase }
@@ -31,6 +32,7 @@ final class SearchComponent: Component<SearchDependency>,
     var storyEditorBuilder: StoryEditorBuildable { dependency.storyEditorBuilder }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
     var searchStorySeeAllUseCase: SearchStorySeeAllUseCaseInterface { dependency.searchUseCase }
+    var searchUserSeeAllUseCase: SearchUserSeeAllUseCaseInterface { dependency.searchUseCase }
     
 }
 
@@ -41,6 +43,7 @@ final class SearchRouterComponent: SearchRouterDependency {
     let storyEditorBuilder: StoryEditorBuildable
     let storyDetailBuilder: StoryDetailBuildable
     let searchStorySeeAllBuilder: SearchStorySeeAllBuildable
+    let searchUserSeeAllBuilder: SearchUserSeeAllBuildable
     
     init(component: SearchComponent) {
         self.searchCurrentLocationBuilder = SearchCurrentLocationStoryListBuilder(dependency: component)
@@ -48,6 +51,7 @@ final class SearchRouterComponent: SearchRouterDependency {
         self.storyEditorBuilder = component.storyEditorBuilder
         self.storyDetailBuilder = component.storyDetailBuilder
         self.searchStorySeeAllBuilder = SearchStorySeeAllBuilder(dependency: component)
+        self.searchUserSeeAllBuilder = SearchUserSeeAllBuilder(dependency: component)
     }
     
 }

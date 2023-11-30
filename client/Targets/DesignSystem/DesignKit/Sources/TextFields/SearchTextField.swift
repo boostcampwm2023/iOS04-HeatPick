@@ -21,7 +21,7 @@ open class SearchTextField: UITextField {
     }
     
     public var placeholderColor: UIColor = .hpGray2 {
-        didSet { updatePlaceholder()  }
+        didSet { updatePlaceholder() }
     }
     
     public override init(frame: CGRect) {

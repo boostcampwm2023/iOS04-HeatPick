@@ -23,7 +23,8 @@ final class MyPageComponent: Component<MyPageDependency>,
                              MyPageStoryDashboardDependency,
                              MyPageStorySeeAllDependency,
                              MyPageInteractorDependency,
-                             SettingDependency {
+                             SettingDependency,
+                             UserInfoEditDashboardDependency {
     
     var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
     var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
@@ -38,6 +39,7 @@ protocol MypageRouterDependency: AnyObject {
     var storyDashboardBuilder: MyPageStoryDashboardBuildable { get }
     var storySeeAllBuilder: MyPageStorySeeAllBuildable { get }
     var settingBuilder: SettingBuildable { get }
+    var userInfoEditDashboardBuilder: UserInfoEditDashboardBuildable { get }
     
 }
 
@@ -47,13 +49,14 @@ final class MyPageRouterComponent: MypageRouterDependency {
     let storyDashboardBuilder: MyPageStoryDashboardBuildable
     let storySeeAllBuilder: MyPageStorySeeAllBuildable
     let settingBuilder: SettingBuildable
+    let userInfoEditDashboardBuilder: UserInfoEditDashboardBuildable
     
     init(component: MyPageComponent) {
         self.userDashboardBuilder = MyPageUserDashboardBuilder(dependency: component)
         self.storyDashboardBuilder = MyPageStoryDashboardBuilder(dependency: component)
         self.storySeeAllBuilder = MyPageStorySeeAllBuilder(dependency: component)
         self.settingBuilder = SettingBuilder(dependency: component)
+        self.userInfoEditDashboardBuilder = UserInfoEditDashboardBuilder(dependency: component)
     }
-    
     
 }

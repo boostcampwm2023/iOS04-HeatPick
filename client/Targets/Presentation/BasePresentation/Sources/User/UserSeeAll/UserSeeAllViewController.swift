@@ -15,7 +15,6 @@ public protocol UserSeeAllPresentableListener: AnyObject {
     func didTapClose()
 }
 
-
 public final class UserSeeAllViewController: UIViewController, UserSeeAllPresentable, UserSeeAllViewControllable {
     
     public weak var listener: UserSeeAllPresentableListener?
