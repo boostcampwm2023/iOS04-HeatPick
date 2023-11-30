@@ -19,7 +19,17 @@ struct StoryHeaderViewModel {
     let commentsCount: Int
 }
 
+protocol StoryHeaderViewDelegate: AnyObject {
+    func commentButtonDidTap()
+}
+
 final class StoryHeaderView: UIView {
+    
+    private enum Constant {
+        static let spacing: CGFloat = 10
+    }
+    
+    weak var delegate: StoryHeaderViewDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -29,16 +39,6 @@ final class StoryHeaderView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.distribution = .equalSpacing
-        
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView       
-    }()
            
     private let userBadgeView: UserBadgeView = {
         let badge = UserBadgeView()
@@ -47,11 +47,22 @@ final class StoryHeaderView: UIView {
         return badge
     }()
     
-    private lazy var storyLikesCommentsView: StoryLikesCommentsView = {
-        let likesCommentsView = StoryLikesCommentsView()
+    private lazy var likeButton: ImageCountButton = {
+        let button = ImageCountButton()
+        button.setup(type: .like)
+        button.addTapGesture(target: self, action: #selector(likeButtonDidTap))
         
-        likesCommentsView.translatesAutoresizingMaskIntoConstraints = false
-        return likesCommentsView
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var commentButton: ImageCountButton = {
+        let button = ImageCountButton()
+        button.setup(type: .comment)
+        button.addTapGesture(target: self, action: #selector(commentButtonDidTap))
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     override init(frame: CGRect) {
@@ -67,25 +78,45 @@ final class StoryHeaderView: UIView {
     func setup(model: StoryHeaderViewModel) {
         titleLabel.text = model.title
         userBadgeView.setBadge(model.badgeName)
-        storyLikesCommentsView.setup(likes: model.likesCount, comments: model.commentsCount)
+        likeButton.setup(count: model.likesCount)
+        commentButton.setup(count: model.commentsCount)
     }
     
 }
 
 private extension StoryHeaderView {
+    
     func setupViews() {
-        addSubview(titleLabel)
-        addSubview(stackView)
-        [userBadgeView, storyLikesCommentsView].forEach(stackView.addArrangedSubview)
+        [titleLabel, userBadgeView, likeButton, commentButton].forEach(addSubview)
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
             
-            stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            userBadgeView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
+            userBadgeView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            userBadgeView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            likeButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
+            likeButton.bottomAnchor.constraint(equalTo: bottomAnchor),
+
+            commentButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
+            commentButton.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor, constant: Constant.spacing),
+            commentButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
+            commentButton.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+
+}
+
+// MARK: - objc
+private extension StoryHeaderView {
+    
+    @objc func likeButtonDidTap() {
+        
+    }
+    
+    @objc func commentButtonDidTap() {
+        delegate?.commentButtonDidTap()
     }
 }

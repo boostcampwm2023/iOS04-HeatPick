@@ -12,7 +12,7 @@ import DesignKit
 
 final class UserBadgeView: UIView {
 
-    enum Constant {
+    private enum Constant {
         static let leadingTrailingPadding: CGFloat = 15
         static let topBottomPadding: CGFloat = 7
     }

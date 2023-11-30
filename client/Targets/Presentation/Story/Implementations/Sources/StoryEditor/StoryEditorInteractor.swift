@@ -34,7 +34,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     
     weak var router: StoryEditorRouting?
     weak var listener: StoryEditorListener?
-    private var dependency: StoryEditorInteractorDependency
+    private let dependency: StoryEditorInteractorDependency
     private var cancelBag: CancelBag = CancelBag()
     
     private var title: String = ""
@@ -64,6 +64,7 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
 
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
     }
     
     func didTapClose() {

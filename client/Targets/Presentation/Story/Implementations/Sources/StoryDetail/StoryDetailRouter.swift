@@ -10,17 +10,43 @@ import ModernRIBs
 
 import StoryInterfaces
 
-protocol StoryDetailInteractable: Interactable {
+protocol StoryDetailInteractable: Interactable, CommentListener {
     var router: StoryDetailRouting? { get set }
     var listener: StoryDetailListener? { get set }
 }
 
 protocol StoryDetailViewControllable: ViewControllable {}
 
+protocol StoryDetailRouterDependency {
+    var commentBuilder: CommentBuildable { get }
+}
+
 final class StoryDetailRouter: ViewableRouter<StoryDetailInteractable, StoryDetailViewControllable>, StoryDetailRouting {
 
-    override init(interactor: StoryDetailInteractable, viewController: StoryDetailViewControllable) {
+    private let commentBuilder: CommentBuildable
+    private var commentRouter: Routing?
+    
+    init(interactor: StoryDetailInteractable,
+         viewController: StoryDetailViewControllable,
+         dependency: StoryDetailRouterDependency
+    ) {
+        self.commentBuilder = dependency.commentBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
+    }
+    
+    func attachComment() {
+        guard commentRouter == nil else { return }
+        let commentRouting = commentBuilder.build(withListener: interactor)
+        commentRouter = commentRouting
+        attachChild(commentRouting)
+        viewController.pushViewController(commentRouting.viewControllable, animated: true)
+    }
+    
+    func detachComment() {
+        guard let router = commentRouter else { return }
+        detachChild(router)
+        commentRouter = nil
+        viewController.popViewController(animated: true)
     }
 }

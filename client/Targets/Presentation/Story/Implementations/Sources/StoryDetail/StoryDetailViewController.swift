@@ -17,6 +17,7 @@ import DomainEntities
 protocol StoryDetailPresentableListener: AnyObject {
     func storyDetailDidTapClose()
     func followButtonDidTap(userId: Int, userStatus: UserStatus)
+    func commentButtonDidTap()
 }
 
 struct StoryDetailViewModel {
@@ -101,10 +102,11 @@ final class StoryDetailViewController: UIViewController, StoryDetailPresentable,
     }()
 
     private lazy var storyHeaderView: StoryHeaderView = {
-        let subtitleView = StoryHeaderView()
+        let headerView = StoryHeaderView()
+        headerView.delegate = self
         
-        subtitleView.translatesAutoresizingMaskIntoConstraints = false
-        return subtitleView
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        return headerView
     }()
     
     private let bodyView: UITextView = {
@@ -191,6 +193,7 @@ private extension StoryDetailViewController {
     
 }
 
+// MARK: - NavigationView delegate
 extension StoryDetailViewController: NavigationViewDelegate {
    
     func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
@@ -199,10 +202,20 @@ extension StoryDetailViewController: NavigationViewDelegate {
 
 }
 
+// MARK: - ProfileView delegate
 extension StoryDetailViewController: SimpleUserProfileViewDelegate {
     
     func followButtonDidTap(userId: Int, userStatus: UserStatus) {
         listener?.followButtonDidTap(userId: userId, userStatus: userStatus)
+    }
+    
+}
+
+// MARK: - HearVew Delegate
+extension StoryDetailViewController: StoryHeaderViewDelegate {
+    
+    func commentButtonDidTap() {
+        listener?.commentButtonDidTap()
     }
     
 }
