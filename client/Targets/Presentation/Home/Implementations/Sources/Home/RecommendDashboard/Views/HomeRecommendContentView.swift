@@ -75,6 +75,7 @@ private extension HomeRecommendContentView {
     
     func setupViews() {
         let width: CGFloat = (UIScreen.main.bounds.width) - 40
+        let height = width - 40
         [imageView, titleLabel, subtitleLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
@@ -83,6 +84,7 @@ private extension HomeRecommendContentView {
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             imageView.widthAnchor.constraint(equalToConstant: width),
+            imageView.heightAnchor.constraint(equalToConstant: height),
             
             titleLabel.topAnchor.constraint(equalTo: imageView.topAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor, constant: Constants.leadingOffset),
