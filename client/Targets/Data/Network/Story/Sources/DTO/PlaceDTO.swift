@@ -15,7 +15,7 @@ public struct PlaceDTO: Codable {
     let address: String
     let title: String
     
-    public init(latitude: Double, longitude: Double, address: String = "test", title: String = "test") {
+    public init(latitude: Double, longitude: Double, address: String = "", title: String = "테스트") {
         self.latitude = latitude
         self.longitude = longitude
         self.address = address
