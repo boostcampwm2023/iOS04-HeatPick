@@ -9,4 +9,4 @@
 import Foundation
 import DomainEntities
 
-public protocol HomeUseCaseInterface: RecommendUseCaseInterface, HotPlaceUseCaseInterface {}
+public protocol HomeUseCaseInterface: RecommendUseCaseInterface, HotPlaceUseCaseInterface, HomeFollowingUseCaseInterface {}

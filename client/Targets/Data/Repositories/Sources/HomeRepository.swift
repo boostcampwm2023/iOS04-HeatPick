@@ -44,4 +44,16 @@ public final class HomeRepository: HomeRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
+    public func fetchFollowing() async -> Result<HomeFollowingStoryWithPaging, Error> {
+        let target = HomeAPI.follow
+        let request: Result<HomeFollowResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
+    public func fetchFollowing(offset: Int, limit: Int, sortOption: Int) async -> Result<HomeFollowingStoryWithPaging, Error> {
+        let target = HomeAPI.followWithPaging(offset: offset, limit: limit, sortOption: sortOption)
+        let request: Result<HomeFollowResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
 }
