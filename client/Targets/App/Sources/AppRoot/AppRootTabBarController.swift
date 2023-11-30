@@ -26,6 +26,20 @@ final class AppRootTabBarController: UITabBarController, AppRootPresentable, App
         super.setViewControllers(viewControllers.map(\.uiviewController), animated: false)
     }
     
+    func selectViewController(_ viewController: ViewControllable) {
+        guard let index = viewControllers?.firstIndex(where: { controller in
+            if let navigation = controller as? UINavigationController {
+                return navigation.topViewController == viewController.uiviewController
+                
+            } else {
+                return controller == viewController.uiviewController
+            }
+        }) else {
+            return
+        }
+        selectedIndex = index
+    }
+    
     private func setupTabBar() {
         let appearance: UITabBarAppearance = tabBar.standardAppearance
         appearance.configureWithDefaultBackground()

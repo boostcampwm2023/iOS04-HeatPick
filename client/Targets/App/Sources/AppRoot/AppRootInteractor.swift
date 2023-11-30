@@ -13,6 +13,7 @@ protocol AppRootRouting: ViewableRouting {
     func attachSignIn()
     func detachSignIn()
     func attachTabs()
+    func selectFollowing()
 }
 
 protocol AppRootPresentable: Presentable {
@@ -61,6 +62,12 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
     func signInDidComplete() {
         router?.detachSignIn()
         router?.attachTabs()
+    }
+    
+    // MARK: - Home
+    
+    func homeDidTapFollowing() {
+        router?.selectFollowing()
     }
     
 }
