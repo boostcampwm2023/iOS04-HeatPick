@@ -6,7 +6,6 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import Combine
 import Foundation
 
 import ModernRIBs
@@ -22,7 +21,7 @@ typealias SearchStroySeeAllPresentableListener = StorySeeAllPresentableListener
 
 protocol SearchStorySeeAllListener: AnyObject {
     func searchStorySeeAllDidTapClose()
-    func searchStorySeeAllDidTap(storyId: Int)
+    func didTapStory(storyId: Int)
 }
 
 protocol SearchStorySeeAllInteractorDependency: AnyObject {
@@ -30,7 +29,9 @@ protocol SearchStorySeeAllInteractorDependency: AnyObject {
     var searchStorySeeAllUseCase: SearchStorySeeAllUseCaseInterface { get }
 }
 
-final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAllPresentable>, SearchStorySeeAllInteractable, SearchStroySeeAllPresentableListener {
+final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAllPresentable>, 
+                                            SearchStorySeeAllInteractable,
+                                            SearchStroySeeAllPresentableListener {
     
     weak var router: SearchStorySeeAllRouting?
     weak var listener: SearchStorySeeAllListener?
@@ -75,6 +76,7 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
     
     override func willResignActive() {
         super.willResignActive()
+        cancelTaskBag.cancel()
     }
     
     func didTapClose() {
@@ -82,7 +84,7 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
     }
     
     func didTapItem(model: StorySmallTableViewCellModel) {
-        listener?.searchStorySeeAllDidTap(storyId: model.storyId)
+        listener?.didTapStory(storyId: model.storyId)
     }
     
     func willDisplay(at indexPath: IndexPath) {
