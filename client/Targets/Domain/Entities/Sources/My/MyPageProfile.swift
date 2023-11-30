@@ -10,6 +10,7 @@ import Foundation
 
 public struct MyPageProfile {
     
+    public let userId: Int
     public let userName: String
     public let profileImageURL: String?
     public let temperature: Int
@@ -20,7 +21,8 @@ public struct MyPageProfile {
     public let maxExperience: Int
     public let mainBadge: MyPageBadge
     
-    public init(userName: String, profileImageURL: String?, temperature: Int, temperatureFeeling: String, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, mainBadge: MyPageBadge) {
+    public init(userId: Int, userName: String, profileImageURL: String?, temperature: Int, temperatureFeeling: String, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, mainBadge: MyPageBadge) {
+        self.userId = userId
         self.userName = userName
         self.profileImageURL = profileImageURL
         self.temperature = temperature

@@ -75,9 +75,9 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         detachChild(router)
     }
     
-    func attachStorySeeAll() {
+    func attachStorySeeAll(userId: Int) {
         guard storySeeAllRouting == nil else { return }
-        let router = dependency.storySeeAllBuilder.build(withListener: interactor)
+        let router = dependency.storySeeAllBuilder.build(withListener: interactor, userId: userId)
         viewControllable.pushViewController(router.viewControllable, animated: true)
         self.storySeeAllRouting = router
         attachChild(router)

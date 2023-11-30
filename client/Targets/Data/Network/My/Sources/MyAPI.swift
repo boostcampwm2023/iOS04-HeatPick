@@ -13,6 +13,7 @@ import NetworkAPIKit
 public enum MyAPI {
     case myProfile
     case profile(id: Int)
+    case userStory(id: Int, offset: Int, limit: Int)
 }
 
 extension MyAPI: Target {
@@ -25,6 +26,7 @@ extension MyAPI: Target {
         switch self {
         case .myProfile: return "/user/myProfile"
         case .profile: return "/user/profile"
+        case .userStory: return "/user/story"
         }
     }
     
@@ -43,6 +45,10 @@ extension MyAPI: Target {
             
         case .profile(let id):
             return .url(parameters: ["userId": id])
+            
+        case let .userStory(id, offset, limit):
+            let request = UserStoryRequestDTO(userId: id, offset: offset, limit: limit)
+            return .url(parameters: request.parameters())
         }
     }
     

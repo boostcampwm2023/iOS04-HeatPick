@@ -15,13 +15,15 @@ public struct MyPageStory {
     public let content: String
     public let thumbnailImageURL: String?
     public let likeCount: Int
+    public let commentCount: Int
     
-    public init(storyId: Int, title: String, content: String, thumbnailImageURL: String?, likeCount: Int) {
+    public init(storyId: Int, title: String, content: String, thumbnailImageURL: String?, likeCount: Int, commentCount: Int) {
         self.storyId = storyId
         self.title = title
         self.content = content
         self.thumbnailImageURL = thumbnailImageURL
         self.likeCount = likeCount
+        self.commentCount = commentCount
     }
     
 }

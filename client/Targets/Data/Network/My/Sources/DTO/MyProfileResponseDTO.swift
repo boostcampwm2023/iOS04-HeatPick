@@ -12,6 +12,7 @@ import DomainEntities
 
 public struct MyProfileResponseDTO: Decodable {
     
+    public let userId: Int
     public let username: String
     public let profileURL: String?
     public let followerCount: Int
@@ -46,6 +47,7 @@ public extension MyProfileResponseDTO {
     
     func toDomain() -> MyPage {
         return .init(
+            userId: userId,
             userName: username,
             profileImageURL: profileURL,
             temperature: temperature,
@@ -83,7 +85,8 @@ public extension MyProfileStoryResponseDTO {
             title: title, 
             content: content.withLineBreak,
             thumbnailImageURL: thumbnailImageURL,
-            likeCount: likeCount
+            likeCount: likeCount,
+            commentCount: commentCount
         )
     }
 }
