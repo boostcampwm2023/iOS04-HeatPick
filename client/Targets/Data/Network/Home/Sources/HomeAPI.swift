@@ -48,8 +48,8 @@ extension HomeAPI: Target {
             return .plain
             
         case .recommendSeeAll(let offset, let limit):
-            let dto = RecommendRequestDTO(offset: offset, limit: limit)
-            return .url(parameters: dto.parameters())
+            let request = RecommendRequestDTO(offset: offset, limit: limit)
+            return .url(parameters: request.parameters())
             
         case .recommendLocation(let lat, let lng):
             let request = RecommendLocationRequestDTO(latitude: lat, longitude: lng, offset: 0, limit: 5)
