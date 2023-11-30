@@ -261,9 +261,7 @@ extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegat
 private extension SearchViewController {
     
     @objc func storyViewDidTap() {
-        print("#### A")
         guard let storyId = storyView.storyID else { return }
-        print("# B: \(storyId)")
         listener?.didTapStory(storyId: storyId)
     }
     
