@@ -22,6 +22,7 @@ struct SearchMapStoryViewModel {
 
 protocol SearchMapStoryViewDelegate: AnyObject {
     func searchMapStoryViewDidTapCreate(_ view: SearchMapStoryView)
+    func searchMapStoryViewDidTap(_ view: SearchMapStoryView, storyId: Int)
 }
 
 final class SearchMapStoryView: UIView {
@@ -78,6 +79,7 @@ private extension SearchMapStoryView {
     
     func setupViews() {
         backgroundColor = .hpWhite
+        storyView.addTapGesture(target: self, action: #selector(didTap))
         [storyView, createButton].forEach(addSubview)
         
         NSLayoutConstraint.activate([
@@ -95,6 +97,11 @@ private extension SearchMapStoryView {
     
     @objc func createButtonDidTap() {
         delegate?.searchMapStoryViewDidTapCreate(self)
+    }
+    
+    @objc func didTap() {
+        guard let storyID else { return }
+        delegate?.searchMapStoryViewDidTap(self, storyId: storyID)
     }
     
 }

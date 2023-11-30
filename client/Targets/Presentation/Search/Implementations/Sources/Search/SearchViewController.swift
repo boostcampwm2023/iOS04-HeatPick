@@ -99,7 +99,6 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
         storyView.layer.borderColor = UIColor.hpGray3.cgColor
         storyView.layer.borderWidth = 1
         storyView.translatesAutoresizingMaskIntoConstraints = false
-        storyView.addTapGesture(target: self, action: #selector(storyViewDidTap))
         return storyView
     }()
     
@@ -225,6 +224,10 @@ extension SearchViewController: SearchMapSelectedViewDelegate, SearchMapStoryVie
         listener?.didTapStoryCreate()
     }
     
+    func searchMapStoryViewDidTap(_ view: SearchMapStoryView, storyId: Int) {
+        listener?.didTapStory(storyId: storyId)
+    }
+    
 }
 
 extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegate {
@@ -258,7 +261,9 @@ extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegat
 private extension SearchViewController {
     
     @objc func storyViewDidTap() {
+        print("#### A")
         guard let storyId = storyView.storyID else { return }
+        print("# B: \(storyId)")
         listener?.didTapStory(storyId: storyId)
     }
     
