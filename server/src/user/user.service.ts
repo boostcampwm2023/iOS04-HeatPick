@@ -18,6 +18,7 @@ import { profileImage } from '../entities/profileImage.entity';
 import { saveImageToLocal } from '../util/util.save.image.local';
 import { ProfileUpdateMetaBadgeData } from './dto/response/profile.update.meta.badge.data';
 import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
+import { UserProfileDetailStoryDto } from './dto/user.profile.detail.story.dto';
 
 @Injectable()
 export class UserService {
@@ -88,19 +89,21 @@ export class UserService {
       maxExperience: 999,
       mainBadge: mainBadge,
       badgeExplain: strToExplain[mainBadge.badgeName],
-      storyList: await Promise.all(
-        stories.map(async (story: Story) => {
-          return {
-            storyId: story.storyId,
-            thumbnailImageURL: (await story.storyImages)[0].imageUrl,
-            title: story.title,
-            content: story.content,
-            likeState: (await story.usersWhoLiked).some((user) => user.userId === requestUserId) ? 0 : 1,
-            likeCount: story.likeCount,
-            commentCount: story.commentCount,
-          };
-        }),
-      ),
+      storyList: (
+        await Promise.all(
+          stories.map(async (story: Story) => {
+            return {
+              storyId: story.storyId,
+              thumbnailImageURL: (await story.storyImages)[0].imageUrl,
+              title: story.title,
+              content: story.content,
+              likeState: (await story.usersWhoLiked).some((user) => user.userId === requestUserId) ? 0 : 1,
+              likeCount: story.likeCount,
+              commentCount: story.commentCount,
+            };
+          }),
+        )
+      ).slice(0, 5),
     };
   }
 
@@ -122,9 +125,23 @@ export class UserService {
     await this.userRepository.save(userObject);
   }
 
-  async getStoryList(userId: number): Promise<Story[]> {
-    const user = await this.userRepository.findOneByUserIdWithStory(userId);
-    return await user.stories;
+  async getStoryList(requestUserId: number, targetUserId: number, offset: number, limit: number): Promise<UserProfileDetailStoryDto[]> {
+    const user = await this.userRepository.findOneByOption({ where: { userId: targetUserId }, relations: ['stories', 'stories.storyImages', 'stories.usersWhoLiked'] });
+    return (
+      await Promise.all(
+        (await user.stories).map(async (story: Story) => {
+          return {
+            storyId: story.storyId,
+            thumbnailImageURL: (await story.storyImages)[0].imageUrl,
+            title: story.title,
+            content: story.content,
+            likeState: (await story.usersWhoLiked).some((user) => user.userId === requestUserId) ? 0 : 1,
+            likeCount: story.likeCount,
+            commentCount: story.commentCount,
+          };
+        }),
+      )
+    ).slice(offset * limit, offset * limit + limit);
   }
 
   async getUpdateMetaData(userId: number): Promise<ProfileUpdateMetaDataDto> {
