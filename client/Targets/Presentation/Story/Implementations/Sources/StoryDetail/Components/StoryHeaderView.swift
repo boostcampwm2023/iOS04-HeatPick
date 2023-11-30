@@ -19,11 +19,17 @@ struct StoryHeaderViewModel {
     let commentsCount: Int
 }
 
+protocol StoryHeaderViewDelegate: AnyObject {
+    func commentButtonDidTap()
+}
+
 final class StoryHeaderView: UIView {
     
     enum Constant {
         static let spacing: CGFloat = 10
     }
+    
+    weak var delegate: StoryHeaderViewDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -44,6 +50,7 @@ final class StoryHeaderView: UIView {
     private lazy var likeButton: ImageCountButton = {
         let button = ImageCountButton()
         button.setup(type: .like)
+        button.addTapGesture(target: self, action: #selector(likeButtonDidTap))
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -52,6 +59,7 @@ final class StoryHeaderView: UIView {
     private lazy var commentButton: ImageCountButton = {
         let button = ImageCountButton()
         button.setup(type: .comment)
+        button.addTapGesture(target: self, action: #selector(commentButtonDidTap))
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -77,6 +85,7 @@ final class StoryHeaderView: UIView {
 }
 
 private extension StoryHeaderView {
+    
     func setupViews() {
         [titleLabel, userBadgeView, likeButton, commentButton].forEach(addSubview)
         
@@ -96,5 +105,18 @@ private extension StoryHeaderView {
             commentButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             commentButton.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+
+}
+
+// MARK: - objc
+private extension StoryHeaderView {
+    
+    @objc func likeButtonDidTap() {
+        
+    }
+    
+    @objc func commentButtonDidTap() {
+        delegate?.commentButtonDidTap()
     }
 }

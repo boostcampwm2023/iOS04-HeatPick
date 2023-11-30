@@ -18,7 +18,7 @@ protocol CommentPresentable: Presentable {
 }
 
 protocol CommentListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func commentWillClose()
 }
 
 final class CommentInteractor: PresentableInteractor<CommentPresentable>, CommentInteractable, CommentPresentableListener {
@@ -42,4 +42,9 @@ final class CommentInteractor: PresentableInteractor<CommentPresentable>, Commen
         super.willResignActive()
         // TODO: Pause any business logic.
     }
+    
+    func navigationViewButtonDidTap() { 
+        listener?.commentWillClose()
+    }
+
 }

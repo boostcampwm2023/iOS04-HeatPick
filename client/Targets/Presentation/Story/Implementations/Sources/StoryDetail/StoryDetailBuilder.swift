@@ -16,12 +16,19 @@ public protocol StoryDetailDependency: Dependency {
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
-final class StoryDetailComponent: Component<StoryDetailDependency>, StoryDetailInteractorDependency {
+final class StoryDetailComponent: Component<StoryDetailDependency>,
+                                  StoryDetailRouterDependency,
+                                  StoryDetailInteractorDependency,
+                                  CommentDependency {
     
     let storyId: Int
     var storyUseCase: StoryUseCaseInterface {
         dependency.storyUseCase
     }
+    
+    lazy var commentBuilder: CommentBuildable = {
+       return CommentBuilder(dependency: self)
+    }()
     
     init(dependency: StoryDetailDependency, storyId: Int) {
         self.storyId = storyId
@@ -42,7 +49,7 @@ public final class StoryDetailBuilder: Builder<StoryDetailDependency>, StoryDeta
         let viewController = StoryDetailViewController()
         let interactor = StoryDetailInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
-        return StoryDetailRouter(interactor: interactor, viewController: viewController)
+        return StoryDetailRouter(interactor: interactor, viewController: viewController, dependency: component)
     }
     
 }

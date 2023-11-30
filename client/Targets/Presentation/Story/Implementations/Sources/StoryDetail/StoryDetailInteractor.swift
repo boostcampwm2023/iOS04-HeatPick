@@ -15,7 +15,10 @@ import DomainEntities
 import DomainInterfaces
 import StoryInterfaces
 
-protocol StoryDetailRouting: ViewableRouting {}
+protocol StoryDetailRouting: ViewableRouting {
+    func attachComment()
+    func detachComment()
+}
 
 protocol StoryDetailPresentable: Presentable {
     var listener: StoryDetailPresentableListener? { get set }
@@ -30,11 +33,14 @@ protocol StoryDetailInteractorDependency: AnyObject {
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
-final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>, StoryDetailInteractable, StoryDetailPresentableListener {
+final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>,
+                                   StoryDetailInteractable,
+                                   StoryDetailPresentableListener {
 
     weak var router: StoryDetailRouting?
     weak var listener: StoryDetailListener?
     private var dependency: StoryDetailInteractorDependency
+    
     private var cancelBag: CancelBag = CancelBag()
     
     init(presenter: StoryDetailPresentable, dependency: StoryDetailInteractorDependency) {
@@ -79,6 +85,15 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
             requestUnfollow(userId)
         }
     }
+    
+    func commentButtonDidTap() {
+        router?.attachComment()
+    }
+    
+    func commentWillClose() {
+        router?.detachComment()
+    }
+    
 }
 
 private extension StoryDetailInteractor {
