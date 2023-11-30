@@ -26,6 +26,10 @@ public final class HomeUseCase: HomeUseCaseInterface {
         return !isHotPlaceLastPage
     }
     
+    public var hasMoreFollowing: Bool {
+        return !isFollowingLastPage
+    }
+    
     public var currentRecommendPlace: AnyPublisher<RecommendPlace, Never> {
         return currentRecommendPlaceSubject.eraseToAnyPublisher()
     }
@@ -34,10 +38,13 @@ public final class HomeUseCase: HomeUseCaseInterface {
     private let locationService: LocationServiceInterface
     private var recommendPlaceOffset = 0
     private var hotPlaceOffset = 0
+    private var followingOffset = 0
     private let pageLimit = 10
     private var isRecommendPlaceLastPage = true
     private var isHotPlaceLastPage = true
+    private var isFollowingLastPage = true
     private let currentRecommendPlaceSubject = PassthroughSubject<RecommendPlace, Never>()
+    private var followingSortOption: HomeFollowingSortOption = .recent
     private var cancellables = Set<AnyCancellable>()
     private let cancelBag = CancelBag()
     
@@ -74,6 +81,38 @@ public final class HomeUseCase: HomeUseCaseInterface {
     public func loadMoreHotPlace() async -> Result<HotPlace, Error> {
         hotPlaceOffset += 1
         return await fetchHotPlace(offset: hotPlaceOffset)
+    }
+    
+    public func fetchFollowing() async -> Result<[HomeFollowingStory], Error> {
+        return await repository.fetchFollowing()
+            .map(\.stories)
+    }
+    
+    public func fetchFollowingWithPaging(option: HomeFollowingSortOption) async -> Result<[HomeFollowingStory], Error> {
+        followingSortOption = option
+        return await fetchFollowingWithPaging()
+    }
+    
+    public func fetchFollowingWithPaging() async -> Result<[HomeFollowingStory], Error> {
+        followingOffset = 0
+        return await fetchFollowing(offset: followingOffset)
+    }
+    
+    public func loadMoreFollowing() async -> Result<[HomeFollowingStory], Error> {
+        followingOffset += 1
+        return await fetchFollowing(offset: followingOffset)
+    }
+    
+    private func fetchFollowing(offset: Int) async -> Result<[HomeFollowingStory], Error> {
+        let result = await repository.fetchFollowing(offset: offset, limit: pageLimit, sortOption: followingSortOption.rawValue)
+        switch result {
+        case .success(let follwoing):
+            isFollowingLastPage = follwoing.isLastPage
+            
+        case .failure:
+            isFollowingLastPage = true
+        }
+        return result.map(\.stories)
     }
     
     private func fetchHotPlace(offset: Int) async -> Result<HotPlace, Error> {

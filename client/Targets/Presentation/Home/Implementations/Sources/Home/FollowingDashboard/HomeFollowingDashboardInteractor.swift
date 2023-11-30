@@ -7,6 +7,9 @@
 //
 
 import ModernRIBs
+import CoreKit
+import DomainEntities
+import DomainInterfaces
 
 protocol HomeFollowingDashboardRouting: ViewableRouting {}
 
@@ -17,6 +20,11 @@ protocol HomeFollowingDashboardPresentable: Presentable {
 
 protocol HomeFollowingDashboardListener: AnyObject {
     func followingDashboardDidTapSeeAll()
+    func followingDashboardDidTapStory(id: Int)
+}
+
+protocol HomeFollowingDashboardInteractorDependency: AnyObject {
+    var followingUseCase: HomeFollowingUseCaseInterface { get }
 }
 
 final class HomeFollowingDashboardInteractor: PresentableInteractor<HomeFollowingDashboardPresentable>, HomeFollowingDashboardInteractable, HomeFollowingDashboardPresentableListener {
@@ -24,71 +32,70 @@ final class HomeFollowingDashboardInteractor: PresentableInteractor<HomeFollowin
     weak var router: HomeFollowingDashboardRouting?
     weak var listener: HomeFollowingDashboardListener?
     
-    override init(presenter: HomeFollowingDashboardPresentable) {
+    private let dependency: HomeFollowingDashboardInteractorDependency
+    private let cancelBag = CancelBag()
+    
+    init(presenter: HomeFollowingDashboardPresentable, dependency: HomeFollowingDashboardInteractorDependency) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(model: .init(contentList: [
-            .init(
-                profileModel: .init(profileImageURL: nil, nickname: "hogumachu", place: "서울시 종로구"),
-                thumbnailImageURL: "https://picsum.photos/id/1/300/300",
-                likes: 162,
-                comments: 8,
-                title: "스토리 제목입니다.",
-                subtitle: "스토리 내용입니다."
-            ),
-            .init(
-                profileModel: .init(profileImageURL: "https://picsum.photos/id/274/300/300", nickname: "hogumachu", place: "서울시 종로구"),
-                thumbnailImageURL: "https://picsum.photos/id/3/300/300",
-                likes: 162,
-                comments: 8,
-                title: "스토리 제목입니다.",
-                subtitle: "스토리 내용입니다."
-            ),
-            .init(
-                profileModel: .init(profileImageURL: nil, nickname: "hogumachu", place: "서울시 종로구"),
-                thumbnailImageURL: "https://picsum.photos/id/2/300/300",
-                likes: 16233,
-                comments: 8111,
-                title: "스토리 제목입니다. 스토리 제목입니다. 스토리 제목입니다.",
-                subtitle: "스토리 내용입니다.스토리 내용입니다.스토리 내용입니다.스토리 내용입니다.스토리 내용입니다."
-            ),
-            .init(
-                profileModel: .init(profileImageURL: "https://picsum.photos/id/3/300/300", nickname: "hogumachu", place: "서울시 종로구"),
-                thumbnailImageURL: "https://picsum.photos/id/1/300/300",
-                likes: 162,
-                comments: 8,
-                title: "스토리 제목입니다.",
-                subtitle: "스토리 내용입니다."
-            ),
-            .init(
-                profileModel: .init(profileImageURL: nil, nickname: "hogumachu", place: "서울시 종로구"),
-                thumbnailImageURL: "https://picsum.photos/id/1/300/300",
-                likes: 162,
-                comments: 8,
-                title: "스토리 제목입니다.",
-                subtitle: "스토리 내용입니다."
-            ),
-            .init(
-                profileModel: .init(profileImageURL: "https://picsum.photos/id/4/300/300", nickname: "hogumachu", place: "서울시 종로구"),
-                thumbnailImageURL: "https://picsum.photos/id/1/300/300",
-                likes: 162,
-                comments: 8,
-                title: "스토리 제목입니다.",
-                subtitle: "스토리 내용입니다."
-            ),
-        ]))
+        fetchFollowing()
     }
 
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
     }
     
     func didTapSeeAll() {
         listener?.followingDashboardDidTapSeeAll()
+    }
+    
+    func didTap(storyId: Int) {
+        listener?.followingDashboardDidTapStory(id: storyId)
+    }
+    
+    private func fetchFollowing() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.followingUseCase.fetchFollowing()
+                .onSuccess(on: .main, with: self) { this, storeis in
+                    this.performAfterFetchingFollowing(stories: storeis)
+                }
+            
+        }.store(in: cancelBag)
+    }
+    
+    private func performAfterFetchingFollowing(stories: [HomeFollowingStory]) {
+        let model = makeModels(stories: stories)
+        presenter.setup(model: model)
+    }
+    
+    private func makeModels(stories: [HomeFollowingStory]) -> HomeFollowingDashboardViewModel {
+        return .init(contentList: stories.map(\.toModel))
+    }
+    
+}
+
+private extension HomeFollowingStory {
+    
+    var toModel: HomeFollowingContentViewModel {
+        return .init(
+            storyId: storyId,
+            profileModel: .init(
+                profileImageURL: userProfileImageURL,
+                nickname: username
+            ),
+            thumbnailImageURL: imageURL,
+            likes: likes,
+            comments: comments,
+            title: title,
+            subtitle: content
+        )
     }
     
 }

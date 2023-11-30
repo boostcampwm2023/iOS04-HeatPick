@@ -13,9 +13,9 @@ final class HomeFollowingCommentView: UIView {
     
     private enum Constant {
         static let likeImageName = "heart"
-        static let commentImageName = "bubble"
-        static let imageWidth: CGFloat = 13
-        static let imageHeight: CGFloat = 13
+        static let commentImageName = "message"
+        static let imageWidth: CGFloat = 15
+        static let imageHeight: CGFloat = 15
     }
     
     private let likeImageView: UIImageView = {
@@ -79,7 +79,7 @@ private extension HomeFollowingCommentView {
             likeImageView.heightAnchor.constraint(equalToConstant: Constant.imageHeight),
             
             likeLabel.topAnchor.constraint(equalTo: topAnchor),
-            likeLabel.leadingAnchor.constraint(equalTo: likeImageView.trailingAnchor),
+            likeLabel.leadingAnchor.constraint(equalTo: likeImageView.trailingAnchor, constant: 1),
             likeLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             commentImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -88,7 +88,7 @@ private extension HomeFollowingCommentView {
             commentImageView.heightAnchor.constraint(equalToConstant: Constant.imageHeight),
             
             commentLabel.topAnchor.constraint(equalTo: topAnchor),
-            commentLabel.leadingAnchor.constraint(equalTo: commentImageView.trailingAnchor),
+            commentLabel.leadingAnchor.constraint(equalTo: commentImageView.trailingAnchor, constant: 1),
             commentLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             commentLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])

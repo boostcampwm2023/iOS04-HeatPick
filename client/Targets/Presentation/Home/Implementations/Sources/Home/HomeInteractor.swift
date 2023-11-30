@@ -80,6 +80,10 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         print("# Attach Following See All View")
     }
     
+    func followingDashboardDidTapStory(id: Int) {
+        router?.attachStoryDetail(storyId: id)
+    }
+    
     // MARK: - See All
     
     func recommendSeeAllDidTapClose() {

@@ -13,7 +13,6 @@ import DesignKit
 struct HomeFollwoingProfileViewModel {
     let profileImageURL: String?
     let nickname: String
-    let place: String
 }
 
 final class HomeFollwoingProfileView: UIView {
@@ -42,14 +41,6 @@ final class HomeFollwoingProfileView: UIView {
         return label
     }()
     
-    private let placeLabel: UILabel = {
-        let label = UILabel()
-        label.font = .smallRegular
-        label.textColor = .hpGray1
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -63,7 +54,6 @@ final class HomeFollwoingProfileView: UIView {
     func setup(model: HomeFollwoingProfileViewModel) {
         profileImageView.load(from: model.profileImageURL)
         nicknameLabel.text = model.nickname
-        placeLabel.text = model.place
     }
     
 }
@@ -71,7 +61,7 @@ final class HomeFollwoingProfileView: UIView {
 private extension HomeFollwoingProfileView {
     
     func setupViews() {
-        [profileImageView, nicknameLabel, placeLabel].forEach(addSubview)
+        [profileImageView, nicknameLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: topAnchor),
@@ -80,13 +70,9 @@ private extension HomeFollwoingProfileView {
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageWidth),
             profileImageView.heightAnchor.constraint(equalToConstant: Constant.profileImageHeight),
             
-            nicknameLabel.topAnchor.constraint(equalTo: topAnchor),
+            nicknameLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: Constant.labelLeadingConstant),
-            nicknameLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
-            placeLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: Constant.labelLeadingConstant),
-            placeLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            placeLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+            nicknameLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
     
