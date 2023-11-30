@@ -37,9 +37,9 @@ export class AppLoggerMiddleware implements NestMiddleware {
       const country = countryResponse.data.country;
 
       const allowedCountries = ['KR'];
-      if (!allowedCountries.includes(country)) {
-        return response.status(403).send('Access denied By IP control policy');
-      }
+      //if (!allowedCountries.includes(country)) {
+      //  return response.status(403).send('Access denied By IP control policy');
+      //}
 
       next();
     } catch (error) {

@@ -102,10 +102,11 @@ export class StoryService {
       place: storyDetailPlaceData,
     };
     const user = await story.user;
+    const userImage = await user.profileImage;
     const storyDetailUserData: StoryDetailUserDataDto = {
       userId: user.userId,
       username: user.username,
-      profileImageUrl: user.profileImage.imageUrl,
+      profileImageUrl: userImage.imageUrl,
       status: userId === user.userId ? 0 : user.followers.some((user) => user.userId === userId) ? 2 : 1,
     };
 
@@ -234,7 +235,7 @@ export class StoryService {
   }
 
   async getFollowStories(userId: number, sortOption: number = 0, offset: number = 0, limit: number = 5) {
-    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['following'] });
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['following', 'profileImage'] });
     const followings = user.following;
 
     const storyPromises = followings.map(async (following) => {

@@ -1,9 +1,10 @@
 import { User } from 'src/entities/user.entity';
 
-export function userEntityToUserObj(user: User) {
+export async function userEntityToUserObj(user: User) {
+  const userImage = await user.profileImage;
   return {
     userId: user.userId,
     username: user.username,
-    profileUrl: user.profileImage ? user.profileImage.imageUrl : '',
+    profileUrl: userImage ? userImage.imageUrl : '',
   };
 }

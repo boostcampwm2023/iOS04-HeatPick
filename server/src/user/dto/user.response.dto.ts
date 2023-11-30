@@ -8,5 +8,10 @@ export class UserResponseDto {
   username: string;
 
   @ApiProperty({ description: ' 유저의 프로필 사진' })
-  profileURL: string;
+  profileUrl: string;
+}
+
+export class UserJsonResponseDto {
+  @ApiProperty({ description: '유저 배열', type: UserResponseDto, isArray: true })
+  users: UserResponseDto[];
 }

@@ -153,6 +153,11 @@ export class StoryController {
   }
 
   @Get('follow')
+  @ApiOperation({ summary: '팔로우한 유저들의 스토리 정보를 가져옵니다.' })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sortOption', required: false, type: Number })
+  @ApiResponse({ status: 200, description: '추천 스토리를 key-value 형태의 JSON 객체로 리턴합니다. sortOption은 디폴트 값은 0이며, 0은 최신, 1은 좋아요, 2는 댓글 순으로 정렬됩니다.', type: StoryRecommendResponseDto })
   async getFollowStories(@Request() req: any, @Query('offset') offset: number = 0, @Query('limit') limit: number = 5, @Query('sortOption') sortOption: number = 0): Promise<StoryRecommendResponseDto> {
     const userId = req.user.userRecordId;
     const stories = await this.storyService.getFollowStories(userId, sortOption, offset, limit);
