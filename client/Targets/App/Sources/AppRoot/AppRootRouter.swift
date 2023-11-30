@@ -12,6 +12,7 @@ import CoreKit
 import AuthInterfaces
 import HomeInterfaces
 import StoryInterfaces
+import FollowingInterfaces
 import MyInterfaces
 import SearchInterfaces
 
@@ -19,6 +20,7 @@ protocol AppRootInteractable: Interactable,
                               SignInListener,
                               SearchListener,
                               HomeListener,
+                              FollowingHomeListener,
                               MyPageListener {
     var router: AppRootRouting? { get set }
     var listener: AppRootListener? { get set }
@@ -32,6 +34,7 @@ protocol AppRootRouterDependency: AnyObject {
     var signInBuilder: SignInBuildable { get }
     var homeBuilder: HomeBuildable { get }
     var searchBuilder: SearchBuildable { get }
+    var followingBuilder: FollowingHomeBuildable { get }
     var myPageBuilder: MyPageBuildable { get }
 }
 
@@ -42,6 +45,7 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     private var signInRouter: Routing?
     private var homeRouter: Routing?
     private var searchHomeRouter: Routing?
+    private var followingRouter: Routing?
     private var myPageRouter: Routing?
     
     init(
@@ -74,6 +78,7 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         guard [
             homeRouter,
             searchHomeRouter,
+            followingRouter,
             myPageRouter
         ].allSatisfy({ $0 == nil }) else {
             return
@@ -86,6 +91,10 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         self.searchHomeRouter = searchHomeRouting
         attachChild(searchHomeRouting)
         
+        let followingRouting = dependency.followingBuilder.build(withListener: interactor)
+        self.followingRouter = followingRouting
+        attachChild(followingRouting)
+        
         let myPageRouting = dependency.myPageBuilder.build(withListener: interactor)
         self.myPageRouter = myPageRouting
         attachChild(myPageRouting)
@@ -93,6 +102,7 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         let viewControllers = [
             NavigationControllable(viewControllable: homeRouting.viewControllable),
             NavigationControllable(viewControllable: searchHomeRouting.viewControllable),
+            NavigationControllable(viewControllable: followingRouting.viewControllable),
             NavigationControllable(viewControllable: myPageRouting.viewControllable)
         ]
         
