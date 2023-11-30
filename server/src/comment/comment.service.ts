@@ -19,7 +19,8 @@ export class CommentService {
   public async getMentionable({ storyId, userId }) {
     const mentionables: { userId: number; username: string }[] = [];
     const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['user', 'comments', 'comments.user', 'comments.mentions'] });
-    mentionables.push({ userId: story.user.userId, username: story.user.username });
+    const storyUser = await story.user;
+    mentionables.push({ userId: storyUser.userId, username: storyUser.username });
     (await story.comments).forEach((comment) => {
       mentionables.push({ userId: comment.user.userId, username: comment.user.username });
     });

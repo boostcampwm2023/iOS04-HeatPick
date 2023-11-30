@@ -33,6 +33,7 @@ import { updateStory } from '../util/util.story.update';
 export class StoryService {
   private searchStoryResultCache = {};
   private recommendStoryCache = [];
+  private followStoryCahce = {};
   constructor(
     private storyRepository: StoryRepository,
     private userRepository: UserRepository,
@@ -100,12 +101,12 @@ export class StoryService {
       content: story.content,
       place: storyDetailPlaceData,
     };
-
+    const user = await story.user;
     const storyDetailUserData: StoryDetailUserDataDto = {
-      userId: story.user.userId,
-      username: story.user.username,
-      profileImageUrl: story.user.profileImage.imageUrl,
-      status: userId === story.user.userId ? 0 : story.user.followers.some((user) => user.userId === userId) ? 2 : 1,
+      userId: user.userId,
+      username: user.username,
+      profileImageUrl: user.profileImage.imageUrl,
+      status: userId === user.userId ? 0 : user.followers.some((user) => user.userId === userId) ? 2 : 1,
     };
 
     const storyDetailViewData: StoryDetailViewDataDto = {
@@ -229,6 +230,43 @@ export class StoryService {
       return this.recommendStoryCache.slice(offset * limit, offset * limit + limit);
     } catch (error) {
       throw error;
+    }
+  }
+
+  async getFollowStories(userId: number, sortOption: number = 0, offset: number = 0, limit: number = 5) {
+    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['following'] });
+    const followings = user.following;
+
+    const storyPromises = followings.map(async (following) => {
+      const stories = await following.stories;
+      return stories;
+    });
+
+    const allStories = await Promise.all(storyPromises);
+
+    const flattenedStories = allStories.flat();
+
+    const sortedStories = this.sortByOption(flattenedStories, sortOption);
+
+    const storyObjectsPromises = sortedStories.map(async (story) => await storyEntityToObjWithOneImg(story));
+    const storyObjects = await Promise.all(storyObjectsPromises);
+
+    return storyObjects.slice(offset * limit, offset * limit + limit);
+  }
+
+  private sortByOption(stories: Story[], sortOption: number = 0) {
+    if (sortOption == 0) {
+      const sortByCreateDate = (a: Story, b: Story) => new Date(a.createAt).getTime() - new Date(b.createAt).getTime();
+      const storiesSortedByCreateDate = [...stories].sort(sortByCreateDate);
+      return storiesSortedByCreateDate;
+    } else if (sortOption == 1) {
+      const sortByLikeCount = (a: Story, b: Story) => b.likeCount - a.likeCount;
+      const storiesSortedByLikeCount = [...stories].sort(sortByLikeCount);
+      return storiesSortedByLikeCount;
+    } else {
+      const sortByCommentCount = (a: Story, b: Story) => b.commentCount - a.commentCount;
+      const storiesSortedByCommentCount = [...stories].sort(sortByCommentCount);
+      return storiesSortedByCommentCount;
     }
   }
 }
