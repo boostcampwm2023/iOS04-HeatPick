@@ -16,6 +16,8 @@ public enum HomeAPI {
     case recommendSeeAll(offset: Int, limit: Int)
     case recommendLocation(lat: Double, lng: Double)
     case recommendLocationSeeAll(lat: Double, lng: Double, offset: Int, limit: Int)
+    case follow
+    case followWithPaging(offset: Int, limit: Int, sortOption: Int)
     
 }
 
@@ -31,6 +33,8 @@ extension HomeAPI: Target {
         case .recommendSeeAll: return "/story/recommend"
         case .recommendLocation: return "/story/recommend/location"
         case .recommendLocationSeeAll: return "/story/recommend/location"
+        case .follow: return "/story/follow"
+        case .followWithPaging: return "/story/follow"
         }
     }
     
@@ -57,6 +61,13 @@ extension HomeAPI: Target {
             
         case let .recommendLocationSeeAll(lat, lng, offset, limit):
             let request = RecommendLocationRequestDTO(latitude: lat, longitude: lng, offset: offset, limit: limit)
+            return .url(parameters: request.parameters())
+            
+        case .follow:
+            return .plain
+            
+        case let .followWithPaging(offset, limit, sortOption):
+            let request = HomeFollowRequestDTO(offset: offset, limit: limit, sortOption: sortOption)
             return .url(parameters: request.parameters())
         }
     }
