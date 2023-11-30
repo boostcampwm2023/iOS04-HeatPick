@@ -39,7 +39,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
 
     weak var router: StoryDetailRouting?
     weak var listener: StoryDetailListener?
-    private var dependency: StoryDetailInteractorDependency
+    private let dependency: StoryDetailInteractorDependency
     
     private var cancelBag: CancelBag = CancelBag()
     
@@ -69,6 +69,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
 
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
     }
     
     func storyDetailDidTapClose() {
