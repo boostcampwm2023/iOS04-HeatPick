@@ -14,7 +14,7 @@ import { StoryRecommendResponseDto, StoryResultDto } from 'src/search/dto/story.
 
 @ApiTags('story')
 @Controller('story')
-//@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class StoryController {
   constructor(private storyService: StoryService) {}
 
