@@ -18,7 +18,7 @@ struct HomeRecommendDashboardViewModel {
 
 protocol HomeRecommendDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
-    func didTap(storyID: Int)
+    func didTap(storyId: Int)
     func didAppear()
 }
 
@@ -114,10 +114,10 @@ private extension HomeRecommendDashboardViewController {
     
     @objc func contentViewDidTap(_ gesture: UITapGestureRecognizer) {
         guard let contentView = gesture.view as? HomeRecommendContentView,
-              let storyID = contentView.id else {
+              let storyId = contentView.id else {
             return
         }
-        listener?.didTap(storyID: storyID)
+        listener?.didTap(storyId: storyId)
     }
     
 }

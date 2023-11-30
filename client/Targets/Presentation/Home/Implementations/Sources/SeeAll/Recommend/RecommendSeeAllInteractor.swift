@@ -20,7 +20,7 @@ typealias RecommendSeeAllPresentableListener = StorySeeAllPresentableListener
 
 protocol RecommendSeeAllListener: AnyObject {
     func recommendSeeAllDidTapClose()
-    func recommendSeeAllDidTapStory(storyID: Int)
+    func recommendSeeAllDidTapStory(storyId: Int)
 }
 
 protocol RecommendSeeAllInteractorDependency: AnyObject {
@@ -63,7 +63,7 @@ final class RecommendSeeAllInteractor: PresentableInteractor<RecommendSeeAllPres
     }
     
     func didTapItem(model: StorySmallTableViewCellModel) {
-        listener?.recommendSeeAllDidTapStory(storyID: model.storyId)
+        listener?.recommendSeeAllDidTapStory(storyId: model.storyId)
     }
     
     func willDisplay(at indexPath: IndexPath) {

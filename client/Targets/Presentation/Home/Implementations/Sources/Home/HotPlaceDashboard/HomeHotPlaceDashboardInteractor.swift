@@ -58,8 +58,8 @@ final class HomeHotPlaceDashboardInteractor: PresentableInteractor<HomeHotPlaceD
         listener?.hotPlaceDashboardDidTapSeeAll()
     }
     
-    func didTap(storyID: Int) {
-        listener?.hotPlaceDashboardDidTapStory(id: storyID)
+    func didTap(storyId: Int) {
+        listener?.hotPlaceDashboardDidTapStory(id: storyId)
     }
     
     private func fetchHotPlace() {

@@ -17,7 +17,7 @@ struct HomeHotPlaceDashboardViewModel {
 
 protocol HomeHotPlaceDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
-    func didTap(storyID: Int)
+    func didTap(storyId: Int)
 }
 
 final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceDashboardPresentable, HomeHotPlaceDashboardViewControllable {
@@ -108,10 +108,10 @@ private extension HomeHotPlaceDashboardViewController {
     
     @objc func contentViewDidTap(_ gesture: UITapGestureRecognizer) {
         guard let contentView = gesture.view as? HomeHotPlaceContentView,
-              let storyID = contentView.id else {
+              let storyId = contentView.id else {
             return
         }
-        listener?.didTap(storyID: storyID)
+        listener?.didTap(storyId: storyId)
     }
     
 }

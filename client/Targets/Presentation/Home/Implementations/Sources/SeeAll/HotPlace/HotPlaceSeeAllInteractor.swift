@@ -20,7 +20,7 @@ typealias HotPlaceSeeAllPresentableListener = StorySeeAllPresentableListener
 
 protocol HotPlaceSeeAllListener: AnyObject {
     func hotPlaceSeeAllDidTapClose()
-    func hotPlaceSeeAllDidTapStory(storyID: Int)
+    func hotPlaceSeeAllDidTapStory(storyId: Int)
 }
 
 protocol HotPlaceSeeAllInteractorDependency: AnyObject {
@@ -62,7 +62,7 @@ final class HotPlaceSeeAllInteractor: PresentableInteractor<HotPlaceSeeAllPresen
     }
     
     func didTapItem(model: StorySmallTableViewCellModel) {
-        listener?.hotPlaceSeeAllDidTapStory(storyID: model.storyId)
+        listener?.hotPlaceSeeAllDidTapStory(storyId: model.storyId)
     }
     
     func willDisplay(at indexPath: IndexPath) {

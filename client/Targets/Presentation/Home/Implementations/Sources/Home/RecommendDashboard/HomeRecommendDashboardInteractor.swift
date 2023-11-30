@@ -68,8 +68,8 @@ final class HomeRecommendDashboardInteractor: PresentableInteractor<HomeRecommen
         listener?.recommendDashboardDidTapSeeAll(location: location)
     }
     
-    func didTap(storyID: Int) {
-        listener?.recommendDashboardDidTapStory(id: storyID)
+    func didTap(storyId: Int) {
+        listener?.recommendDashboardDidTapStory(id: storyId)
     }
     
     func didAppear() {

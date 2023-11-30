@@ -137,9 +137,9 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     // MARK: - Story
     
-    func attachStoryDetail(storyID: Int) {
+    func attachStoryDetail(storyId: Int) {
         guard storyDetailRouting == nil else { return }
-        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyID)
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyId)
         viewController.pushViewController(router.viewControllable, animated: true)
         self.storyDetailRouting = router
         attachChild(router)

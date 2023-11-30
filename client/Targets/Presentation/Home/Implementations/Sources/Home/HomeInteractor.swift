@@ -21,7 +21,7 @@ protocol HomeRouting: ViewableRouting {
     func detachRecommendSeeAll()
     func attachHotPlaceSeeAll()
     func detachHotPlaceSeeAll()
-    func attachStoryDetail(storyID: Int)
+    func attachStoryDetail(storyId: Int)
     func detachStoryDetail()
 }
 
@@ -61,7 +61,7 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     }
     
     func recommendDashboardDidTapStory(id: Int) {
-        router?.attachStoryDetail(storyID: id)
+        router?.attachStoryDetail(storyId: id)
     }
     
     // MARK: - HotPlace
@@ -71,7 +71,7 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     }
     
     func hotPlaceDashboardDidTapStory(id: Int) {
-        router?.attachStoryDetail(storyID: id)
+        router?.attachStoryDetail(storyId: id)
     }
     
     // MARK: - Following
@@ -86,16 +86,16 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         router?.detachRecommendSeeAll()
     }
     
-    func recommendSeeAllDidTapStory(storyID: Int) {
-        router?.attachStoryDetail(storyID: storyID)
+    func recommendSeeAllDidTapStory(storyId: Int) {
+        router?.attachStoryDetail(storyId: storyId)
     }
     
     func hotPlaceSeeAllDidTapClose() {
         router?.detachHotPlaceSeeAll()
     }
     
-    func hotPlaceSeeAllDidTapStory(storyID: Int) {
-        router?.attachStoryDetail(storyID: storyID)
+    func hotPlaceSeeAllDidTapStory(storyId: Int) {
+        router?.attachStoryDetail(storyId: storyId)
     }
     
     // MARK: - Story Detail
