@@ -38,7 +38,6 @@ final class AppRootComponent: Component<AppRootDependency>,
                               SignInDependency,
                               HomeDependency,
                               SearchDependency,
-                              StoryCreatorDependency,
                               MyPageDependency,
                               StoryEditorDependency,
                               StoryDetailDependency {
@@ -63,10 +62,6 @@ final class AppRootComponent: Component<AppRootDependency>,
     
     lazy var searchBuilder: SearchBuildable = {
         SearchBuilder(dependency: self)
-    }()
-    
-    lazy var storyCreatorBuilder: StoryCreatorBuildable = {
-        StoryCreatorBuilder(dependency: self)
     }()
     
     lazy var myPageBuilder: MyPageBuildable = {

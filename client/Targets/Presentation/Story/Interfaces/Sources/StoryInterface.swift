@@ -17,14 +17,6 @@ public protocol StoryDetailListener: AnyObject {
     func storyDetailDidTapClose()
 }
 
-public protocol StoryCreatorBuildable: Buildable {
-    func build(withListener listener: StoryCreatorListener) -> ViewableRouting
-}
-
-public protocol StoryCreatorListener: AnyObject {
-    func storyCreatorDidComplete()
-}
-
 public protocol StoryEditorBuildable: Buildable {
     func build(withListener listener: StoryEditorListener, location: Location) -> ViewableRouting
 }
