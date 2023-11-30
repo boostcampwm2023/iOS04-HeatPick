@@ -56,17 +56,23 @@ final class HomeRecommendContentView: UIView {
         setupViews()
     }
     
-    // TODO: - Deinit 되면서 Image Download Cancel 잘 동작 확인
-    
     deinit {
         imageView.cancel()
     }
     
     func setup(model: HomeRecommendContentViewModel) {
         id = model.id
-        titleLabel.text = model.title
-        subtitleLabel.text = model.subtitle
         imageView.load(from: model.imageURL)
+        
+        titleLabel.attributedText = NSMutableAttributedString(string: model.title)
+            .foregroundColor(.hpWhite)
+            .strokeColor(.hpBlack)
+            .strokeWidth(-3.0)
+
+        subtitleLabel.attributedText = NSMutableAttributedString(string: model.subtitle)
+            .foregroundColor(.hpWhite)
+            .strokeColor(.hpBlack)
+            .strokeWidth(-2.5)
     }
     
 }
@@ -75,6 +81,7 @@ private extension HomeRecommendContentView {
     
     func setupViews() {
         let width: CGFloat = (UIScreen.main.bounds.width) - 40
+        let height = width - 40
         [imageView, titleLabel, subtitleLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
@@ -83,6 +90,7 @@ private extension HomeRecommendContentView {
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             imageView.widthAnchor.constraint(equalToConstant: width),
+            imageView.heightAnchor.constraint(equalToConstant: height),
             
             titleLabel.topAnchor.constraint(equalTo: imageView.topAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor, constant: Constants.leadingOffset),

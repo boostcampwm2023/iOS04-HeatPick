@@ -30,4 +30,16 @@ public extension NSMutableAttributedString {
         return self
     }
     
+    func strokeColor(_ color: UIColor) -> NSMutableAttributedString {
+        let range = NSRange(location: 0, length: length)
+        addAttributes([.strokeColor: color], range: range)
+        return self
+    }
+    
+    func strokeWidth(_ width: CGFloat) -> NSMutableAttributedString {
+        let range = NSRange(location: 0, length: length)
+        addAttributes([.strokeWidth: width], range: range)
+        return self
+    }
+    
 }
