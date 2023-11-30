@@ -18,9 +18,11 @@ public final class NetworkProvider: Network {
     }
     
     private let session: URLSession
+    private let signOutService: SignOutRequestServiceInterface
     
-    public init(session: URLSession) {
+    public init(session: URLSession, signOutService: SignOutRequestServiceInterface) {
         self.session = session
+        self.signOutService = signOutService
     }
     
     public func request<T: Decodable>(_ target: Target) async -> Result<T, Error> {
@@ -95,7 +97,7 @@ public final class NetworkProvider: Network {
             return .failure(error)
         }
         
-        return .success(Void())
+        return .success(())
     }
     
     private func executeUpload(_ request: URLRequest, from body: Data) async throws -> Result<Void, Error> {
@@ -104,7 +106,7 @@ public final class NetworkProvider: Network {
             return .failure(error)
         }
         
-        return .success(Void())
+        return .success(())
     }
     
     private func makeRequest(_ target: Target, isMultipartFormData: Bool = false) throws -> NetworkRequest {
@@ -172,9 +174,10 @@ public final class NetworkProvider: Network {
         
         if let errorCode = NetworkErrorCode(rawValue: httpResponse.statusCode) {
             switch errorCode {
-            case .invalidToken:
-                SignoutService.shared.signOut(type: .invalidToken)
+            case .unauthorized, .invalidToken:
+                signOutService.signOut(type: .invalidToken)
                 return nil
+                
             case .internalServcerError:
                 return NetworkError.internalServer
             }

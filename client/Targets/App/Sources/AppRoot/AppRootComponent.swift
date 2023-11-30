@@ -114,9 +114,9 @@ final class AppRootComponent: Component<AppRootDependency>,
         if isDebug {
             let configuration = URLSessionConfiguration.ephemeral
             configuration.protocolClasses = protocols
-            return NetworkProvider(session: URLSession(configuration: configuration))
+            return NetworkProvider(session: URLSession(configuration: configuration), signOutService: SignoutService.shared)
         } else {
-            return NetworkProvider(session: URLSession.shared)
+            return NetworkProvider(session: URLSession.shared, signOutService: SignoutService.shared)
         }
     }
     
