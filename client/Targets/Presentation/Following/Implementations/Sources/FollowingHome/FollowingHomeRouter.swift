@@ -8,8 +8,9 @@
 
 import ModernRIBs
 import FollowingInterfaces
+import StoryInterfaces
 
-protocol FollowingHomeInteractable: Interactable {
+protocol FollowingHomeInteractable: Interactable, FollowingListListener, StoryDetailListener {
     var router: FollowingHomeRouting? { get set }
     var listener: FollowingHomeListener? { get set }
 }
@@ -21,9 +22,46 @@ protocol FollowingHomeViewControllable: ViewControllable {
 
 final class FollowingHomeRouter: ViewableRouter<FollowingHomeInteractable, FollowingHomeViewControllable>, FollowingHomeRouting {
     
-    override init(interactor: FollowingHomeInteractable, viewController: FollowingHomeViewControllable) {
+    private let followingListBuilder: FollowingListBuildable
+    private var followingListRouting: ViewableRouting?
+    
+    private let storyDetailBuilder: StoryDetailBuildable
+    private var storyDetailRouting: ViewableRouting?
+    
+    init(
+        interactor: FollowingHomeInteractable,
+        viewController: FollowingHomeViewControllable,
+        followingListBuilder: FollowingListBuildable,
+        storyDetailBuilder: StoryDetailBuildable
+    ) {
+        self.followingListBuilder = followingListBuilder
+        self.storyDetailBuilder = storyDetailBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
+    
+    func attachFollowingList() {
+        guard followingListRouting == nil else { return }
+        let router = followingListBuilder.build(withListener: interactor)
+        self.followingListRouting = router
+        attachChild(router)
+        viewController.setDashboard(router.viewControllable)
+    }
+    
+    func attachStoryDetail(id: Int) {
+        guard storyDetailRouting == nil else { return }
+        let router = storyDetailBuilder.build(withListener: interactor, storyId: id)
+        self.storyDetailRouting = router
+        attachChild(router)
+        viewController.pushViewController(router.viewControllable, animated: true)
+    }
+    
+    func detachStoryDetail() {
+        guard let router = storyDetailRouting else { return }
+        detachChild(router)
+        storyDetailRouting = nil
+        viewControllable.popViewController(animated: true)
+    }
+    
     
 }

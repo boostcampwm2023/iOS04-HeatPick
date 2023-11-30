@@ -9,7 +9,11 @@
 import ModernRIBs
 import FollowingInterfaces
 
-protocol FollowingHomeRouting: ViewableRouting {}
+protocol FollowingHomeRouting: ViewableRouting {
+    func attachFollowingList()
+    func attachStoryDetail(id: Int)
+    func detachStoryDetail()
+}
 
 protocol FollowingHomePresentable: Presentable {
     var listener: FollowingHomePresentableListener? { get set }
@@ -28,10 +32,19 @@ final class FollowingHomeInteractor: PresentableInteractor<FollowingHomePresenta
     
     override func didBecomeActive() {
         super.didBecomeActive()
+        router?.attachFollowingList()
     }
     
     override func willResignActive() {
         super.willResignActive()
+    }
+    
+    func followingListDidTapStory(id: Int) {
+        router?.attachStoryDetail(id: id)
+    }
+    
+    func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
     }
     
 }

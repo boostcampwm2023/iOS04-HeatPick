@@ -23,26 +23,6 @@ final class FollowingHomeViewController: UIViewController, FollowingHomePresenta
     
     weak var listener: FollowingHomePresentableListener?
     
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.contentInset = .zero
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.contentInset = Constant.contentInset
-        return scrollView
-    }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .equalSpacing
-        stackView.spacing = 60
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         setupTabBar()
@@ -61,13 +41,21 @@ final class FollowingHomeViewController: UIViewController, FollowingHomePresenta
     func setDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
         addChild(viewController)
-        stackView.addArrangedSubview(viewController.view)
+        view.addSubview(viewController.view)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
         viewController.didMove(toParent: self)
+        
+        NSLayoutConstraint.activate([
+            viewController.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            viewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
     
     func removeDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
-        stackView.removeArrangedSubview(viewController.view)
+        viewController.view.removeFromSuperview()
         viewController.removeFromParent()
     }
     
@@ -77,20 +65,6 @@ private extension FollowingHomeViewController {
     
     func setupViews() {
         view.backgroundColor = .hpWhite
-        view.addSubview(scrollView)
-        scrollView.addSubview(stackView)
-        
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-        ])
     }
     
     func setupTabBar() {
