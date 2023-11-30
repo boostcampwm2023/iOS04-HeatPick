@@ -17,7 +17,7 @@ public final class ImageCacheRepository {
     
     public init(fileManager: FileManager) {
         self.fileManager = fileManager
-        cache.countLimit = 200
+        cache.countLimit = 100
     }
     
     public func fetch(_ cacheKey: String) -> Data? {
@@ -29,7 +29,6 @@ public final class ImageCacheRepository {
     
     public func set(_ data: Data, cacheKey: String) {
         setMemory(data, cacheKey: cacheKey)
-        setDisk(data, cacheKey: cacheKey)
     }
     
     private func fetchMemoryData(_ cacheKey: String) -> Data? {
