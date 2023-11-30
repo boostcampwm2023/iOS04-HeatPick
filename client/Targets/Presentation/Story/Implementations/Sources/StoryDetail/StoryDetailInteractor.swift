@@ -91,7 +91,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
         router?.attachComment()
     }
     
-    func commentWillClose() {
+    func commentDidTapClose() {
         router?.detachComment()
     }
     

@@ -18,7 +18,7 @@ protocol CommentPresentable: Presentable {
 }
 
 protocol CommentListener: AnyObject {
-    func commentWillClose()
+    func commentDidTapClose()
 }
 
 final class CommentInteractor: PresentableInteractor<CommentPresentable>, CommentInteractable, CommentPresentableListener {
@@ -44,7 +44,7 @@ final class CommentInteractor: PresentableInteractor<CommentPresentable>, Commen
     }
     
     func navigationViewButtonDidTap() { 
-        listener?.commentWillClose()
+        listener?.commentDidTapClose()
     }
 
 }
