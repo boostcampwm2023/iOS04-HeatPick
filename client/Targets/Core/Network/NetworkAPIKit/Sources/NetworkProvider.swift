@@ -95,7 +95,7 @@ public final class NetworkProvider: Network {
             return .failure(error)
         }
         
-        return .success(Void())
+        return .success(())
     }
     
     private func executeUpload(_ request: URLRequest, from body: Data) async throws -> Result<Void, Error> {
@@ -104,7 +104,7 @@ public final class NetworkProvider: Network {
             return .failure(error)
         }
         
-        return .success(Void())
+        return .success(())
     }
     
     private func makeRequest(_ target: Target, isMultipartFormData: Bool = false) throws -> NetworkRequest {
@@ -172,9 +172,14 @@ public final class NetworkProvider: Network {
         
         if let errorCode = NetworkErrorCode(rawValue: httpResponse.statusCode) {
             switch errorCode {
+            case .unauthorized:
+                SignoutService.shared.signOut(type: .invalidToken)
+                return nil
+                
             case .invalidToken:
                 SignoutService.shared.signOut(type: .invalidToken)
                 return nil
+                
             case .internalServcerError:
                 return NetworkError.internalServer
             }

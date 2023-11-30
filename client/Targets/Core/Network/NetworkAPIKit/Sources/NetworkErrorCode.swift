@@ -10,6 +10,7 @@ import Foundation
 
 public enum NetworkErrorCode: Int {
     
+    case unauthorized = 401
     case invalidToken = 498
     case internalServcerError = 500
     
