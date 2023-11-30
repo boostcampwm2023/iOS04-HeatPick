@@ -16,6 +16,8 @@ import DomainEntities
 
 protocol CommentPresentableListener: AnyObject {
     func navigationViewButtonDidTap()
+    func commentButtonDidTap()
+    func commentTextDidChange(_ text: String)
 }
 
 final class CommentViewController: UIViewController, CommentPresentable, CommentViewControllable {
@@ -53,6 +55,7 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
     
     private lazy var commentInputField: CommentInputField = {
         let commentInputField = CommentInputField()
+        commentInputField.delegate = self
         
         commentInputField.translatesAutoresizingMaskIntoConstraints = false
         return commentInputField
@@ -72,6 +75,18 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
         let alert = UIAlertController(title: title, message: "\(error.localizedDescription)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .default))
         present(alert, animated: true, completion: nil)
+    }
+    
+    func setCommentButton(_ isEnabled: Bool) {
+        commentInputField.setButton(isEnabled)
+    }
+    
+    func clearInputField() {
+        commentInputField.clear()
+    }
+    
+    func resetInputField() {
+        commentInputField.reset()
     }
 }
 
@@ -110,6 +125,7 @@ private extension CommentViewController {
     }
 }
 
+// MARK: - NavigationView delegate
 extension CommentViewController: NavigationViewDelegate {
     
     func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
@@ -118,6 +134,7 @@ extension CommentViewController: NavigationViewDelegate {
     
 }
 
+// MARK: - TableView delegate
 extension CommentViewController: UITableViewDelegate {
     
 }
@@ -141,5 +158,18 @@ extension CommentViewController: UITableViewDataSource {
         return cell
     }
     
+    
+}
+
+// MARK: - CommentInputField delegate
+extension CommentViewController: CommentInputFieldDelegate {
+    
+    func commentButtonDidTap() {
+        listener?.commentButtonDidTap()
+    }
+    
+    func commentTextDidChange(_ text: String) {
+        listener?.commentTextDidChange(text)
+    }
     
 }

@@ -22,6 +22,9 @@ protocol CommentPresentable: Presentable {
     var listener: CommentPresentableListener? { get set }
     func setup(_ model: [CommentTableViewCellModel])
     func showFailure(_ error: Error, with title: String)
+    func setCommentButton(_ isEnabled: Bool)
+    func clearInputField()
+    func resetInputField()
 }
 
 protocol CommentInteractorDependency: AnyObject {
@@ -40,6 +43,12 @@ final class CommentInteractor: PresentableInteractor<CommentPresentable>, Commen
     
     private let dependency: CommentInteractorDependency
     private var cancelBag = CancelBag()
+    
+    private var commentInputText: String = "" {
+        didSet {
+            presenter.setCommentButton(!commentInputText.isEmpty)
+        }
+    }
 
     init(presenter: CommentPresentable, dependency: CommentInteractorDependency) {
         self.dependency = dependency
@@ -60,6 +69,17 @@ final class CommentInteractor: PresentableInteractor<CommentPresentable>, Commen
     func navigationViewButtonDidTap() { 
         listener?.commentDidTapClose()
     }
+    
+    func commentButtonDidTap() {
+        let commentContent = CommentContent(storyId: dependency.storyId,
+                                            content: commentInputText,
+                                            mentions: [])
+        requestNewComment(with: commentContent)
+    }
+    
+    func commentTextDidChange(_ text: String) {
+        commentInputText = text
+    }
 
 }
 
@@ -76,6 +96,23 @@ private extension CommentInteractor {
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to load comments with \(error.localizedDescription)", log: .interactor)
                     this.presenter.showFailure(error, with: "댓글을 불러오는데 실패했어요")
+                }
+        }.store(in: cancelBag)
+    }
+    
+    func requestNewComment(with content: CommentContent) {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestNewComment(content: content)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.fetchComments()
+                    this.presenter.clearInputField()
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "fail to write comments with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.showFailure(error, with: "댓글을 다는데 실패했어요")
+                    this.presenter.resetInputField()
                 }
         }.store(in: cancelBag)
     }

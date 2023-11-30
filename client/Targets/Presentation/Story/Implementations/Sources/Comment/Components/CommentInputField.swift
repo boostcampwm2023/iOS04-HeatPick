@@ -77,6 +77,7 @@ final class CommentInputField: UIView {
         imageView.clipsToBounds = true
         imageView.image = UIImage(systemName: "paperplane.circle.fill")
         imageView.tintColor = .hpGray4
+        imageView.addTapGesture(target: self, action: #selector(commentButtonDidTap))
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -94,6 +95,16 @@ final class CommentInputField: UIView {
     
     func setButton(_ isEnabled: Bool) {
         isButtonEnabled = isEnabled
+    }
+    
+    func clear() {
+        isButtonEnabled = false
+        commentTextView.text = ""
+        placeHolderLabel.isHidden = false
+    }
+    
+    func reset() {
+        isButtonEnabled = true
     }
 }
 
@@ -120,6 +131,12 @@ private extension CommentInputField {
         commentTextView.layer.cornerRadius = Constants.cornerRadiusMedium
         commentTextView.layer.borderWidth = 1
         commentTextView.layer.borderColor = UIColor.hpGray4.cgColor
+    }
+    
+    @objc func commentButtonDidTap() {
+        commentImageView.isUserInteractionEnabled = false
+        commentTextView.resignFirstResponder()
+        delegate?.commentButtonDidTap()
     }
     
 }
