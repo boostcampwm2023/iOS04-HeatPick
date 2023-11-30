@@ -19,7 +19,7 @@ public final class HomeUseCase: HomeUseCaseInterface {
     }
     
     public var hasMoreRecommendPlace: Bool {
-        return !isRecommendPlageLastPage
+        return !isRecommendPlaceLastPage
     }
     
     public var hasMoreHotPlace: Bool {
@@ -35,7 +35,7 @@ public final class HomeUseCase: HomeUseCaseInterface {
     private var recommendPlaceOffset = 0
     private var hotPlaceOffset = 0
     private let pageLimit = 10
-    private var isRecommendPlageLastPage = true
+    private var isRecommendPlaceLastPage = true
     private var isHotPlaceLastPage = true
     private let currentRecommendPlaceSubject = PassthroughSubject<RecommendPlace, Never>()
     private var cancellables = Set<AnyCancellable>()
@@ -108,10 +108,10 @@ public final class HomeUseCase: HomeUseCaseInterface {
         let result = await repository.fetchRecommendPlace(lat: lat, lng: lng, offset: offset, limit: pageLimit)
         switch result {
         case .success(let recommendPlace):
-            isRecommendPlageLastPage = recommendPlace.isLastPage
+            isRecommendPlaceLastPage = recommendPlace.isLastPage
             
         case .failure:
-            isRecommendPlageLastPage = true
+            isRecommendPlaceLastPage = true
         }
         return result
             .map { .init(title: locality, stories: $0.stories) }
