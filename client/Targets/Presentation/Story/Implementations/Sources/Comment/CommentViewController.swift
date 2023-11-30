@@ -116,8 +116,7 @@ private extension CommentViewController {
         commentInputField.layer.borderWidth = 1
         commentInputField.layer.borderColor = UIColor.hpGray4.cgColor
         
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(gesture)
+        view.addTapGesture(target: self, action: #selector(dismissKeyboard))
     }
     
     @objc func dismissKeyboard() {

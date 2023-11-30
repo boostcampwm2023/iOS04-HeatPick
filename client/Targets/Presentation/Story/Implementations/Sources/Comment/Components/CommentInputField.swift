@@ -20,13 +20,8 @@ final class CommentInputField: UIView {
     weak var delegate: CommentInputFieldDelegate?
     private var isButtonEnabled: Bool = false {
         didSet {
-            if isButtonEnabled {
-                commentImageView.isUserInteractionEnabled = true
-                commentImageView.tintColor = .hpBlack
-            } else {
-                commentImageView.isUserInteractionEnabled = false
-                commentImageView.tintColor = .hpGray4
-            }
+            commentImageView.isUserInteractionEnabled = isButtonEnabled
+            commentImageView.tintColor = isButtonEnabled ? .hpBlack : .hpGray4
         }
     }
     

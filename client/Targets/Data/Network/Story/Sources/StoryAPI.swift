@@ -35,8 +35,8 @@ extension StoryAPI: Target {
         case .newStory: return "/story/create"
         case .storyDetail: return "/story/detail"
         case .follow, .unfollow: return "/user/follow"
-        case .readComment: return "comment/read"
-        case .newComment: return "comment/create"
+        case .readComment: return "/comment/read"
+        case .newComment: return "/comment/create"
         }
     }
     
