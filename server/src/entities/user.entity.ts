@@ -27,7 +27,7 @@ export class User {
     cascade: true,
   })
   @JoinColumn()
-  profileImage: profileImage;
+  profileImage: Promise<profileImage>;
 
   @Column()
   @ApiProperty({ description: 'User의 온도(레벨)' })

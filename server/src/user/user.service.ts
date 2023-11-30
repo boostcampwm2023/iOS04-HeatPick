@@ -75,11 +75,11 @@ export class UserService {
     const user = await this.userRepository.findOneByOption({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
     const mainBadge = await user.representativeBadge;
     const stories = await user.stories;
-
+    const userImage = await user.profileImage;
     return {
       userId: user.userId,
       username: user.username,
-      profileURL: user.profileImage?.imageUrl,
+      profileURL: userImage ? userImage.imageUrl : '',
       isFollow: user.followers.some((user) => user.userId === requestUserId) || requestUserId === targetUserId ? 0 : 1,
       temperature: user.temperature,
       temperatureFeeling: getTemperatureFeeling(user.temperature),
@@ -161,10 +161,10 @@ export class UserService {
         };
       }),
     );
-
+    const userImage = await user.profileImage;
     return {
       userId: userId,
-      profileImageURL: user.profileImage.imageUrl,
+      profileImageURL: userImage.imageUrl,
       username: user.username,
       nowBadge: nowBadge,
       badges: badges,
@@ -181,7 +181,7 @@ export class UserService {
     const profileObj = new profileImage();
     const imageName = await saveImageToLocal('./images/profile', image.buffer);
     profileObj.imageUrl = `https://server.bc8heatpick.store/image/profile?name=${imageName}`;
-    user.profileImage = profileObj;
+    user.profileImage = Promise.resolve(profileObj);
 
     await this.userRepository.save(user);
 

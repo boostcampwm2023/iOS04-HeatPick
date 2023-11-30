@@ -60,13 +60,14 @@ export class CommentService {
 
   public async read(storyId: number, userId: number) {
     const story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['comments', 'comments.user', 'comments.mentions', 'comments.user.profileImage'] });
+
     const commentViewResponse: CommentViewResponseDto = {
       comments: await Promise.all(
         (await story.comments).map(async (comment) => {
           return {
             commentId: comment.commentId,
             userId: comment.user.userId,
-            userProfileImageURL: comment.user.profileImage.imageUrl,
+            userProfileImageURL: (await comment.user.profileImage).imageUrl,
             username: comment.user.username,
             createdAt: removeMillisecondsFromISOString(comment.createdAt.toISOString()),
             mentions: comment.mentions.map((user) => {

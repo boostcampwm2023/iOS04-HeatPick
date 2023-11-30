@@ -148,7 +148,8 @@ export class UserController {
   async getMyFollows(@Req() req: any): Promise<UserJsonResponseDto> {
     const currentUserId = req.user.userRecordId;
     const follows = await this.userService.getFollows(currentUserId);
-    const transformedFollows = follows.map((follow) => userEntityToUserObj(follow));
+    const transformedFollows = await Promise.all(follows.map(async (follow) => await userEntityToUserObj(follow)));
+
     return { users: transformedFollows };
   }
 
@@ -158,7 +159,8 @@ export class UserController {
   async getMyFollowers(@Req() req: any): Promise<UserJsonResponseDto> {
     const currentUserId = req.user.userRecordId;
     const followers = await this.userService.getFollowers(currentUserId);
-    const transformedFollowers = followers.map((follower) => userEntityToUserObj(follower));
+    const transformedFollowers = await Promise.all(followers.map(async (follower) => await userEntityToUserObj(follower)));
+
     return { users: transformedFollowers };
   }
 
@@ -167,7 +169,8 @@ export class UserController {
   @ApiResponse({ status: 200, description: '특정 유저가 팔로우하는 유저들의 목록입니다', type: UserJsonResponseDto })
   async getOtherFollows(@Param('id') userId: number): Promise<UserJsonResponseDto> {
     const follows = await this.userService.getFollows(userId);
-    const transformedFollows = follows.map((follow) => userEntityToUserObj(follow));
+    const transformedFollows = await Promise.all(follows.map(async (follow) => await userEntityToUserObj(follow)));
+
     return { users: transformedFollows };
   }
 
@@ -176,7 +179,8 @@ export class UserController {
   @ApiResponse({ status: 200, description: '특정 유저를 팔로우하는 유저들의 목록입니다', type: UserJsonResponseDto })
   async getOtherFollowers(@Param('id') userId: number): Promise<UserJsonResponseDto> {
     const followers = await this.userService.getFollowers(userId);
-    const transformedFollowers = followers.map((follower) => userEntityToUserObj(follower));
+    const transformedFollowers = await Promise.all(followers.map(async (follower) => await userEntityToUserObj(follower)));
+
     return { users: transformedFollowers };
   }
 }

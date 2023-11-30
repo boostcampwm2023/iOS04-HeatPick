@@ -7,7 +7,7 @@ export async function storyEntityToObjWithOneImg(story: Story): Promise<StoryRes
   const urls = await Promise.all(images.map(async (image) => image.imageUrl));
   const place = await story.place;
   const userEntity = await story.user;
-  const user = userEntityToUserObj(userEntity);
+  const user = await userEntityToUserObj(userEntity);
   const categoryId = story.category ? story.category.categoryId : 0;
 
   return {

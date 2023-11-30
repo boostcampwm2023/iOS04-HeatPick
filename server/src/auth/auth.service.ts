@@ -49,7 +49,7 @@ export class AuthService {
 
     const profileObj = new profileImage();
     profileObj.imageUrl = `https://server.bc8heatpick.store/image/profile?name=${imagePath}`;
-    userObj.profileImage = profileObj;
+    userObj.profileImage = Promise.resolve(profileObj);
     userObj.temperature = 0;
 
     const user = await this.userRepository.findOneById(userId);
