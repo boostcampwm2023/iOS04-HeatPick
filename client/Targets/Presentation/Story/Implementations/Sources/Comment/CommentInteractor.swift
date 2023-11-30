@@ -6,7 +6,13 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Foundation
+
 import ModernRIBs
+
+import CoreKit
+import DomainEntities
+import DomainInterfaces
 
 protocol CommentRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
@@ -14,7 +20,13 @@ protocol CommentRouting: ViewableRouting {
 
 protocol CommentPresentable: Presentable {
     var listener: CommentPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    func setup(_ model: [CommentTableViewCellModel])
+    func showFailure(_ error: Error, with title: String)
+}
+
+protocol CommentInteractorDependency: AnyObject {
+    var storyId: Int { get }
+    var storyUseCase: StoryUseCaseInterface { get }
 }
 
 protocol CommentListener: AnyObject {
@@ -25,26 +37,57 @@ final class CommentInteractor: PresentableInteractor<CommentPresentable>, Commen
 
     weak var router: CommentRouting?
     weak var listener: CommentListener?
+    
+    private let dependency: CommentInteractorDependency
+    private var cancelBag = CancelBag()
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: CommentPresentable) {
+    init(presenter: CommentPresentable, dependency: CommentInteractorDependency) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        fetchComments()
     }
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
+        cancelBag.cancel()
     }
     
     func navigationViewButtonDidTap() { 
         listener?.commentDidTapClose()
     }
 
+}
+
+private extension CommentInteractor {
+    
+    func fetchComments() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestReadComment(storyId: dependency.storyId)
+                .onSuccess(on: .main, with: self) { this, comments in
+                    this.presenter.setup(comments.map { $0.toViewModel() })
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "fail to load comments with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.showFailure(error, with: "댓글을 불러오는데 실패했어요")
+                }
+        }.store(in: cancelBag)
+    }
+}
+
+fileprivate extension Comment {
+    func toViewModel() -> CommentTableViewCellModel {
+        return CommentTableViewCellModel(userId: author.id,
+                                         profileImageUrl: author.profileImageUrl,
+                                         username: author.nickname,
+                                         userStatus: author.authorStatus,
+                                         date: date,
+                                         content: content)
+    }
 }

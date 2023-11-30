@@ -16,7 +16,7 @@ import DomainInterfaces
 import StoryInterfaces
 
 protocol StoryDetailRouting: ViewableRouting {
-    func attachComment()
+    func attachComment(storyId: Int)
     func detachComment()
 }
 
@@ -88,7 +88,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
     }
     
     func commentButtonDidTap() {
-        router?.attachComment()
+        router?.attachComment(storyId: dependency.storyId)
     }
     
     func commentDidTapClose() {

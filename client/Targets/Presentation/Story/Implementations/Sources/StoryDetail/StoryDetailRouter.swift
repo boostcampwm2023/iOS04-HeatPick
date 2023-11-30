@@ -35,9 +35,9 @@ final class StoryDetailRouter: ViewableRouter<StoryDetailInteractable, StoryDeta
         interactor.router = self
     }
     
-    func attachComment() {
+    func attachComment(storyId: Int) {
         guard commentRouter == nil else { return }
-        let commentRouting = commentBuilder.build(withListener: interactor)
+        let commentRouting = commentBuilder.build(withListener: interactor, storyId: storyId)
         commentRouter = commentRouting
         attachChild(commentRouting)
         viewController.pushViewController(commentRouting.viewControllable, animated: true)

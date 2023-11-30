@@ -62,6 +62,17 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
         super.viewDidLoad()
         setupViews()
     }
+    
+    func setup(_ model: [CommentTableViewCellModel]) {
+        commentViewModels = model
+        tableView.reloadData()
+    }
+    
+    func showFailure(_ error: Error, with title: String) {
+        let alert = UIAlertController(title: title, message: "\(error.localizedDescription)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .default))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 private extension CommentViewController {
@@ -86,6 +97,16 @@ private extension CommentViewController {
             commentInputField.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             commentInputField.heightAnchor.constraint(equalToConstant: Constant.commentInputFieldHeight)
         ])
+        
+        commentInputField.layer.borderWidth = 1
+        commentInputField.layer.borderColor = UIColor.hpGray4.cgColor
+        
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(gesture)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 
