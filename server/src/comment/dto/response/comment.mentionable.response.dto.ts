@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class MentionableResponseDto {
+class userViewType {
   @ApiProperty()
-  mentionables: { userId: number; username: string }[];
+  userId: number;
+
+  @ApiProperty()
+  username: string;
+}
+
+export class MentionableResponseDto {
+  @ApiProperty({ type: () => [userViewType] })
+  mentionables: userViewType[];
 }

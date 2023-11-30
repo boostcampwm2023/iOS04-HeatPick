@@ -17,7 +17,7 @@ export class CommentController {
   @Get('mentionable')
   @ApiOperation({ summary: '멘션할 유저를 불러오는 API' })
   @ApiResponse({ status: 201, description: '멘션 가능한 유저의 리스트', type: MentionableResponseDto })
-  async mentions(@Request() req: any, @Query('userId', ParseIntPipe) storyId: number) {
+  async mentions(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
     const userId = req.user.id;
     return { mentionables: await this.commentService.getMentionable({ storyId, userId }) };
   }

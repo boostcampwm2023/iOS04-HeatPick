@@ -10,12 +10,13 @@ export const updateStory = async (story: Story, { title, content, category, plac
   story.place = place;
   story.badge = badge;
 
-  const storyImageArr = await story.storyImages;
-  savedImageNames.forEach((name) => {
-    const storyImageObj = new StoryImage();
-    storyImageObj.imageUrl = `https://server.bc8heatpick.store/image/story?name=${name}`;
-    storyImageArr.push(storyImageObj);
-  });
+  story.storyImages = Promise.resolve(
+    savedImageNames.map((name) => {
+      const storyImageObj = new StoryImage();
+      storyImageObj.imageUrl = `https://server.bc8heatpick.store/image/story?name=${name}`;
+      return storyImageObj;
+    }),
+  );
 
   return story;
 };
