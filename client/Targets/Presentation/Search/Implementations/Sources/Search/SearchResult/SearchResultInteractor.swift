@@ -37,8 +37,12 @@ protocol SearchResultPresentable: Presentable {
 
 protocol SearchResultListener: AnyObject { 
     func detachSearchResult()
-    func searchAfterStoryViewDidTap(storyId: Int)
-    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String)
+    
+    func searchStorySeeAllDidTap(searchText: String)
+    func didTapStory(storyId: Int)
+    
+    func searchUserSeeAllDidTap(searchText: String)
+    func didTapUser(userId: Int)
 }
 
 final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {
@@ -118,12 +122,20 @@ extension SearchResultInteractor {
 // MARK: SearchAfter
 extension SearchResultInteractor {
     
-    func searchAfterStoryViewDidTap(storyId: Int) {
-        listener?.searchAfterStoryViewDidTap(storyId: storyId)
+    func searchStorySeeAllDidTap(searchText: String) {
+        listener?.searchStorySeeAllDidTap(searchText: searchText)
     }
     
-    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String) {
-        listener?.searchAfterHeaderViewSeeAllViewDidTap(searchText: searchText)
+    func didTapStory(storyId: Int) {
+        listener?.didTapStory(storyId: storyId)
+    }
+    
+    func searchUserSeeAllDidTap(searchText: String) {
+        listener?.searchUserSeeAllDidTap(searchText: searchText)
+    }
+    
+    func didTapUser(userId: Int) {
+        listener?.didTapUser(userId: userId)
     }
     
 }

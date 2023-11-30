@@ -25,8 +25,8 @@ protocol SearchAfterStoryDashboardPresentable: Presentable {
 protocol SearchAfterStoryDashboardListener: AnyObject {
     var searchResultStoriesPublisher: AnyPublisher<[SearchStory], Never> { get }
     
-    func searchAfterHeaderViewSeeAllViewDidTap()
-    func searchAfterStoryViewDidTap(storyId: Int)
+    func searchStorySeeAllDidTap()
+    func didTapStory(storyId: Int)
 }
 
 final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAfterStoryDashboardPresentable>, SearchAfterStoryDashboardInteractable, SearchAfterStoryDashboardPresentableListener {
@@ -55,11 +55,11 @@ final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAft
         super.willResignActive()
     }
     
-    func searchAfterHeaderViewSeeAllViewDidTap() {
-        listener?.searchAfterHeaderViewSeeAllViewDidTap()
+    func searchStorySeeAllDidTap() {
+        listener?.searchStorySeeAllDidTap()
     }
     
-    func searchAfterStoryViewDidTap(storyId: Int) {
-        listener?.searchAfterStoryViewDidTap(storyId: storyId)
+    func didTapStory(storyId: Int) {
+        listener?.didTapStory(storyId: storyId)
     }
 }

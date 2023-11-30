@@ -23,7 +23,6 @@ final class SearchStorySeeAllComponent: Component<SearchStorySeeAllDependency>,
         self.searchText = searchText
         super.init(dependency: dependency)
     }
-    
 }
 
 protocol SearchStorySeeAllBuildable: Buildable {

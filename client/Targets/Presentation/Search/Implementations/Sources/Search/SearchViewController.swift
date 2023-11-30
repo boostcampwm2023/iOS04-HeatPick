@@ -19,7 +19,7 @@ import ModernRIBs
 protocol SearchPresentableListener: AnyObject {
     func didTapCurrentLocation()
     func didTapSearchTextField()
-    func didTapStory(storyID: Int)
+    func didTapStory(storyId: Int)
     func didAppear()
     func didTapMarker(place: Place)
     func didTapSymbol(symbol: SearchMapSymbol)
@@ -258,8 +258,8 @@ extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegat
 private extension SearchViewController {
     
     @objc func storyViewDidTap() {
-        guard let storyID = storyView.storyID else { return }
-        listener?.didTapStory(storyID: storyID)
+        guard let storyId = storyView.storyID else { return }
+        listener?.didTapStory(storyId: storyId)
     }
     
     @objc func reSearchViewDidTap() {

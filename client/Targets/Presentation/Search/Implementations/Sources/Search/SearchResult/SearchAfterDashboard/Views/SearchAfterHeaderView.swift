@@ -10,7 +10,7 @@ import UIKit
 import DesignKit
 
 protocol SearchAfterHeaderViewDelegate: AnyObject {
-    func searchAfterHeaderViewSeeAllViewDidTap()
+    func searchAfterSeeAllViewDidTap()
 }
 
 final class SearchAfterHeaderView: UIView {
@@ -55,7 +55,7 @@ final class SearchAfterHeaderView: UIView {
 private extension SearchAfterHeaderView {
     
     @objc private func seeAllViewDidTap() {
-        delegate?.searchAfterHeaderViewSeeAllViewDidTap()
+        delegate?.searchAfterSeeAllViewDidTap()
     }
     
 }

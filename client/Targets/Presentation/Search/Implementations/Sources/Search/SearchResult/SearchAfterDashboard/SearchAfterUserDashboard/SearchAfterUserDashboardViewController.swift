@@ -14,7 +14,8 @@ import DesignKit
 import DomainEntities
 
 protocol SearchAfterUserDashboardPresentableListener: AnyObject {
-    func searchAfterHeaderViewSeeAllViewDidTap()
+    func searchUserSeeAllDidTap()
+    func didTapUser(userId: Int)
 }
 
 final class SearchAfterUserDashboardViewController: UIViewController, SearchAfterUserDashboardPresentable, SearchAfterUserDashboardViewControllable {
@@ -87,6 +88,7 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
         models.forEach { model in
             let contentView = SearchAfterUserView()
             contentView.setup(model: model)
+            contentView.delegate = self
             self.stackView.addArrangedSubview(contentView)
         }
         emptyView.isHidden = !isEmpty
@@ -125,9 +127,17 @@ private extension SearchAfterUserDashboardViewController {
 }
 
 extension SearchAfterUserDashboardViewController: SearchAfterHeaderViewDelegate {
+
+    func searchAfterSeeAllViewDidTap() {
+        listener?.searchUserSeeAllDidTap()
+    }
     
-    func searchAfterHeaderViewSeeAllViewDidTap() {
-        listener?.searchAfterHeaderViewSeeAllViewDidTap()
+}
+
+extension SearchAfterUserDashboardViewController: SearchAfterUserViewDelegate {
+    
+    func didTapUser(userId: Int) {
+        listener?.didTapUser(userId: userId)
     }
     
 }

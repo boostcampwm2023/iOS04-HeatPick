@@ -29,8 +29,11 @@ protocol SearchAfterDashboardPresentable: Presentable {
 protocol SearchAfterDashboardListener: AnyObject {
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
     
-    func searchAfterStoryViewDidTap(storyId: Int)
-    func searchAfterHeaderViewSeeAllViewDidTap(searchText: String)
+    func searchStorySeeAllDidTap(searchText: String)
+    func didTapStory(storyId: Int)
+    
+    func searchUserSeeAllDidTap(searchText: String)
+    func didTapUser(userId: Int)
 }
 
 final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDashboardPresentable>, SearchAfterDashboardInteractable, SearchAfterDashboardPresentableListener {
@@ -84,18 +87,39 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
 
     override func willResignActive() {
         super.willResignActive()
+        cancelTaskBag.cancel()
         router?.detachSearchAfterStoryDashboard()
         router?.detachSearchAfterUserDashboard()
     }
     
-    func searchAfterHeaderViewSeeAllViewDidTap() {
+}
+
+// MARK: SearchAfterStroy
+extension SearchAfterDashboardInteractor {
+    
+    func searchStorySeeAllDidTap() {
         guard let searchText else { return }
-        listener?.searchAfterHeaderViewSeeAllViewDidTap(searchText: searchText)
+        listener?.searchStorySeeAllDidTap(searchText: searchText)
     }
     
-    func searchAfterStoryViewDidTap(storyId: Int) {
-        listener?.searchAfterStoryViewDidTap(storyId: storyId)
+    func didTapStory(storyId: Int) {
+        listener?.didTapStory(storyId: storyId)
     }
+    
+}
+
+// MARK: SearchAfterUser
+extension SearchAfterDashboardInteractor {
+    
+    func searchUserSeeAllDidTap() {
+        guard let searchText else { return }
+        listener?.searchUserSeeAllDidTap(searchText: searchText)
+    }
+    
+    func didTapUser(userId: Int) {
+        listener?.didTapUser(userId: userId)
+    }
+
 
     
 }

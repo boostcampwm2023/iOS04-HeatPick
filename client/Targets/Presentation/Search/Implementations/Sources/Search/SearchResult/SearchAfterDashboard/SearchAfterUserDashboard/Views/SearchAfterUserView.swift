@@ -11,6 +11,10 @@ import UIKit
 import DesignKit
 import DomainEntities
 
+protocol SearchAfterUserViewDelegate: AnyObject {
+    func didTapUser(userId: Int)
+}
+
 final class SearchAfterUserView: UIView {
     
     private enum Constant {
@@ -22,6 +26,10 @@ final class SearchAfterUserView: UIView {
             static let height: CGFloat = 40
         }
     }
+    
+    weak var delegate: SearchAfterUserViewDelegate?
+    
+    private var userId: Int?
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -61,11 +69,13 @@ final class SearchAfterUserView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupConfiguration()
         setupViews()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setupConfiguration()
         setupViews()
     }
     
@@ -93,6 +103,24 @@ private extension SearchAfterUserView {
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
             stackView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: Constant.trailingOffset)
         ])
+    }
+    
+    
+    func setupConfiguration() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(searchAfterUserViewDidTap)
+        )
+        addGestureRecognizer(tapGesture)
+    }
+    
+}
+
+private extension SearchAfterUserView {
+    
+    @objc func searchAfterUserViewDidTap() {
+        guard let userId else { return }
+        delegate?.didTapUser(userId: userId)
     }
     
 }
