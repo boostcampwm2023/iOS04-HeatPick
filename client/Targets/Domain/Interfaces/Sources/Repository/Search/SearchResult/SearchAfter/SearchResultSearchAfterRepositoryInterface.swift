@@ -12,6 +12,6 @@ import DomainEntities
 public protocol SearchResultSearchAfterRepositoryInterface {
     
     func fetchSearchResult(searchText: String) async -> Result<SearchResult, Error>
-    func fetchRecommendText(searchText: String) async -> Result<[String], Error>
+    func fetchSearchLocal(searchText: String) async -> Result<[SearchLocal], Error>
     
 }

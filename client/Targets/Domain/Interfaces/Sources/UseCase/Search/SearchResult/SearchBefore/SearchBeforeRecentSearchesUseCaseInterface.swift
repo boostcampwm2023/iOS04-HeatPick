@@ -12,5 +12,6 @@ public protocol SearchBeforeRecentSearchesUseCaseInterface {
     
     func fetchRecentSearches() -> [String]
     func appendRecentSearch(searchText: String) -> String?
+    func saveRecentSearches()
     
 }

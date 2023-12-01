@@ -62,4 +62,5 @@ final class SearchAfterStoryDashboardInteractor: PresentableInteractor<SearchAft
     func didTapStory(storyId: Int) {
         listener?.didTapStory(storyId: storyId)
     }
+    
 }

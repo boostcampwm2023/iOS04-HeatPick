@@ -1,8 +1,8 @@
 //
-//  SearchAfterStoryDashboardViewController.swift
+//  SearchAfterLocalDashboardViewController.swift
 //  SearchImplementations
 //
-//  Created by 이준복 on 11/21/23.
+//  Created by 이준복 on 12/1/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
@@ -13,31 +13,30 @@ import ModernRIBs
 import DesignKit
 import DomainEntities
 
-protocol SearchAfterStoryDashboardPresentableListener: AnyObject {
-    func searchStorySeeAllDidTap()
-    func didTapStory(storyId: Int)
+protocol SearchAfterLocalDashboardPresentableListener: AnyObject {
+    
 }
 
-final class SearchAfterStoryDashboardViewController: UIViewController, SearchAfterStoryDashboardPresentable, SearchAfterStoryDashboardViewControllable {
+final class SearchAfterLocalDashboardViewController: UIViewController, SearchAfterLocalDashboardPresentable, SearchAfterLocalDashboardViewControllable {
+    
+    weak var listener: SearchAfterLocalDashboardPresentableListener?
     
     private enum Constant {
         static let offset: CGFloat = 20
         
         enum TitleView {
-            static let title = "스토리"
+            static let title = "위치"
         }
         
         enum EmptyView {
-            static let title = "검색어에 해당하는 스토리가 없어요"
-            static let subTitle = "해당 키워드로 첫 스토리를 작성해보세요"
+            static let title = "검색어에 해당하는 위치정보가 없어요"
+            static let subTitle = "검색어를 다시 입력해보세요"
         }
         
         enum StackView {
             static let spacing: CGFloat = 15
         }
     }
-    
-    weak var listener: SearchAfterStoryDashboardPresentableListener?
     
     private lazy var headerView: SearchAfterHeaderView = {
         let titleView = SearchAfterHeaderView()
@@ -73,12 +72,12 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
         setupViews()
     }
     
-    func setup(models: [SearchStory]) {
+    func setup(models: [SearchLocal]) {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let isEmpty = models.isEmpty
         headerView.isHiddenSeeAllView(isEmpty)
         models.forEach { model in
-            let contentView = SearchAfterStoryView()
+            let contentView = SearchAfterLocalView()
             contentView.setup(model: model)
             contentView.delegate = self
             self.stackView.addArrangedSubview(contentView)
@@ -88,7 +87,7 @@ final class SearchAfterStoryDashboardViewController: UIViewController, SearchAft
     
 }
 
-private extension SearchAfterStoryDashboardViewController {
+private extension SearchAfterLocalDashboardViewController {
     func setupViews() {
         [headerView, emptyView, stackView].forEach { view.addSubview($0) }
         
@@ -111,18 +110,15 @@ private extension SearchAfterStoryDashboardViewController {
     
 }
 
-extension SearchAfterStoryDashboardViewController: SearchAfterHeaderViewDelegate {
+extension SearchAfterLocalDashboardViewController: SearchAfterHeaderViewDelegate {
     
     func searchAfterSeeAllViewDidTap() {
-        listener?.searchStorySeeAllDidTap()
+        
     }
     
 }
 
-extension SearchAfterStoryDashboardViewController: SearchAfterStoryViewDelegate {
-    
-    func didTapStory(storyId: Int) {
-        listener?.didTapStory(storyId: storyId)
-    }
+extension SearchAfterLocalDashboardViewController: SearchAfterLocalViewDelegate {
     
 }
+

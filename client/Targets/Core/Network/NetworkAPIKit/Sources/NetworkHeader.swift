@@ -40,4 +40,12 @@ public class NetworkHeader {
         return self
     }
     
+    @discardableResult
+    public func customHeaders(_ keyValues: [(key: String, value: String)]) -> Self {
+        keyValues.forEach { key, value in
+            headers[key] = value
+        }
+        return self
+    }
+    
 }

@@ -10,7 +10,8 @@ import ModernRIBs
 
 protocol SearchAfterDashboardInteractable: Interactable,
                                            SearchAfterStoryDashboardListener,
-                                           SearchAfterUserDashboardListener {
+                                           SearchAfterUserDashboardListener,
+                                           SearchAfterLocalDashboardListener {
     var router: SearchAfterDashboardRouting? { get set }
     var listener: SearchAfterDashboardListener? { get set }
 }
@@ -21,9 +22,10 @@ protocol SearchAfterDashboardViewControllable: ViewControllable {
 }
 
 final class SearchAfterDashboardRouter: ViewableRouter<SearchAfterDashboardInteractable, SearchAfterDashboardViewControllable>, SearchAfterDashboardRouting {
-    
+        
     private let dependency: SearchAfterDashboardRouterDependency
     
+    private var searchAfterLocalDashboardRouter: ViewableRouting?
     private var searchAfterStoryDashboardRouter: ViewableRouting?
     private var searchAfterUserDashboardRouter: ViewableRouting?
     
@@ -35,6 +37,21 @@ final class SearchAfterDashboardRouter: ViewableRouter<SearchAfterDashboardInter
         self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
+    }
+    
+    func attachSearchAfterLocalDasboard() {
+        guard searchAfterLocalDashboardRouter == nil else { return }
+        let router = dependency.searchAfterLocalDashboardBuilder.build(withListener: interactor)
+        attachChild(router)
+        searchAfterLocalDashboardRouter = router
+        viewController.appendDashboard(router.viewControllable)
+    }
+    
+    func detachSearchAfterLocalDasboard() {
+        guard let router = searchAfterLocalDashboardRouter else { return }
+        viewController.removeDashboard(router.viewControllable)
+        detachChild(router)
+        searchAfterLocalDashboardRouter = nil
     }
     
     func attachSearchAfterStoryDashboard() {

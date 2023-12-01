@@ -12,8 +12,6 @@ protocol SearchAfterStoryDashboardDependency: Dependency { }
 
 final class SearchAfterStoryDashboardComponent: Component<SearchAfterStoryDashboardDependency> { }
 
-// MARK: - Builder
-
 protocol SearchAfterStoryDashboardBuildable: Buildable {
     func build(withListener listener: SearchAfterStoryDashboardListener) -> SearchAfterStoryDashboardRouting
 }
@@ -31,4 +29,5 @@ final class SearchAfterStoryDashboardBuilder: Builder<SearchAfterStoryDashboardD
         interactor.listener = listener
         return SearchAfterStoryDashboardRouter(interactor: interactor, viewController: viewController)
     }
+    
 }

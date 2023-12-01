@@ -67,4 +67,12 @@ public final class SearchUseCase: SearchUseCaseInterface {
         repository.appendRecentSearch(searchText: searchText)
     }
     
+    public func saveRecentSearches() {
+        repository.saveRecentSearches()
+    }
+    
+    public func fetchNaverLocal(query: String) async -> Result<[SearchLocal], Error> {
+        await repository.fetchSearchLocal(searchText: query)
+    }
+    
 }

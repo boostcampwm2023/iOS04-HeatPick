@@ -16,6 +16,9 @@ public enum Secret: String {
     case naverMapClientID = "NaverMapClientID"
     case naverMapSecret = "NaverMapSecret"
     
+    case naverSearchLocalClientId = "NaverSearchLocalClientId"
+    case naverSearchLocalClientSecret = "NaverSearchLocalClientSecret"
+    
     public var value: String {
         guard let value  = Secret.infoDictionary[rawValue] as? String else {
             fatalError("\(rawValue) 설정이 되지 않았습니다")
