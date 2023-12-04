@@ -20,13 +20,13 @@ protocol SignInViewControllable: ViewControllable {}
 final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControllable>, SignInRouting {
     
     private let signUpBuilder: SignUpBuildable
-    private var signUpRouter: Routing?
+    private var signUpRouter: ViewableRouting?
     
     private let signUpSuccessBuilder: SignUpSuccessBuildable
-    private var signUpSuccessRouter: Routing?
+    private var signUpSuccessRouter: ViewableRouting?
     
     private let locationAuthorityBuilder: LocationAuthorityBuildable
-    private var locationAuthorityRouter: Routing?
+    private var locationAuthorityRouter: ViewableRouting?
     
     init(
         interactor: SignInInteractable,
@@ -45,46 +45,40 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
     func attachSignUp() {
         guard signUpRouter == nil else { return }
         let router = signUpBuilder.build(withListener: interactor)
-        attachChild(router)
+        pushRouter(router, animated: true)
         signUpRouter = router
-        viewControllable.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSignUp() {
         guard let router = signUpRouter else { return }
-        detachChild(router)
+        popRouter(router, animted: true)
         signUpRouter = nil
-        viewControllable.popViewController(animated: true)
     }
     
     func attachSignUpSuccess() {
         guard signUpSuccessRouter == nil else { return }
         let router = signUpSuccessBuilder.build(withListener: interactor)
-        attachChild(router)
+        pushRouter(router, animated: true)
         signUpSuccessRouter = router
-        viewControllable.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSignUpSuccess() {
         guard let router = signUpSuccessRouter else { return }
-        detachChild(router)
+        popRouter(router, animted: true)
         signUpSuccessRouter = nil
-        viewControllable.popViewController(animated: true)
     }
     
     func attachLocationAuthority() {
         guard locationAuthorityRouter == nil else { return }
         let router = locationAuthorityBuilder.build(withListener: interactor)
-        attachChild(router)
+        pushRouter(router, animated: true)
         locationAuthorityRouter = router
-        viewControllable.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachLocationAuthority() {
         guard let router = locationAuthorityRouter else { return }
-        detachChild(router)
+        popRouter(router, animted: true)
         locationAuthorityRouter = nil
-        viewControllable.popViewController(animated: true)
     }
     
 }

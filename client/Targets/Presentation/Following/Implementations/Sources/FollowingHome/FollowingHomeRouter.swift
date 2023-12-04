@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import CoreKit
 import FollowingInterfaces
 import StoryInterfaces
 
@@ -52,15 +53,13 @@ final class FollowingHomeRouter: ViewableRouter<FollowingHomeInteractable, Follo
         guard storyDetailRouting == nil else { return }
         let router = storyDetailBuilder.build(withListener: interactor, storyId: id)
         self.storyDetailRouting = router
-        attachChild(router)
-        viewController.pushViewController(router.viewControllable, animated: true)
+        pushRouter(router, animated: true)
     }
     
     func detachStoryDetail() {
         guard let router = storyDetailRouting else { return }
-        detachChild(router)
         storyDetailRouting = nil
-        viewControllable.popViewController(animated: true)
+        popRouter(router, animted: true)
     }
     
     

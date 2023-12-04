@@ -24,7 +24,7 @@ protocol StoryDetailRouterDependency {
 final class StoryDetailRouter: ViewableRouter<StoryDetailInteractable, StoryDetailViewControllable>, StoryDetailRouting {
 
     private let commentBuilder: CommentBuildable
-    private var commentRouter: Routing?
+    private var commentRouter: ViewableRouting?
     
     init(interactor: StoryDetailInteractable,
          viewController: StoryDetailViewControllable,
@@ -39,14 +39,12 @@ final class StoryDetailRouter: ViewableRouter<StoryDetailInteractable, StoryDeta
         guard commentRouter == nil else { return }
         let commentRouting = commentBuilder.build(withListener: interactor, storyId: storyId)
         commentRouter = commentRouting
-        attachChild(commentRouting)
-        viewController.pushViewController(commentRouting.viewControllable, animated: true)
+        pushRouter(commentRouting, animated: true)
     }
     
     func detachComment() {
         guard let router = commentRouter else { return }
-        detachChild(router)
+        popRouter(router, animted: true)
         commentRouter = nil
-        viewController.popViewController(animated: true)
     }
 }

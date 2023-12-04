@@ -43,11 +43,11 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     
     private let dependency: AppRootRouterDependency
     
-    private var signInRouter: Routing?
-    private var homeRouter: Routing?
-    private var searchHomeRouter: Routing?
+    private var signInRouter: ViewableRouting?
+    private var homeRouter: ViewableRouting?
+    private var searchHomeRouter: ViewableRouting?
     private var followingRouter: ViewableRouting?
-    private var myPageRouter: Routing?
+    private var myPageRouter: ViewableRouting?
     
     init(
         interactor: AppRootInteractable,
@@ -70,9 +70,8 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
     
     func detachSignIn() {
         guard let router = signInRouter else { return }
-        detachChild(router)
+        dismissRouter(router, animated: true)
         self.signInRouter = nil
-        viewControllable.dismiss(animated: true)
     }
     
     func attachTabs() {
