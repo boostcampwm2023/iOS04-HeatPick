@@ -107,7 +107,7 @@ export class StoryController {
       },
     },
   })
-  async addLike(@Request() req: any, @Query('storyId') storyId: number): Promise<{ likeCount: number }> {
+  async addLike(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<{ likeCount: number }> {
     const likeCount = await this.storyService.like(req.user.userRecordId, storyId);
     return { likeCount: likeCount };
   }
@@ -124,7 +124,7 @@ export class StoryController {
       },
     },
   })
-  async unlike(@Request() req: any, @Query('storyId') storyId: number): Promise<{ likeCount: number }> {
+  async unlike(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<{ likeCount: number }> {
     const likeCount = await this.storyService.unlike(req.user.userRecordId, storyId);
     return { likeCount: likeCount };
   }
