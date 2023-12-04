@@ -22,3 +22,8 @@ export class UserProfileDetailStoryDto {
   @ApiProperty()
   commentCount: number;
 }
+
+export class UserProfileDetailStoryJsonDto {
+  @ApiProperty({ description: '유저의 디테일한 스토리 정보를 리턴', type: UserProfileDetailStoryDto, isArray: true })
+  stories: UserProfileDetailStoryDto[];
+}

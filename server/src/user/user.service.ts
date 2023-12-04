@@ -2,22 +2,22 @@ import { Injectable, Inject } from '@nestjs/common';
 import { UserJasoTrie } from './../search/trie/userTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { Badge } from 'src/entities/badge.entity';
-import { AddBadgeDto } from './dto/addBadge.dto';
+import { AddBadgeDto } from './dto/request/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
 import { Story } from '../entities/story.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ImageService } from '../image/image.service';
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
 import { nextBadge, strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
-import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
-import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
+import { AddBadgeExpDto } from './dto/request/addBadgeExp.dto';
+import { UserProfileDetailDataDto } from './dto/response/user.profile.detail.data.dto';
 import { getTemperatureFeeling } from '../constant/temperature';
 import { User } from 'src/entities/user.entity';
 import { profileImage } from '../entities/profileImage.entity';
 import { saveImageToLocal } from '../util/util.save.image.local';
 import { ProfileUpdateMetaBadgeData } from './dto/response/profile.update.meta.badge.data';
 import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
-import { UserProfileDetailStoryDto } from './dto/user.profile.detail.story.dto';
+import { UserProfileDetailStoryDto } from './dto/response/user.profile.detail.story.dto';
 import { In, Repository } from 'typeorm';
 
 @Injectable()
