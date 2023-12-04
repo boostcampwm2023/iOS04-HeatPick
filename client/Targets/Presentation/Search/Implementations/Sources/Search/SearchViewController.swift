@@ -7,12 +7,10 @@
 //
 
 import UIKit
-
 import CoreKit
 import DesignKit
 import DomainEntities
 import BasePresentation
-
 import NMapsMap
 import ModernRIBs
 
@@ -30,7 +28,7 @@ protocol SearchPresentableListener: AnyObject {
     func didTapReSearch()
 }
 
-final class SearchViewController: UIViewController, SearchPresentable, SearchViewControllable {
+final class SearchViewController: BaseViewController, SearchPresentable, SearchViewControllable {
     
     private enum Constant {
         enum TabBar {
@@ -54,75 +52,13 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
     
     private var markerStorage: [SearchMapMarkerAdapter] = []
     
-    private lazy var naverMap: NMFNaverMapView = {
-        let map = NMFNaverMapView(frame: view.frame)
-        map.backgroundColor = .hpWhite
-        map.showLocationButton = true
-        map.mapView.addCameraDelegate(delegate: self)
-        map.mapView.touchDelegate = self
-        map.mapView.translatesAutoresizingMaskIntoConstraints = false
-        return map
-    }()
-    
-    private lazy var searchTextField: SearchTextField = {
-        let textField = SearchTextField()
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(searchTextFieldDidTap))
-        textField.addGestureRecognizer(tapGesture)
-        
-        textField.placeholder = Constant.SearchTextField.placeholder
-        textField.clipsToBounds = true
-        textField.layer.cornerRadius = Constants.cornerRadiusMedium
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
-    }()
-    
-    private lazy var showSearchHomeListButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.configuration?.image = UIImage(systemName: Constant.ShowSearchHomeListButton.image)
-        button.configuration?.baseForegroundColor = .hpBlue1
-        button.configuration?.baseBackgroundColor = .hpWhite
-        button.clipsToBounds = true
-        button.layer.cornerRadius = Constant.ShowSearchHomeListButton.length / 2
-        
-        button.addTarget(self, action: #selector(showSearchHomeListButtonDidTap), for: .touchUpInside)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private lazy var storyView: SearchMapStoryView = {
-        let storyView = SearchMapStoryView()
-        storyView.delegate = self
-        storyView.isHidden = true
-        storyView.layer.cornerRadius = Constants.cornerRadiusMedium
-        storyView.layer.borderColor = UIColor.hpGray3.cgColor
-        storyView.layer.borderWidth = 1
-        storyView.translatesAutoresizingMaskIntoConstraints = false
-        return storyView
-    }()
-    
-    private let selectedMarker: NMFMarker = {
-        let marker = NMFMarker()
-        marker.iconImage = NMFOverlayImage(image: .markerBlue)
-        return marker
-    }()
-    
-    private lazy var selectedView: SearchMapSelectedView = {
-        let selectedView = SearchMapSelectedView()
-        selectedView.delegate = self
-        selectedView.isHidden = true
-        selectedView.translatesAutoresizingMaskIntoConstraints = false
-        return selectedView
-    }()
-    
-    private lazy var reSearchView: SearchMapReSearchView = {
-        let reSearchView = SearchMapReSearchView()
-        reSearchView.isHidden = true
-        reSearchView.addTapGesture(target: self, action: #selector(reSearchViewDidTap))
-        reSearchView.translatesAutoresizingMaskIntoConstraints = false
-        return reSearchView
-    }()
+    private lazy var naverMap = NMFNaverMapView(frame: view.frame)
+    private let searchTextField = SearchTextField()
+    private let showSearchHomeListButton = UIButton(configuration: .filled())
+    private let storyView = SearchMapStoryView()
+    private let selectedMarker = NMFMarker()
+    private let selectedView = SearchMapSelectedView()
+    private let reSearchView = SearchMapReSearchView()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -132,11 +68,6 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupTabBar()
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -202,6 +133,92 @@ final class SearchViewController: UIViewController, SearchPresentable, SearchVie
     
     func hideReSearchView() {
         reSearchView.isHidden = true
+    }
+    
+    override func setupLayout() {
+        [searchTextField, reSearchView, showSearchHomeListButton, storyView, selectedView].forEach(view.addSubview)
+        
+        NSLayoutConstraint.activate([
+            searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
+            searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            searchTextField.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
+            reSearchView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
+            reSearchView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            showSearchHomeListButton.widthAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
+            showSearchHomeListButton.heightAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
+            showSearchHomeListButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constant.ShowSearchHomeListButton.offset),
+            showSearchHomeListButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.ShowSearchHomeListButton.offset),
+            
+            storyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            storyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            storyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            
+            selectedView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            selectedView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            selectedView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+        ])
+    }
+    
+    override func setupAttributes() {
+        view = naverMap
+        
+        naverMap.do {
+            $0.backgroundColor = .hpWhite
+            $0.showLocationButton = true
+            $0.mapView.addCameraDelegate(delegate: self)
+            $0.mapView.touchDelegate = self
+            $0.mapView.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        searchTextField.do {
+            $0.addTapGesture(target: self, action: #selector(searchTextFieldDidTap))
+            $0.placeholder = Constant.SearchTextField.placeholder
+            $0.clipsToBounds = true
+            $0.layer.cornerRadius = Constants.cornerRadiusMedium
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        showSearchHomeListButton.do {
+            $0.configuration?.image = UIImage(systemName: Constant.ShowSearchHomeListButton.image)
+            $0.configuration?.baseForegroundColor = .hpBlue1
+            $0.configuration?.baseBackgroundColor = .hpWhite
+            $0.clipsToBounds = true
+            $0.layer.cornerRadius = Constant.ShowSearchHomeListButton.length / 2
+            $0.addTarget(self, action: #selector(showSearchHomeListButtonDidTap), for: .touchUpInside)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        storyView.do {
+            $0.delegate = self
+            $0.isHidden = true
+            $0.layer.cornerRadius = Constants.cornerRadiusMedium
+            $0.layer.borderColor = UIColor.hpGray3.cgColor
+            $0.layer.borderWidth = 1
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        selectedMarker.do {
+            $0.iconImage = NMFOverlayImage(image: .markerBlue)
+        }
+        
+        selectedView.do {
+            $0.delegate = self
+            $0.isHidden = true
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        reSearchView.do {
+            $0.isHidden = true
+            $0.addTapGesture(target: self, action: #selector(reSearchViewDidTap))
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    override func bind() {
+        
     }
     
 }
@@ -279,34 +296,6 @@ private extension SearchViewController {
             image: .init(systemName: Constant.TabBar.image)?.withRenderingMode(.alwaysTemplate),
             selectedImage: .init(systemName: Constant.TabBar.image)?.withRenderingMode(.alwaysTemplate)
         )
-    }
-    
-    func setupViews() {
-        view = naverMap
-        [searchTextField, reSearchView, showSearchHomeListButton, storyView, selectedView].forEach(view.addSubview)
-        
-        NSLayoutConstraint.activate([
-            searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
-            searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            searchTextField.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
-            
-            reSearchView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
-            reSearchView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            showSearchHomeListButton.widthAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
-            showSearchHomeListButton.heightAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
-            showSearchHomeListButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constant.ShowSearchHomeListButton.offset),
-            showSearchHomeListButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.ShowSearchHomeListButton.offset),
-            
-            storyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            storyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            storyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            
-            selectedView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            selectedView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            selectedView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
-        ])
     }
     
     func makeMarkerAdapter(overlay: NMFOverlayImage, place: Place) -> SearchMapMarkerAdapter {
