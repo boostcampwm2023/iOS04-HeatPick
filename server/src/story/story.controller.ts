@@ -8,8 +8,8 @@ import { LocationDTO } from 'src/place/dto/location.dto';
 import { plainToClass } from 'class-transformer';
 import { StoryDetailViewDataResponseDto } from './dto/response/detail/story.detail.view.data.response.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
 import { StoryRecommendResponseDto } from 'src/search/dto/response/story.result.dto';
+import { CreateStoryMetaDto } from './dto/response/story.create.meta.response.dto';
 
 @ApiTags('story')
 @Controller('story')
