@@ -33,12 +33,7 @@ final class StoryHeaderView: UIView {
     }
     
     weak var delegate: StoryHeaderViewDelegate?
-    private var isLiked: Bool = false {
-        didSet {
-            likeButton.isUserInteractionEnabled = true
-            likeButton.setup(color: (isLiked ? .hpRed1 : .hpBlack))
-        }
-    }
+    private var isLiked: Bool = false
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -94,11 +89,15 @@ final class StoryHeaderView: UIView {
     func didLike(count: Int) {
         isLiked = true
         likeButton.setup(count: count)
+        likeButton.isUserInteractionEnabled = true
+        likeButton.setup(color: .hpRed1)
     }
     
     func didUnlike(count: Int) {
         isLiked = false
         likeButton.setup(count: count)
+        likeButton.isUserInteractionEnabled = true
+        likeButton.setup(color: .hpBlack)
     }
     
     func didFailToLike() {
@@ -137,6 +136,7 @@ private extension StoryHeaderView {
         case .following, .nonFollowing:
             likeButton.setup(color: (likeStatus ? .hpRed1 : .hpBlack))
         }
+        isLiked = likeStatus
         likeButton.setup(count: likeCount)
     }
 }
