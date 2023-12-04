@@ -9,7 +9,9 @@
 import Foundation
 import DomainEntities
 
-public protocol MyPageUseCaseInterface: MyPageProfileUseCaseInterface, MyPageStoryUseCaseInterface {
+public protocol MyPageUseCaseInterface: MyPageProfileUseCaseInterface,
+                                        MyPageStoryUseCaseInterface,
+                                        MyPageUpdateUserUseCaseInterface {
     
     func fetchMyPage() async -> Result<MyPage, Error>
     

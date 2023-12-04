@@ -104,4 +104,14 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         }
     }
     
+    public func fetchUserMedtaData() async -> Result<UserMetaData, Error> {
+        await repository.fetchUserMedtaData()
+    }
+    
+    
+    public func fetchUserInfo(userUpdate: UserUpdate) async -> Result<Int, Error> {
+        await repository.fetchUserInfo(userUpdate: userUpdate)
+    }
+    
+    
 }

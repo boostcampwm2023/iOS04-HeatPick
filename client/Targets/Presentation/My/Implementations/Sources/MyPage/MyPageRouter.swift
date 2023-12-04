@@ -16,7 +16,7 @@ protocol MyPageInteractable: Interactable,
                              MyPageStorySeeAllListener,
                              SettingListener,
                              StoryDetailListener,
-                             UserInfoEditDashboardListener { 
+                             MyPageUpdateUserDashboardListener { 
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }

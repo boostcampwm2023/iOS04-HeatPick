@@ -33,4 +33,16 @@ public final class MyPageRepository: MyPageRepositoryInterface {
         return request.map { $0.map { $0.toDomain() } }
     }
     
+    public func fetchUserMedtaData() async -> Result<UserMetaData, Error> {
+        let target = MyAPI.userMetaData
+        let request: Result<UserMetaDataResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
+    public func fetchUserInfo(userUpdate: UserUpdate) async -> Result<Int, Error> {
+        let target = MyAPI.userUpdate(userUpdate: userUpdate)
+        let request: Result<UserUpdateResponseDTO, Error> = await session.request(target)
+        return request.map { $0.userId }
+    }
+    
 }
