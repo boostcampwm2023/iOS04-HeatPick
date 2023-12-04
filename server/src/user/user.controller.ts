@@ -20,7 +20,6 @@ import { UserJsonResponseDto } from './dto/response/user.response.dto';
 
 @ApiTags('user')
 @Controller('user')
-@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -186,5 +185,14 @@ export class UserController {
     const transformedFollowers = await Promise.all(followers.map(async (follower) => await userEntityToUserObj(follower)));
 
     return { users: transformedFollowers };
+  }
+
+  @Get('recommend')
+  @ApiOperation({ summary: '랜덤한 추천 유저 20명을 리턴합니다.' })
+  @ApiResponse({ status: 200, description: '추천 유저들을 리턴합니다.', type: UserJsonResponseDto })
+  async getRandomUsers(@Param('userId') userId: number): Promise<UserJsonResponseDto> {
+    const users = await this.userService.recommendUsers(userId);
+    const transformedUsers = await Promise.all(users.map(async (user) => await userEntityToUserObj(user)));
+    return { users: transformedUsers };
   }
 }

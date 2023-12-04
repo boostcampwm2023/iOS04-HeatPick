@@ -267,4 +267,16 @@ export class UserService {
     //const userIdArray = follows.map((user) => user.userId);
     return followers;
   }
+  async recommendUsers(userId: number): Promise<User[]> {
+    const users: User[] = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.following', 'following')
+      .where('user.userId <> :userId AND following.userId IS NULL AND user.deletedAt IS NULL')
+      .orderBy('RAND()')
+      .take(20)
+      .setParameter('userId', userId)
+      .getMany();
+
+    return users;
+  }
 }
