@@ -11,7 +11,6 @@ import { getStoryDetailPlaceDataResponseDto, StoryDetailPlaceDataResponseDto } f
 import { Badge } from '../entities/badge.entity';
 import { Place } from '../entities/place.entity';
 import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
-import { CategoryRepository } from '../category/category.repository';
 import { CreateStoryMetaDto } from './dto/response/story.create.meta.response.dto';
 import { Category } from '../entities/category.entity';
 import { UserService } from 'src/user/user.service';
@@ -30,8 +29,9 @@ export class StoryService {
     private storyRepository: Repository<Story>,
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
+    @Inject('CATEGORY_REPOSITORY')
+    private categoryRepository: Repository<Category>,
     private storyTitleJasoTrie: StoryJasoTrie,
-    private categoryRepository: CategoryRepository,
     private userService: UserService,
   ) {
     this.loadSearchHistoryTrie();
@@ -48,7 +48,7 @@ export class StoryService {
 
   public async createMetaData(userId: string) {
     const user: User = await this.userRepository.findOne({ where: { oauthId: userId }, relations: ['badges'] });
-    const categoryList = await this.categoryRepository.finAll();
+    const categoryList = await this.categoryRepository.find();
     const metaData: CreateStoryMetaDto = {
       badges: (await user.badges).map((badge: Badge) => {
         return { badgeId: badge.badgeId, badgeName: badge.badgeName };
@@ -61,7 +61,7 @@ export class StoryService {
   public async create(userId: string, { title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const user: User = await this.userRepository.findOne({ where: { oauthId: userId }, relations: ['badges'] });
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
-    const category: Category = await this.categoryRepository.findById(categoryId);
+    const category: Category = await this.categoryRepository.findOneBy({ categoryId: categoryId });
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     user.stories = Promise.resolve([...(await user.stories), story]);
     await this.userRepository.save(user);
@@ -86,7 +86,7 @@ export class StoryService {
     const user: User = await this.userRepository.findOne({ where: { oauthId: userId } });
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['storyImages', 'category', 'badge', 'place'] });
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
-    const category: Category = await this.categoryRepository.findById(categoryId);
+    const category: Category = await this.categoryRepository.findOneBy({ categoryId: categoryId });
 
     const updatedStory = await updateStory(story, { title, content, category, place, images, badge, date });
 
