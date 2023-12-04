@@ -9,7 +9,9 @@
 import UIKit
 import PhotosUI
 import ModernRIBs
+import CoreKit
 import DesignKit
+import BasePresentation
 
 protocol UserInfoEditDashboardPresentableListener: AnyObject {
     func didTapBack()
@@ -19,7 +21,7 @@ protocol UserInfoEditDashboardPresentableListener: AnyObject {
     func didTapUserBadgeView(_ badgeId: Int)
 }
 
-final class UserInfoEditDashboardViewController: UIViewController, UserInfoEditDashboardPresentable, UserInfoEditDashboardViewControllable {
+final class UserInfoEditDashboardViewController: BaseViewController, UserInfoEditDashboardPresentable, UserInfoEditDashboardViewControllable {
     
     weak var listener: UserInfoEditDashboardPresentableListener?
     
@@ -31,82 +33,18 @@ final class UserInfoEditDashboardViewController: UIViewController, UserInfoEditD
         }
     }
     
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        navigationView.setup(model: .init(
-            title: Constant.NavigationView.title,
-            leftButtonType: .back,
-            rightButtonTypes: [])
-        )
-        navigationView.delegate = self
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        return navigationView
-    }()
-    
-    private lazy var userEditProfileView: UserInfoEditProfileView = {
-        let contentView = UserInfoEditProfileView()
-        contentView.delegate = self
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        return contentView
-    }()
-    
-    private lazy var userEditBasicInformationView: UserInfoEditBasicInformationView = {
-        let contentView = UserInfoEditBasicInformationView()
-        contentView.delegate = self
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        return contentView
-    }()
-    
-    private lazy var userInfoEditBadgeView: UserInfoEditBadgeView = {
-        let contentView = UserInfoEditBadgeView()
-        contentView.delegate = self
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        return contentView
-    }()
-    
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.contentInset = .zero
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-    
-    private let stackView: UIStackView = {
-       let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
-    private lazy var editButton: ActionButton = {
-        let button = ActionButton()
-        button.setTitle("변경하기", for: .normal)
-        button.clipsToBounds = true
-        button.layer.cornerRadius = Constants.cornerRadiusMedium
-        button.addTarget(self, action: #selector(didTapEditButton), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    private let userEditProfileView = UserInfoEditProfileView()
+    private let userEditBasicInformationView = UserInfoEditBasicInformationView()
+    private let userInfoEditBadgeView = UserInfoEditBadgeView()
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
+    private let editButton = ActionButton()
     
     func setupUserInfoBadgeView(models: [UserBadgeViewModel]) {
         userInfoEditBadgeView.setup(models: models)
     }
     
-}
-
-private extension UserInfoEditDashboardViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
-        
+    override func setupLayout() {
         [navigationView, scrollView, editButton].forEach(view.addSubview)
         scrollView.addSubview(stackView)
         [userEditProfileView, userEditBasicInformationView, userInfoEditBadgeView].forEach(stackView.addArrangedSubview)
@@ -133,6 +71,59 @@ private extension UserInfoEditDashboardViewController {
             editButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.bottomOffset),
             editButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight)
         ])
+    }
+    
+    override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        navigationView.do {
+            $0.setup(model: .init(
+                title: Constant.NavigationView.title,
+                leftButtonType: .back,
+                rightButtonTypes: [])
+            )
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        userEditProfileView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        userEditBasicInformationView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        userInfoEditBadgeView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        scrollView.do {
+            $0.contentInset = .zero
+            $0.showsHorizontalScrollIndicator = false
+            $0.showsVerticalScrollIndicator = false
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        stackView.do {
+             $0.axis = .vertical
+             $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        editButton.do {
+            $0.setTitle("변경하기", for: .normal)
+            $0.clipsToBounds = true
+            $0.layer.cornerRadius = Constants.cornerRadiusMedium
+            $0.addTarget(self, action: #selector(didTapEditButton), for: .touchUpInside)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    override func bind() {
+        
     }
     
 }
