@@ -14,7 +14,9 @@ import DomainEntities
 
 struct StoryHeaderViewModel {
     let title: String
+    let userStatus: UserStatus
     let badgeName: String
+    let likeStatus: Bool
     let likesCount: Int
     let commentsCount: Int
 }
@@ -78,7 +80,7 @@ final class StoryHeaderView: UIView {
     func setup(model: StoryHeaderViewModel) {
         titleLabel.text = model.title
         userBadgeView.setBadge(model.badgeName)
-        likeButton.setup(count: model.likesCount)
+        setupLikeButton(author: model.userStatus, likeStatus: model.likeStatus, likeCount: model.likesCount)
         commentButton.setup(count: model.commentsCount)
     }
     
@@ -107,6 +109,16 @@ private extension StoryHeaderView {
         ])
     }
 
+    func setupLikeButton(author: UserStatus, likeStatus: Bool, likeCount: Int) {
+        switch author {
+        case .me:
+            likeButton.isUserInteractionEnabled = false
+            likeButton.setup(color: .hpRed1)
+        case .following, .nonFollowing:
+            likeButton.setup(color: (likeStatus ? .hpRed1 : .hpBlack))
+        }
+        likeButton.setup(count: likeCount)
+    }
 }
 
 // MARK: - objc
