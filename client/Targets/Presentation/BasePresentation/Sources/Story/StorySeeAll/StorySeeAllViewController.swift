@@ -67,22 +67,28 @@ public final class StorySeeAllViewController: BaseViewController, StorySeeAllPre
     public override func setupAttributes() {
         view.backgroundColor = .hpWhite
         
-        navigationView.delegate = self
-        navigationView.setup(model: .init(title: "", leftButtonType: .back, rightButtonTypes: []))
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
+        navigationView.do {
+            $0.delegate = self
+            $0.setup(model: .init(title: "", leftButtonType: .back, rightButtonTypes: []))
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
-        tableView.backgroundColor = .white
-        tableView.register(StorySmallTableViewCell.self)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.contentInset = .zero
-        tableView.separatorStyle = .none
-        tableView.tableFooterView = indicator
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.do {
+            $0.backgroundColor = .white
+            $0.register(StorySmallTableViewCell.self)
+            $0.delegate = self
+            $0.dataSource = self
+            $0.contentInset = .zero
+            $0.separatorStyle = .none
+            $0.tableFooterView = indicator
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
-        indicator.color = .hpGray2
-        indicator.hidesWhenStopped = true
-        indicator.stopAnimating()
+        indicator.do {
+            $0.color = .hpGray2
+            $0.hidesWhenStopped = true
+            $0.stopAnimating()
+        }
     }
     
     public override func bind() {
