@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import CoreKit
 import DomainEntities
 import HomeInterfaces
 import StoryInterfaces
@@ -35,19 +36,19 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     // MARK: - Base
     
-    private var recommendDashboardRouting: Routing?
-    private var hotPlaceDashboardRouting: Routing?
-    private var followingDashboardRouting: Routing?
+    private var recommendDashboardRouting: ViewableRouting?
+    private var hotPlaceDashboardRouting: ViewableRouting?
+    private var followingDashboardRouting: ViewableRouting?
     private var friendDashboardRouting: ViewableRouting?
     
     // MARK: - SeeAll
     
-    private var recommendSeeAllRouting: Routing?
-    private var hotPlaceSeeAllRouting: Routing?
+    private var recommendSeeAllRouting: ViewableRouting?
+    private var hotPlaceSeeAllRouting: ViewableRouting?
     
     // MARK: - Story
     
-    private var storyDetailRouting: Routing?
+    private var storyDetailRouting: ViewableRouting?
     
     init(
         interactor: HomeInteractable,
@@ -108,31 +109,27 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
             withListener: interactor,
             location: location
         )
-        viewController.pushViewController(router.viewControllable, animated: true)
+        pushRouter(router, animated: true)
         self.recommendSeeAllRouting = router
-        attachChild(router)
     }
     
     func detachRecommendSeeAll() {
         guard let router = recommendSeeAllRouting else { return }
-        viewController.popViewController(animated: true)
+        popRouter(router, animted: true)
         self.recommendSeeAllRouting = nil
-        detachChild(router)
     }
     
     func attachHotPlaceSeeAll() {
         guard hotPlaceSeeAllRouting == nil else { return }
         let router = dependency.seeAll.hotPlaceSeeAllBuilder.build(withListener: interactor)
-        viewController.pushViewController(router.viewControllable, animated: true)
+        pushRouter(router, animated: true)
         self.hotPlaceSeeAllRouting = router
-        attachChild(router)
     }
     
     func detachHotPlaceSeeAll() {
         guard let router = hotPlaceSeeAllRouting else { return }
-        viewController.popViewController(animated: true)
+        popRouter(router, animted: true)
         self.hotPlaceSeeAllRouting = nil
-        detachChild(router)
     }
     
     // MARK: - Story
@@ -140,16 +137,14 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     func attachStoryDetail(storyId: Int) {
         guard storyDetailRouting == nil else { return }
         let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyId)
-        viewController.pushViewController(router.viewControllable, animated: true)
+        pushRouter(router, animated: true)
         self.storyDetailRouting = router
-        attachChild(router)
     }
     
     func detachStoryDetail() {
         guard let router = storyDetailRouting else { return }
-        viewController.popViewController(animated: true)
+        popRouter(router, animted: true)
         self.storyDetailRouting = nil
-        detachChild(router)
     }
     
 }
