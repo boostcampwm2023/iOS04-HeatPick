@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { UserJasoTrie } from './../search/trie/userTrie';
-import { UserRepository } from './user.repository';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/addBadge.dto';
@@ -19,24 +18,26 @@ import { saveImageToLocal } from '../util/util.save.image.local';
 import { ProfileUpdateMetaBadgeData } from './dto/response/profile.update.meta.badge.data';
 import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
 import { UserProfileDetailStoryDto } from './dto/user.profile.detail.story.dto';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
   private searchUserResultCache = {};
 
   constructor(
-    private userRepository: UserRepository,
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>,
     private userJasoTrie: UserJasoTrie,
     private jwtService: JwtService,
     private imageService: ImageService,
   ) {
-    this.userRepository.loadEveryUser().then((everyUser) => {
+    this.userRepository.find().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));
     });
   }
 
   async getBadges(userRecordId: number) {
-    const user = await this.userRepository.findOneByOption({ where: { userId: userRecordId }, relations: ['badges'] });
+    const user = await this.userRepository.findOne({ where: { userId: userRecordId }, relations: ['badges'] });
     const badges = await user.badges;
     return badges;
   }
@@ -45,7 +46,11 @@ export class UserService {
     if (!this.searchUserResultCache.hasOwnProperty(searchText)) {
       const seperatedStatement = graphemeSeperation(searchText);
       const ids = this.userJasoTrie.search(seperatedStatement, 100);
-      const stories = await this.userRepository.getStoriesByIds(ids);
+      const stories = await this.userRepository.find({
+        where: {
+          userId: In(ids),
+        },
+      });
       this.searchUserResultCache[searchText] = stories;
     }
 
@@ -57,7 +62,7 @@ export class UserService {
     const userId = addBadgeDto.userId;
     const badgeName = addBadgeDto.badgeName;
 
-    const userObject = await this.userRepository.findByOption({ where: { userId: userId } });
+    const userObject = await this.userRepository.find({ where: { userId: userId } });
     if (userObject.length <= 0) throw new InvalidIdException();
 
     const userBadges = await userObject[0].badges;
@@ -72,7 +77,7 @@ export class UserService {
   }
 
   async getProfile(requestUserId: number, targetUserId: number): Promise<UserProfileDetailDataDto> {
-    const user = await this.userRepository.findOneByOption({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
+    const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
     const mainBadge = await user.representativeBadge;
     const stories = await user.stories;
     const userImage = await user.profileImage;
@@ -111,7 +116,7 @@ export class UserService {
     const userId = setBadgeDto.userId;
     const badgeName = setBadgeDto.badgeName;
 
-    const userObject = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['representativeBadge'] });
+    const userObject = await this.userRepository.findOne({ where: { userId: userId }, relations: ['representativeBadge'] });
     if (!userObject) throw new InvalidIdException();
 
     const badgeList = await userObject.badges;
@@ -126,7 +131,7 @@ export class UserService {
   }
 
   async getStoryList(requestUserId: number, targetUserId: number, offset: number, limit: number): Promise<UserProfileDetailStoryDto[]> {
-    const user = await this.userRepository.findOneByOption({ where: { userId: targetUserId }, relations: ['stories', 'stories.storyImages', 'stories.usersWhoLiked'] });
+    const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['stories', 'stories.storyImages', 'stories.usersWhoLiked'] });
     return (
       await Promise.all(
         (await user.stories).map(async (story: Story) => {
@@ -145,7 +150,7 @@ export class UserService {
   }
 
   async getUpdateMetaData(userId: number): Promise<ProfileUpdateMetaDataDto> {
-    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'profileImage'] });
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'profileImage'] });
     const representativeBadge = await user.representativeBadge;
 
     const nowBadge: ProfileUpdateMetaBadgeData = {
@@ -172,7 +177,7 @@ export class UserService {
   }
 
   async update(userId: number, { image, username, selectedBadgeId }) {
-    const user = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['profileImage', 'badges', 'representativeBadge'] });
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['profileImage', 'badges', 'representativeBadge'] });
     const badges = await user.badges;
     const selectedBadge = badges.find((badge) => badge.badgeId === selectedBadgeId);
 
@@ -191,8 +196,8 @@ export class UserService {
   async resign(accessToken: string, message: string) {
     const decodedToken = this.jwtService.verify(accessToken);
     const userId = decodedToken.userId;
-    const user = await this.userRepository.findOneByUserId(userId);
-    return await this.userRepository.delete(user);
+    const user = await this.userRepository.findOne(userId);
+    return await this.userRepository.remove(user);
   }
 
   async addBadgeExp(addBadgeExpDto: AddBadgeExpDto) {
@@ -200,7 +205,7 @@ export class UserService {
     const badgeName = addBadgeExpDto.badgeName;
     const exp = addBadgeExpDto.exp;
 
-    const userObject = await this.userRepository.findByOption({ where: { userId: userId } });
+    const userObject = await this.userRepository.find({ where: { userId: userId } });
     if (userObject.length <= 0) throw new InvalidIdException();
 
     const badgeList = await userObject[0].badges;
@@ -219,8 +224,8 @@ export class UserService {
 
   async addFollowing(followId: number, followerId: number) {
     try {
-      const followUser = await this.userRepository.findOneByOption({ where: { userId: followId }, relations: ['following', 'followers'] });
-      const followerUser = await this.userRepository.findOneByOption({ where: { userId: followerId }, relations: ['following', 'followers'] });
+      const followUser = await this.userRepository.findOne({ where: { userId: followId }, relations: ['following', 'followers'] });
+      const followerUser = await this.userRepository.findOne({ where: { userId: followerId }, relations: ['following', 'followers'] });
 
       followerUser.following.push(followUser);
       followUser.followers.push(followerUser);
@@ -233,8 +238,8 @@ export class UserService {
   }
   async unFollow(followId: number, followerId: number) {
     try {
-      const followUser = await this.userRepository.findOneByOption({ where: { userId: followId } });
-      const followerUser = await this.userRepository.findOneByOption({ where: { userId: followerId } });
+      const followUser = await this.userRepository.findOne({ where: { userId: followId } });
+      const followerUser = await this.userRepository.findOne({ where: { userId: followerId } });
 
       if (!followerUser.following) followerUser.following = [];
       if (!followUser.followers) followUser.followers = [];
@@ -250,14 +255,14 @@ export class UserService {
     }
   }
   async getFollows(userId: number) {
-    const userObj = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['following'] });
+    const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['following'] });
     const follows = userObj.following;
     //const userIdArray = follows.map((user) => user.userId);
     return follows;
   }
 
   async getFollowers(userId: number) {
-    const userObj = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['follower'] });
+    const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['follower'] });
     const followers = userObj.followers;
     //const userIdArray = follows.map((user) => user.userId);
     return followers;

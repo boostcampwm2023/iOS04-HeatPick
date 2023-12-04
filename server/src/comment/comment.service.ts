@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { createCommentEntity } from '../util/util.create.comment.entity';
-import { UserRepository } from '../user/user.repository';
 import { Story } from '../entities/story.entity';
 import { User } from '../entities/user.entity';
 import { CommentViewResponseDto } from './dto/response/comment.view.response.dto';
@@ -13,7 +12,8 @@ export class CommentService {
   constructor(
     @Inject('STORY_REPOSITORY')
     private storyRepository: Repository<Story>,
-    private userRepository: UserRepository,
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>,
     private commentRepository: CommentRepository,
   ) {}
 
@@ -26,7 +26,7 @@ export class CommentService {
       mentionables.push({ userId: comment.user.userId, username: comment.user.username });
     });
 
-    const user: User = await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['following'] });
+    const user: User = await this.userRepository.findOne({ where: { userId: userId }, relations: ['following'] });
     user.following.forEach((user) => {
       mentionables.push({ userId: user.userId, username: user.username });
     });
@@ -40,11 +40,11 @@ export class CommentService {
 
     const mentionedUsers: User[] = await Promise.all(
       mentions.map(async (userId: number) => {
-        return await this.userRepository.findOneByOption({ where: { userId: userId }, relations: ['mentions'] });
+        return await this.userRepository.findOne({ where: { userId: userId }, relations: ['mentions'] });
       }),
     );
 
-    const user = await this.userRepository.findOneByUserId(userId);
+    const user = await this.userRepository.findOne({ where: { userId: userId } });
 
     const comment = createCommentEntity(content, user, story);
     await this.commentRepository.save(comment);
@@ -88,10 +88,10 @@ export class CommentService {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
 
     const mentionedUsers: User[] = mentions.map(async (userId: number) => {
-      await this.userRepository.findOneByUserId(userId);
+      await this.userRepository.findOne({ where: { userId: userId } });
     });
 
-    const user = await this.userRepository.findOneByUserId(userId);
+    const user = await this.userRepository.findOne({ where: { userId: userId } });
 
     const newComment = createCommentEntity(content, user, story);
 
