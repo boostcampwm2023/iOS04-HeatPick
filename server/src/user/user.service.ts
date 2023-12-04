@@ -238,8 +238,8 @@ export class UserService {
   }
   async unFollow(followId: number, followerId: number) {
     try {
-      const followUser = await this.userRepository.findOne({ where: { userId: followId } });
-      const followerUser = await this.userRepository.findOne({ where: { userId: followerId } });
+      const followUser = await this.userRepository.findOne({ where: { userId: followId }, relations: ['followers'] });
+      const followerUser = await this.userRepository.findOne({ where: { userId: followerId }, relations: ['following'] });
 
       if (!followerUser.following) followerUser.following = [];
       if (!followUser.followers) followUser.followers = [];
