@@ -8,6 +8,8 @@
 
 import ModernRIBs
 import UIKit
+import Combine
+import CoreKit
 import DesignKit
 
 protocol SignInPresentableListener: AnyObject {
@@ -19,10 +21,11 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
 
     weak var listener: SignInPresentableListener?
     
+    private var cancellables = Set<AnyCancellable>()
+    
     private lazy var naverLoginButton: SignInButton = {
         let button = SignInButton()
         button.setup(type: .naver)
-        button.addTarget(self, action: #selector(naverButtonDidTap), for: .touchUpInside)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -31,7 +34,6 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
     private lazy var appleLoginButton: SignInButton = {
         let button = SignInButton()
         button.setup(type: .apple)
-        button.addTarget(self, action: #selector(appleButtonDidTap), for: .touchUpInside)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -47,11 +49,24 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        bind()
     }
     
 }
 
 private extension SignInViewController {
+    
+    func bind() {
+        naverLoginButton.tapPublisher
+            .withOnly(self)
+            .sink { $0.listener?.naverButtonDidTap() }
+            .store(in: &cancellables)
+        
+        appleLoginButton.tapPublisher
+            .withOnly(self)
+            .sink { $0.listener?.appleButtonDidTap() }
+            .store(in: &cancellables)
+    }
     
     func setupViews() {
         view.backgroundColor = .white
@@ -77,15 +92,4 @@ private extension SignInViewController {
         ])
     }
     
-}
-
-private extension SignInViewController {
-    
-    @objc func naverButtonDidTap() {
-        listener?.naverButtonDidTap()
-    }
-    
-    @objc func appleButtonDidTap() {
-        listener?.appleButtonDidTap()
-    }
 }
