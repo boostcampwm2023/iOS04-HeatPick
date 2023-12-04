@@ -15,12 +15,7 @@ protocol LocationAuthorityDependency: Dependency {
 
 final class LocationAuthorityComponent: Component<LocationAuthorityDependency>, LocationAuthorityInteractorDependency {
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
-    
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
 }
-
-// MARK: - Builder
 
 protocol LocationAuthorityBuildable: Buildable {
     func build(withListener listener: LocationAuthorityListener) -> LocationAuthorityRouting
