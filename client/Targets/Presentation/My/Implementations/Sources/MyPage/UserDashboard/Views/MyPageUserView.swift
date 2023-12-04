@@ -79,7 +79,12 @@ final class MyPageUserView: UIView {
     }
     
     func setup(model: MyPageUserViewModel) {
-        profileImageView.load(from: model.profileImageURL)
+        if let profileImageURL = model.profileImageURL,
+           !profileImageURL.isEmpty {
+            profileImageView.load(from: model.profileImageURL)
+        } else {
+            profileImageView.image = .profileDefault
+        }
         followerView.updateContent(model.follower)
         storyView.updateContent(model.story)
         experienceView.updateContent(model.experience)

@@ -50,8 +50,12 @@ final class UserInfoEditProfileView: UIView {
         setupViews()
     }
     
-    func setup(model: UserInfoEditProfileViewModel) {
-        profileImageView.load(from: model.profileImageURL)
+    func setup(profileImageURL: String) {
+        if !profileImageURL.isEmpty {
+            profileImageView.load(from: profileImageURL)
+        } else {
+            profileImageView.image = .profileDefault
+        }
     }
     
     func setup(image: UIImage) {
