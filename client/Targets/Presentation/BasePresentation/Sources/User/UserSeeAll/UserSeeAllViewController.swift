@@ -15,34 +15,13 @@ public protocol UserSeeAllPresentableListener: AnyObject {
     func didTapClose()
 }
 
-public final class UserSeeAllViewController: UIViewController, UserSeeAllPresentable, UserSeeAllViewControllable {
+public final class UserSeeAllViewController: BaseViewController, UserSeeAllPresentable, UserSeeAllViewControllable {
     
     public weak var listener: UserSeeAllPresentableListener?
     
     private var models: [UserSmallTableViewCellModel] = []
     
-    
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        navigationView.delegate = self
-        navigationView.setup(model: .init(title: "유저 목록", leftButtonType: .back, rightButtonTypes: []))
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        return navigationView
-    }()
-    
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(UserSmallTableViewCell.self)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
-    
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    private let tableView = UITableView()
     
     public func updateTitle(_ title: String) {
         navigationView.updateTitle(title)
@@ -58,13 +37,7 @@ public final class UserSeeAllViewController: UIViewController, UserSeeAllPresent
         tableView.reloadData()
     }
     
-}
-
-private extension UserSeeAllViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
-        
+    public override func setupLayout() {
         [navigationView, tableView].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
@@ -80,8 +53,28 @@ private extension UserSeeAllViewController {
         ])
     }
     
+    public override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        navigationView.do {
+            $0.delegate = self
+            $0.setup(model: .init(title: "유저 목록", leftButtonType: .back, rightButtonTypes: []))
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        tableView.do {
+            $0.register(UserSmallTableViewCell.self)
+            $0.delegate = self
+            $0.dataSource = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    public override func bind() {
+       
+    }
+    
 }
-
 
 extension UserSeeAllViewController: NavigationViewDelegate {
     
@@ -108,7 +101,6 @@ extension UserSeeAllViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let model = models[safe: indexPath.row] else { return .init() }
-
         let cell = tableView.dequeue(UserSmallTableViewCell.self, for: indexPath)
         cell.setup(model: model)
         return cell

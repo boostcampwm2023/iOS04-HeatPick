@@ -8,13 +8,15 @@
 
 import ModernRIBs
 import UIKit
+import CoreKit
 import DesignKit
+import BasePresentation
 
 protocol MyPagePresentableListener: AnyObject {
     func didTapSetting()
 }
 
-public final class MyPageViewController: UIViewController, MyPagePresentable, MyPageViewControllable {
+public final class MyPageViewController: BaseViewController, MyPagePresentable, MyPageViewControllable {
     
     private enum Constant {
         static let tabBarTitle = "마이"
@@ -25,37 +27,8 @@ public final class MyPageViewController: UIViewController, MyPagePresentable, My
     
     weak var listener: MyPagePresentableListener?
     
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        navigationView.setup(model: .init(
-            title: "마이페이지",
-            leftButtonType: .none,
-            rightButtonTypes: [.setting])
-        )
-        navigationView.delegate = self
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        return navigationView
-    }()
-    
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.contentInset = .zero
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.contentInset = Constant.contentInset
-        return scrollView
-    }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .equalSpacing
-        stackView.spacing = 40
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
     
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -65,11 +38,6 @@ public final class MyPageViewController: UIViewController, MyPagePresentable, My
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         setupTabBar()
-    }
-    
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
     }
     
     func setDashboard(_ viewControllable: ViewControllable) {
@@ -85,21 +53,7 @@ public final class MyPageViewController: UIViewController, MyPagePresentable, My
         viewController.removeFromParent()
     }
     
-}
-
-extension MyPageViewController: NavigationViewDelegate {
-    
-    public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
-        guard case .setting = type else { return }
-        listener?.didTapSetting()
-    }
-    
-}
-
-private extension MyPageViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
+    public override func setupLayout() {
         [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
         
@@ -120,6 +74,53 @@ private extension MyPageViewController {
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
         ])
     }
+    
+    public override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        navigationView.do {
+            $0.setup(model: .init(
+                title: "마이페이지",
+                leftButtonType: .none,
+                rightButtonTypes: [.setting])
+            )
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        scrollView.do {
+            $0.contentInset = .zero
+            $0.showsHorizontalScrollIndicator = false
+            $0.showsVerticalScrollIndicator = false
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.contentInset = Constant.contentInset
+        }
+        
+        stackView.do {
+            $0.axis = .vertical
+            $0.alignment = .fill
+            $0.distribution = .equalSpacing
+            $0.spacing = 40
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    public override func bind() {
+        
+    }
+    
+}
+
+extension MyPageViewController: NavigationViewDelegate {
+    
+    public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
+        guard case .setting = type else { return }
+        listener?.didTapSetting()
+    }
+    
+}
+
+private extension MyPageViewController {
     
     func setupTabBar() {
         tabBarItem = .init(

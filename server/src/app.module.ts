@@ -33,14 +33,6 @@ export class AppLoggerMiddleware implements NestMiddleware {
         this.logger.log(`${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip} ${clientIP}`);
       });
 
-      const countryResponse = await axios.get(`https://ipinfo.io/${clientIP}/json`);
-      const country = countryResponse.data.country;
-
-      const allowedCountries = ['KR'];
-      if (!allowedCountries.includes(country)) {
-        return response.status(403).send('Access denied By IP control policy');
-      }
-
       next();
     } catch (error) {
       console.error('error while processing country IP');

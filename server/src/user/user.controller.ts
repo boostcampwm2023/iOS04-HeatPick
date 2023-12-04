@@ -2,21 +2,21 @@ import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, Up
 
 import { ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { AddBadgeDto } from './dto/addBadge.dto';
-import { AddBadgeExpDto } from './dto/addBadgeExp.dto';
+import { AddBadgeDto } from './dto/request/addBadge.dto';
+import { AddBadgeExpDto } from './dto/request/addBadgeExp.dto';
 import { plainToClass } from 'class-transformer';
 import { Story } from '../entities/story.entity';
-import { UserUpdateDto } from './dto/user.update.dto';
+import { UserUpdateDto } from './dto/request/user.update.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FollowRequest } from './dto/follow.request.dto';
-import { UserProfileDetailDataDto } from './dto/user.profile.detail.data.dto';
+import { FollowRequest } from './dto/request/follow.request.dto';
+import { UserProfileDetailDataDto, UserProfileDetailJsonDto } from './dto/response/user.profile.detail.data.dto';
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { BadgeJsonDto, BadgeReturnDto } from './dto/badge.return.dto';
+import { BadgeJsonDto, BadgeReturnDto } from './dto/response/badge.return.dto';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
-import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
-import { UserProfileDetailStoryDto } from './dto/user.profile.detail.story.dto';
-import { UserJsonResponseDto } from './dto/user.response.dto';
+import { ProfileUpdateMetaDataDto, ProfileUpdateMetaDataJsonDto } from './dto/response/profile.update.meta.dto';
+import { UserProfileDetailStoryDto, UserProfileDetailStoryJsonDto } from './dto/response/user.profile.detail.story.dto';
+import { UserJsonResponseDto } from './dto/response/user.response.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -44,16 +44,18 @@ export class UserController {
 
   @Get('profile')
   @ApiOperation({ summary: '유저 ID로 Profile를 불러옵니다.' })
-  @ApiCreatedResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
-  async getProfile(@Req() req: any, @Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(req.user.userRecordId, userId);
+  @ApiCreatedResponse({ status: 201, description: 'Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailJsonDto })
+  async getProfile(@Req() req: any, @Query('userId', ParseIntPipe) userId: number): Promise<UserProfileDetailJsonDto> {
+    const profile = await this.userService.getProfile(req.user.userRecordId, userId);
+    return { profile: profile };
   }
 
   @Get('myProfile')
   @ApiOperation({ summary: '자신의 토큰으로 자신의 Profile을 불러옵니다.' })
-  @ApiCreatedResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailDataDto })
-  async getMyProfile(@Req() req: any): Promise<UserProfileDetailDataDto> {
-    return this.userService.getProfile(req.user.userRecordId, req.user.userRecordId);
+  @ApiCreatedResponse({ status: 201, description: 'My Profile을 성공적으로 불러왔습니다.', type: UserProfileDetailJsonDto })
+  async getMyProfile(@Req() req: any): Promise<UserProfileDetailJsonDto> {
+    const profile = await this.userService.getProfile(req.user.userRecordId, req.user.userRecordId);
+    return { profile: profile };
   }
 
   @Put('badge')
@@ -72,9 +74,10 @@ export class UserController {
   }
   @Get('story')
   @ApiOperation({ summary: `해당 userId에 해당하는 유저의 스토리를 모두 불러옵니다.` })
-  @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: [UserProfileDetailStoryDto] })
-  async getStoryList(@Req() req: any, @Query('userId', ParseIntPipe) userId: number, @Query('offset', ParseIntPipe) offset: number, @Query('limit', ParseIntPipe) limit: number): Promise<UserProfileDetailStoryDto[]> {
-    return this.userService.getStoryList(req.user.userRecordId, userId, offset, limit);
+  @ApiResponse({ status: 201, description: '사용자의 StoryList를 성공적으로 불러왔습니다.', type: UserProfileDetailStoryJsonDto })
+  async getStoryList(@Req() req: any, @Query('userId', ParseIntPipe) userId: number, @Query('offset', ParseIntPipe) offset: number, @Query('limit', ParseIntPipe) limit: number): Promise<UserProfileDetailStoryJsonDto> {
+    const stories = await this.userService.getStoryList(req.user.userRecordId, userId, offset, limit);
+    return { stories: stories };
   }
 
   @Get('updateMetaData')
@@ -82,10 +85,11 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: '유저 아이디',
-    type: ProfileUpdateMetaDataDto,
+    type: ProfileUpdateMetaDataJsonDto,
   })
-  async updateMetaData(@Req() req: any): Promise<ProfileUpdateMetaDataDto> {
-    return await this.userService.getUpdateMetaData(req.user.userRecordId);
+  async updateMetaData(@Req() req: any): Promise<ProfileUpdateMetaDataJsonDto> {
+    const profileUpdateData = await this.userService.getUpdateMetaData(req.user.userRecordId);
+    return { profile: profileUpdateData };
   }
 
   @Patch('update')
@@ -182,5 +186,14 @@ export class UserController {
     const transformedFollowers = await Promise.all(followers.map(async (follower) => await userEntityToUserObj(follower)));
 
     return { users: transformedFollowers };
+  }
+
+  @Get('recommend')
+  @ApiOperation({ summary: '랜덤한 추천 유저 20명을 리턴합니다.' })
+  @ApiResponse({ status: 200, description: '추천 유저들을 리턴합니다.', type: UserJsonResponseDto })
+  async getRandomUsers(@Param('userId') userId: number): Promise<UserJsonResponseDto> {
+    const users = await this.userService.recommendUsers(userId);
+    const transformedUsers = await Promise.all(users.map(async (user) => await userEntityToUserObj(user)));
+    return { users: transformedUsers };
   }
 }

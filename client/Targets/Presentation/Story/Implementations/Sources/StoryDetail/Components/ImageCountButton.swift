@@ -69,6 +69,11 @@ final class ImageCountButton: UIButton {
     func setup(count: Int) {
         countLabel.text = String(count)
     }
+    
+    func setup(color: UIColor) {
+        typeImageView.tintColor = color
+        countLabel.textColor = color
+    }
 
 }
 

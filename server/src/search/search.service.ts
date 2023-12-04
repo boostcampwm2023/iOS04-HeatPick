@@ -1,13 +1,15 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
 import { HistoryJasoTrie } from './trie/historyTrie';
-import { SearchRepository } from './search.repository';
 import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeModify';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { Repository } from 'typeorm';
+import { SearchHistory } from 'src/entities/search.entity';
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
     private searchHistoryJasoTrie: HistoryJasoTrie,
-    private searchRepository: SearchRepository,
+    @Inject('SEARCH_REPOSITORY')
+    private searchRepository: Repository<SearchHistory>,
   ) {}
 
   async onModuleInit() {
@@ -16,7 +18,7 @@ export class SearchService implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_HOUR)
   async loadSearchHistoryTrie() {
-    const everyHistory = await this.searchRepository.loadEveryHistory();
+    const everyHistory = await this.searchRepository.find();
     everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(graphemeSeperation(history.content)));
   }
 
@@ -29,7 +31,16 @@ export class SearchService implements OnModuleInit {
     return recommendedWords.map((word) => graphemeCombination(word));
   }
 
-  saveHistory(searchText: string) {
-    this.searchRepository.save(searchText);
+  async saveHistory(searchText: string) {
+    const existingHistory = await this.searchRepository.findOne({ where: { content: searchText } });
+    if (existingHistory) {
+      existingHistory.count += 1;
+      return await this.searchRepository.save(existingHistory);
+    }
+
+    const newHistory = new SearchHistory();
+    newHistory.content = searchText;
+    newHistory.count = 1;
+    return await this.searchRepository.save(newHistory);
   }
 }

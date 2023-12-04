@@ -68,24 +68,21 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     
     func detachSearchCurrentLocation() {
         guard let router = searchCurrentLocationRouter else { return }
-        detachChild(router)
+        popRouter(router, animated: true)
         searchCurrentLocationRouter = nil
-        viewController.popViewController(animated: true)
     }
     
     func attachSearchResult() {
         guard searchResultRouter == nil else { return }
         let router = dependency.searchResultBuilder.build(withListener: interactor)
-        attachChild(router)
+        pushRouter(router, animated: true)
         searchResultRouter = router
-        viewController.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSearchResult() {
         guard let router = searchResultRouter else { return }
-        detachChild(router)
+        popRouter(router, animated: true)
         searchResultRouter = nil
-        viewController.popViewController(animated: true)
     }
     
 }
@@ -96,46 +93,40 @@ extension SearchRouter {
     func attachStoryDetail(storyId: Int) {
         guard storyDeatilRouter == nil else { return }
         let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyId)
-        attachChild(router)
+        pushRouter(router, animated: true)
         storyDeatilRouter = router
-        viewController.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachStoryDetail() {
         guard let router = storyDeatilRouter else { return }
-        detachChild(router)
+        popRouter(router, animated: true)
         storyDeatilRouter = nil
-        viewController.popViewController(animated: true)
     }
     
     func attachSearchStorySeeAll(searchText: String) {
         guard searchStorySeeAllRouter == nil else { return }
         let router = dependency.searchStorySeeAllBuilder.build(withListener: interactor, searchText: searchText)
-        attachChild(router)
+        pushRouter(router, animated: true)
         searchStorySeeAllRouter = router
-        viewController.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSearchStorySeeAll() {
         guard let router = searchStorySeeAllRouter else { return }
-        detachChild(router)
+        popRouter(router, animated: true)
         searchStorySeeAllRouter = nil
-        viewController.popViewController(animated: true)
     }
     
     func attachStoryEditor(location: SearchMapLocation) {
         guard storyEditorRouter == nil else { return }
         let router = dependency.storyEditorBuilder.build(withListener: interactor, location: .init(lat: location.lat, lng: location.lng))
-        attachChild(router)
+        pushRouter(router, animated: true)
         storyEditorRouter = router
-        viewController.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachStoryEditor(_ completion: (() -> Void)?) {
         guard let router = storyEditorRouter else { return }
-        detachChild(router)
+        popRouter(router, animated: true)
         storyEditorRouter = nil
-        viewController.popViewController(animated: true, completion: completion)
     }
     
 }
@@ -154,16 +145,14 @@ extension SearchRouter {
     func attachSearchUserSeeAll(searchText: String) {
         guard searchUserSeeAllRouter == nil else { return }
         let router = dependency.searchUserSeeAllBuilder.build(withListener: interactor, searchText: searchText)
-        attachChild(router)
+        pushRouter(router, animated: true)
         searchUserSeeAllRouter = router
-        viewController.pushViewController(router.viewControllable, animated: true)
     }
     
     func detachSearchUserSeeAll() {
         guard let router = searchUserSeeAllRouter else { return }
-        detachChild(router)
+        popRouter(router, animated: true)
         searchUserSeeAllRouter = nil
-        viewController.popViewController(animated: true)
     }
     
 }

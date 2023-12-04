@@ -13,15 +13,13 @@ protocol LocationAuthorityInteractable: Interactable {
     var listener: LocationAuthorityListener? { get set }
 }
 
-protocol LocationAuthorityViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy.
-}
+protocol LocationAuthorityViewControllable: ViewControllable {}
 
 final class LocationAuthorityRouter: ViewableRouter<LocationAuthorityInteractable, LocationAuthorityViewControllable>, LocationAuthorityRouting {
-
-    // TODO: Constructor inject child builder protocols to allow building children.
+    
     override init(interactor: LocationAuthorityInteractable, viewController: LocationAuthorityViewControllable) {
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
+    
 }

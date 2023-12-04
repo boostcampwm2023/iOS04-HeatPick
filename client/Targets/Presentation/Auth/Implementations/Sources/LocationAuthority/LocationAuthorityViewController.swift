@@ -27,6 +27,7 @@ public final class LocationAuthorityViewController: UIViewController, LocationAu
         static let imageWidth: CGFloat = 150
         static let imageHeight: CGFloat = imageWidth
         static let buttonSpacing: CGFloat = 10
+        static let bottomSpacing: CGFloat = 20
     }
     
     weak var listener: LocationAuthorityPresentableListener?
@@ -107,6 +108,7 @@ public final class LocationAuthorityViewController: UIViewController, LocationAu
         }
         UIApplication.shared.open(url, options: [:])
     }
+    
 }
 
 private extension LocationAuthorityViewController {
@@ -132,7 +134,7 @@ private extension LocationAuthorityViewController {
         NSLayoutConstraint.activate([
             buttonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             buttonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            buttonStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            buttonStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constant.bottomSpacing),
             buttonStackView.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),

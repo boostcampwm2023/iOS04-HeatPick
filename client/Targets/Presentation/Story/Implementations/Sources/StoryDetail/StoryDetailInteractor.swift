@@ -25,6 +25,9 @@ protocol StoryDetailPresentable: Presentable {
     func setup(model: StoryDetailViewModel)
     func didFollow()
     func didUnfollow()
+    func didLike(count: Int)
+    func didUnlike(count: Int)
+    func didFailToLike()
     func showFailure(_ error: Error)
 }
 
@@ -87,6 +90,10 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
         }
     }
     
+    func likeButtonDidTap(state: Bool) {
+        state ? requestUnlike() : requestLike()
+    }
+    
     func commentButtonDidTap() {
         router?.attachComment(storyId: dependency.storyId)
     }
@@ -128,6 +135,39 @@ private extension StoryDetailInteractor {
                 }
         }.store(in: cancelBag)
     }
+    
+    func requestLike() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestLike(storyId: dependency.storyId)
+                .onSuccess(on: .main, with: self) { this, likesCount in
+                    this.presenter.didLike(count: likesCount)
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "fail to like with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.didFailToLike()
+                }
+            
+        }.store(in: cancelBag)
+    }
+    
+    func requestUnlike() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestUnlike(storyId: dependency.storyId)
+                .onSuccess(on: .main, with: self) { this, likesCount in
+                    this.presenter.didUnlike(count: likesCount)
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "fail to like with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.didFailToLike()
+                }
+            
+        }.store(in: cancelBag)
+    }
+    
 }
 
 fileprivate extension Story {
@@ -144,7 +184,9 @@ fileprivate extension Story {
                                                                                      profileImageUrl: author.profileImageUrl,
                                                                                      userStatus: author.authorStatus),
                                     headerViewModel: StoryHeaderViewModel(title: content.title,
+                                                                          userStatus: author.authorStatus,
                                                                           badgeName: content.badge.title,
+                                                                          likeStatus: likeStatus,
                                                                           likesCount: likesCount,
                                                                           commentsCount: commentsCount),
                                     images: content.imageUrls,
