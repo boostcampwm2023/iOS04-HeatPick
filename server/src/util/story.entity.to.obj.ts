@@ -1,6 +1,6 @@
 import { Story } from 'src/entities/story.entity';
 import { userEntityToUserObj } from './user.entity.to.obj';
-import { StoryResultDto } from 'src/search/dto/story.result.dto';
+import { StoryResultDto } from 'src/search/dto/response/story.result.dto';
 
 export async function storyEntityToObjWithOneImg(story: Story): Promise<StoryResultDto> {
   const images = await story.storyImages;

@@ -1,26 +1,22 @@
-import { Query, Controller, Get, Inject } from '@nestjs/common';
+import { Query, Controller, Get, Inject, UseGuards } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from 'src/user/user.service';
 import { StoryService } from './../story/story.service';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { PlaceService } from './../place/place.service';
-import { Story } from 'src/entities/story.entity';
-import { User } from 'src/entities/user.entity';
-import { SearchHistory } from 'src/entities/search.entity';
-import { SearchResultDto } from './dto/search.result.dto';
-import { profileImage } from './../entities/profileImage.entity';
+import { SearchResultDto } from './dto/response/search.result.dto';
 import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
-import { SearchParameterDto } from './dto/search.parameter.dto';
-import { UserResultDto } from './dto/user.result.dto';
-import { StoryResultDto } from './dto/story.result.dto';
-import { SearchHistoryResultDto } from './dto/search.history.result.dto';
-import { SearchUserResultDto } from './dto/search.user.result.dto';
-import { SearchStoryResultDto } from './dto/search.story.result.dto';
+import { SearchParameterDto } from './dto/request/search.parameter.dto';
+import { SearchHistoryResultDto } from './dto/response/search.history.result.dto';
+import { SearchUserResultDto } from './dto/response/search.user.result.dto';
+import { SearchStoryResultDto } from './dto/response/search.story.result.dto';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
 @ApiTags('search')
 @Controller('search')
+@UseGuards(JwtAuthGuard)
 export class SearchController {
   constructor(
     private searchService: SearchService,
