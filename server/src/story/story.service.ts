@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Story } from '../entities/story.entity';
 import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
@@ -7,22 +7,19 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { LocationDTO } from 'src/place/dto/location.dto';
 import { calculateDistance } from 'src/util/util.haversine';
 import { User } from '../entities/user.entity';
-import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
-import { StoryDetailPlaceDataDto } from './dto/detail/story.detail.place.data.dto';
-import { StoryDetailStoryDataDto } from './dto/detail/story.detail.story.data';
-import { StoryImage } from '../entities/storyImage.entity';
-import { StoryDetailUserDataDto } from './dto/detail/story.detail.user.data';
+import { getStoryDetailPlaceDataResponseDto, StoryDetailPlaceDataResponseDto } from './dto/response/detail/story.detail.place.data.response.dto';
 import { Badge } from '../entities/badge.entity';
 import { Place } from '../entities/place.entity';
 import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
 import { CategoryRepository } from '../category/category.repository';
-import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
+import { CreateStoryMetaDto } from './dto/response/story.create.meta.response.dto';
 import { Category } from '../entities/category.entity';
 import { UserService } from 'src/user/user.service';
-import { removeMillisecondsFromISOString } from '../util/util.date.format.to.ISO8601';
-import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 import { updateStory } from '../util/util.story.update';
 import { In, Repository } from 'typeorm';
+import { getStoryDetailStoryDataResponseDto, StoryDetailStoryDataResponseDto } from './dto/response/detail/story.detail.story.data.response';
+import { getStoryDetailUserDataResponseDto, StoryDetailUserDataResponseDto } from './dto/response/detail/story.detail.user.data.response';
+import { getStoryDetailViewDataResponseDto } from './dto/response/detail/story.detail.view.data.response.dto';
 
 @Injectable()
 export class StoryService {
@@ -68,7 +65,7 @@ export class StoryService {
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     user.stories = Promise.resolve([...(await user.stories), story]);
     await this.userRepository.save(user);
-    if (badge) this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: user.userId, exp: 10 });
+    if (badge) await this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: user.userId, exp: 10 });
     return story.storyId;
   }
 
@@ -76,42 +73,13 @@ export class StoryService {
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge', 'usersWhoLiked', 'user.followers'] });
     const place: Place = await story.place;
 
-    const storyDetailPlaceData: StoryDetailPlaceDataDto = {
-      title: place.title,
-      address: place.address,
-      latitude: place.latitude,
-      longitude: place.longitude,
-    };
+    const storyDetailPlaceData: StoryDetailPlaceDataResponseDto = getStoryDetailPlaceDataResponseDto(place);
+    const storyDetailStoryData: StoryDetailStoryDataResponseDto = await getStoryDetailStoryDataResponseDto(story, userId, storyDetailPlaceData);
 
-    const storyDetailStoryData: StoryDetailStoryDataDto = {
-      storyId: story.storyId,
-      createdAt: removeMillisecondsFromISOString(story.createAt.toISOString()),
-      category: story.category.categoryName,
-      storyImageURL: (await story.storyImages).map((storyImage: StoryImage) => storyImage.imageUrl),
-      title: story.title,
-      badgeName: `${strToEmoji[story.badge?.badgeName]}${story.badge?.badgeName}`,
-      badgeDescription: strToExplain[`${story.badge?.badgeName}`],
-      likeState: (await story.usersWhoLiked).some((user) => user.userId === userId) ? 0 : 1,
-      likeCount: story.likeCount,
-      commentCount: story.commentCount,
-      content: story.content,
-      place: storyDetailPlaceData,
-    };
     const user = await story.user;
-    const userImage = await user.profileImage;
-    const storyDetailUserData: StoryDetailUserDataDto = {
-      userId: user.userId,
-      username: user.username,
-      profileImageUrl: userImage.imageUrl,
-      status: userId === user.userId ? 0 : user.followers.some((user) => user.userId === userId) ? 2 : 1,
-    };
+    const storyDetailUserData: StoryDetailUserDataResponseDto = await getStoryDetailUserDataResponseDto(user, userId);
 
-    const storyDetailViewData: StoryDetailViewDataDto = {
-      story: storyDetailStoryData,
-      author: storyDetailUserData,
-    };
-
-    return storyDetailViewData;
+    return getStoryDetailViewDataResponseDto(storyDetailStoryData, storyDetailUserData);
   }
 
   public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
@@ -120,7 +88,7 @@ export class StoryService {
     const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
     const category: Category = await this.categoryRepository.findById(categoryId);
 
-    const updatedStory = await updateStory(story, { title, content, category, place, images, badge });
+    const updatedStory = await updateStory(story, { title, content, category, place, images, badge, date });
 
     await this.storyRepository.save(updatedStory);
 

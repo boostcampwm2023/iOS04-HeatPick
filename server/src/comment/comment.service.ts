@@ -2,10 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { createCommentEntity } from '../util/util.create.comment.entity';
 import { Story } from '../entities/story.entity';
 import { User } from '../entities/user.entity';
-import { CommentViewResponseDto } from './dto/response/comment.view.response.dto';
 import { Repository } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
-import { getCommentViewResponse } from '../util/util.create.comment.view.response';
+import { getCommentViewResponse } from './dto/response/comment.view.response.dto';
 
 @Injectable()
 export class CommentService {
