@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { DatabaseModule } from 'src/db/database.module';
 import { storyProvider } from 'src/story/story.providers';
 import { StoryService } from './story.service';
-import { StoryRepository } from './story.repository';
 import { StoryController } from './story.controller';
 import { UserRepository } from 'src/user/user.repository';
 import { userProviders } from 'src/user/user.providers';
@@ -18,7 +17,7 @@ import { UserJasoTrie } from 'src/search/trie/userTrie';
 @Module({
   imports: [DatabaseModule, UserModule],
   controllers: [StoryController],
-  providers: [...storyProvider, ...userProviders, ...CategoryProvider, UserJasoTrie, UserService, StoryService, StoryRepository, UserRepository, ImageService, StoryJasoTrie, JwtService, CategoryRepository],
-  exports: [StoryRepository, StoryService],
+  providers: [...storyProvider, ...userProviders, ...CategoryProvider, UserJasoTrie, UserService, StoryService, UserRepository, ImageService, StoryJasoTrie, JwtService, CategoryRepository],
+  exports: [StoryService],
 })
 export class StoryModule {}

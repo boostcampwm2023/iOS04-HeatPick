@@ -1,24 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { createCommentEntity } from '../util/util.create.comment.entity';
-import { StoryRepository } from '../story/story.repository';
 import { UserRepository } from '../user/user.repository';
 import { Story } from '../entities/story.entity';
 import { User } from '../entities/user.entity';
 import { CommentViewResponseDto } from './dto/response/comment.view.response.dto';
 import { removeMillisecondsFromISOString } from '../util/util.date.format.to.ISO8601';
 import { CommentRepository } from './comment.repository';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CommentService {
   constructor(
-    private storyRepository: StoryRepository,
+    @Inject('STORY_REPOSITORY')
+    private storyRepository: Repository<Story>,
     private userRepository: UserRepository,
     private commentRepository: CommentRepository,
   ) {}
 
   public async getMentionable({ storyId, userId }) {
     const mentionables: { userId: number; username: string }[] = [];
-    const story: Story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['user', 'comments', 'comments.user', 'comments.mentions'] });
+    const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['user', 'comments', 'comments.user', 'comments.mentions'] });
     const storyUser = await story.user;
     mentionables.push({ userId: storyUser.userId, username: storyUser.username });
     (await story.comments).forEach((comment) => {
@@ -35,7 +36,7 @@ export class CommentService {
   }
 
   public async create({ storyId, userId, content, mentions }) {
-    const story = await this.storyRepository.findOneByOption({ where: { storyId: storyId } });
+    const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
 
     const mentionedUsers: User[] = await Promise.all(
       mentions.map(async (userId: number) => {
@@ -48,7 +49,7 @@ export class CommentService {
     const comment = createCommentEntity(content, user, story);
     await this.commentRepository.save(comment);
     story.commentCount += 1;
-    await this.storyRepository.saveStory(story);
+    await this.storyRepository.save(story);
 
     for (const mentionedUser of mentionedUsers) {
       mentionedUser.mentions = [...mentionedUser.mentions, comment];
@@ -59,7 +60,7 @@ export class CommentService {
   }
 
   public async read(storyId: number, userId: number) {
-    const story = await this.storyRepository.findOneByOption({ where: { storyId: storyId }, relations: ['comments', 'comments.user', 'comments.mentions', 'comments.user.profileImage'] });
+    const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['comments', 'comments.user', 'comments.mentions', 'comments.user.profileImage'] });
 
     const commentViewResponse: CommentViewResponseDto = {
       comments: await Promise.all(
@@ -84,7 +85,7 @@ export class CommentService {
   }
 
   public async update({ storyId, userId, commentId, content, mentions }) {
-    const story = await this.storyRepository.findById(storyId);
+    const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
 
     const mentionedUsers: User[] = mentions.map(async (userId: number) => {
       await this.userRepository.findOneByUserId(userId);
@@ -101,15 +102,15 @@ export class CommentService {
       }),
     );
 
-    await this.storyRepository.addStory(story);
+    await this.storyRepository.save(story);
     return newComment.commentId;
   }
 
   public async delete({ storyId, commentId }) {
-    const story = await this.storyRepository.findById(storyId);
+    const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
     story.comments = Promise.resolve((await story.comments).filter((comment) => comment.commentId !== commentId));
 
-    await this.storyRepository.addStory(story);
+    await this.storyRepository.save(story);
     return commentId;
   }
 }
