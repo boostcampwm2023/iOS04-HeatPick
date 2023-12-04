@@ -17,3 +17,8 @@ export class ProfileUpdateMetaDataDto {
   @ApiProperty({ type: () => ProfileUpdateMetaBadgeData })
   badges: ProfileUpdateMetaBadgeData[];
 }
+
+export class ProfileUpdateMetaDataJsonDto {
+  @ApiProperty({ description: 'profile 상세 정보 Json 데이터', type: ProfileUpdateMetaDataDto })
+  profile: ProfileUpdateMetaDataDto;
+}

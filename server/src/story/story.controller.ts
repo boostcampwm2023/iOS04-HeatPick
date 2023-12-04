@@ -5,12 +5,11 @@ import { CreateStoryDto } from './dto/request/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UpdateStoryDto } from './dto/request/story.update.dto';
 import { LocationDTO } from 'src/place/dto/location.dto';
-import { RecommendStoryDto } from './dto/response/story.recommend.response.dto';
 import { plainToClass } from 'class-transformer';
 import { StoryDetailViewDataResponseDto } from './dto/response/detail/story.detail.view.data.response.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { CreateStoryMetaDto } from './dto/response/story.create.meta.response.dto';
-import { StoryRecommendResponseDto, StoryResultDto } from 'src/search/dto/story.result.dto';
+import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
+import { StoryRecommendResponseDto } from 'src/search/dto/response/story.result.dto';
 
 @ApiTags('story')
 @Controller('story')
