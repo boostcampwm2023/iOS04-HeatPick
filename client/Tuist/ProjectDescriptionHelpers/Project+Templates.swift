@@ -108,7 +108,8 @@ extension Project {
         }
         
         if featureTargets.contains(.tests) {
-            let dependencies: [TargetDependency] = featureTargets.isDynamic ? [.target(name: name)] : []
+//            let dependencies: [TargetDependency] = featureTargets.isDynamic ? [.target(name: name)] : []
+            let dependencies: [TargetDependency] = [.target(name: name)]
             let target = Target(
                 name: "\(name)Tests",
                 platform: .iOS,
