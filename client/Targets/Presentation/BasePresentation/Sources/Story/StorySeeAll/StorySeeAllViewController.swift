@@ -16,45 +16,14 @@ public protocol StorySeeAllPresentableListener: AnyObject {
     func willDisplay(at indexPath: IndexPath)
 }
 
-public final class StorySeeAllViewController: UIViewController, StorySeeAllPresentable, StorySeeAllViewControllable {
+public final class StorySeeAllViewController: BaseViewController, StorySeeAllPresentable, StorySeeAllViewControllable {
 
     public weak var listener: StorySeeAllPresentableListener?
     
     private var models: [StorySmallTableViewCellModel] = []
     
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        navigationView.delegate = self
-        navigationView.setup(model: .init(title: "", leftButtonType: .back, rightButtonTypes: []))
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        return navigationView
-    }()
-    
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.backgroundColor = .white
-        tableView.register(StorySmallTableViewCell.self)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.contentInset = .zero
-        tableView.separatorStyle = .none
-        tableView.tableFooterView = indicator
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
-    
-    private let indicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.color = .hpGray2
-        indicator.hidesWhenStopped = true
-        indicator.stopAnimating()
-        return indicator
-    }()
-    
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let indicator = UIActivityIndicatorView(style: .medium)
     
     public func updateTitle(_ title: String) {
         navigationView.updateTitle(title)
@@ -76,6 +45,48 @@ public final class StorySeeAllViewController: UIViewController, StorySeeAllPrese
     
     public func stopLoading() {
         indicator.stopAnimating()
+    }
+    
+    public override func setupLayout() {
+        [navigationView, tableView].forEach(view.addSubview)
+        
+        NSLayoutConstraint.activate([
+            navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
+            tableView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            
+        ])
+    }
+    
+    public override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        navigationView.delegate = self
+        navigationView.setup(model: .init(title: "", leftButtonType: .back, rightButtonTypes: []))
+        navigationView.translatesAutoresizingMaskIntoConstraints = false
+        
+        tableView.backgroundColor = .white
+        tableView.register(StorySmallTableViewCell.self)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.contentInset = .zero
+        tableView.separatorStyle = .none
+        tableView.tableFooterView = indicator
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        indicator.color = .hpGray2
+        indicator.hidesWhenStopped = true
+        indicator.stopAnimating()
+    }
+    
+    public override func bind() {
+        // MARK: - Combine 이벤트 추가
     }
     
 }
@@ -118,29 +129,6 @@ extension StorySeeAllViewController: UITableViewDataSource {
         let cell = tableView.dequeue(StorySmallTableViewCell.self, for: indexPath)
         cell.setup(model: model)
         return cell
-    }
-    
-}
-
-private extension StorySeeAllViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
-        
-        [navigationView, tableView].forEach(view.addSubview)
-        
-        NSLayoutConstraint.activate([
-            navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
-            
-            tableView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            
-        ])
     }
     
 }
