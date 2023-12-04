@@ -59,4 +59,11 @@ public final class StoryUseCase: StoryUseCaseInterface {
     public func requestNewComment(content: CommentContent) async -> Result<Void, Error> {
         return await repository.requestNewComment(content: content)
     }
+    
+    public func requestLike(storyId: Int) async -> Result<Int, Error> {
+        return await repository.requestLike(storyId: storyId)
+    }
+    public func requestUnlike(storyId: Int) async -> Result<Int, Error> {
+        return await repository.requestUnlike(storyId: storyId)
+    }
 }

@@ -63,4 +63,18 @@ public final class StoryRepository: StoryRepositoryInterface {
         let target = StoryAPI.newComment(content)
         return await session.request(target)
     }
+    
+    public func requestLike(storyId: Int) async -> Result<Int, Error> {
+        let target = StoryAPI.like(storyId)
+        let request: Result<StoryLikeResponseDTO, Error> = await session.request(target)
+        
+        return request.map { $0.toModel() }
+    }
+    
+    public func requestUnlike(storyId: Int) async -> Result<Int, Error> {
+        let target = StoryAPI.unlike(storyId)
+        let request: Result<StoryLikeResponseDTO, Error> = await session.request(target)
+        
+        return request.map { $0.toModel() }
+    }
 }
