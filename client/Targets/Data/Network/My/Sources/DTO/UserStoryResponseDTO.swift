@@ -11,6 +11,12 @@ import DomainEntities
 
 public struct UserStoryResponseDTO: Decodable {
     
+    public let stories: [UserStoryContentResponseDTO]
+    
+}
+
+public struct UserStoryContentResponseDTO: Decodable {
+    
     public let storyId: Int
     public let thumbnailImageURL: String?
     public let title: String
@@ -33,15 +39,17 @@ public struct UserStoryResponseDTO: Decodable {
 
 public extension UserStoryResponseDTO {
     
-    func toDomain() -> MyPageStory {
-        return .init(
-            storyId: storyId,
-            title: title,
-            content: content,
-            thumbnailImageURL: thumbnailImageURL,
-            likeCount: likeCount,
-            commentCount: commentCount
-        )
+    func toDomain() -> [MyPageStory] {
+        return stories.map { story in
+            return .init(
+                storyId: story.storyId,
+                title: story.title,
+                content: story.content,
+                thumbnailImageURL: story.thumbnailImageURL,
+                likeCount: story.likeCount,
+                commentCount: story.commentCount
+            )
+        }
     }
     
 }

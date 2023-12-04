@@ -12,6 +12,12 @@ import DomainEntities
 
 public struct MyProfileResponseDTO: Decodable {
     
+    public let profile: MyProfileProfileResponseDTO
+    
+}
+
+public struct MyProfileProfileResponseDTO: Decodable {
+    
     public let userId: Int
     public let username: String
     public let profileURL: String?
@@ -47,17 +53,17 @@ public extension MyProfileResponseDTO {
     
     func toDomain() -> MyPage {
         return .init(
-            userId: userId,
-            userName: username,
-            profileImageURL: profileURL,
-            temperature: temperature,
-            temperatureFeeling: temperatureFeeling,
-            followerCount: followerCount,
-            storyCount: storyCount,
-            experience: experience,
-            maxExperience: maxExperience,
-            mainBadge: mainBadge.toDomain(description: badgeExplain),
-            stories: storyList.map { $0.toDomain() }
+            userId: profile.userId,
+            userName: profile.username,
+            profileImageURL: profile.profileURL,
+            temperature: profile.temperature,
+            temperatureFeeling: profile.temperatureFeeling,
+            followerCount: profile.followerCount,
+            storyCount: profile.storyCount,
+            experience: profile.experience,
+            maxExperience: profile.maxExperience,
+            mainBadge: profile.mainBadge.toDomain(description: profile.badgeExplain),
+            stories: profile.storyList.map { $0.toDomain() }
         )
     }
     
