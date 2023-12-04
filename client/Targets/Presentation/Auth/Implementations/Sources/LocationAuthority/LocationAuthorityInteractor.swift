@@ -9,9 +9,7 @@
 import ModernRIBs
 import DomainInterfaces
 
-protocol LocationAuthorityRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
-}
+protocol LocationAuthorityRouting: ViewableRouting {}
 
 protocol LocationAuthorityPresentable: Presentable {
     var listener: LocationAuthorityPresentableListener? { get set }
