@@ -22,6 +22,7 @@ struct StoryHeaderViewModel {
 }
 
 protocol StoryHeaderViewDelegate: AnyObject {
+    func likeButtonDidTap(state: Bool)
     func commentButtonDidTap()
 }
 
@@ -32,6 +33,12 @@ final class StoryHeaderView: UIView {
     }
     
     weak var delegate: StoryHeaderViewDelegate?
+    private var isLiked: Bool = false {
+        didSet {
+            likeButton.isUserInteractionEnabled = true
+            likeButton.setup(color: (isLiked ? .hpRed1 : .hpBlack))
+        }
+    }
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -84,6 +91,19 @@ final class StoryHeaderView: UIView {
         commentButton.setup(count: model.commentsCount)
     }
     
+    func didLike(count: Int) {
+        isLiked = true
+        likeButton.setup(count: count)
+    }
+    
+    func didUnlike(count: Int) {
+        isLiked = false
+        likeButton.setup(count: count)
+    }
+    
+    func didFailToLike() {
+        likeButton.isUserInteractionEnabled = true
+    }
 }
 
 private extension StoryHeaderView {
@@ -125,7 +145,8 @@ private extension StoryHeaderView {
 private extension StoryHeaderView {
     
     @objc func likeButtonDidTap() {
-        
+        likeButton.isUserInteractionEnabled = false
+        delegate?.likeButtonDidTap(state: isLiked)
     }
     
     @objc func commentButtonDidTap() {

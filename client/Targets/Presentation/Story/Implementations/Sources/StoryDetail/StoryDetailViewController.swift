@@ -17,6 +17,7 @@ import DomainEntities
 protocol StoryDetailPresentableListener: AnyObject {
     func storyDetailDidTapClose()
     func followButtonDidTap(userId: Int, userStatus: UserStatus)
+    func likeButtonDidTap(state: Bool)
     func commentButtonDidTap()
 }
 
@@ -153,6 +154,18 @@ final class StoryDetailViewController: UIViewController, StoryDetailPresentable,
         simpleUserProfileView.didUnfollow()
     }
     
+    func didLike(count: Int) {
+        storyHeaderView.didLike(count: count)
+    }
+    
+    func didUnlike(count: Int) {
+        storyHeaderView.didUnlike(count: count)
+    }
+    
+    func didFailToLike() {
+        storyHeaderView.didFailToLike()
+    }
+    
     func showFailure(_ error: Error) {
         let alert = UIAlertController(title: "스토리 로드에 실패했어요", message: "\(error.localizedDescription)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .default))
@@ -213,6 +226,10 @@ extension StoryDetailViewController: SimpleUserProfileViewDelegate {
 
 // MARK: - HearVew Delegate
 extension StoryDetailViewController: StoryHeaderViewDelegate {
+    
+    func likeButtonDidTap(state: Bool) {
+        listener?.likeButtonDidTap(state: state)
+    }
     
     func commentButtonDidTap() {
         listener?.commentButtonDidTap()
