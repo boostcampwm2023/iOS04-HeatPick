@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
+import { IsISO8601, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 type Place = {
@@ -9,7 +9,7 @@ type Place = {
   longitude: number;
 };
 
-export class UpdateStoryDto {
+export class UpdateStoryRequestDto {
   @ApiProperty({ example: 1, description: 'Story Id' })
   @IsNotEmpty({ message: 'storyId는 필수입니다.' })
   @Transform(({ value }): number => parseInt(value, 10))
@@ -27,7 +27,7 @@ export class UpdateStoryDto {
   content: string;
 
   @ApiProperty({
-    example: '[...(stringBuffer)]',
+    example: '[...(Buffer)]',
     description: 'ImageList in Story',
   })
   imageList: Array<Express.Multer.File>;
@@ -42,7 +42,7 @@ export class UpdateStoryDto {
   categoryId: number;
 
   @ApiProperty({
-    example: `{ lat: 1.2345, lng: 6.7890 }`,
+    example: { lat: 1.2345, lng: 6.789 },
     description: 'Where the story was created',
   })
   @IsNotEmpty({ message: 'place 필수입니다.' })
@@ -50,7 +50,7 @@ export class UpdateStoryDto {
   place: Place;
 
   @ApiProperty({
-    example: `"2023-11-20T14:30:00Z"`,
+    example: `2023-11-20T14:30:00Z`,
     description: 'When the story was created',
   })
   @IsNotEmpty({ message: 'date 필수입니다.' })

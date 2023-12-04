@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { StoryDetailStoryDataResponseDto } from './story.detail.story.data.response';
 import { StoryDetailUserDataResponseDto } from './story.detail.user.data.response';
 
-export class StoryDetailViewDataResponseDto {
+export class StoryDetailViewDataResponseJSONDto {
   @ApiProperty()
   story: StoryDetailStoryDataResponseDto;
 
@@ -10,7 +10,7 @@ export class StoryDetailViewDataResponseDto {
   author: StoryDetailUserDataResponseDto;
 }
 
-export const getStoryDetailViewDataResponseDto = (storyDto: StoryDetailStoryDataResponseDto, authorDto: StoryDetailUserDataResponseDto): StoryDetailViewDataResponseDto => {
+export const getStoryDetailViewDataResponseJSONDto = (storyDto: StoryDetailStoryDataResponseDto, authorDto: StoryDetailUserDataResponseDto): StoryDetailViewDataResponseJSONDto => {
   return {
     story: storyDto,
     author: authorDto,
