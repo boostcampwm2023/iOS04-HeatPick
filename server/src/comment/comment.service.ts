@@ -4,7 +4,8 @@ import { Story } from '../entities/story.entity';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
-import { getCommentViewResponse } from './dto/response/comment.view.response.dto';
+import { CommentViewResponseDto, getCommentViewResponse } from './dto/response/comment.view.response.dto';
+import { updateComment } from '../util/util.comment.update';
 
 @Injectable()
 export class CommentService {
@@ -17,7 +18,7 @@ export class CommentService {
     private commentRepository: Repository<Comment>,
   ) {}
 
-  public async getMentionable({ storyId, userId }) {
+  public async getMentionable({ storyId, userId }): Promise<{ userId: number; username: string }[]> {
     const mentionables: { userId: number; username: string }[] = [];
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['user', 'comments', 'comments.user', 'comments.mentions'] });
     const storyUser = await story.user;
@@ -36,7 +37,7 @@ export class CommentService {
     });
   }
 
-  public async create({ storyId, userId, content, mentions }) {
+  public async create({ storyId, userId, content, mentions }): Promise<number> {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
 
     const mentionedUsers: User[] = await Promise.all(
@@ -48,6 +49,7 @@ export class CommentService {
     const user = await this.userRepository.findOne({ where: { userId: userId } });
 
     const comment = createCommentEntity(content, user, story);
+
     await this.commentRepository.save(comment);
     story.commentCount += 1;
     await this.storyRepository.save(story);
@@ -60,34 +62,34 @@ export class CommentService {
     return comment.commentId;
   }
 
-  public async read(storyId: number, userId: number) {
+  public async read(storyId: number, userId: number): Promise<CommentViewResponseDto> {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['comments', 'comments.user', 'comments.mentions', 'comments.user.profileImage'] });
     return await getCommentViewResponse(story, userId);
   }
 
-  public async update({ storyId, userId, commentId, content, mentions }) {
+  public async update({ storyId, commentId, content, mentions }): Promise<number> {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
 
-    const mentionedUsers: User[] = mentions.map(async (userId: number) => {
-      await this.userRepository.findOne({ where: { userId: userId } });
-    });
+    const comment: Comment = await this.commentRepository.findOne({ where: { commentId: commentId }, relations: ['mentions', 'mentions.mentions'] });
 
-    const user = await this.userRepository.findOne({ where: { userId: userId } });
-
-    const newComment = createCommentEntity(content, user, story);
-
-    story.comments = Promise.resolve(
-      (await story.comments).map((comment) => {
-        if (comment.commentId === commentId) return newComment;
-        return comment;
+    const newMentionedUsers: User[] = await Promise.all(
+      mentions.map(async (userId: number) => {
+        return await this.userRepository.findOne({ where: { userId: userId }, relations: ['mentions'] });
       }),
     );
 
+    const updatedComment = updateComment(comment, { content });
+
+    for (const newMentionedUser of newMentionedUsers) {
+      newMentionedUser.mentions = [...newMentionedUser.mentions, updatedComment];
+      await this.userRepository.save(newMentionedUser);
+    }
+
     await this.storyRepository.save(story);
-    return newComment.commentId;
+    return updatedComment.commentId;
   }
 
-  public async delete({ storyId, commentId }) {
+  public async delete({ storyId, commentId }): Promise<number> {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
     story.comments = Promise.resolve((await story.comments).filter((comment) => comment.commentId !== commentId));
 

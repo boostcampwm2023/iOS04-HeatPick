@@ -34,34 +34,36 @@ export class CommentController {
       },
     },
   })
-  async create(@Request() req: any, @Body(new ValidationPipe({ transform: true })) createCommentDto: CreateCommentDto) {
+  async create(@Request() req: any, @Body(new ValidationPipe({ transform: true })) createCommentDto: CreateCommentDto): Promise<{ commentId: number }> {
     const { storyId, content, mentions } = createCommentDto;
     const userId = req.user.userRecordId;
-    return this.commentService.create({ storyId, userId, content, mentions });
+    const commentId = await this.commentService.create({ storyId, userId, content, mentions });
+    return { commentId: commentId };
   }
 
   @Get('read')
   @ApiOperation({ summary: '댓글 조회 API' })
   @ApiResponse({ status: 201, description: '댓글 목록', type: CommentViewResponseDto })
-  async read(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
+  async read(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<CommentViewResponseDto> {
     const userId = req.user.userRecordId;
-    return this.commentService.read(storyId, userId);
+    return await this.commentService.read(storyId, userId);
   }
 
   @Patch('update')
   @ApiOperation({ summary: '댓글 수정 API' })
   @ApiResponse({ status: 201, description: 'commentId' })
-  async update(@Request() req: any, @Body(new ValidationPipe({ transform: true })) updateCommentDto: UpdateCommentDto) {
+  async update(@Request() req: any, @Body(new ValidationPipe({ transform: true })) updateCommentDto: UpdateCommentDto): Promise<{ commentId: number }> {
     const { storyId, commentId, content, mentions } = updateCommentDto;
-    const userId = req.user.id;
-    return this.commentService.update({ storyId, userId, commentId, content, mentions });
+    const newCommentId = await this.commentService.update({ storyId, commentId, content, mentions });
+    return { commentId: newCommentId };
   }
 
   @Delete('delete')
   @ApiOperation({ summary: '댓글 삭제 API' })
   @ApiResponse({ status: 201 })
-  async delete(@Query(new ValidationPipe({ transform: true })) deleteCommentDto: DeleteCommentDto) {
+  async delete(@Query(new ValidationPipe({ transform: true })) deleteCommentDto: DeleteCommentDto): Promise<{ commentId: number }> {
     const { storyId, commentId } = deleteCommentDto;
-    return this.commentService.delete({ storyId, commentId });
+    const deletedCommentId = await this.commentService.delete({ storyId, commentId });
+    return { commentId: deletedCommentId };
   }
 }

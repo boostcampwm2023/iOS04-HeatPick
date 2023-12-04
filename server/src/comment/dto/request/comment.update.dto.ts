@@ -23,6 +23,7 @@ export class UpdateCommentDto {
   @ApiProperty({ example: '[1, 2, 3]', description: '멘션된 유저 아이디 리스트' })
   @IsArray()
   @ArrayUnique((id) => id, { message: 'mentions에 중복된 유저 아이디가 포함되어 있습니다.' })
+  @Transform(({ value }) => value.map(Number))
   @IsNumber({}, { each: true, message: 'mentions 배열의 각 요소는 유저 아이디여야 합니다.' })
   mentions: number[];
 }
