@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { UserRepository } from './../user/user.repository';
+import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
 import { idDuplicatedException } from 'src/exception/custom.exception/id.duplicate.exception';
@@ -8,18 +7,20 @@ import { ImageService } from '../image/image.service';
 import { invalidTokenException } from 'src/exception/custom.exception/token.invalid.exception';
 import { Badge } from 'src/entities/badge.entity';
 import { strToEmoji } from 'src/util/util.string.to.badge.content';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userRepository: UserRepository,
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>,
     private imageService: ImageService,
     private jwtService: JwtService,
   ) {}
   async signIn(OAuthToken: string): Promise<string> {
     const userId = await this.getId(OAuthToken);
 
-    const user = await this.userRepository.findOneById(userId);
+    const user = await this.userRepository.findOne({ where: { oauthId: userId } });
 
     let accessToken = '';
 
@@ -56,7 +57,7 @@ export class AuthService {
 
     if (user) throw new idDuplicatedException();
 
-    await this.userRepository.createUser(userObj);
+    await this.userRepository.save(userObj);
 
     const accessToken = this.jwtService.sign({ userId, userRecordId: userObj.userId });
 
