@@ -7,11 +7,19 @@
 //
 
 import Foundation
+import DomainEntities
 
 public struct UserUpdateRequestDTO: Encodable {
     
-    let username: String
-    let selectedBadgeId: Int
-    let image: [String]
+    public let username: String
+    public let selectedBadgeId: Int
+    public let image: [String]
+    
+    init(userUpdate: UserUpdate) {
+        self.username = userUpdate.username
+        self.selectedBadgeId = userUpdate.selectedBadgeId
+        self.image = userUpdate.image
+    }
+    
     
 }
