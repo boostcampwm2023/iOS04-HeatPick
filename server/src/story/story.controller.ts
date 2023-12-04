@@ -1,15 +1,15 @@
 import { StoryService } from './story.service';
 import { Body, Controller, Delete, Get, Patch, Post, UploadedFiles, UseInterceptors, ValidationPipe, Query, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateStoryDto } from './dto/story.create.dto';
+import { CreateStoryDto } from './dto/request/story.create.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { UpdateStoryDto } from './dto/story.update.dto';
+import { UpdateStoryDto } from './dto/request/story.update.dto';
 import { LocationDTO } from 'src/place/dto/location.dto';
 import { plainToClass } from 'class-transformer';
-import { StoryDetailViewDataDto } from './dto/detail/story.detail.view.data.dto';
+import { StoryDetailViewDataResponseDto } from './dto/response/detail/story.detail.view.data.response.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { CreateStoryMetaDto } from './dto/story.create.meta.dto';
-import { StoryRecommendResponseDto, StoryResultDto } from 'src/search/dto/response/story.result.dto';
+import { StoryRecommendResponseDto } from 'src/search/dto/response/story.result.dto';
 
 @ApiTags('story')
 @Controller('story')
@@ -52,7 +52,7 @@ export class StoryController {
   @ApiCreatedResponse({
     status: 200,
     description: '성공',
-    type: StoryDetailViewDataDto,
+    type: StoryDetailViewDataResponseDto,
   })
   async read(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number) {
     return await this.storyService.read(req.user.userRecordId, storyId);

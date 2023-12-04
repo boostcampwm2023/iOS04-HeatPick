@@ -5,12 +5,11 @@ import { CommentService } from './comment.service';
 import { storyProvider } from '../story/story.providers';
 import { userProviders } from '../user/user.providers';
 import { CommentProviders } from './comment.providers';
-import { CommentRepository } from './comment.repository';
 
 @Module({
   imports: [DatabaseModule],
   controllers: [CommentController],
-  providers: [...storyProvider, ...userProviders, ...CommentProviders, CommentService, CommentRepository],
+  providers: [...storyProvider, ...userProviders, ...CommentProviders, CommentService],
   exports: [],
 })
 export class CommentModule {}
