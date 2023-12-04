@@ -6,7 +6,7 @@ import { AddBadgeDto } from './dto/request/addBadge.dto';
 import { AddBadgeExpDto } from './dto/request/addBadgeExp.dto';
 import { plainToClass } from 'class-transformer';
 import { Story } from '../entities/story.entity';
-import { UserUpdateDto } from './dto/user.update.dto';
+import { UserUpdateDto } from './dto/request/user.update.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FollowRequest } from './dto/request/follow.request.dto';
 import { UserProfileDetailDataDto, UserProfileDetailJsonDto } from './dto/response/user.profile.detail.data.dto';
@@ -16,7 +16,7 @@ import { BadgeJsonDto, BadgeReturnDto } from './dto/response/badge.return.dto';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 import { ProfileUpdateMetaDataDto, ProfileUpdateMetaDataJsonDto } from './dto/response/profile.update.meta.dto';
 import { UserProfileDetailStoryDto, UserProfileDetailStoryJsonDto } from './dto/response/user.profile.detail.story.dto';
-import { UserJsonResponseDto } from './dto/user.response.dto';
+import { UserJsonResponseDto } from './dto/response/user.response.dto';
 
 @ApiTags('user')
 @Controller('user')
