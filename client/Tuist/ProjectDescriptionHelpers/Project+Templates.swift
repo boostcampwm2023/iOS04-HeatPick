@@ -70,7 +70,8 @@ extension Project {
         deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.0", devices: .iphone),
         featureTargets: [FeatureTarget] = [.staticLibrary],
         packages: [Package] = [],
-        dependencies: [TargetDependency] = []
+        dependencies: [TargetDependency] = [],
+        testDependencies: [TargetDependency] = []
     ) -> Project {
         var targets: [Target] = []
         let bundleIDPrefix = "kr.\(organizationName).boostcamp8.heatpick"
@@ -119,7 +120,7 @@ extension Project {
                 infoPlist: .default,
                 sources: ["Tests/Sources/**"],
                 resources: [],
-                dependencies: dependencies,
+                dependencies: dependencies + testDependencies,
                 settings: .settings(configurations: [], defaultSettings: .recommended)
             )
             targets.append(target)
