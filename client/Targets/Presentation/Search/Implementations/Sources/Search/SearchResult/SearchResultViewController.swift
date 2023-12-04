@@ -13,6 +13,7 @@ import ModernRIBs
 
 import CoreKit
 import DesignKit
+import BasePresentation
 
 
 protocol SearchResultPresentableListener: AnyObject {
@@ -25,29 +26,15 @@ protocol SearchResultPresentableListener: AnyObject {
     func detachSearchResult()
 }
 
-final class SearchResultViewController: UIViewController, SearchResultPresentable, SearchResultViewControllable {
+final class SearchResultViewController: BaseViewController, SearchResultPresentable, SearchResultViewControllable {
     
     weak var listener: SearchResultPresentableListener?
     
-    private lazy var searchNavigationView: SearchNavigationView = {
-        let navigationView = SearchNavigationView()
-        navigationView.delegate = self
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        return navigationView
-    }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
+    private let searchNavigationView = SearchNavigationView()
+    private let stackView = UIStackView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViews()
         listener?.showSearchBeforeDashboard()
     }
     
@@ -73,12 +60,7 @@ final class SearchResultViewController: UIViewController, SearchResultPresentabl
         searchNavigationView.setSearchText(searchText)
     }
     
-}
-
-private extension SearchResultViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
+    override func setupLayout() {
         [searchNavigationView, stackView].forEach { view.addSubview($0) }
         
         NSLayoutConstraint.activate([
@@ -92,6 +74,26 @@ private extension SearchResultViewController {
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        searchNavigationView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        stackView.do {
+            $0.axis = .vertical
+            $0.alignment = .fill
+            $0.distribution = .fill
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    override func bind() {
+        
     }
     
 }
@@ -115,6 +117,14 @@ extension SearchResultViewController: SearchNavigationViewDelegate {
     }
     
     func didTapBack() {
+        listener?.detachSearchResult()
+    }
+    
+}
+
+extension SearchResultViewController: NavigationViewDelegate {
+    
+    func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         listener?.detachSearchResult()
     }
     
