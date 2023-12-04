@@ -247,8 +247,8 @@ export class UserService {
       followerUser.following = followerUser.following.filter((user) => user.userId !== followId);
       followUser.followers = followUser.followers.filter((user) => user.userId !== followerId);
 
-      this.userRepository.save(followUser);
-      this.userRepository.save(followerUser);
+      await this.userRepository.save(followUser);
+      await this.userRepository.save(followerUser);
     } catch (error) {
       console.log(error);
       throw new InvalidIdException();
