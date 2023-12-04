@@ -1,21 +1,21 @@
 //
-//  UserEditBadgeView.swift
+//  MyPageUpdateUserBadgeListView.swift
 //  MyImplementations
 //
-//  Created by 이준복 on 11/30/23.
+//  Created by 이준복 on 12/4/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
 import UIKit
 import DesignKit
 
-protocol UserInfoEditBadgeViewDelegate: AnyObject {
+protocol MyPageUpdateUserBadgeListViewDelegate: AnyObject {
     func didTapUserBadgeView(_ badgeId: Int)
 }
 
-final class UserInfoEditBadgeView: UIView {
+final class MyPageUpdateUserBadgeListView: UIView {
     
-    weak var delegate: UserInfoEditBadgeViewDelegate?
+    weak var delegate: MyPageUpdateUserBadgeListViewDelegate?
     
     private enum Constant {
         static let topOffset: CGFloat = 15
@@ -55,10 +55,10 @@ final class UserInfoEditBadgeView: UIView {
         setupViews()
     }
     
-    func setup(models: [UserBadgeViewModel]) {
-        models.forEach { model in
-            let contentView = UserBadgeView()
-            contentView.setup(model: model)
+    func setup(badges: [MyPageUpdateUserBadgeViewModel]) {
+        badges.forEach { badge in
+            let contentView = MyPageUpdateUserBadgeView()
+            contentView.setup(badge: badge)
             contentView.delegate = self
             stackView.addArrangedSubview(contentView)
         }
@@ -66,7 +66,7 @@ final class UserInfoEditBadgeView: UIView {
     
 }
 
-private extension UserInfoEditBadgeView {
+private extension MyPageUpdateUserBadgeListView {
     
     func setupViews() {
         [titleLabel, stackView].forEach(addSubview)
@@ -85,7 +85,7 @@ private extension UserInfoEditBadgeView {
     
 }
 
-extension UserInfoEditBadgeView: UserBadgeViewDelegate {
+extension MyPageUpdateUserBadgeListView: MyPageUpdateUserBadgeViewDelegate {
     
     func didTapUserBadgeView(_ badgeId: Int) {
         delegate?.didTapUserBadgeView(badgeId)

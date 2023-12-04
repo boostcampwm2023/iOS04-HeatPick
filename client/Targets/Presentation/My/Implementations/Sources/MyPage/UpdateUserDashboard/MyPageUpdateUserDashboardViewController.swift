@@ -1,8 +1,8 @@
 //
-//  UserInfoEditDashboardViewController.swift
+//  MyPageUpdateUserDashboardViewController.swift
 //  MyImplementations
 //
-//  Created by 이준복 on 11/30/23.
+//  Created by 이준복 on 12/4/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
@@ -15,11 +15,11 @@ struct UserInfoEditViewModel {
     let userId: Int
     let profileImageURL:  String
     let username: String
-    let nowBadge: UserBadgeViewModel
-    let badges: [UserBadgeViewModel]
+    let nowBadge: MyPageUpdateUserBadgeViewModel
+    let badges: [MyPageUpdateUserBadgeViewModel]
 }
 
-protocol UserInfoEditDashboardPresentableListener: AnyObject {
+protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
     func didTapBack()
     func didTapEditButton()
     func profileImageViewDidChange(_ imageData: Data)
@@ -27,9 +27,9 @@ protocol UserInfoEditDashboardPresentableListener: AnyObject {
     func didTapUserBadgeView(_ badgeId: Int)
 }
 
-final class UserInfoEditDashboardViewController: UIViewController, UserInfoEditDashboardPresentable, UserInfoEditDashboardViewControllable {
-    
-    weak var listener: UserInfoEditDashboardPresentableListener?
+final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
+
+    weak var listener: MyPageUpdateUserDashboardPresentableListener?
     
     private enum Constant {
         static let topOffset: CGFloat = 10
@@ -51,22 +51,22 @@ final class UserInfoEditDashboardViewController: UIViewController, UserInfoEditD
         return navigationView
     }()
     
-    private lazy var userEditProfileView: UserInfoEditProfileView = {
-        let contentView = UserInfoEditProfileView()
+    private lazy var myPageUpdateUserProfileView: MyPageUpdateUserProfileView = {
+        let contentView = MyPageUpdateUserProfileView()
         contentView.delegate = self
         contentView.translatesAutoresizingMaskIntoConstraints = false
         return contentView
     }()
     
-    private lazy var userEditBasicInformationView: UserInfoEditBasicInformationView = {
-        let contentView = UserInfoEditBasicInformationView()
+    private lazy var myPageUpdateUserBasicInformationView: MyPageUpdateUserBasicInformationView = {
+        let contentView = MyPageUpdateUserBasicInformationView()
         contentView.delegate = self
         contentView.translatesAutoresizingMaskIntoConstraints = false
         return contentView
     }()
     
-    private lazy var userInfoEditBadgeView: UserInfoEditBadgeView = {
-        let contentView = UserInfoEditBadgeView()
+    private lazy var myPageUpdateUserBadgeListView: MyPageUpdateUserBadgeListView = {
+        let contentView = MyPageUpdateUserBadgeListView()
         contentView.delegate = self
         contentView.translatesAutoresizingMaskIntoConstraints = false
         return contentView
@@ -105,21 +105,21 @@ final class UserInfoEditDashboardViewController: UIViewController, UserInfoEditD
     }
     
     func setup(model: UserInfoEditViewModel) {
-        userEditProfileView.setup(profileImageURL: model.profileImageURL)
-        userEditBasicInformationView.setup(model: .init(username: model.username))
-        userInfoEditBadgeView.setup(models: model.badges)
+        myPageUpdateUserProfileView.setup(profileImageURL: model.profileImageURL)
+        myPageUpdateUserBasicInformationView.setup(username: model.username)
+        myPageUpdateUserBadgeListView.setup(badges: model.badges)
     }
     
 }
 
-private extension UserInfoEditDashboardViewController {
+private extension MyPageUpdateUserDashboardViewController {
     
     func setupViews() {
         view.backgroundColor = .hpWhite
         
         [navigationView, scrollView, editButton].forEach(view.addSubview)
         scrollView.addSubview(stackView)
-        [userEditProfileView, userEditBasicInformationView, userInfoEditBadgeView].forEach(stackView.addArrangedSubview)
+        [myPageUpdateUserProfileView, myPageUpdateUserBasicInformationView, myPageUpdateUserBadgeListView].forEach(stackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -147,7 +147,7 @@ private extension UserInfoEditDashboardViewController {
     
 }
 
-private extension UserInfoEditDashboardViewController {
+private extension MyPageUpdateUserDashboardViewController {
     
     @objc func didTapEditButton() {
         listener?.didTapEditButton()
@@ -155,7 +155,7 @@ private extension UserInfoEditDashboardViewController {
     
 }
 
-extension UserInfoEditDashboardViewController: NavigationViewDelegate {
+extension MyPageUpdateUserDashboardViewController: NavigationViewDelegate {
     
     func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         guard case .back = type else { return }
@@ -164,7 +164,7 @@ extension UserInfoEditDashboardViewController: NavigationViewDelegate {
     
 }
 
-extension UserInfoEditDashboardViewController: UserInfoEditProfileViewDelegate {
+extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserProfileViewDelegate {
     
     func profileImageViewDidTap() {
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
@@ -177,7 +177,7 @@ extension UserInfoEditDashboardViewController: UserInfoEditProfileViewDelegate {
     
 }
 
-extension UserInfoEditDashboardViewController: PHPickerViewControllerDelegate {
+extension MyPageUpdateUserDashboardViewController: PHPickerViewControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
@@ -189,7 +189,7 @@ extension UserInfoEditDashboardViewController: PHPickerViewControllerDelegate {
             DispatchQueue.main.async { [weak self] in
                 guard let image = image as? UIImage,
                       let imageData = image.pngData() else { return }
-                self?.userEditProfileView.setup(image: image)
+                self?.myPageUpdateUserProfileView.setup(image: image)
                 self?.listener?.profileImageViewDidChange(imageData)
             }
         }
@@ -198,7 +198,7 @@ extension UserInfoEditDashboardViewController: PHPickerViewControllerDelegate {
 }
 
 
-extension UserInfoEditDashboardViewController: UserInfoEditBasicInformationViewDelegate {
+extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserBasicInformationViewDelegate {
     
     func usernameValueChanged(_ username: String) {
         listener?.usernameValueChanged(username)
@@ -207,7 +207,7 @@ extension UserInfoEditDashboardViewController: UserInfoEditBasicInformationViewD
 }
 
 
-extension UserInfoEditDashboardViewController: UserInfoEditBadgeViewDelegate {
+extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserBadgeListViewDelegate {
     
     func didTapUserBadgeView(_ badgeId: Int) {
         listener?.didTapUserBadgeView(badgeId)

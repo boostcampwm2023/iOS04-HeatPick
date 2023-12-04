@@ -1,8 +1,8 @@
 //
-//  UserBadgeView.swift
+//  MyPageUpdateUserBadgeView.swift
 //  MyImplementations
 //
-//  Created by 이준복 on 11/30/23.
+//  Created by 이준복 on 12/4/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 import CoreKit
 import DesignKit
 
-struct UserBadgeViewModel {
+struct MyPageUpdateUserBadgeViewModel {
     let badgeId: Int
     let badgeName: String
     let badgeExp: Int
@@ -19,13 +19,13 @@ struct UserBadgeViewModel {
     let badgeExplain: String
 }
 
-protocol UserBadgeViewDelegate: AnyObject {
+protocol MyPageUpdateUserBadgeViewDelegate: AnyObject {
     func didTapUserBadgeView(_ badgeId: Int)
 }
 
-final class UserBadgeView: UIView {
+final class MyPageUpdateUserBadgeView: UIView {
     
-    weak var delegate: UserBadgeViewDelegate?
+    weak var delegate: MyPageUpdateUserBadgeViewDelegate?
     
     private enum Constant {
         static let spacing: CGFloat = 5
@@ -99,15 +99,15 @@ final class UserBadgeView: UIView {
         setupConfiguration()
     }
     
-    func setup(model: UserBadgeViewModel) {
-        titleLabel.text = "\(model.emoji) \(model.badgeName)"
-        descriptionLabel.text = model.badgeExplain
+    func setup(badge: MyPageUpdateUserBadgeViewModel) {
+        titleLabel.text = "\(badge.emoji) \(badge.badgeName)"
+        descriptionLabel.text = badge.badgeExplain
     }
     
 }
 
 
-private extension UserBadgeView {
+private extension MyPageUpdateUserBadgeView {
     
     func setupViews() {
         [titleLabel, descriptionLabel, progressView, nextBadgeLabel, nextBadgeTitleLabel, experienceLabel].forEach(addSubview)
@@ -153,7 +153,7 @@ private extension UserBadgeView {
 }
 
 
-private extension UserBadgeView {
+private extension MyPageUpdateUserBadgeView {
     
     @objc func didTapUserBadgeView() {
         guard let badgeId else { return }
