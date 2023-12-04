@@ -1,11 +1,11 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { createCommentEntity } from '../util/util.create.comment.entity';
 import { Story } from '../entities/story.entity';
 import { User } from '../entities/user.entity';
 import { CommentViewResponseDto } from './dto/response/comment.view.response.dto';
-import { removeMillisecondsFromISOString } from '../util/util.date.format.to.ISO8601';
-import { CommentRepository } from './comment.repository';
 import { Repository } from 'typeorm';
+import { Comment } from '../entities/comment.entity';
+import { getCommentViewResponse } from '../util/util.create.comment.view.response';
 
 @Injectable()
 export class CommentService {
@@ -14,7 +14,8 @@ export class CommentService {
     private storyRepository: Repository<Story>,
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
-    private commentRepository: CommentRepository,
+    @Inject('COMMENT_REPOSITORY')
+    private commentRepository: Repository<Comment>,
   ) {}
 
   public async getMentionable({ storyId, userId }) {
@@ -30,6 +31,7 @@ export class CommentService {
     user.following.forEach((user) => {
       mentionables.push({ userId: user.userId, username: user.username });
     });
+
     return Array.from(new Set(mentionables.map((user) => user.userId))).map((userId) => {
       return mentionables.find((user) => user.userId === userId);
     });
@@ -61,27 +63,7 @@ export class CommentService {
 
   public async read(storyId: number, userId: number) {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['comments', 'comments.user', 'comments.mentions', 'comments.user.profileImage'] });
-
-    const commentViewResponse: CommentViewResponseDto = {
-      comments: await Promise.all(
-        (await story.comments).map(async (comment) => {
-          return {
-            commentId: comment.commentId,
-            userId: comment.user.userId,
-            userProfileImageURL: (await comment.user.profileImage).imageUrl,
-            username: comment.user.username,
-            createdAt: removeMillisecondsFromISOString(comment.createdAt.toISOString()),
-            mentions: comment.mentions.map((user) => {
-              return { userId: user.userId, username: user.username };
-            }),
-            content: comment.content,
-            status: comment.user.userId === userId ? 0 : 1,
-          };
-        }),
-      ),
-    };
-
-    return commentViewResponse;
+    return await getCommentViewResponse(story, userId);
   }
 
   public async update({ storyId, userId, commentId, content, mentions }) {
