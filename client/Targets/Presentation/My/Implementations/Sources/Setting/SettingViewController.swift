@@ -10,6 +10,7 @@ import ModernRIBs
 import UIKit
 import CoreKit
 import DesignKit
+import BasePresentation
 
 protocol SettingPresentableListener: AnyObject {
     func didTapClose()
@@ -18,7 +19,7 @@ protocol SettingPresentableListener: AnyObject {
     func didTapSignOut()
 }
 
-final class SettingViewController: UIViewController, SettingPresentable, SettingViewControllable {
+final class SettingViewController: BaseViewController, SettingPresentable, SettingViewControllable {
     
     private enum Constant {
         static let topOffset: CGFloat = 40
@@ -26,14 +27,6 @@ final class SettingViewController: UIViewController, SettingPresentable, Setting
     }
     
     weak var listener: SettingPresentableListener?
-    
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        navigationView.setup(model: .init(title: "설정", leftButtonType: .back, rightButtonTypes: []))
-        navigationView.delegate = self
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        return navigationView
-    }()
     
     private lazy var appVersionView = makeContentView(
         selector: #selector(didTapAppVersion),
@@ -56,54 +49,15 @@ final class SettingViewController: UIViewController, SettingPresentable, Setting
         title: "로그아웃하기"
     )
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
-    
     func openURL(_ url: URL) {
         if UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         }
     }
-    
-}
-
-extension SettingViewController: NavigationViewDelegate {
-    
-    func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
-        listener?.didTapClose()
-    }
-    
-}
-
-private extension SettingViewController {
-    
-    @objc func didTapAppVersion() {
-        // 아무 일도 안함
-    }
-    
-    @objc func didTapDiscussion() {
-        listener?.didTapDiscussion()
-    }
-    
-    @objc func didTapResign() {
-        listener?.didTapResign()
-    }
-    
-    @objc func didTapSignOut() {
-        listener?.didTapSignOut()
-    }
-    
-}
-
-private extension SettingViewController {
-    
-    func setupViews() {
+    override func setupLayout() {
         let appVersionViewSeparator = makeSeparator()
         let discussionViewSeparator = makeSeparator()
         let resignViewSeparator = makeSeparator()
-        view.backgroundColor = .hpWhite
         
         [
             navigationView,
@@ -154,6 +108,52 @@ private extension SettingViewController {
             signOutView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset)
         ])
     }
+    
+    override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        navigationView.do {
+            $0.setup(model: .init(title: "설정", leftButtonType: .back, rightButtonTypes: []))
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    override func bind() {
+        
+    }
+    
+}
+
+extension SettingViewController: NavigationViewDelegate {
+    
+    func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
+        listener?.didTapClose()
+    }
+    
+}
+
+private extension SettingViewController {
+    
+    @objc func didTapAppVersion() {
+        // 아무 일도 안함
+    }
+    
+    @objc func didTapDiscussion() {
+        listener?.didTapDiscussion()
+    }
+    
+    @objc func didTapResign() {
+        listener?.didTapResign()
+    }
+    
+    @objc func didTapSignOut() {
+        listener?.didTapSignOut()
+    }
+    
+}
+
+private extension SettingViewController {
     
     func makeContentView(selector: Selector, title: String, subtitle: String? = nil) -> SettingContentView {
         let contentView = SettingContentView()
