@@ -10,6 +10,6 @@ import Foundation
 
 public enum UserStatus: CaseIterable {
     case me
-    case following
     case nonFollowing
+    case following
 }
