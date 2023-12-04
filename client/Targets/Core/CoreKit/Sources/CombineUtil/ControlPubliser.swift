@@ -19,7 +19,7 @@ public struct ControlPubliser<Control: UIControl>: Publisher {
     
     public init(
         control: Control,
-        event: UIControl.Event
+        event: Control.Event
     ) {
         self.control = control
         self.event = event
@@ -29,7 +29,6 @@ public struct ControlPubliser<Control: UIControl>: Publisher {
         let subscription = Subscription(subscriber: subscriber, control: control, event: event)
         subscriber.receive(subscription: subscription)
     }
-    
     
 }
 
