@@ -13,6 +13,7 @@ import ModernRIBs
 import CoreKit
 import DesignKit
 import DomainEntities
+import BasePresentation
 
 protocol CommentPresentableListener: AnyObject {
     func navigationViewButtonDidTap()
@@ -20,7 +21,7 @@ protocol CommentPresentableListener: AnyObject {
     func commentTextDidChange(_ text: String)
 }
 
-final class CommentViewController: UIViewController, CommentPresentable, CommentViewControllable {
+final class CommentViewController: BaseViewController, CommentPresentable, CommentViewControllable {
     
     weak var listener: CommentPresentableListener?
     private var commentViewModels: [CommentTableViewCellModel] = []
@@ -29,42 +30,8 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
         static let commentInputFieldHeight: CGFloat = 50
     }
     
-    private lazy var navigationView: NavigationView = {
-        let navigation = NavigationView()
-        navigation.setup(model: .init(title: "댓글",
-                                      leftButtonType: .back,
-                                      rightButtonTypes: []))
-        navigation.delegate = self
-        
-        navigation.translatesAutoresizingMaskIntoConstraints = false
-        return navigation
-    }()
-    
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = .hpWhite
-        tableView.register(CommentTableViewCell.self)
-        tableView.allowsSelection = false
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorStyle = .singleLine
-        tableView.contentInset = .init(top: -35, left: 0, bottom: -35, right: 0)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
-    
-    private lazy var commentInputField: CommentInputField = {
-        let commentInputField = CommentInputField()
-        commentInputField.delegate = self
-        
-        commentInputField.translatesAutoresizingMaskIntoConstraints = false
-        return commentInputField
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    private let commentInputField = CommentInputField()
     
     func setup(_ model: [CommentTableViewCellModel]) {
         commentViewModels = model
@@ -88,12 +55,8 @@ final class CommentViewController: UIViewController, CommentPresentable, Comment
     func resetInputField() {
         commentInputField.reset()
     }
-}
-
-private extension CommentViewController {
     
-    func setupViews() {
-        view.backgroundColor = .hpWhite
+    override func setupLayout() {
         [navigationView, tableView, commentInputField].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
@@ -112,12 +75,47 @@ private extension CommentViewController {
             commentInputField.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             commentInputField.heightAnchor.constraint(equalToConstant: Constant.commentInputFieldHeight)
         ])
-        
-        commentInputField.layer.borderWidth = 1
-        commentInputField.layer.borderColor = UIColor.hpGray4.cgColor
-        
-        view.addTapGesture(target: self, action: #selector(dismissKeyboard))
     }
+    
+    override func setupAttributes() {
+        view.do {
+            $0.backgroundColor = .hpWhite
+            $0.addTapGesture(target: self, action: #selector(dismissKeyboard))
+        }
+        navigationView.do {
+            $0.setup(model: .init(title: "댓글",
+                                  leftButtonType: .back,
+                                  rightButtonTypes: []))
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        tableView.do {
+            $0.backgroundColor = .hpWhite
+            $0.register(CommentTableViewCell.self)
+            $0.allowsSelection = false
+            $0.delegate = self
+            $0.dataSource = self
+            $0.separatorStyle = .singleLine
+            $0.contentInset = .init(top: -35, left: 0, bottom: -35, right: 0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        commentInputField.do {
+            $0.delegate = self
+            $0.layer.borderWidth = 1
+            $0.layer.borderColor = UIColor.hpGray4.cgColor
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    override func bind() {
+        
+    }
+    
+}
+
+private extension CommentViewController {
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
