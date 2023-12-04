@@ -20,5 +20,6 @@ public protocol StoryUseCaseInterface: AnyObject {
     func requestUnfollow(userId: Int) async -> Result<Void, Error>
     func requestReadComment(storyId: Int) async -> Result<[Comment], Error>
     func requestNewComment(content: CommentContent) async -> Result<Void, Error>
-    
+    func requestLike(storyId: Int) async -> Result<Int, Error>
+    func requestUnlike(storyId: Int) async -> Result<Int, Error>
 }

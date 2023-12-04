@@ -1,29 +1,30 @@
 {
     "story": {
-        "storyId": 25,
-        "createdAt": "2023-11-28T02:41:13Z",
-        "category": "맛집",
+        "storyId": 2,
+        "createdAt": "2023-11-20T14:30:00Z",
+        "category": "카페",
         "storyImageURL": [
-            "https://server.bc8heatpick.store/image?name=37b8105210e7176b76c56bb1ec44a02151.png",
-            "https://server.bc8heatpick.store/image?name=4f952e523a1fb8d4c5b13424a4a3df4c.png",
-            "https://server.bc8heatpick.store/image?name=547f4e8617fa1b10910a8ee30353102269c.png"
+            "https://server.bc8heatpick.store/image/story?name=e3039c354cab347eb1f6fc5c79a8df8b.png",
+            "https://server.bc8heatpick.store/image/story?name=fd28af1320510b877cb0bf3e6c7e67134.png",
+            "https://server.bc8heatpick.store/image/story?name=10cf30f5558d009df9a227a9ebfd06468.png"
         ],
-        "title": "Hello world!",
-        "badgeName": "🍼뉴비",
+        "title": "test123",
+        "badgeName": "undefinedundefined",
+        "likeState": 1,
         "likeCount": 0,
-        "commentCount": 0,
-        "content": "Testing story creation",
+        "commentCount": 1,
+        "content": "aaa",
         "place": {
-            "title": "test",
-            "address": "test",
-            "latitude": 37.3586,
-            "longitude": 127.105
+            "title": "abc",
+            "address": "fsafsa",
+            "latitude": 1,
+            "longitude": 2
         }
     },
     "author": {
-        "userId": 4,
-        "username": "jungmin",
-        "profileImageUrl": "",
-        "status": 0
+        "userId": 1,
+        "username": "서울아침",
+        "profileImageUrl": "https://server.bc8heatpick.store/image/profile?name=2af8171a1ebb27d5c813fe34f5592f29.png",
+        "status": 2
     }
 }

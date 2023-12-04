@@ -16,21 +16,23 @@ public struct StoryResponseDTO: Decodable {
     let storyImageURL: [String]
     let title: String
     let badgeName: String
+    let likeState: Int
     let likeCount: Int
     let commentCount: Int
     let content: String
     let place: PlaceDTO
     
-    public init(storyId: Int, createdAt: Date, category: String, storyImageURL: [String], title: String, badgeName: String, likeCount: Int, commentCount: Int, content: String, place: PlaceDTO) {
+    public init(storyId: Int, createdAt: Date, category: String, storyImageURL: [String], title: String, badgeName: String, likeState: Int, likeCount: Int, commentCount: Int, content: String, place: PlaceDTO) {
         self.storyId = storyId
         self.createdAt = createdAt
         self.category = category
         self.storyImageURL = storyImageURL
         self.title = title
         self.badgeName = badgeName
+        self.likeState = likeState
         self.likeCount = likeCount
         self.commentCount = commentCount
-        self.content = content.withLineBreak
+        self.content = content
         self.place = place
     }
     

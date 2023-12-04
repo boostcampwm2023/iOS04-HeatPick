@@ -21,6 +21,8 @@ public enum StoryAPI {
     case unfollow(Int)
     case readComment(Int)
     case newComment(CommentContent)
+    case like(Int)
+    case unlike(Int)
 }
 
 extension StoryAPI: Target {
@@ -37,6 +39,8 @@ extension StoryAPI: Target {
         case .follow, .unfollow: return "/user/follow"
         case .readComment: return "/comment/read"
         case .newComment: return "/comment/create"
+        case .like: return "/story/like"
+        case .unlike: return "/story/unlike"
         }
     }
     
@@ -49,6 +53,8 @@ extension StoryAPI: Target {
         case .unfollow: return .delete
         case .readComment: return .get
         case .newComment: return .post
+        case .like: return .post
+        case .unlike: return .post
         }
     }
     
@@ -79,6 +85,8 @@ extension StoryAPI: Target {
             return .url(parameters: request.parameters())
         case .newComment(let content):
             return .json(NewCommentRequestDTO(content: content))
+        case .like(let storyId), .unlike(let storyId):
+            return .url(parameters: StoryLikeRequestDTO(storyId: storyId).parameters())
         }
     }
     
