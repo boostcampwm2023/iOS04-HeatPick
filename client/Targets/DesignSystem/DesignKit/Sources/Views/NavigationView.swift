@@ -93,6 +93,10 @@ public final class NavigationView: UIView {
         separator.isHidden = true
     }
     
+    public func sendCloseEvent() {
+        leftButton.sendActions(for: .touchUpInside)
+    }
+    
 }
 
 private extension NavigationView {

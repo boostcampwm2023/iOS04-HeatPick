@@ -15,7 +15,7 @@ public final class NavigationControllable: ViewControllable {
     public let navigationController: UINavigationController
     
     public init(viewControllable: ViewControllable) {
-        let navigationController = UINavigationController(rootViewController: viewControllable.uiviewController)
+        let navigationController = SwipeNavigationController(rootViewController: viewControllable.uiviewController)
         navigationController.isNavigationBarHidden = true
         self.navigationController = navigationController
     }

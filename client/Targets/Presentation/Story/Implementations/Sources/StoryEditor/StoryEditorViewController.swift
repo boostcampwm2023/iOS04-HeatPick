@@ -11,8 +11,10 @@ import PhotosUI
 
 import ModernRIBs
 
+import CoreKit
 import DesignKit
 import DomainEntities
+import BasePresentation
 
 protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
@@ -26,7 +28,7 @@ protocol StoryEditorPresentableListener: AnyObject {
     func didTapSave(content: StoryContent)
 }
 
-final class StoryEditorViewController: UIViewController, StoryEditorViewControllable {
+final class StoryEditorViewController: BaseViewController, StoryEditorViewControllable {
     
     private enum Constant {
         static let navBarTitle = "스토리 생성"
@@ -37,135 +39,24 @@ final class StoryEditorViewController: UIViewController, StoryEditorViewControll
     
     weak var listener: StoryEditorPresentableListener?
     
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        navigationView.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: [.none]))
-        navigationView.delegate = self
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        
-        return navigationView
-    }()
-    
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsVerticalScrollIndicator = true
-        scrollView.showsHorizontalScrollIndicator = false
-        
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = Constant.stackViewSpacing
-        stackView.alignment = .center
-        stackView.distribution = .fill
-        
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
-    private lazy var titleField: TitleField = {
-        let titleField = TitleField()
-        titleField.delegate = self
-        
-        titleField.translatesAutoresizingMaskIntoConstraints = false
-        return titleField
-    }()
-    
-    private lazy var imageField: ImageField = {
-        let imageField = ImageField()
-        imageField.presenterDelegate = self
-        
-        imageField.translatesAutoresizingMaskIntoConstraints = false
-        return imageField
-    }()
-    
-    private lazy var descriptionField: DescriptionField = {
-        let descriptionField = DescriptionField()
-        descriptionField.delegate = self
-        
-        descriptionField.translatesAutoresizingMaskIntoConstraints = false
-        return descriptionField
-    }()
-    
-    private lazy var attributeField: AttributeField = {
-        let attributeField = AttributeField()
-        attributeField.delegate = self
-        
-        attributeField.translatesAutoresizingMaskIntoConstraints = false
-        return attributeField
-    }()
-    
-    private var locationField: LocationField = {
-        let locationField = LocationField()
-        
-        locationField.translatesAutoresizingMaskIntoConstraints = false
-        return locationField
-    }()
-    
-    private lazy var saveButton: ActionButton = {
-        let button = ActionButton()
-        button.setTitle("저장하기", for: .normal)
-        button.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
-        button.isEnabled = false
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
+    private let titleField = TitleField()
+    private let imageField = ImageField()
+    private let descriptionField = DescriptionField()
+    private let attributeField = AttributeField()
+    private let locationField = LocationField()
+    private let saveButton = ActionButton()
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         listener?.viewDidAppear()
     }
     
-}
-
-// MARK: - StoryEditorPresentable
-extension StoryEditorViewController: StoryEditorPresentable {
-    
-    func setupLocation(_ location: Location) {
-        locationField.setup(location: location)
-    }
-    
-    func setupMetadata(badges: [Badge], categories: [StoryCategory]) {
-        attributeField.setup(badges: badges, categories: categories)
-    }
-    
-    func setSaveButton(_ enabled: Bool) {
-        saveButton.isEnabled = enabled
-    }
-    
-    func showFailure(_ error: Error, with title: String) {
-        let alert = UIAlertController(title: title, message: "\(error.localizedDescription)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "취소", style: .default))
-        present(alert, animated: true, completion: nil)
-    }
-}
-
-// MARK: - Setup Views
-private extension StoryEditorViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
+    override func setupLayout() {
         [navigationView, scrollView].forEach(view.addSubview)
         scrollView.addSubview(stackView)
         [titleField, imageField, descriptionField, attributeField, locationField, saveButton].forEach(stackView.addArrangedSubview)
-        view.keyboardLayoutGuide.followsUndockedKeyboard = true
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -199,13 +90,94 @@ private extension StoryEditorViewController {
             
             saveButton.heightAnchor.constraint(equalToConstant: 50)
         ])
+    }
+    
+    override func setupAttributes() {
+        view.do {
+            $0.backgroundColor = .hpWhite
+            $0.keyboardLayoutGuide.followsUndockedKeyboard = true
+            $0.addTapGesture(target: self, action: #selector(dismissKeyboard))
+        }
         
-        scrollView.contentInset = .init(top: 40, left: 0,
-                                        bottom: Constant.keyboardSpacing,
-                                        right: 0)
-        saveButton.layer.cornerRadius = Constants.cornerRadiusMedium
+        navigationView.do {
+            $0.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: [.none]))
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
-        view.addTapGesture(target: self, action: #selector(dismissKeyboard))
+        scrollView.do {
+            $0.contentInset = .init(top: 40, left: 0,
+                                    bottom: Constant.keyboardSpacing,
+                                    right: 0)
+            $0.showsVerticalScrollIndicator = true
+            $0.showsHorizontalScrollIndicator = false
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        stackView.do {
+            $0.axis = .vertical
+            $0.spacing = Constant.stackViewSpacing
+            $0.alignment = .center
+            $0.distribution = .fill
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        titleField.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        imageField.do {
+            $0.presenterDelegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        descriptionField.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        attributeField.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        locationField.translatesAutoresizingMaskIntoConstraints = false
+        
+        saveButton.do {
+            $0.setTitle("저장하기", for: .normal)
+            $0.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
+            $0.isEnabled = false
+            $0.layer.cornerRadius = Constants.cornerRadiusMedium
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    override func bind() {
+        
+    }
+    
+}
+
+// MARK: - StoryEditorPresentable
+extension StoryEditorViewController: StoryEditorPresentable {
+    
+    func setupLocation(_ location: Location) {
+        locationField.setup(location: location)
+    }
+    
+    func setupMetadata(badges: [Badge], categories: [StoryCategory]) {
+        attributeField.setup(badges: badges, categories: categories)
+    }
+    
+    func setSaveButton(_ enabled: Bool) {
+        saveButton.isEnabled = enabled
+    }
+    
+    func showFailure(_ error: Error, with title: String) {
+        let alert = UIAlertController(title: title, message: "\(error.localizedDescription)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .default))
+        present(alert, animated: true, completion: nil)
     }
 }
 

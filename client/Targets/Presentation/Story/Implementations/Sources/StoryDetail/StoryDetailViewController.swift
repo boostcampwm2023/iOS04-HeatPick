@@ -11,8 +11,10 @@ import UIKit
 
 import ModernRIBs
 
+import CoreKit
 import DesignKit
 import DomainEntities
+import BasePresentation
 
 protocol StoryDetailPresentableListener: AnyObject {
     func storyDetailDidTapClose()
@@ -43,7 +45,7 @@ struct StoryDetailViewModel {
     
 }
 
-final class StoryDetailViewController: UIViewController, StoryDetailPresentable, StoryDetailViewControllable {
+final class StoryDetailViewController: BaseViewController, StoryDetailPresentable, StoryDetailViewControllable {
     
     private enum Constant {
         static let navBarTitle = ""
@@ -56,86 +58,13 @@ final class StoryDetailViewController: UIViewController, StoryDetailPresentable,
     
     weak var listener: StoryDetailPresentableListener?
     
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        navigationView.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: [.none]))
-        navigationView.delegate = self
-        
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        return navigationView
-    }()
-    
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsVerticalScrollIndicator = true
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.contentInset = .init(top: Constant.scrollViewTopBottomInset, left: 0,
-                                        bottom: Constant.scrollViewTopBottomInset, right: 0)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = Constant.stackViewSpacing
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-       
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
-    private lazy var simpleUserProfileView: SimpleUserProfileView = {
-        let profileView = SimpleUserProfileView()
-        profileView.delegate = self
-        
-        profileView.translatesAutoresizingMaskIntoConstraints = false
-        return profileView
-    }()
-    
-    private let storyImagesView: StoryImagesView = {
-        let storyImagesView = StoryImagesView()
-        
-        storyImagesView.translatesAutoresizingMaskIntoConstraints = false
-        return storyImagesView
-    }()
-
-    private lazy var storyHeaderView: StoryHeaderView = {
-        let headerView = StoryHeaderView()
-        headerView.delegate = self
-        
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        return headerView
-    }()
-    
-    private let bodyView: UITextView = {
-        let textView = UITextView()
-        textView.font = .captionRegular
-        textView.textColor = .hpBlack
-        textView.textAlignment = .natural
-        textView.isScrollEnabled = false
-        textView.isUserInteractionEnabled = false
-        textView.textContainerInset = .init(top: Constant.bodyViewTopBottomInset,
-                                            left: Constants.leadingOffset,
-                                            bottom: Constant.bodyViewTopBottomInset,
-                                            right: Constants.traillingOffset)
-        
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        return textView
-    }()
-    
-    private let mapView: StoryMapView = {
-        let mapView = StoryMapView()
-        
-        mapView.translatesAutoresizingMaskIntoConstraints = false
-        return mapView
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
+    private let simpleUserProfileView = SimpleUserProfileView()
+    private let storyImagesView = StoryImagesView()
+    private let storyHeaderView = StoryHeaderView()
+    private let bodyView = UITextView()
+    private let mapView = StoryMapView()
     
     func setup(model: StoryDetailViewModel) {
         simpleUserProfileView.setup(model: model.userProfileViewModel)
@@ -159,12 +88,7 @@ final class StoryDetailViewController: UIViewController, StoryDetailPresentable,
         present(alert, animated: true, completion: nil)
     }
     
-}
-
-private extension StoryDetailViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
+    override func setupLayout() {
         [navigationView, scrollView].forEach(view.addSubview)
         
         scrollView.addSubview(stackView)
@@ -189,6 +113,64 @@ private extension StoryDetailViewController {
             
             simpleUserProfileView.heightAnchor.constraint(equalToConstant: Constant.userPorifleHeight)
         ])
+    }
+    
+    override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        navigationView.do {
+            $0.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: [.none]))
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        scrollView.do {
+            $0.showsVerticalScrollIndicator = true
+            $0.showsHorizontalScrollIndicator = false
+            $0.contentInset = .init(top: Constant.scrollViewTopBottomInset, left: 0,
+                                            bottom: Constant.scrollViewTopBottomInset, right: 0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        stackView.do {
+            $0.axis = .vertical
+            $0.spacing = Constant.stackViewSpacing
+            $0.alignment = .fill
+            $0.distribution = .fill
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        simpleUserProfileView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        storyImagesView.translatesAutoresizingMaskIntoConstraints = false
+        
+        storyHeaderView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        bodyView.do {
+            $0.font = .captionRegular
+            $0.textColor = .hpBlack
+            $0.textAlignment = .natural
+            $0.isScrollEnabled = false
+            $0.isUserInteractionEnabled = false
+            $0.textContainerInset = .init(top: Constant.bodyViewTopBottomInset,
+                                                left: Constants.leadingOffset,
+                                                bottom: Constant.bodyViewTopBottomInset,
+                                                right: Constants.traillingOffset)
+            
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    override func bind() {
+        
     }
     
 }
