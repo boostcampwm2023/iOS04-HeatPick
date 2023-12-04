@@ -17,8 +17,4 @@ public extension Publisher {
         }
     }
     
-    func sinkWith<O: AnyObject>(_ object: O) -> Publishers.CompactMap<Self, (O, Self.Output)> {
-        return with(object)
-    }
-    
 }
