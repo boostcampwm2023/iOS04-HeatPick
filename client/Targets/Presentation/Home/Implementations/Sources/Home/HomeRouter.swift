@@ -115,7 +115,7 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     func detachRecommendSeeAll() {
         guard let router = recommendSeeAllRouting else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         self.recommendSeeAllRouting = nil
     }
     
@@ -128,7 +128,7 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     func detachHotPlaceSeeAll() {
         guard let router = hotPlaceSeeAllRouting else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         self.hotPlaceSeeAllRouting = nil
     }
     
@@ -143,7 +143,7 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     
     func detachStoryDetail() {
         guard let router = storyDetailRouting else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         self.storyDetailRouting = nil
     }
     

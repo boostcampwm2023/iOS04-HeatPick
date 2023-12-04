@@ -86,7 +86,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     
     func detachStorySeeAll() {
         guard let router = storySeeAllRouting else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         self.storySeeAllRouting = nil
     }
     
@@ -99,7 +99,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     
     func detachSetting() {
         guard let router = settingRouting else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         self.settingRouting = nil
     }
     
@@ -112,7 +112,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     
     func detachStoryDetail() {
         guard let router = storyDetailRouting else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         self.storyDetailRouting = nil
     }
 
@@ -125,7 +125,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     
     func detachUserInfoEditDashboard() {
         guard let router = userInfoEditDashboardRouting else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         userInfoEditDashboardRouting = nil
     }
     

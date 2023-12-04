@@ -59,7 +59,7 @@ final class FollowingHomeRouter: ViewableRouter<FollowingHomeInteractable, Follo
     func detachStoryDetail() {
         guard let router = storyDetailRouting else { return }
         storyDetailRouting = nil
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
     }
     
     

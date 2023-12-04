@@ -68,7 +68,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     
     func detachSearchCurrentLocation() {
         guard let router = searchCurrentLocationRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         searchCurrentLocationRouter = nil
     }
     
@@ -81,7 +81,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     
     func detachSearchResult() {
         guard let router = searchResultRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         searchResultRouter = nil
     }
     
@@ -99,7 +99,7 @@ extension SearchRouter {
     
     func detachStoryDetail() {
         guard let router = storyDeatilRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         storyDeatilRouter = nil
     }
     
@@ -112,7 +112,7 @@ extension SearchRouter {
     
     func detachSearchStorySeeAll() {
         guard let router = searchStorySeeAllRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         searchStorySeeAllRouter = nil
     }
     
@@ -125,7 +125,7 @@ extension SearchRouter {
     
     func detachStoryEditor(_ completion: (() -> Void)?) {
         guard let router = storyEditorRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         storyEditorRouter = nil
     }
     
@@ -151,7 +151,7 @@ extension SearchRouter {
     
     func detachSearchUserSeeAll() {
         guard let router = searchUserSeeAllRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         searchUserSeeAllRouter = nil
     }
     

@@ -44,7 +44,7 @@ final class StoryDetailRouter: ViewableRouter<StoryDetailInteractable, StoryDeta
     
     func detachComment() {
         guard let router = commentRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         commentRouter = nil
     }
 }

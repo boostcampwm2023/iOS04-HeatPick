@@ -51,7 +51,7 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
     
     func detachSignUp() {
         guard let router = signUpRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         signUpRouter = nil
     }
     
@@ -64,7 +64,7 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
     
     func detachSignUpSuccess() {
         guard let router = signUpSuccessRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         signUpSuccessRouter = nil
     }
     
@@ -77,7 +77,7 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
     
     func detachLocationAuthority() {
         guard let router = locationAuthorityRouter else { return }
-        popRouter(router, animted: true)
+        popRouter(router, animated: true)
         locationAuthorityRouter = nil
     }
     

@@ -40,8 +40,8 @@ public extension ViewableRouting {
         detachChild(router)
     }
     
-    func popRouter(_ router: ViewableRouting, animted: Bool, completion: (() -> Void)? = nil) {
-        viewControllable.popViewController(router.viewControllable, animated: animted, completion: completion)
+    func popRouter(_ router: ViewableRouting, animated: Bool, completion: (() -> Void)? = nil) {
+        viewControllable.popViewController(router.viewControllable, animated: animated, completion: completion)
         detachChild(router)
     }
     
