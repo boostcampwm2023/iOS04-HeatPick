@@ -23,6 +23,7 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
         let button = SignInButton()
         button.setup(type: .naver)
         button.addTarget(self, action: #selector(naverButtonDidTap), for: .touchUpInside)
+        button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -31,6 +32,7 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
         let button = SignInButton()
         button.setup(type: .apple)
         button.addTarget(self, action: #selector(appleButtonDidTap), for: .touchUpInside)
+        button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()

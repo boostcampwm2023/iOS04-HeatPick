@@ -10,56 +10,25 @@ import UIKit
 import DesignKit
 
 enum SignInType {
+    
     case naver
     case apple
     
-    var icon: UIImage {
+    var image: UIImage {
         switch self {
         case .naver:
-            return .naverButtonIcon
+            return .naverButton
         case .apple:
-            return .appleButtonIcon
+            return .appleButton
         }
     }
     
-    var title: String {
-        switch self {
-        case .naver:
-            return "네이버로 계속하기"
-        case .apple:
-            return "Apple로 계속하기"
-        }
-    }
-    
-    var backgroundColor: String {
-        switch self {
-        case .naver:
-            return "03C75A"
-        case .apple:
-            return "000000"
-        }
-    }
 }
 
 final class SignInButton: UIButton {
     
     func setup(type: SignInType) {
-        var configuration = UIButton.Configuration.filled()
-        configuration.baseForegroundColor = .hpWhite
-        configuration.baseBackgroundColor = .init(hex: type.backgroundColor)
-        configuration.title = type.title
-        configuration.image = type.icon
-        configuration.imagePlacement = .leading
-        configuration.titleAlignment = .center
-        
-        let titleAttribute = UIConfigurationTextAttributesTransformer { transform in
-            var transform = transform
-            transform.font = UIFont.bodySemibold
-            return transform
-        }
-        configuration.titleTextAttributesTransformer = titleAttribute
-        
-        self.configuration = configuration
+        setImage(type.image, for: .normal)
     }
     
 }
