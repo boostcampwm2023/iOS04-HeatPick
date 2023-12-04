@@ -36,6 +36,7 @@ public struct StoryDetailResponseDTO: Decodable {
                                     nickname: author.username,
                                     profileImageUrl: author.profileImageUrl,
                                     authorStatus: UserStatus.allCases[safe: author.status] ?? .nonFollowing),
+                     likeStatus: (story.likeState == 0),
                      likesCount: story.likeCount,
                      commentsCount: story.commentCount)
     }
