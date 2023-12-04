@@ -12,3 +12,7 @@ export class MentionableResponseDto {
   @ApiProperty({ type: () => [userViewType] })
   mentionables: userViewType[];
 }
+
+export class MentionableResponseJSONDto {
+
+}

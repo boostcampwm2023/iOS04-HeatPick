@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
+import { IsISO8601, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 type Place = {
@@ -7,7 +7,7 @@ type Place = {
   lng: number;
 };
 
-export class CreateStoryDto {
+export class CreateStoryRequestDto {
   @ApiProperty({ example: 'my Story', description: 'Story Title' })
   @IsNotEmpty({ message: 'title 필수입니다.' })
   @IsString()

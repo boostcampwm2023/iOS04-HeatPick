@@ -24,7 +24,16 @@ export class CommentController {
 
   @Post('create')
   @ApiOperation({ summary: '댓글 생성 API' })
-  @ApiResponse({ status: 201, description: 'commentId' })
+  @ApiResponse({
+    status: 200,
+    description: '생성된 댓글 id',
+    schema: {
+      type: 'object',
+      properties: {
+        commentId: { type: 'number' },
+      },
+    },
+  })
   async create(@Request() req: any, @Body(new ValidationPipe({ transform: true })) createCommentDto: CreateCommentDto) {
     const { storyId, content, mentions } = createCommentDto;
     const userId = req.user.userRecordId;

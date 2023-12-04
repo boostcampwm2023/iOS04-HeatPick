@@ -11,14 +11,14 @@ import { getStoryDetailPlaceDataResponseDto, StoryDetailPlaceDataResponseDto } f
 import { Badge } from '../entities/badge.entity';
 import { Place } from '../entities/place.entity';
 import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
-import { CreateStoryMetaDto } from './dto/response/story.create.meta.response.dto';
 import { Category } from '../entities/category.entity';
 import { UserService } from 'src/user/user.service';
 import { updateStory } from '../util/util.story.update';
 import { In, Repository } from 'typeorm';
 import { getStoryDetailStoryDataResponseDto, StoryDetailStoryDataResponseDto } from './dto/response/detail/story.detail.story.data.response';
 import { getStoryDetailUserDataResponseDto, StoryDetailUserDataResponseDto } from './dto/response/detail/story.detail.user.data.response';
-import { getStoryDetailViewDataResponseDto } from './dto/response/detail/story.detail.view.data.response.dto';
+import { CreateStoryMetaResponseDto } from './dto/response/story.create.meta.response.dto';
+import { getStoryDetailViewDataResponseJSONDto } from './dto/response/detail/story.detail.view.data.response.dto';
 
 @Injectable()
 export class StoryService {
@@ -46,10 +46,10 @@ export class StoryService {
     });
   }
 
-  public async createMetaData(userId: string) {
-    const user: User = await this.userRepository.findOne({ where: { oauthId: userId }, relations: ['badges'] });
+  public async createMetaData(userId: number) {
+    const user: User = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges'] });
     const categoryList = await this.categoryRepository.find();
-    const metaData: CreateStoryMetaDto = {
+    const metaData: CreateStoryMetaResponseDto = {
       badges: (await user.badges).map((badge: Badge) => {
         return { badgeId: badge.badgeId, badgeName: badge.badgeName };
       }),
@@ -79,7 +79,7 @@ export class StoryService {
     const user = await story.user;
     const storyDetailUserData: StoryDetailUserDataResponseDto = await getStoryDetailUserDataResponseDto(user, userId);
 
-    return getStoryDetailViewDataResponseDto(storyDetailStoryData, storyDetailUserData);
+    return getStoryDetailViewDataResponseJSONDto(storyDetailStoryData, storyDetailUserData);
   }
 
   public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
