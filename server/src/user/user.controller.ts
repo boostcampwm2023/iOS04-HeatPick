@@ -20,6 +20,7 @@ import { UserJsonResponseDto } from './dto/response/user.response.dto';
 
 @ApiTags('user')
 @Controller('user')
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
