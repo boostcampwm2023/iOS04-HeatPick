@@ -14,6 +14,8 @@ public enum MyAPI {
     case myProfile
     case profile(id: Int)
     case userStory(id: Int, offset: Int, limit: Int)
+    case updateMetaData
+    case userUpdate(username: String, selectedBadgeId: Int, image: [String])
 }
 
 extension MyAPI: Target {
@@ -27,11 +29,16 @@ extension MyAPI: Target {
         case .myProfile: return "/user/myProfile"
         case .profile: return "/user/profile"
         case .userStory: return "/user/story"
+        case .updateMetaData: return "/user/updateMetaData"
+        case .userUpdate: return "/user/update"
         }
     }
     
     public var method: HTTPMethod {
-        return .get
+        switch self {
+        case .userUpdate: return .patch
+        default: return .get
+        }
     }
     
     public var header: NetworkHeader {
@@ -48,6 +55,13 @@ extension MyAPI: Target {
             
         case let .userStory(id, offset, limit):
             let request = UserStoryRequestDTO(userId: id, offset: offset, limit: limit)
+            return .url(parameters: request.parameters())
+            
+        case .updateMetaData:
+            return .plain
+            
+        case let .userUpdate(username, selectedBadgeId, image):
+            let request = UserUpdateRequestDTO(username: username, selectedBadgeId: selectedBadgeId, image: image)
             return .url(parameters: request.parameters())
         }
     }
