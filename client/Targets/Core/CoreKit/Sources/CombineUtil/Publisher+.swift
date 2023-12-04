@@ -17,4 +17,10 @@ public extension Publisher {
         }
     }
     
+    func withOnly<O: AnyObject>(_ object: O) -> Publishers.CompactMap<Self, O> {
+        return compactMap { [weak object] _ in
+            return object
+        }
+    }
+    
 }
