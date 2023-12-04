@@ -11,6 +11,14 @@ import PhotosUI
 import ModernRIBs
 import DesignKit
 
+struct UserInfoEditViewModel {
+    let userId: Int
+    let profileImageURL:  String
+    let username: String
+    let nowBadge: UserBadgeViewModel
+    let badges: [UserBadgeViewModel]
+}
+
 protocol UserInfoEditDashboardPresentableListener: AnyObject {
     func didTapBack()
     func didTapEditButton()
@@ -96,8 +104,10 @@ final class UserInfoEditDashboardViewController: UIViewController, UserInfoEditD
         setupViews()
     }
     
-    func setupUserInfoBadgeView(models: [UserBadgeViewModel]) {
-        userInfoEditBadgeView.setup(models: models)
+    func setup(model: UserInfoEditViewModel) {
+        userEditProfileView.setup(profileImageURL: model.profileImageURL)
+        userEditBasicInformationView.setup(model: .init(username: model.username))
+        userInfoEditBadgeView.setup(models: model.badges)
     }
     
 }

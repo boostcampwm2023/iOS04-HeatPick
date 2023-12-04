@@ -14,8 +14,9 @@ import DesignKit
 struct UserBadgeViewModel {
     let badgeId: Int
     let badgeName: String
+    let badgeExp: Int
     let emoji: String
-    let description: String
+    let badgeExplain: String
 }
 
 protocol UserBadgeViewDelegate: AnyObject {
@@ -100,7 +101,7 @@ final class UserBadgeView: UIView {
     
     func setup(model: UserBadgeViewModel) {
         titleLabel.text = "\(model.emoji) \(model.badgeName)"
-        descriptionLabel.text = model.description
+        descriptionLabel.text = model.badgeExplain
     }
     
 }

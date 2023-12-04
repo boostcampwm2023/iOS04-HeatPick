@@ -14,7 +14,7 @@ protocol UserInfoEditDashboardRouting: ViewableRouting { }
 protocol UserInfoEditDashboardPresentable: Presentable {
     var listener: UserInfoEditDashboardPresentableListener? { get set }
     
-    func setupUserInfoBadgeView(models: [UserBadgeViewModel])
+    func setup(model: UserInfoEditViewModel)
 }
 
 protocol UserInfoEditDashboardListener: AnyObject {
@@ -33,14 +33,8 @@ final class UserInfoEditDashboardInteractor: PresentableInteractor<UserInfoEditD
 
     override func didBecomeActive() {
         super.didBecomeActive()
+//        presenter.setup(model: )
         
-        presenter.setupUserInfoBadgeView(models: [
-            .init(badgeId: 1, badgeName: "테스트", emoji: "🫡", description: "설명"),
-            .init(badgeId: 1, badgeName: "테스트", emoji: "🫡", description: "설명"),
-            .init(badgeId: 1, badgeName: "테스트", emoji: "🫡", description: "설명"),
-            .init(badgeId: 1, badgeName: "테스트", emoji: "🫡", description: "설명"),
-            .init(badgeId: 1, badgeName: "끝끝끝끝끝끝끝", emoji: "🫡", description: "설명")
-        ])
     }
 
     override func willResignActive() {

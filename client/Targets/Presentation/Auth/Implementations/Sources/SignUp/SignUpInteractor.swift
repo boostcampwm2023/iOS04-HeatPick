@@ -54,7 +54,9 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
         super.willResignActive()
     }
     
-    func profileImageViewDidChange(_ imageData: Data) {}
+    func profileImageViewDidChange(_ imageData: Data) {
+        
+    }
     
     func signUpButtonDidTap() {
         Task { [weak self] in
