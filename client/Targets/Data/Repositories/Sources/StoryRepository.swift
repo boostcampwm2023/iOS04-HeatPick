@@ -35,6 +35,11 @@ public final class StoryRepository: StoryRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
+    public func requestDeleteStory(storyId: Int) async -> Result<Void, Error> {
+        let target = StoryAPI.deleteStory(storyId)
+        return await session.request(target)
+    }
+    
     public func requestStoryDetail(storyId: Int) async -> Result<Story, Error> {
         let target = StoryAPI.storyDetail(storyId)
         let request: Result<StoryDetailResponseDTO, Error> = await session.request(target)

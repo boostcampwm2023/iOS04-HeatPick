@@ -15,6 +15,7 @@ public protocol StoryDetailBuildable: Buildable {
 
 public protocol StoryDetailListener: AnyObject {
     func storyDetailDidTapClose()
+    func storyDidDelete()
 }
 
 public protocol StoryEditorBuildable: Buildable {
