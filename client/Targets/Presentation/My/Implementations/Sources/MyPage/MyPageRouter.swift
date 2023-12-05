@@ -33,7 +33,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     private var storySeeAllRouting: ViewableRouting?
     private var settingRouting: ViewableRouting?
     private var storyDetailRouting: ViewableRouting?
-    private var userInfoEditDashboardRouting: ViewableRouting?
+    private var updateUserDashoardRouting: ViewableRouting?
     
     private let dependency: MypageRouterDependency
     
@@ -115,18 +115,18 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         popRouter(router, animated: true)
         self.storyDetailRouting = nil
     }
-
-    func attachUserInfoEditDashboard() {
-        guard userInfoEditDashboardRouting == nil else { return }
-        let router = dependency.userInfoEditDashboardBuilder.build(withListener: interactor)
+    
+    func attachupdateUserDashboard() {
+        guard updateUserDashoardRouting == nil else { return }
+        let router = dependency.updateUserDashboardBuilder.build(withListener: interactor)
         pushRouter(router, animated: true)
-        userInfoEditDashboardRouting = router
+        updateUserDashoardRouting = router
     }
     
-    func detachUserInfoEditDashboard() {
-        guard let router = userInfoEditDashboardRouting else { return }
+    func detachUpdateUserDashboard() {
+        guard let router = updateUserDashoardRouting else { return }
         popRouter(router, animated: true)
-        userInfoEditDashboardRouting = nil
+        updateUserDashoardRouting = nil
     }
     
 }

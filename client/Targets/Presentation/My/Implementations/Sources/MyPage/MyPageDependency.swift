@@ -45,7 +45,7 @@ protocol MypageRouterDependency: AnyObject {
     var storySeeAllBuilder: MyPageStorySeeAllBuildable { get }
     var settingBuilder: SettingBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
-    var userInfoEditDashboardBuilder: MyPageUpdateUserDashboardBuildable { get }
+    var updateUserDashboardBuilder: MyPageUpdateUserDashboardBuildable { get }
     
 }
 
@@ -56,7 +56,7 @@ final class MyPageRouterComponent: MypageRouterDependency {
     let storySeeAllBuilder: MyPageStorySeeAllBuildable
     let settingBuilder: SettingBuildable
     let storyDetailBuilder: StoryDetailBuildable
-    let userInfoEditDashboardBuilder: MyPageUpdateUserDashboardBuildable
+    let updateUserDashboardBuilder: MyPageUpdateUserDashboardBuildable
     
     init(component: MyPageComponent) {
         self.userDashboardBuilder = MyPageUserDashboardBuilder(dependency: component)
@@ -64,7 +64,7 @@ final class MyPageRouterComponent: MypageRouterDependency {
         self.storySeeAllBuilder = MyPageStorySeeAllBuilder(dependency: component)
         self.settingBuilder = SettingBuilder(dependency: component)
         self.storyDetailBuilder = component.storyDetailBuilder
-        self.userInfoEditDashboardBuilder = MyPageUpdateUserDashboardBuilder(dependency: component)
+        self.updateUserDashboardBuilder = MyPageUpdateUserDashboardBuilder(dependency: component)
     }
     
 }
