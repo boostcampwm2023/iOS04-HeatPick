@@ -6,6 +6,7 @@ import { PlaceJasoTrie } from './../search/trie/placeTrie';
 import { LocationDTO } from './dto/location.dto';
 import { calculateDistance } from 'src/util/util.haversine';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class PlaceService {
@@ -24,12 +25,14 @@ export class PlaceService {
     });
   }
 
+  @Transactional()
   async getPlaceFromTrie(seperatedStatement: string[]) {
     const ids = this.placeJasoTrie.search(seperatedStatement, 10);
     const places = await this.placeRepository.find({ where: { placeId: In(ids) } });
     return places;
   }
 
+  @Transactional()
   async getPlaceByPosition(locationDto: LocationDTO) {
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;

@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
 import { CommentViewResponseDto, getCommentViewResponse } from './dto/response/comment.view.response.dto';
 import { updateComment } from '../util/util.comment.update';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class CommentService {
@@ -18,6 +19,7 @@ export class CommentService {
     private commentRepository: Repository<Comment>,
   ) {}
 
+  @Transactional()
   public async getMentionable({ storyId, userId }): Promise<{ userId: number; username: string }[]> {
     const mentionables: { userId: number; username: string }[] = [];
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['user', 'comments', 'comments.user', 'comments.mentions'] });
@@ -37,6 +39,7 @@ export class CommentService {
     });
   }
 
+  @Transactional()
   public async create({ storyId, userId, content, mentions }): Promise<number> {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
 
@@ -62,11 +65,13 @@ export class CommentService {
     return comment.commentId;
   }
 
+  @Transactional()
   public async read(storyId: number, userId: number): Promise<CommentViewResponseDto> {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['comments', 'comments.user', 'comments.mentions', 'comments.user.profileImage'] });
     return await getCommentViewResponse(story, userId);
   }
 
+  @Transactional()
   public async update({ storyId, commentId, content, mentions }): Promise<number> {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
 
@@ -89,6 +94,7 @@ export class CommentService {
     return updatedComment.commentId;
   }
 
+  @Transactional()
   public async delete({ storyId, commentId }): Promise<number> {
     const story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge'] });
     story.comments = Promise.resolve((await story.comments).filter((comment) => comment.commentId !== commentId));

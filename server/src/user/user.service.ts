@@ -19,6 +19,7 @@ import { ProfileUpdateMetaBadgeData } from './dto/response/profile.update.meta.b
 import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
 import { UserProfileDetailStoryDto } from './dto/response/user.profile.detail.story.dto';
 import { In, Repository } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class UserService {
@@ -36,12 +37,14 @@ export class UserService {
     });
   }
 
+  @Transactional()
   async getBadges(userRecordId: number) {
     const user = await this.userRepository.findOne({ where: { userId: userRecordId }, relations: ['badges'] });
     const badges = await user.badges;
     return badges;
   }
 
+  @Transactional()
   async getUsersFromTrie(searchText: string, offset: number, limit: number): Promise<User[]> {
     if (!this.searchUserResultCache.hasOwnProperty(searchText)) {
       const seperatedStatement = graphemeSeperation(searchText);
@@ -58,6 +61,7 @@ export class UserService {
     return results.slice(offset * limit, offset * limit + limit);
   }
 
+  @Transactional()
   async addNewBadge(addBadgeDto: AddBadgeDto) {
     const userId = addBadgeDto.userId;
     const badgeName = addBadgeDto.badgeName;
@@ -76,6 +80,7 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
+  @Transactional()
   async getProfile(requestUserId: number, targetUserId: number): Promise<UserProfileDetailDataDto> {
     const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
     const mainBadge = await user.representativeBadge;
@@ -112,6 +117,7 @@ export class UserService {
     };
   }
 
+  @Transactional()
   async setRepresentatvieBadge(setBadgeDto: AddBadgeDto) {
     const userId = setBadgeDto.userId;
     const badgeName = setBadgeDto.badgeName;
@@ -130,6 +136,7 @@ export class UserService {
     await this.userRepository.save(userObject);
   }
 
+  @Transactional()
   async getStoryList(requestUserId: number, targetUserId: number, offset: number, limit: number): Promise<UserProfileDetailStoryDto[]> {
     const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['stories', 'stories.storyImages', 'stories.usersWhoLiked'] });
     return (
@@ -149,6 +156,7 @@ export class UserService {
     ).slice(offset * limit, offset * limit + limit);
   }
 
+  @Transactional()
   async getUpdateMetaData(userId: number): Promise<ProfileUpdateMetaDataDto> {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'profileImage'] });
     const representativeBadge = await user.representativeBadge;
@@ -178,6 +186,7 @@ export class UserService {
     };
   }
 
+  @Transactional()
   async update(userId: number, { image, username, selectedBadgeId }) {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['profileImage', 'badges', 'representativeBadge'] });
     const badges = await user.badges;
@@ -194,6 +203,7 @@ export class UserService {
     return user.userId;
   }
 
+  @Transactional()
   async resign(accessToken: string, message: string) {
     const decodedToken = this.jwtService.verify(accessToken);
     const userId = decodedToken.userId;
@@ -201,6 +211,7 @@ export class UserService {
     return await this.userRepository.remove(user);
   }
 
+  @Transactional()
   async addBadgeExp(addBadgeExpDto: AddBadgeExpDto) {
     const userId = addBadgeExpDto.userId;
     const badgeName = addBadgeExpDto.badgeName;
@@ -223,6 +234,7 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
+  @Transactional()
   async addFollowing(followId: number, followerId: number) {
     try {
       const followUser = await this.userRepository.findOne({ where: { userId: followId }, relations: ['following', 'followers'] });
@@ -237,6 +249,8 @@ export class UserService {
       throw new InvalidIdException();
     }
   }
+
+  @Transactional()
   async unFollow(followId: number, followerId: number) {
     try {
       const followUser = await this.userRepository.findOne({ where: { userId: followId }, relations: ['followers'] });
@@ -255,6 +269,8 @@ export class UserService {
       throw new InvalidIdException();
     }
   }
+
+  @Transactional()
   async getFollows(userId: number) {
     const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['following'] });
     const follows = userObj.following;
@@ -262,12 +278,15 @@ export class UserService {
     return follows;
   }
 
+  @Transactional()
   async getFollowers(userId: number) {
     const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['follower'] });
     const followers = userObj.followers;
     //const userIdArray = follows.map((user) => user.userId);
     return followers;
   }
+
+  @Transactional()
   async recommendUsers(userId: number): Promise<User[]> {
     const users: User[] = await this.userRepository
       .createQueryBuilder('user')
