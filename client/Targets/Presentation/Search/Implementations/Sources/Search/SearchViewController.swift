@@ -136,6 +136,8 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     }
     
     override func setupLayout() {
+        view = naverMap
+        
         [searchTextField, reSearchView, showSearchHomeListButton, storyView, selectedView].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
@@ -163,8 +165,6 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     }
     
     override func setupAttributes() {
-        view = naverMap
-        
         naverMap.do {
             $0.backgroundColor = .hpWhite
             $0.showLocationButton = true
