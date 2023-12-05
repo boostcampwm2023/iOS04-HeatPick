@@ -11,6 +11,7 @@ import Foundation
 import ModernRIBs
 
 import CoreKit
+import FoundationKit
 import DomainEntities
 import DomainInterfaces
 
@@ -21,12 +22,12 @@ protocol CommentRouting: ViewableRouting {
 protocol CommentPresentable: Presentable {
     var listener: CommentPresentableListener? { get set }
     func setup(_ model: [CommentTableViewCellModel])
-    func showFailure(_ error: Error, with title: String)
     func setCommentButton(_ isEnabled: Bool)
     func clearInputField()
     func resetInputField()
     func setupMentionee(id: Int)
     func detachMentionee()
+    func present(type: AlertType, okAction: @escaping (() -> Void))
 }
 
 protocol CommentInteractorDependency: AnyObject {
@@ -106,7 +107,9 @@ private extension CommentInteractor {
                 }
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to load comments with \(error.localizedDescription)", log: .interactor)
-                    this.presenter.showFailure(error, with: "댓글을 불러오는데 실패했어요")
+                    this.presenter.present(type: .didFailToLoadComments) { [weak self] in
+                        self?.listener?.commentDidTapClose()
+                    }
                 }
         }.store(in: cancelBag)
     }
@@ -123,8 +126,10 @@ private extension CommentInteractor {
                 }
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to write comments with \(error.localizedDescription)", log: .interactor)
-                    this.presenter.showFailure(error, with: "댓글을 다는데 실패했어요")
                     this.presenter.resetInputField()
+                    this.presenter.present(type: .didFailToSaveComment) { [weak self] in
+                        self?.requestNewComment(with: content)
+                    }
                 }
         }.store(in: cancelBag)
     }
