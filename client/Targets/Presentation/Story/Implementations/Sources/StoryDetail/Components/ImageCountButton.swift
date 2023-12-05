@@ -12,12 +12,22 @@ final class ImageCountButton: UIButton {
 
     enum ButtonType {
         case like
+        case liked
         case comment
         
         var imageName: String {
             switch self {
             case .comment: "bubble"
             case .like: "heart"
+            case .liked: "heart.fill"
+            }
+        }
+        
+        var color: UIColor {
+            switch self {
+            case .comment: return .hpBlack
+            case .like: return .hpBlack
+            case .liked: return .hpRed1
             }
         }
     }
@@ -62,17 +72,12 @@ final class ImageCountButton: UIButton {
     
     func setup(type: ButtonType) {
         typeImageView.image = UIImage(systemName: type.imageName)
-        countLabel.text = "0"
-        
+        typeImageView.tintColor = type.color
+        countLabel.textColor = type.color
     }
     
     func setup(count: Int) {
         countLabel.text = String(count)
-    }
-    
-    func setup(color: UIColor) {
-        typeImageView.tintColor = color
-        countLabel.textColor = color
     }
 
 }
