@@ -68,7 +68,7 @@ export class SearchController {
     type: SearchHistoryResultDto,
   })
   async recommendSearch(@Query('searchText') searchText: string): Promise<SearchHistoryResultDto> {
-    const results = this.searchService.searchHistoryTree(graphemeSeperation(searchText));
+    const results = await this.searchService.searchRecommend(searchText);
     return { recommends: results };
   }
 
