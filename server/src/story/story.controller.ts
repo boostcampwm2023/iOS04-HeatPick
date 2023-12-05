@@ -44,7 +44,7 @@ export class StoryController {
   })
   async create(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) createStoryRequestDto: CreateStoryRequestDto): Promise<{ storyId: number }> {
     const { title, content, categoryId, place, badgeId, date } = createStoryRequestDto;
-    const storyId = await this.storyService.create(req.user.userId, { title, content, categoryId, place, images, badgeId, date });
+    const storyId = await this.storyService.create(req.user.userRecordId, { title, content, categoryId, place, images, badgeId, date });
     return { storyId: storyId };
   }
 
@@ -74,7 +74,7 @@ export class StoryController {
   })
   async update(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) updateStoryRequestDto: UpdateStoryRequestDto): Promise<{ storyId: number }> {
     const { storyId, title, content, categoryId, place, badgeId, date } = updateStoryRequestDto;
-    const newStoryId = await this.storyService.update(req.user.userId, { storyId, title, content, categoryId, place, images, badgeId, date });
+    const newStoryId = await this.storyService.update(req.user.userRecordId, { storyId, title, content, categoryId, place, images, badgeId, date });
     return { storyId: newStoryId };
   }
 
@@ -91,42 +91,8 @@ export class StoryController {
     },
   })
   async delete(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<{ storyId: number }> {
-    await this.storyService.delete(req.user.userId, storyId);
+    await this.storyService.delete(req.user.userRecordId, storyId);
     return { storyId: storyId };
-  }
-
-  @Post('like')
-  @ApiOperation({ summary: '스토리 좋아요' })
-  @ApiCreatedResponse({
-    status: 200,
-    description: '성공',
-    schema: {
-      type: 'object',
-      properties: {
-        likeCount: { type: 'number' },
-      },
-    },
-  })
-  async addLike(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<{ likeCount: number }> {
-    const likeCount = await this.storyService.like(req.user.userRecordId, storyId);
-    return { likeCount: likeCount };
-  }
-
-  @Post('unlike')
-  @ApiOperation({ summary: '스토리 좋아요 취소' })
-  @ApiCreatedResponse({
-    status: 200,
-    description: '성공',
-    schema: {
-      type: 'object',
-      properties: {
-        likeCount: { type: 'number' },
-      },
-    },
-  })
-  async unlike(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<{ likeCount: number }> {
-    const likeCount = await this.storyService.unlike(req.user.userRecordId, storyId);
-    return { likeCount: likeCount };
   }
 
   @Get('recommend/location')

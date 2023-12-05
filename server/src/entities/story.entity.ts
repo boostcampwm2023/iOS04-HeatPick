@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany, OneToOne, JoinColumn, DeleteDateColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Category } from './category.entity';
 import { StoryImage } from './storyImage.entity';
@@ -58,7 +58,20 @@ export class Story {
   @OneToMany(() => Comment, (comment) => comment.story, { cascade: true })
   comments: Promise<Comment[]>;
 
-  @ManyToMany(() => User, (user) => user.likedStories)
-  @JoinTable()
+  @ManyToMany(() => User, (user) => user.likedStories, { cascade: true })
+  @JoinTable({
+    name: 'story_liked_user',
+    joinColumn: {
+      name: 'storyId',
+      referencedColumnName: 'storyId',
+    },
+    inverseJoinColumn: {
+      name: 'userId',
+      referencedColumnName: 'userId',
+    },
+  })
   usersWhoLiked: Promise<User[]>;
+
+  @DeleteDateColumn({ nullable: true, default: null })
+  deletedAt: Date;
 }

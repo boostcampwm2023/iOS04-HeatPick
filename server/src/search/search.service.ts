@@ -4,8 +4,12 @@ import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeMod
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { SearchHistory } from 'src/entities/search.entity';
+
 import { makeSignature } from 'src/util/make.signature';
 import axios from 'axios';
+
+import { Transactional } from 'typeorm-transactional';
+
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
@@ -18,6 +22,7 @@ export class SearchService implements OnModuleInit {
     await this.loadSearchHistoryTrie();
   }
 
+  @Transactional()
   @Cron(CronExpression.EVERY_HOUR)
   async loadSearchHistoryTrie() {
     const everyHistory = await this.searchRepository.find();
@@ -49,6 +54,7 @@ export class SearchService implements OnModuleInit {
     return data;
   }
 
+  @Transactional()
   async saveHistory(searchText: string) {
     const existingHistory = await this.searchRepository.findOne({ where: { content: searchText } });
     if (existingHistory) {

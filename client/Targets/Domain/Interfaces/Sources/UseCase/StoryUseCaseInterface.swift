@@ -15,6 +15,7 @@ public protocol StoryUseCaseInterface: AnyObject {
     func requestAddress(of location: Location) async -> Result<String?, Error>
     func requestMetaData() async -> Result<([StoryCategory], [Badge]), Error>
     func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error>
+    func requestDeleteStory(storyId: Int) async -> Result<Void, Error>
     func requestStoryDetail(storyId: Int) async -> Result<Story, Error>
     func requestFollow(userId: Int) async -> Result<Void, Error>
     func requestUnfollow(userId: Int) async -> Result<Void, Error>

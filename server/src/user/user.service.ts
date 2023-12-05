@@ -1,12 +1,10 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { UserJasoTrie } from './../search/trie/userTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/request/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
 import { Story } from '../entities/story.entity';
-import { JwtService } from '@nestjs/jwt';
-import { ImageService } from '../image/image.service';
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
 import { nextBadge, strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 import { AddBadgeExpDto } from './dto/request/addBadgeExp.dto';
@@ -19,6 +17,9 @@ import { ProfileUpdateMetaBadgeData } from './dto/response/profile.update.meta.b
 import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto';
 import { UserProfileDetailStoryDto } from './dto/response/user.profile.detail.story.dto';
 import { In, Repository } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
+import { StoryService } from '../story/story.service';
+import { Comment } from '../entities/comment.entity';
 
 @Injectable()
 export class UserService {
@@ -27,13 +28,17 @@ export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
+    @Inject(forwardRef(() => StoryService))
+    private storyService: StoryService,
     private userJasoTrie: UserJasoTrie,
-    private jwtService: JwtService,
-    private imageService: ImageService,
   ) {
     this.userRepository.find().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));
     });
+  }
+
+  async getUser(userRecordId: number, relations?: object) {
+    return await this.userRepository.findOne({ where: { userId: userRecordId }, relations: relations });
   }
 
   async getBadges(userRecordId: number) {
@@ -42,6 +47,7 @@ export class UserService {
     return badges;
   }
 
+  @Transactional()
   async getUsersFromTrie(searchText: string, offset: number, limit: number): Promise<User[]> {
     if (!this.searchUserResultCache.hasOwnProperty(searchText)) {
       const seperatedStatement = graphemeSeperation(searchText);
@@ -58,6 +64,7 @@ export class UserService {
     return results.slice(offset * limit, offset * limit + limit);
   }
 
+  @Transactional()
   async addNewBadge(addBadgeDto: AddBadgeDto) {
     const userId = addBadgeDto.userId;
     const badgeName = addBadgeDto.badgeName;
@@ -76,6 +83,7 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
+  @Transactional()
   async getProfile(requestUserId: number, targetUserId: number): Promise<UserProfileDetailDataDto> {
     const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
     const mainBadge = await user.representativeBadge;
@@ -112,6 +120,7 @@ export class UserService {
     };
   }
 
+  @Transactional()
   async setRepresentatvieBadge(setBadgeDto: AddBadgeDto) {
     const userId = setBadgeDto.userId;
     const badgeName = setBadgeDto.badgeName;
@@ -130,6 +139,7 @@ export class UserService {
     await this.userRepository.save(userObject);
   }
 
+  @Transactional()
   async getStoryList(requestUserId: number, targetUserId: number, offset: number, limit: number): Promise<UserProfileDetailStoryDto[]> {
     const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['stories', 'stories.storyImages', 'stories.usersWhoLiked'] });
     return (
@@ -149,6 +159,7 @@ export class UserService {
     ).slice(offset * limit, offset * limit + limit);
   }
 
+  @Transactional()
   async getUpdateMetaData(userId: number): Promise<ProfileUpdateMetaDataDto> {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'profileImage'] });
     const representativeBadge = await user.representativeBadge;
@@ -159,12 +170,14 @@ export class UserService {
     };
 
     const badges = await Promise.all(
-      (await user.badges).map((badge) => {
-        return {
-          ...badge,
-          badgeExplain: strToExplain[badge.badgeName],
-        };
-      }),
+      (await user.badges)
+        .filter((badge) => badge.badgeId !== representativeBadge.badgeId)
+        .map((badge) => {
+          return {
+            ...badge,
+            badgeExplain: strToExplain[badge.badgeName],
+          };
+        }),
     );
     const userImage = await user.profileImage;
     return {
@@ -176,6 +189,7 @@ export class UserService {
     };
   }
 
+  @Transactional()
   async update(userId: number, { image, username, selectedBadgeId }) {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['profileImage', 'badges', 'representativeBadge'] });
     const badges = await user.badges;
@@ -184,8 +198,7 @@ export class UserService {
     user.username = username;
     user.representativeBadge = Promise.resolve(selectedBadge);
     const profileObj = new profileImage();
-    const imageName = await saveImageToLocal('./images/profile', image.buffer);
-    profileObj.imageUrl = `https://server.bc8heatpick.store/image/profile?name=${imageName}`;
+    profileObj.imageUrl = image ? await saveImageToLocal('./images/profile', image.buffer, 'profile') : ``;
     user.profileImage = Promise.resolve(profileObj);
 
     await this.userRepository.save(user);
@@ -193,13 +206,11 @@ export class UserService {
     return user.userId;
   }
 
-  async resign(accessToken: string, message: string) {
-    const decodedToken = this.jwtService.verify(accessToken);
-    const userId = decodedToken.userId;
-    const user = await this.userRepository.findOne(userId);
-    return await this.userRepository.remove(user);
+  async resign(userId: number, message: string) {
+    return await this.userRepository.softDelete(userId);
   }
 
+  @Transactional()
   async addBadgeExp(addBadgeExpDto: AddBadgeExpDto) {
     const userId = addBadgeExpDto.userId;
     const badgeName = addBadgeExpDto.badgeName;
@@ -222,6 +233,7 @@ export class UserService {
     this.userRepository.save(userObject[0]);
   }
 
+  @Transactional()
   async addFollowing(followId: number, followerId: number) {
     try {
       const followUser = await this.userRepository.findOne({ where: { userId: followId }, relations: ['following', 'followers'] });
@@ -236,6 +248,8 @@ export class UserService {
       throw new InvalidIdException();
     }
   }
+
+  @Transactional()
   async unFollow(followId: number, followerId: number) {
     try {
       const followUser = await this.userRepository.findOne({ where: { userId: followId }, relations: ['followers'] });
@@ -254,19 +268,24 @@ export class UserService {
       throw new InvalidIdException();
     }
   }
+
+  @Transactional()
   async getFollows(userId: number) {
-    const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['following'] });
+    const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['following', 'profileImage'] });
     const follows = userObj.following;
     //const userIdArray = follows.map((user) => user.userId);
     return follows;
   }
 
+  @Transactional()
   async getFollowers(userId: number) {
     const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['follower'] });
     const followers = userObj.followers;
     //const userIdArray = follows.map((user) => user.userId);
     return followers;
   }
+
+  @Transactional()
   async recommendUsers(userId: number): Promise<User[]> {
     const users: User[] = await this.userRepository
       .createQueryBuilder('user')
@@ -278,5 +297,34 @@ export class UserService {
       .getMany();
 
     return users;
+  }
+
+  public async like(userId: number, storyId: number): Promise<number> {
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
+    const story = await this.storyService.getStory(storyId);
+
+    (await user.likedStories).push(story);
+    await this.userRepository.save(user);
+
+    return await this.storyService.addLikeCount(storyId);
+  }
+
+  public async unlike(userId: number, storyId: number): Promise<number> {
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
+
+    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId !== storyId));
+    await this.userRepository.save(user);
+
+    return await this.storyService.subLikeCount(storyId);
+  }
+
+  public async mention(user: User, comment: Comment) {
+    user.mentions.push(comment);
+    return await this.userRepository.save(user);
+  }
+
+  public async unMention(user: User, targetComment: Comment) {
+    user.mentions = user.mentions.filter((comment) => comment.commentId !== targetComment.commentId);
+    return await this.userRepository.save(user);
   }
 }

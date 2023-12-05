@@ -3,18 +3,17 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
 import { idDuplicatedException } from 'src/exception/custom.exception/id.duplicate.exception';
 import { profileImage } from 'src/entities/profileImage.entity';
-import { ImageService } from '../image/image.service';
 import { invalidTokenException } from 'src/exception/custom.exception/token.invalid.exception';
 import { Badge } from 'src/entities/badge.entity';
 import { strToEmoji } from 'src/util/util.string.to.badge.content';
 import { Repository } from 'typeorm';
+import { saveImageToLocal } from '../util/util.save.image.local';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
-    private imageService: ImageService,
     private jwtService: JwtService,
   ) {}
   async signIn(OAuthToken: string): Promise<string> {
@@ -31,7 +30,7 @@ export class AuthService {
 
   async signUp(image: Express.Multer.File, OAuthToken: string, username: string): Promise<string> {
     let imagePath = '';
-    if (image) imagePath = await this.imageService.saveImage('./images/profile', image.buffer);
+    if (image) imagePath = await saveImageToLocal('./images/profile', image.buffer, 'profile');
 
     const userId = await this.getId(OAuthToken);
 
@@ -49,11 +48,11 @@ export class AuthService {
     userBadges.push(newBadge);
 
     const profileObj = new profileImage();
-    profileObj.imageUrl = `https://server.bc8heatpick.store/image/profile?name=${imagePath}`;
+    profileObj.imageUrl = imagePath;
     userObj.profileImage = Promise.resolve(profileObj);
     userObj.temperature = 0;
 
-    const user = await this.userRepository.findOneById(userId);
+    const user = await this.userRepository.findOne({ where: { oauthId: userId } });
 
     if (user) throw new idDuplicatedException();
 

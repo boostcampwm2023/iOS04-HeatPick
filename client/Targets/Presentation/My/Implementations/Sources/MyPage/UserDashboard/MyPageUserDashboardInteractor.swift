@@ -20,7 +20,7 @@ protocol MyPageUserDashboardPresentable: Presentable {
 }
 
 protocol MyPageUserDashboardListener: AnyObject {
-    func userDashboardDidTapProfile()
+    func profileEidtButtonDidTap()
 }
 
 protocol MyPageUserDashboardInteractorDependency: AnyObject {
@@ -59,8 +59,13 @@ final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashb
         super.willResignActive()
     }
     
-    func didTapProfile() {
-        listener?.userDashboardDidTapProfile()
+    func profileEidtButtonDidTap() {
+        listener?.profileEidtButtonDidTap()
+    }
+    
+    // TODO: 팔로우 로직
+    func followButtonDidTap() {
+        
     }
     
 }

@@ -23,8 +23,8 @@ protocol MyPageRouting: ViewableRouting {
     func detachSetting()
     func attachStoryDetail(id: Int)
     func detachStoryDetail()
-    func attachUserInfoEditDashboard()
-    func detachUserInfoEditDashboard() 
+    func attachupdateUserDashboard()
+    func detachUpdateUserDashboard() 
 }
 
 protocol MyPagePresentable: Presentable {
@@ -36,7 +36,7 @@ protocol MyPageInteractorDependency: AnyObject {
 }
 
 final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageInteractable, MyPagePresentableListener {
-    
+
     weak var router: MyPageRouting?
     weak var listener: MyPageListener?
     
@@ -70,12 +70,12 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     // MARK: - UserDashboard
     
-    func userDashboardDidTapProfile() {
-        router?.attachUserInfoEditDashboard()
+    func profileEidtButtonDidTap() {
+        router?.attachupdateUserDashboard()
     }
     
-    func didTapBackUserInfoEditDashboard() {
-        router?.detachUserInfoEditDashboard()
+    func detachMyPageUpdateUserDasbaord() {
+        router?.detachUpdateUserDashboard()
     }
     
     // MARK: - StoryDashboard
@@ -125,4 +125,18 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.detachStoryDetail()
     }
     
+    // MARK: UpdateUser
+    func updateUser(model: UserUpdateContent) {
+        Task { [weak self] in
+            guard let self else { return }
+            await depedency.myPageUseCase.fetchUserInfo(userUpdate: model)
+                .onSuccess { _ in
+                    self.fetchMyPage()
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .network)
+                }
+        }.store(in: cancelBag)
+    }
+
 }

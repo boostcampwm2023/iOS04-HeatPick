@@ -1,25 +1,21 @@
 //
-//  UserEditBasicInformationView.swift
+//  MyPageUpdateUserBasicInformationView.swift
 //  MyImplementations
 //
-//  Created by 이준복 on 11/30/23.
+//  Created by 이준복 on 12/4/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
 import UIKit
 import DesignKit
 
-struct UserInfoEditBasicInformationViewModel {
-    let username: String
-}
-
-protocol UserInfoEditBasicInformationViewDelegate: AnyObject {
+protocol MyPageUpdateUserBasicInformationViewDelegate: AnyObject {
     func usernameValueChanged(_ username: String)
 }
 
-final class UserInfoEditBasicInformationView: UIView {
+final class MyPageUpdateUserBasicInformationView: UIView {
     
-    weak var delegate: UserInfoEditBasicInformationViewDelegate?
+    weak var delegate: MyPageUpdateUserBasicInformationViewDelegate?
     
     private enum Constant {
         static let topOffset: CGFloat = 15
@@ -74,14 +70,14 @@ final class UserInfoEditBasicInformationView: UIView {
         setupViews()
     }
     
-    func setup(model: UserInfoEditBasicInformationViewModel) {
-        usernameTextField.text = model.username
+    func setup(username: String) {
+        usernameTextField.text = username
     }
     
 }
 
 
-private extension UserInfoEditBasicInformationView {
+private extension MyPageUpdateUserBasicInformationView {
     
     func setupViews() {
         [titleLabel, usernameTextField].forEach(addSubview)
@@ -102,7 +98,7 @@ private extension UserInfoEditBasicInformationView {
 }
 
 
-private extension UserInfoEditBasicInformationView {
+private extension MyPageUpdateUserBasicInformationView {
     
     @objc func usernameTextFieldValueChanged(_ sender: UITextField) {
         guard let username = sender.text else { return }
@@ -111,7 +107,7 @@ private extension UserInfoEditBasicInformationView {
     
 }
 
-extension UserInfoEditBasicInformationView: UITextFieldDelegate {
+extension MyPageUpdateUserBasicInformationView: UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -119,3 +115,4 @@ extension UserInfoEditBasicInformationView: UITextFieldDelegate {
     }
     
 }
+

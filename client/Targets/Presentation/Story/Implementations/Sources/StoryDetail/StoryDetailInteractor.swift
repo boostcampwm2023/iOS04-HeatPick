@@ -11,6 +11,7 @@ import Foundation
 import ModernRIBs
 
 import CoreKit
+import FoundationKit
 import DomainEntities
 import DomainInterfaces
 import StoryInterfaces
@@ -28,7 +29,7 @@ protocol StoryDetailPresentable: Presentable {
     func didLike(count: Int)
     func didUnlike(count: Int)
     func didFailToLike()
-    func showFailure(_ error: Error)
+    func present(type: AlertType, okAction: @escaping (() -> Void))
 }
 
 protocol StoryDetailInteractorDependency: AnyObject {
@@ -54,20 +55,7 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        Task { [weak self] in
-            guard let self else { return }
-            await dependency
-                .storyUseCase
-                .requestStoryDetail(storyId: dependency.storyId)
-                .onSuccess(on: .main, with: self) { this, story in
-                    guard let model = story.toViewModel() else { return }
-                    this.presenter.setup(model: model)
-                }
-                .onFailure(on: .main, with: self) { this, error in
-                    print(error.localizedDescription)
-                    this.presenter.showFailure(error)
-                }
-        }.store(in: cancelBag)
+        requestStoryDetail()
     }
 
     override func willResignActive() {
@@ -102,9 +90,46 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
         router?.detachComment()
     }
     
+    func deleteButtonDidTap() {
+        requestDeleteStory()
+    }
 }
 
 private extension StoryDetailInteractor {
+    
+    func requestStoryDetail() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency
+                .storyUseCase
+                .requestStoryDetail(storyId: dependency.storyId)
+                .onSuccess(on: .main, with: self) { this, story in
+                    guard let model = story.toViewModel() else { return }
+                    this.presenter.setup(model: model)
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "fail to load story detail with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.present(type: .didFailToLoadStoryDetail) { [weak self] in
+                        self?.listener?.storyDetailDidTapClose()
+                    }
+                }
+        }.store(in: cancelBag)
+    }
+    
+    func requestDeleteStory() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestDeleteStory(storyId: dependency.storyId)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.listener?.storyDidDelete()
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "fail to delete story with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.present(type: .didFailToDeleteStory) { }
+                }
+        }.store(in: cancelBag)
+    }
     
     func requestFollow(_ userId: Int) {
         Task { [weak self] in
@@ -117,6 +142,7 @@ private extension StoryDetailInteractor {
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to follow \(userId) with \(error.localizedDescription)", log: .interactor)
                     this.presenter.didUnfollow()
+                    this.presenter.present(type: .didFailToFollow) { }
                 }
         }.store(in: cancelBag)
     }
@@ -132,6 +158,8 @@ private extension StoryDetailInteractor {
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to unfollow \(userId) with \(error.localizedDescription)", log: .interactor)
                     this.presenter.didFollow()
+                    this.presenter.present(type: .didFailToFollow) { }
+                    
                 }
         }.store(in: cancelBag)
     }
@@ -147,6 +175,7 @@ private extension StoryDetailInteractor {
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to like with \(error.localizedDescription)", log: .interactor)
                     this.presenter.didFailToLike()
+                    this.presenter.present(type: .didFailToFollow) { }
                 }
             
         }.store(in: cancelBag)
@@ -163,6 +192,7 @@ private extension StoryDetailInteractor {
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to like with \(error.localizedDescription)", log: .interactor)
                     this.presenter.didFailToLike()
+                    this.presenter.present(type: .didFailToLike) { }
                 }
             
         }.store(in: cancelBag)

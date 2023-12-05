@@ -37,4 +37,5 @@ final class SignUpSuccessBuilder: Builder<SignUpSuccessDependency>, SignUpSucces
         interactor.listener = listener
         return SignUpSuccessRouter(interactor: interactor, viewController: viewController)
     }
+    
 }

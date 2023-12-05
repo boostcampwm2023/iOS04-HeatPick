@@ -9,11 +9,14 @@
 import Foundation
 import BaseAPI
 import NetworkAPIKit
+import DomainEntities
 
 public enum MyAPI {
     case myProfile
     case profile(id: Int)
     case userStory(id: Int, offset: Int, limit: Int)
+    case userMetaData
+    case userUpdate(content: UserUpdateContent)
 }
 
 extension MyAPI: Target {
@@ -27,11 +30,16 @@ extension MyAPI: Target {
         case .myProfile: return "/user/myProfile"
         case .profile: return "/user/profile"
         case .userStory: return "/user/story"
+        case .userMetaData: return "/user/updateMetaData"
+        case .userUpdate: return "/user/update"
         }
     }
     
     public var method: HTTPMethod {
-        return .get
+        switch self {
+        case .userUpdate: return .patch
+        default: return .get
+        }
     }
     
     public var header: NetworkHeader {
@@ -49,6 +57,14 @@ extension MyAPI: Target {
         case let .userStory(id, offset, limit):
             let request = UserStoryRequestDTO(userId: id, offset: offset, limit: limit)
             return .url(parameters: request.parameters())
+            
+        case .userMetaData:
+            return .plain
+            
+        case let .userUpdate(content):
+            let request = UserUpdateRequestDTO(content: content)
+            let media = Media(data: content.image, type: .jpeg, key: "image")
+            return .multipart(.init(data: request, mediaList: [media]))
         }
     }
     

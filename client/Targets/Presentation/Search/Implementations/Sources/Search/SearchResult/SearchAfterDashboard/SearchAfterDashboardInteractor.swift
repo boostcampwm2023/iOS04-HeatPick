@@ -139,6 +139,4 @@ extension SearchAfterDashboardInteractor {
         listener?.didTapUser(userId: userId)
     }
 
-
-    
 }

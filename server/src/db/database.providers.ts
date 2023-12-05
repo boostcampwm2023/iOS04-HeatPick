@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import { establishSSHconnection } from './dbConnection';
 import * as dotenv from 'dotenv';
 import { query } from 'express';
+import { addTransactionalDataSource } from 'typeorm-transactional';
 
 dotenv.config();
 
@@ -27,7 +28,7 @@ export const databaseProviders = [
         },
       });
 
-      return dataSource.initialize();
+      return addTransactionalDataSource(await dataSource.initialize());
     },
   },
 ];

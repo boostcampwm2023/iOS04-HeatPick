@@ -1,20 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayNotEmpty, ArrayUnique, IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ArrayUnique, IsArray, IsNotEmpty, IsNumber } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class UpdateCommentDto {
-
   @ApiProperty({ example: '22', description: '댓글 아이디' })
   @IsNotEmpty({ message: 'commentId는 필수입니다.' })
   @Transform(({ value }) => parseInt(value, 10)) // 문자열을 숫자로 변환
   @IsNumber()
   commentId: number;
-
-  @ApiProperty({ example: '11', description: '스토리 아이디' })
-  @IsNotEmpty({ message: 'storyId는 필수입니다.' })
-  @Transform(({ value }) => parseInt(value, 10)) // 문자열을 숫자로 변환
-  @IsNumber()
-  storyId: number;
 
   @ApiProperty({ example: '안녕하세용', description: '댓글 내용' })
   @IsNotEmpty({ message: 'content 필수입니다.' })

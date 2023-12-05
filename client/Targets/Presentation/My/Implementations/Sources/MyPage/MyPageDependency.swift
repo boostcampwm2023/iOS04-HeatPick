@@ -26,11 +26,13 @@ final class MyPageComponent: Component<MyPageDependency>,
                              MyPageStorySeeAllDependency,
                              MyPageInteractorDependency,
                              SettingDependency,
-                             UserInfoEditDashboardDependency {
+                             MyPageUpdateUserDashboardDependency {
+    
     
     var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
     var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
     var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
+    var myPageUpdateUserUseCase: MyPageUpdateUserUseCaseInterface { dependency.myPageUseCase }
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
     
@@ -43,7 +45,7 @@ protocol MypageRouterDependency: AnyObject {
     var storySeeAllBuilder: MyPageStorySeeAllBuildable { get }
     var settingBuilder: SettingBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
-    var userInfoEditDashboardBuilder: UserInfoEditDashboardBuildable { get }
+    var updateUserDashboardBuilder: MyPageUpdateUserDashboardBuildable { get }
     
 }
 
@@ -54,7 +56,7 @@ final class MyPageRouterComponent: MypageRouterDependency {
     let storySeeAllBuilder: MyPageStorySeeAllBuildable
     let settingBuilder: SettingBuildable
     let storyDetailBuilder: StoryDetailBuildable
-    let userInfoEditDashboardBuilder: UserInfoEditDashboardBuildable
+    let updateUserDashboardBuilder: MyPageUpdateUserDashboardBuildable
     
     init(component: MyPageComponent) {
         self.userDashboardBuilder = MyPageUserDashboardBuilder(dependency: component)
@@ -62,7 +64,7 @@ final class MyPageRouterComponent: MypageRouterDependency {
         self.storySeeAllBuilder = MyPageStorySeeAllBuilder(dependency: component)
         self.settingBuilder = SettingBuilder(dependency: component)
         self.storyDetailBuilder = component.storyDetailBuilder
-        self.userInfoEditDashboardBuilder = UserInfoEditDashboardBuilder(dependency: component)
+        self.updateUserDashboardBuilder = MyPageUpdateUserDashboardBuilder(dependency: component)
     }
     
 }
