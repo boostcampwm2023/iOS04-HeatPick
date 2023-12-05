@@ -4,7 +4,12 @@ import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeMod
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { SearchHistory } from 'src/entities/search.entity';
+
+import { makeSignature } from 'src/util/make.signature';
+import axios from 'axios';
+
 import { Transactional } from 'typeorm-transactional';
+
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
@@ -28,9 +33,25 @@ export class SearchService implements OnModuleInit {
     this.searchHistoryJasoTrie.insert(seperatedStatement);
   }
 
-  searchHistoryTree(seperatedStatement: string[]): string[] {
-    const recommendedWords = this.searchHistoryJasoTrie.search(seperatedStatement, 10);
-    return recommendedWords.map((word) => graphemeCombination(word));
+  async searchRecommend(searchText: string): Promise<string[]> {
+    const [signature, accessKey, timestamp] = makeSignature();
+
+    const options = {
+      headers: {
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': accessKey,
+        'x-ncp-apigw-signature-v2': signature,
+      },
+    };
+
+    const AutocompleteSearchQuery = {
+      type: 'section',
+      query: searchText,
+    };
+
+    const url = 'https://cloudsearch.apigw.ntruss.com/CloudSearch/real/v1/domain/heatpick/document/search/autocomplete';
+    const data = (await axios.post(url, AutocompleteSearchQuery, options)).data.items;
+    return data;
   }
 
   @Transactional()
