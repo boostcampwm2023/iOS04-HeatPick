@@ -17,7 +17,12 @@ struct CommentTableViewCellModel {
     let username: String
     let userStatus: UserStatus
     let date: Date
+    let mentionee: String?
     let content: String
+}
+
+protocol CommentTableViewCellDelegate: AnyObject {
+    func mentionDidTap(userId: Int)
 }
 
 final class CommentTableViewCell: UITableViewCell {
@@ -38,6 +43,9 @@ final class CommentTableViewCell: UITableViewCell {
                                                     .year(.defaultDigits)
                                                     .month(.abbreviated)
                                                     .day(.twoDigits)
+    
+    weak var delegate: CommentTableViewCellDelegate?
+    private var userId: Int?
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -67,24 +75,33 @@ final class CommentTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let mentionImageView: UIImageView = {
+    private lazy var mentionImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.image = UIImage(systemName: "bubble")
         imageView.tintColor = .hpBlack
+        imageView.addTapGesture(target: self, action: #selector(mentionDidTap))
+        imageView.isUserInteractionEnabled = true
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let contentTextView: UITextView = {
-        let textView = UITextView()
+    private let mentioneeLabel: UILabel = {
+        let label = UILabel()
+        label.font = .captionSemibold
+        label.textColor = .hpBlack
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let contentTextView: UILabel = {
+        let textView = UILabel()
         textView.font = .bodyRegular
         textView.textColor = .hpBlack
-        textView.isScrollEnabled = false
-        textView.textContainer.lineBreakMode = .byCharWrapping
-        textView.isUserInteractionEnabled = false
+        textView.numberOfLines = 0
         
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
@@ -102,15 +119,25 @@ final class CommentTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        delegate = nil
         profileImageView.cancel()
         profileImageView.image = .profileDefault
+        mentioneeLabel.text = nil
     }
 
     func setup(_ model: CommentTableViewCellModel) {
+        userId = model.userId
         profileImageView.load(from: model.profileImageUrl)
         usernameLabel.text = model.username
         dateLabel.text = model.date.formatted(dateFormat)
         contentTextView.text = model.content
+        
+        if let mentionee = model.mentionee {
+            mentioneeLabel.text = "@\(mentionee)"
+        }
+        
+        mentionImageView.isHidden = (model.userStatus == .me)
+    
     }
     
 }
@@ -118,11 +145,12 @@ final class CommentTableViewCell: UITableViewCell {
 private extension CommentTableViewCell {
     
     func setupViews() {
-        [profileImageView, usernameLabel, dateLabel, contentTextView, mentionImageView].forEach(addSubview)
+        selectionStyle = .none
+        [profileImageView, usernameLabel, dateLabel, contentTextView, mentionImageView, mentioneeLabel].forEach(contentView.addSubview)
         
         NSLayoutConstraint.activate([
-            profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
-            profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.topOffset),
+            profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             profileImageView.heightAnchor.constraint(equalToConstant: Constant.profileImageHeight),
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageWidth),
 
@@ -133,17 +161,24 @@ private extension CommentTableViewCell {
             dateLabel.topAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: Constant.profilePadding),
             
             mentionImageView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            mentionImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            mentionImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             mentionImageView.heightAnchor.constraint(equalToConstant: Constant.mentionImageHieght),
             mentionImageView.widthAnchor.constraint(equalToConstant: Constant.mentionImageWidth),
             
-            contentTextView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: Constant.contentSpacing),
-            contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomOffset)
+            mentioneeLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: Constant.contentSpacing),
+            mentioneeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            
+            contentTextView.topAnchor.constraint(equalTo: mentioneeLabel.bottomAnchor, constant: Constant.contentSpacing),
+            contentTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            contentTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            contentTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: Constant.bottomOffset)
         ])
         
         profileImageView.layer.cornerRadius = Constant.profileImageHeight / 2
     }
     
+    @objc func mentionDidTap() {
+        guard let userId else { return }
+        delegate?.mentionDidTap(userId: userId)
+    }
 }
