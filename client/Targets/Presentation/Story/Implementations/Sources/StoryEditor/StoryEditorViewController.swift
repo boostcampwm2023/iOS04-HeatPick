@@ -15,6 +15,7 @@ import CoreKit
 import DesignKit
 import DomainEntities
 import BasePresentation
+import FoundationKit
 
 protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
@@ -174,11 +175,6 @@ extension StoryEditorViewController: StoryEditorPresentable {
         saveButton.isEnabled = enabled
     }
     
-    func showFailure(_ error: Error, with title: String) {
-        let alert = UIAlertController(title: title, message: "\(error.localizedDescription)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "취소", style: .default))
-        present(alert, animated: true, completion: nil)
-    }
 }
 
 // MARK: - objc

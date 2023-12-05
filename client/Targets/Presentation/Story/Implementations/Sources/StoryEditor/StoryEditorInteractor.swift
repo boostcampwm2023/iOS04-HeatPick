@@ -11,6 +11,7 @@ import Combine
 import ModernRIBs
 
 import CoreKit
+import FoundationKit
 import DomainEntities
 import DomainInterfaces
 import StoryInterfaces
@@ -22,7 +23,7 @@ protocol StoryEditorPresentable: Presentable {
     func setupLocation(_ location: Location)
     func setupMetadata(badges: [Badge], categories: [StoryCategory])
     func setSaveButton(_ enabled: Bool)
-    func showFailure(_ error: Error, with title: String)
+    func present(type: AlertType, okAction: @escaping (() -> Void))
 }
 
 protocol StoryEditorInteractorDependency: AnyObject {
@@ -96,22 +97,10 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     }
     
     func didTapSave(content: StoryContent) {
-        Task { [weak self] in
-            guard let self else { return }
-            await dependency.storyUseCase
-                .requestCreateStory(storyContent: content)
-                .onSuccess(on: .main, with: self, { this, story in
-                    this.listener?.storyDidCreate(story.id)
-                })
-                .onFailure(on: .main, with: self, { this, error in
-                    Log.make(message: error.localizedDescription, log: .interactor)
-                    this.presenter.showFailure(error, with: "스토리 생성에 실패했어요.")
-                })
-        }.store(in: cancelBag)
+        saveStory(content: content)
     }
     
 }
-
 
 private extension StoryEditorInteractor {
     func loadAddress() {
@@ -126,9 +115,9 @@ private extension StoryEditorInteractor {
                     
                     this.presenter.setupLocation(location)
                 }
-                .onFailure { error in
-                    print(error)
+                .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to load address with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.present(type: .didFailToLoadAddress, okAction: {})
                 }
         }.store(in: cancelBag)
         
@@ -146,9 +135,29 @@ private extension StoryEditorInteractor {
                     this.presenter.setupMetadata(badges: badges, categories: categories)
                 }
                 .onFailure(on: .main, with: self) { this, error in
-                    this.presenter.showFailure(error, with: "사용자 칭호 정보를 가져오는데 실패했어요.")
+                    Log.make(message: "fail to load metadata with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.present(type: .didFailToLoadMetadataForEditor) { [weak self] in
+                        self?.listener?.storyEditorDidTapClose()
+                    }
                 }
             
+        }.store(in: cancelBag)
+    }
+    
+    func saveStory(content: StoryContent) {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestCreateStory(storyContent: content)
+                .onSuccess(on: .main, with: self, { this, story in
+                    this.listener?.storyDidCreate(story.id)
+                })
+                .onFailure(on: .main, with: self, { this, error in
+                    Log.make(message: "fail to save story with \(error.localizedDescription)", log: .interactor)
+                    this.presenter.present(type: .didFailToSaveStory) { [weak self] in
+                        self?.saveStory(content: content)
+                    }
+                })
         }.store(in: cancelBag)
     }
 }

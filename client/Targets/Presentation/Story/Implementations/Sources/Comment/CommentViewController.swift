@@ -12,6 +12,7 @@ import ModernRIBs
 
 import CoreKit
 import DesignKit
+import FoundationKit
 import DomainEntities
 import BasePresentation
 
@@ -40,12 +41,6 @@ final class CommentViewController: BaseViewController, CommentPresentable, Comme
     func setup(_ model: [CommentTableViewCellModel]) {
         commentViewModels = model
         tableView.reloadData()
-    }
-    
-    func showFailure(_ error: Error, with title: String) {
-        let alert = UIAlertController(title: title, message: "\(error.localizedDescription)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "취소", style: .default))
-        present(alert, animated: true, completion: nil)
     }
     
     func setCommentButton(_ isEnabled: Bool) {
