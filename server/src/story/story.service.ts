@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Story } from '../entities/story.entity';
 import { StoryJasoTrie } from 'src/search/trie/storyTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
@@ -17,9 +17,10 @@ import { updateStory } from '../util/util.story.update';
 import { In, Repository } from 'typeorm';
 import { getStoryDetailStoryDataResponseDto, StoryDetailStoryDataResponseDto } from './dto/response/detail/story.detail.story.data.response';
 import { getStoryDetailUserDataResponseDto, StoryDetailUserDataResponseDto } from './dto/response/detail/story.detail.user.data.response';
-import { CreateStoryMetaResponseDto } from './dto/response/story.create.meta.response.dto';
+import { CreateStoryMetaResponseDto, getCreateStoryMetaResponseDto } from './dto/response/story.create.meta.response.dto';
 import { getStoryDetailViewDataResponseJSONDto, StoryDetailViewDataResponseJSONDto } from './dto/response/detail/story.detail.view.data.response.dto';
 import { StoryResultDto } from '../search/dto/response/story.result.dto';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class StoryService {
@@ -28,12 +29,10 @@ export class StoryService {
   constructor(
     @Inject('STORY_REPOSITORY')
     private storyRepository: Repository<Story>,
-    @Inject('USER_REPOSITORY')
-    private userRepository: Repository<User>,
-    @Inject('CATEGORY_REPOSITORY')
-    private categoryRepository: Repository<Category>,
-    private storyTitleJasoTrie: StoryJasoTrie,
+    @Inject(forwardRef(() => UserService))
     private userService: UserService,
+    private storyTitleJasoTrie: StoryJasoTrie,
+    private categoryService: CategoryService,
   ) {
     this.loadSearchHistoryTrie();
   }
@@ -47,26 +46,27 @@ export class StoryService {
     });
   }
 
-  public async createMetaData(userId: number): Promise<CreateStoryMetaResponseDto> {
-    const user: User = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges'] });
-    const categoryList = await this.categoryRepository.find();
-    const metaData: CreateStoryMetaResponseDto = {
-      badges: (await user.badges).map((badge: Badge) => {
-        return { badgeId: badge.badgeId, badgeName: badge.badgeName };
-      }),
-      categories: categoryList,
-    };
-    return metaData;
+  public async getStory(storyId: number): Promise<Story> {
+    return await this.storyRepository.findOne({ where: { storyId: storyId } });
   }
 
-  public async create(userId: string, { title, content, categoryId, place, images, badgeId, date }): Promise<number> {
-    const user: User = await this.userRepository.findOne({ where: { oauthId: userId }, relations: ['badges'] });
-    const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
-    const category: Category = await this.categoryRepository.findOneBy({ categoryId: categoryId });
+  public async createMetaData(userId: number): Promise<CreateStoryMetaResponseDto> {
+    const badgeList: Badge[] = await this.userService.getBadges(userId);
+    const categoryList: Category[] = await this.categoryService.getCategoryList();
+    return getCreateStoryMetaResponseDto(badgeList, categoryList);
+  }
+
+  public async create(userId: number, { title, content, categoryId, place, images, badgeId, date }): Promise<number> {
+    const badgeList: Badge[] = await this.userService.getBadges(userId);
+    const badge: Badge = badgeList.filter((badge: Badge) => badge.badgeId === badgeId)[0];
+    const category: Category = await this.categoryService.getCategory(categoryId);
+
+    const user: User = await this.userService.getUser(userId);
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
-    user.stories = Promise.resolve([...(await user.stories), story]);
-    await this.userRepository.save(user);
-    if (badge) await this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: user.userId, exp: 10 });
+    story.user = Promise.resolve(user);
+    await this.storyRepository.save(story);
+
+    if (badge) await this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: userId, exp: 10 });
     return story.storyId;
   }
 
@@ -83,11 +83,12 @@ export class StoryService {
     return getStoryDetailViewDataResponseJSONDto(storyDetailStoryData, storyDetailUserData);
   }
 
-  public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
-    const user: User = await this.userRepository.findOne({ where: { oauthId: userId } });
+  public async update(userId: number, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['storyImages', 'category', 'badge', 'place'] });
-    const badge: Badge = (await user.badges).filter((badge: Badge) => badge.badgeId === badgeId)[0];
-    const category: Category = await this.categoryRepository.findOneBy({ categoryId: categoryId });
+    const badgeList: Badge[] = await this.userService.getBadges(userId);
+
+    const badge: Badge = badgeList.filter((badge: Badge) => badge.badgeId === badgeId)[0];
+    const category: Category = await this.categoryService.getCategory(categoryId);
 
     const updatedStory = await updateStory(story, { title, content, category, place, images, badge, date });
 
@@ -96,10 +97,8 @@ export class StoryService {
     return story.storyId;
   }
 
-  public async delete(userId: string, storyId: number): Promise<void> {
-    const user: User = await this.userRepository.findOne({ where: { oauthId: userId } });
-    user.stories = Promise.resolve((await user.stories).filter((story) => story.storyId !== storyId));
-    await this.userRepository.save(user);
+  public async delete(userId: number, storyId: number): Promise<void> {
+    await this.storyRepository.softDelete(storyId);
   }
 
   async getStoriesFromTrie(searchText: string, offset: number, limit: number): Promise<Story[]> {
@@ -117,35 +116,6 @@ export class StoryService {
 
     const results = this.searchStoryResultCache[searchText];
     return results.slice(offset * limit, offset * limit + limit);
-  }
-
-  public async like(userId: number, storyId: number): Promise<number> {
-    const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
-    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
-
-    story.likeCount += 1;
-    (await user.likedStories).push(story);
-
-    await this.storyRepository.save(story);
-    await this.userRepository.save(user);
-
-    const updatedStory = await this.storyRepository.findOne({ where: { storyId: storyId } });
-
-    return updatedStory.likeCount;
-  }
-
-  public async unlike(userId: number, storyId: number): Promise<number> {
-    const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
-    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
-
-    story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
-    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId !== storyId));
-    await this.storyRepository.save(story);
-    await this.userRepository.save(user);
-
-    const updatedStory = await this.storyRepository.findOne({ where: { storyId: storyId } });
-
-    return updatedStory.likeCount;
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number): Promise<StoryResultDto[]> {
@@ -204,8 +174,7 @@ export class StoryService {
   }
 
   async getFollowStories(userId: number, sortOption: number = 0, offset: number = 0, limit: number = 5): Promise<StoryResultDto[]> {
-    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['following', 'profileImage'] });
-    const followings = user.following;
+    const followings = await this.userService.getFollows(userId);
 
     const storyPromises = followings.map(async (following) => {
       const stories = await following.stories;
@@ -238,5 +207,21 @@ export class StoryService {
       const storiesSortedByCommentCount = [...stories].sort(sortByCommentCount);
       return storiesSortedByCommentCount;
     }
+  }
+
+  public async addLikeCount(storyId: number) {
+    const story = await this.getStory(storyId);
+    story.likeCount += 1;
+    await this.storyRepository.save(story);
+
+    return story.likeCount;
+  }
+
+  public async subLikeCount(storyId: number) {
+    const story = await this.getStory(storyId);
+    story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
+    await this.storyRepository.save(story);
+
+    return story.likeCount;
   }
 }

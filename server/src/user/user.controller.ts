@@ -1,22 +1,39 @@
-import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put, ParseIntPipe, ValidationPipe, Param, UseGuards, Req } from '@nestjs/common';
-
-import { ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  Headers,
+  UseInterceptors,
+  UploadedFile,
+  Delete,
+  Put,
+  ParseIntPipe,
+  ValidationPipe,
+  Param,
+  UseGuards,
+  Req,
+  Request,
+} from '@nestjs/common';
+import { ApiBody, ApiCreatedResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/request/addBadge.dto';
 import { AddBadgeExpDto } from './dto/request/addBadgeExp.dto';
 import { plainToClass } from 'class-transformer';
-import { Story } from '../entities/story.entity';
 import { UserUpdateDto } from './dto/request/user.update.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FollowRequest } from './dto/request/follow.request.dto';
-import { UserProfileDetailDataDto, UserProfileDetailJsonDto } from './dto/response/user.profile.detail.data.dto';
+import { UserProfileDetailJsonDto } from './dto/response/user.profile.detail.data.dto';
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { BadgeJsonDto, BadgeReturnDto } from './dto/response/badge.return.dto';
 import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
-import { ProfileUpdateMetaDataDto, ProfileUpdateMetaDataJsonDto } from './dto/response/profile.update.meta.dto';
-import { UserProfileDetailStoryDto, UserProfileDetailStoryJsonDto } from './dto/response/user.profile.detail.story.dto';
 import { UserJsonResponseDto } from './dto/response/user.response.dto';
+import { ProfileUpdateMetaDataJsonDto } from './dto/response/profile.update.meta.dto';
+import { UserProfileDetailStoryJsonDto } from './dto/response/user.profile.detail.story.dto';
+import { StoryRecommendResponseDto } from '../search/dto/response/story.result.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -114,8 +131,8 @@ export class UserController {
   @Delete('resign')
   @ApiOperation({ summary: `회원 탈퇴` })
   @ApiResponse({ status: 201, description: '회원 탈퇴 되었습니다.' })
-  async resign(@Headers('accessToken') accessToken: string, @Body() message: string) {
-    return this.userService.resign(accessToken, message);
+  async resign(@Req() req: any, @Body() message: string) {
+    return this.userService.resign(req.user.userRecordId, message);
   }
 
   @Post('follow')
@@ -195,5 +212,39 @@ export class UserController {
     const users = await this.userService.recommendUsers(userId);
     const transformedUsers = await Promise.all(users.map(async (user) => await userEntityToUserObj(user)));
     return { users: transformedUsers };
+  }
+
+  @Post('like')
+  @ApiOperation({ summary: '스토리 좋아요' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '성공',
+    schema: {
+      type: 'object',
+      properties: {
+        likeCount: { type: 'number' },
+      },
+    },
+  })
+  async addLike(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<{ likeCount: number }> {
+    const likeCount = await this.userService.like(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
+  }
+
+  @Post('unlike')
+  @ApiOperation({ summary: '스토리 좋아요 취소' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '성공',
+    schema: {
+      type: 'object',
+      properties: {
+        likeCount: { type: 'number' },
+      },
+    },
+  })
+  async unlike(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<{ likeCount: number }> {
+    const likeCount = await this.userService.unlike(req.user.userRecordId, storyId);
+    return { likeCount: likeCount };
   }
 }

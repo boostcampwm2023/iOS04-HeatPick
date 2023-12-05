@@ -1,16 +1,17 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { DatabaseModule } from 'src/db/database.module';
 import { UserService } from './user.service';
 import { UserJasoTrie } from 'src/search/trie/userTrie';
 import { userProviders } from './user.providers';
-import { UserController } from './user.controller';
-import { JwtService } from '@nestjs/jwt';
-import { ImageService } from '../image/image.service';
+import { UserController } from './user.controller';;
+import { StoryService } from '../story/story.service';
+import { StoryModule } from '../story/story.module';
+import { storyProvider } from '../story/story.providers';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, forwardRef(() => StoryModule)],
   controllers: [UserController],
-  providers: [...userProviders, UserService, UserJasoTrie, JwtService, ImageService],
-  exports: [UserService],
+  providers: [...userProviders, ...storyProvider, UserService, StoryService, UserJasoTrie],
+  exports: [UserService, UserJasoTrie],
 })
 export class UserModule {}

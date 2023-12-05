@@ -69,7 +69,17 @@ export class User {
   @ApiProperty({ description: '댓글에 언급된 목록' })
   mentions: Comment[];
 
-  @ManyToMany(() => Story, (story) => story.usersWhoLiked, { cascade: true })
-  @JoinTable()
+  @ManyToMany(() => Story, (story) => story.usersWhoLiked, { cascade: ['insert'] })
+  @JoinTable({
+    name: 'story_liked_user',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'userId',
+    },
+    inverseJoinColumn: {
+      name: 'storyId',
+      referencedColumnName: 'storyId',
+    },
+  })
   likedStories: Promise<Story[]>;
 }

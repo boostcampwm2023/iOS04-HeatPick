@@ -1,21 +1,19 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { DatabaseModule } from 'src/db/database.module';
 import { storyProvider } from 'src/story/story.providers';
 import { StoryService } from './story.service';
 import { StoryController } from './story.controller';
-import { userProviders } from 'src/user/user.providers';
-import { ImageService } from '../image/image.service';
 import { StoryJasoTrie } from 'src/search/trie/storyTrie';
-import { JwtService } from '@nestjs/jwt';
-import { CategoryProvider } from '../category/category.provider';
 import { UserService } from 'src/user/user.service';
-import { UserModule } from 'src/user/user.module';
-import { UserJasoTrie } from 'src/search/trie/userTrie';
+import { CategoryService } from '../category/category.service';
+import { UserModule } from '../user/user.module';
+import { userProviders } from '../user/user.providers';
+import { CategoryProvider } from '../category/category.provider';
 
 @Module({
-  imports: [DatabaseModule, UserModule],
+  imports: [DatabaseModule, forwardRef(() => UserModule)],
   controllers: [StoryController],
-  providers: [...storyProvider, ...userProviders, ...CategoryProvider, UserJasoTrie, UserService, StoryService, ImageService, StoryJasoTrie, JwtService],
-  exports: [StoryService],
+  providers: [...storyProvider, ...userProviders, ...CategoryProvider, StoryJasoTrie, StoryService, UserService, CategoryService],
+  exports: [StoryService, StoryJasoTrie, CategoryService],
 })
 export class StoryModule {}
