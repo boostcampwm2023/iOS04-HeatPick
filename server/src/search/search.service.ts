@@ -4,6 +4,8 @@ import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeMod
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { SearchHistory } from 'src/entities/search.entity';
+import { makeSignature } from 'src/util/make.signature';
+import axios from 'axios';
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
@@ -27,6 +29,28 @@ export class SearchService implements OnModuleInit {
   }
 
   searchHistoryTree(seperatedStatement: string[]): string[] {
+    const queryParams = {
+      query: '서울',
+      type: 'term',
+    };
+    const [signature, accessKey, timestamp] = makeSignature();
+    const headers = {
+      'x-ncp-apigw-timestamp': timestamp,
+      'x-ncp-iam-access-key': accessKey,
+      'x-ncp-apigw-signature-v2': signature,
+    };
+
+    const url = 'https://cloudsearch.apigw.ntruss.com/CloudSearch/real/v1/domain/heatpick/document/search/autocomplete';
+    axios
+      .get(url, { headers, params: queryParams })
+      .then((response) => {
+        console.log('Status:', response.status);
+        console.log('Response:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error:', error.response.status, error.response.data);
+      });
+
     const recommendedWords = this.searchHistoryJasoTrie.search(seperatedStatement, 10);
     return recommendedWords.map((word) => graphemeCombination(word));
   }
