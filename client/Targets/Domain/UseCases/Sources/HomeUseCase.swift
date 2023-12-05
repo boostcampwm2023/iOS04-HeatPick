@@ -103,6 +103,10 @@ public final class HomeUseCase: HomeUseCaseInterface {
         return await fetchFollowing(offset: followingOffset)
     }
     
+    public func fetchUserRecommend() async -> Result<[UserRecommend], Error> {
+        return await repository.fetchUserRecommend()
+    }
+    
     private func fetchFollowing(offset: Int) async -> Result<[HomeFollowingStory], Error> {
         let result = await repository.fetchFollowing(offset: offset, limit: pageLimit, sortOption: followingSortOption.rawValue)
         switch result {

@@ -8,5 +8,9 @@ let project = Project.framework(
     dependencies: [
         .Target.Presentation.Home.Interfaces,
         .Target.Presentation.Story.Interfaces
+    ],
+    testDependencies: [
+        .Target.Presentation.TestUtil,
+        .Target.Domain.TestUtil
     ]
 )

@@ -97,6 +97,10 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         router?.detachStoryDetail()
     }
     
+    func storyDidDelete() {
+        router?.detachStoryDetail()
+    }
+    
     func storyDidCreate(_ storyId: Int) {
         router?.detachStoryEditor { [weak self] in
             self?.router?.attachStoryDetail(storyId: storyId)

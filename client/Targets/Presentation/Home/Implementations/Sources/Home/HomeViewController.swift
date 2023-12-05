@@ -74,7 +74,7 @@ public final class HomeViewController: UIViewController, HomePresentable, HomeVi
     
     func removeDashboard(_ viewControllable: ViewControllable) {
         let viewController = viewControllable.uiviewController
-        stackView.removeArrangedSubview(viewController.view)
+        viewController.view.removeFromSuperview()
         viewController.removeFromParent()
     }
     

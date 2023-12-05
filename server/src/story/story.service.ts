@@ -139,8 +139,7 @@ export class StoryService {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
 
     story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
-    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId === storyId));
-
+    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId !== storyId));
     await this.storyRepository.save(story);
     await this.userRepository.save(user);
 

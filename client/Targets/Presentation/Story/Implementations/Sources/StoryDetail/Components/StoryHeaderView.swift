@@ -90,14 +90,14 @@ final class StoryHeaderView: UIView {
         isLiked = true
         likeButton.setup(count: count)
         likeButton.isUserInteractionEnabled = true
-        likeButton.setup(color: .hpRed1)
+        likeButton.setup(type: .liked)
     }
     
     func didUnlike(count: Int) {
         isLiked = false
         likeButton.setup(count: count)
         likeButton.isUserInteractionEnabled = true
-        likeButton.setup(color: .hpBlack)
+        likeButton.setup(type: .like)
     }
     
     func didFailToLike() {
@@ -132,9 +132,9 @@ private extension StoryHeaderView {
         switch author {
         case .me:
             likeButton.isUserInteractionEnabled = false
-            likeButton.setup(color: .hpRed1)
+            likeButton.setup(type: .liked)
         case .following, .nonFollowing:
-            likeButton.setup(color: (likeStatus ? .hpRed1 : .hpBlack))
+            likeButton.setup(type: (likeStatus ? .liked : .like))
         }
         isLiked = likeStatus
         likeButton.setup(count: likeCount)

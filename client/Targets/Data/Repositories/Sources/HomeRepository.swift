@@ -56,4 +56,10 @@ public final class HomeRepository: HomeRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
+    public func fetchUserRecommend() async -> Result<[UserRecommend], Error> {
+        let target = HomeAPI.userRecommend
+        let request: Result<UserRecommendResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
 }

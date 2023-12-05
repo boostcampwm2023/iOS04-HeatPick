@@ -25,6 +25,8 @@ protocol CommentPresentable: Presentable {
     func setCommentButton(_ isEnabled: Bool)
     func clearInputField()
     func resetInputField()
+    func setupMentionee(id: Int)
+    func detachMentionee()
 }
 
 protocol CommentInteractorDependency: AnyObject {
@@ -49,6 +51,7 @@ final class CommentInteractor: PresentableInteractor<CommentPresentable>, Commen
             presenter.setCommentButton(!commentInputText.isEmpty)
         }
     }
+    private var mentioneeId: Int?
 
     init(presenter: CommentPresentable, dependency: CommentInteractorDependency) {
         self.dependency = dependency
@@ -73,12 +76,20 @@ final class CommentInteractor: PresentableInteractor<CommentPresentable>, Commen
     func commentButtonDidTap() {
         let commentContent = CommentContent(storyId: dependency.storyId,
                                             content: commentInputText,
-                                            mentions: [])
+                                            mentions: [mentioneeId].compactMap { $0 })
         requestNewComment(with: commentContent)
     }
     
     func commentTextDidChange(_ text: String) {
         commentInputText = text
+    }
+    
+    func mentionDidTap(userId: Int) {
+        setMentionee(userId: userId)
+    }
+    
+    func mentioneeDidTap() {
+        clearMentionee()
     }
 
 }
@@ -108,6 +119,7 @@ private extension CommentInteractor {
                 .onSuccess(on: .main, with: self) { this, _ in
                     this.fetchComments()
                     this.presenter.clearInputField()
+                    this.clearMentionee()
                 }
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to write comments with \(error.localizedDescription)", log: .interactor)
@@ -115,6 +127,16 @@ private extension CommentInteractor {
                     this.presenter.resetInputField()
                 }
         }.store(in: cancelBag)
+    }
+    
+    func setMentionee(userId: Int) {
+        mentioneeId = userId
+        presenter.setupMentionee(id: userId)
+    }
+    
+    func clearMentionee() {
+        mentioneeId = nil
+        presenter.detachMentionee()
     }
 }
 
@@ -125,6 +147,7 @@ fileprivate extension Comment {
                                          username: author.nickname,
                                          userStatus: author.authorStatus,
                                          date: date,
+                                         mentionee: mentionedUsers.first?.name,
                                          content: content)
     }
 }
