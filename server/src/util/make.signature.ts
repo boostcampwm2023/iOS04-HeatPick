@@ -9,28 +9,30 @@ code.google.com/p/crypto-js
 (c) 2009-2013 by Jeff Mott. All rights reserved.
 code.google.com/p/crypto-js/wiki/License
 */
-import * as CryptoJS from 'crypto-js';
 import * as dotenv from 'dotenv';
-
+import * as crypto from 'crypto';
 dotenv.config();
 
 export function makeSignature() {
-  var currentDate = new Date();
+  var timestamp = Date.now().toString();
+  const message = [];
 
-  var currentDate = new Date();
-  var timestamp = Math.floor(currentDate.getTime());
   var space = ' ';
   var newLine = '\n';
-  var method = 'GET';
-  var url = `https://cloudsearch.apigw.ntruss.com/CloudSearch/real/v1/domain/heatpick/document/search/autocomplete?query=서울?type=term`; // url (include query string)
-  console.log(url);
-  var timestamp = timestamp;
+  var method = 'POST';
+  var url = `/CloudSearch/real/v1/domain/heatpick/document/search/autocomplete`; // url (include query string)
   var accessKey = process.env.NCLOUD_ACCESS_KEY;
   var secretKey = process.env.NCLOUD_SECRET_KEY;
 
-  var hmac = CryptoJS.HmacSHA256(`${method}${space}${url}${newLine}${timestamp}${newLine}${accessKey}`, secretKey);
+  var hmac = crypto.createHmac('sha256', secretKey);
 
-  var hash = CryptoJS.enc.Base64.stringify(hmac);
-
-  return [hash, accessKey, timestamp];
+  message.push(method);
+  message.push(space);
+  message.push(url);
+  message.push(newLine);
+  message.push(timestamp);
+  message.push(newLine);
+  message.push(accessKey);
+  const signature = hmac.update(message.join('')).digest('base64');
+  return [signature.toString(), accessKey, timestamp];
 }

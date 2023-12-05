@@ -34,15 +34,24 @@ export class SearchService implements OnModuleInit {
       type: 'term',
     };
     const [signature, accessKey, timestamp] = makeSignature();
-    const headers = {
-      'x-ncp-apigw-timestamp': timestamp,
-      'x-ncp-iam-access-key': accessKey,
-      'x-ncp-apigw-signature-v2': signature,
+    console.log(signature, accessKey, timestamp);
+    const options = {
+      headers: {
+        'x-ncp-apigw-api-key': 'djhxAIkQvcyRpJkLexGbUzm0cK6ClTx1sWFmnieg',
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': accessKey,
+        'x-ncp-apigw-signature-v2': signature,
+      },
     };
-
+    console.log(timestamp, accessKey, signature);
+    const AutocompleteSearchQuery = {
+      type: 'term',
+      query: '서울',
+      // 다른 필드들도 필요하다면 추가
+    };
     const url = 'https://cloudsearch.apigw.ntruss.com/CloudSearch/real/v1/domain/heatpick/document/search/autocomplete';
     axios
-      .get(url, { headers, params: queryParams })
+      .post(url, AutocompleteSearchQuery, options)
       .then((response) => {
         console.log('Status:', response.status);
         console.log('Response:', response.data);
