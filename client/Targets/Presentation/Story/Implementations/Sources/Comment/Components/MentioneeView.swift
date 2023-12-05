@@ -57,6 +57,6 @@ private extension MentioneeView {
         ])
         
         layer.cornerRadius = Constant.height / 2
-        backgroundColor = .hpBlack.withAlphaComponent(0.5)
+        backgroundColor = .hpBlack
     }
 }

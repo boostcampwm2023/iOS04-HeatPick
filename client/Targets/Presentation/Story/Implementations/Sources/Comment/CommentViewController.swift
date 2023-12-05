@@ -118,7 +118,7 @@ final class CommentViewController: BaseViewController, CommentPresentable, Comme
             $0.delegate = self
             $0.dataSource = self
             $0.separatorStyle = .singleLine
-            $0.contentInset = .init(top: -35, left: 0, bottom: -35, right: 0)
+            $0.contentInset = .init(top: -35, left: 0, bottom: -5, right: 0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -147,10 +147,11 @@ private extension CommentViewController {
     }
     
     func attachMentionee(id: Int, name: String) {
-        let mentioneeView = MentioneeView()
-        mentioneeView.translatesAutoresizingMaskIntoConstraints = false
-        mentioneeView.setup(id: id, name: name)
-        mentioneeView.addTapGesture(target: self, action: #selector(mentioneeDidTap))
+        let mentioneeView = MentioneeView().then {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.setup(id: id, name: name)
+            $0.addTapGesture(target: self, action: #selector(mentioneeDidTap))
+        }
         
         view.addSubview(mentioneeView)
         NSLayoutConstraint.activate([
