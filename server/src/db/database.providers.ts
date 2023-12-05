@@ -19,6 +19,12 @@ export const databaseProviders = [
         database: process.env.DB_NAME,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
+        extra: {
+          connectionLimit: 10,
+          waitForConnections: true,
+          connectTimeout: 20000,
+          idleTimeout: 60000,
+        },
       });
 
       return dataSource.initialize();
