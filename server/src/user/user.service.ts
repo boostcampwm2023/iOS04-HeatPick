@@ -1,12 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { UserJasoTrie } from './../search/trie/userTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { Badge } from 'src/entities/badge.entity';
 import { AddBadgeDto } from './dto/request/addBadge.dto';
 import { InvalidIdException } from 'src/exception/custom.exception/id.notValid.exception';
 import { Story } from '../entities/story.entity';
-import { JwtService } from '@nestjs/jwt';
-import { ImageService } from '../image/image.service';
 import { InvalidBadgeException } from 'src/exception/custom.exception/badge.notValid.exception';
 import { nextBadge, strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 import { AddBadgeExpDto } from './dto/request/addBadgeExp.dto';
@@ -20,6 +18,8 @@ import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto
 import { UserProfileDetailStoryDto } from './dto/response/user.profile.detail.story.dto';
 import { In, Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
+import { StoryService } from '../story/story.service';
+import { Comment } from '../entities/comment.entity';
 
 @Injectable()
 export class UserService {
@@ -28,16 +28,19 @@ export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
+    @Inject(forwardRef(() => StoryService))
+    private storyService: StoryService,
     private userJasoTrie: UserJasoTrie,
-    private jwtService: JwtService,
-    private imageService: ImageService,
   ) {
     this.userRepository.find().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));
     });
   }
 
-  @Transactional()
+  async getUser(userRecordId: number, relations?: object) {
+    return await this.userRepository.findOne({ where: { userId: userRecordId }, relations: relations });
+  }
+
   async getBadges(userRecordId: number) {
     const user = await this.userRepository.findOne({ where: { userId: userRecordId }, relations: ['badges'] });
     const badges = await user.badges;
@@ -203,12 +206,8 @@ export class UserService {
     return user.userId;
   }
 
-  @Transactional()
-  async resign(accessToken: string, message: string) {
-    const decodedToken = this.jwtService.verify(accessToken);
-    const userId = decodedToken.userId;
-    const user = await this.userRepository.findOne(userId);
-    return await this.userRepository.remove(user);
+  async resign(userId: number, message: string) {
+    return await this.userRepository.softDelete(userId);
   }
 
   @Transactional()
@@ -272,7 +271,7 @@ export class UserService {
 
   @Transactional()
   async getFollows(userId: number) {
-    const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['following'] });
+    const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['following', 'profileImage'] });
     const follows = userObj.following;
     //const userIdArray = follows.map((user) => user.userId);
     return follows;
@@ -298,5 +297,34 @@ export class UserService {
       .getMany();
 
     return users;
+  }
+
+  public async like(userId: number, storyId: number): Promise<number> {
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
+    const story = await this.storyService.getStory(storyId);
+
+    (await user.likedStories).push(story);
+    await this.userRepository.save(user);
+
+    return await this.storyService.addLikeCount(storyId);
+  }
+
+  public async unlike(userId: number, storyId: number): Promise<number> {
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
+
+    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId !== storyId));
+    await this.userRepository.save(user);
+
+    return await this.storyService.subLikeCount(storyId);
+  }
+
+  public async mention(user: User, comment: Comment) {
+    user.mentions.push(comment);
+    return await this.userRepository.save(user);
+  }
+
+  public async unMention(user: User, targetComment: Comment) {
+    user.mentions = user.mentions.filter((comment) => comment.commentId !== targetComment.commentId);
+    return await this.userRepository.save(user);
   }
 }

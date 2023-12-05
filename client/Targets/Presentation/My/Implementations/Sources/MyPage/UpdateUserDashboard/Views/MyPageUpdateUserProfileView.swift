@@ -1,8 +1,8 @@
 //
-//  UserEditProfileView.swift
+//  MyPageUpdateUserProfileView.swift
 //  MyImplementations
 //
-//  Created by 이준복 on 11/30/23.
+//  Created by 이준복 on 12/4/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
@@ -10,17 +10,13 @@ import UIKit
 
 import CoreKit
 
-struct UserInfoEditProfileViewModel {
-    let profileImageURL: String?
-}
-
-protocol UserInfoEditProfileViewDelegate: AnyObject {
+protocol MyPageUpdateUserProfileViewDelegate: AnyObject {
     func profileImageViewDidTap()
 }
 
-final class UserInfoEditProfileView: UIView {
+final class MyPageUpdateUserProfileView: UIView {
     
-    weak var delegate: UserInfoEditProfileViewDelegate?
+    weak var delegate: MyPageUpdateUserProfileViewDelegate?
     
     private enum Constant {
         enum ProfileImage {
@@ -50,8 +46,13 @@ final class UserInfoEditProfileView: UIView {
         setupViews()
     }
     
-    func setup(model: UserInfoEditProfileViewModel) {
-        profileImageView.load(from: model.profileImageURL)
+    func setup(profileImageURL: String?) {
+        if let profileImageURL,
+           !profileImageURL.isEmpty {
+            profileImageView.load(from: profileImageURL)
+        } else {
+            profileImageView.image = .profileDefault
+        }
     }
     
     func setup(image: UIImage) {
@@ -60,7 +61,7 @@ final class UserInfoEditProfileView: UIView {
     
 }
 
-private extension UserInfoEditProfileView {
+private extension MyPageUpdateUserProfileView {
     
     func setupViews() {
         addSubview(profileImageView)
@@ -76,11 +77,12 @@ private extension UserInfoEditProfileView {
     
 }
 
-private extension UserInfoEditProfileView {
+private extension MyPageUpdateUserProfileView {
     
     @objc func profileImageViewDidTap() {
         delegate?.profileImageViewDidTap()
     }
     
 }
+
 

@@ -40,6 +40,10 @@ public final class StoryUseCase: StoryUseCaseInterface {
         return await repository.requestCreateStory(storyContent: storyContent)
     }
     
+    public func requestDeleteStory(storyId: Int) async -> Result<Void, Error> {
+        return await repository.requestDeleteStory(storyId: storyId)
+    }
+    
     public func requestStoryDetail(storyId: Int) async -> Result<Story, Error> {
         return await repository.requestStoryDetail(storyId: storyId)
     }

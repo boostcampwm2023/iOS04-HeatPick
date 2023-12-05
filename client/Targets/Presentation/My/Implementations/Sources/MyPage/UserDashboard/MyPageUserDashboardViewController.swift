@@ -11,7 +11,8 @@ import UIKit
 import DesignKit
 
 protocol MyPageUserDashboardPresentableListener: AnyObject {
-    func didTapProfile()
+    func profileEidtButtonDidTap()
+    func followButtonDidTap()
 }
 
 struct MyPageUserDashboardViewControllerModel {
@@ -33,15 +34,7 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
     }
     
     weak var listener: MyPageUserDashboardPresentableListener?
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .largeBold
-        label.textColor = .hpBlack
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
+
     private let temperatureView = MyPageTemperatureView()
     private let badgeView = MyPageBadgeView()
     private lazy var userView: MyPageUserView = {
@@ -66,7 +59,6 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
     }
     
     func setup(model: MyPageUserDashboardViewControllerModel) {
-        titleLabel.text = model.userName + "님 안녕하세요"
         userView.setup(model: .init(
             profileImageURL: model.profileImageURL, 
             follower: model.follower, 
@@ -81,8 +73,12 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
 
 extension MyPageUserDashboardViewController: MyPageUserViewDelegate {
     
-    func myPageUserViewDidTapProfile(_ view: MyPageUserView) {
-        listener?.didTapProfile()
+    func profileEidtButtonDidTap() {
+        listener?.profileEidtButtonDidTap()
+    }
+    
+    func followButtonDidTap() {
+        listener?.followButtonDidTap()
     }
     
 }
@@ -91,7 +87,7 @@ private extension MyPageUserDashboardViewController {
     
     func setupViews() {
         view.addSubview(stackView)
-        [titleLabel, userView, temperatureView, badgeView].forEach(stackView.addArrangedSubview)
+        [userView, temperatureView, badgeView].forEach(stackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: view.topAnchor),

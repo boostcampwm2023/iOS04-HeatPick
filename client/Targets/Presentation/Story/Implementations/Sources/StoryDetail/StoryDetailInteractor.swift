@@ -102,9 +102,26 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
         router?.detachComment()
     }
     
+    func deleteButtonDidTap() {
+        requestDeleteStory()
+    }
 }
 
 private extension StoryDetailInteractor {
+    
+    func requestDeleteStory() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.storyUseCase
+                .requestDeleteStory(storyId: dependency.storyId)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.listener?.storyDidDelete()
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: "failed to delete story with \(error.localizedDescription)", log: .interactor)
+                }
+        }.store(in: cancelBag)
+    }
     
     func requestFollow(_ userId: Int) {
         Task { [weak self] in

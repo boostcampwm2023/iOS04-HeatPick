@@ -1,8 +1,8 @@
 //
-//  UserBadgeView.swift
+//  MyPageUpdateUserBadgeView.swift
 //  MyImplementations
 //
-//  Created by 이준복 on 11/30/23.
+//  Created by 이준복 on 12/4/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
@@ -10,29 +10,25 @@ import UIKit
 
 import CoreKit
 import DesignKit
+import DomainEntities
 
-struct UserBadgeViewModel {
-    let badgeId: Int
-    let badgeName: String
-    let emoji: String
-    let description: String
-}
-
-protocol UserBadgeViewDelegate: AnyObject {
+protocol MyPageUpdateUserBadgeViewDelegate: AnyObject {
     func didTapUserBadgeView(_ badgeId: Int)
 }
 
-final class UserBadgeView: UIView {
+final class MyPageUpdateUserBadgeView: UIView {
     
-    weak var delegate: UserBadgeViewDelegate?
+    weak var delegate: MyPageUpdateUserBadgeViewDelegate?
     
     private enum Constant {
         static let spacing: CGFloat = 5
         static let topOffset: CGFloat = 20
         static let bottomOffset: CGFloat = -topOffset
+        static let maxExp: Float = 1000
     }
     
     private var badgeId: Int?
+    private var isSelected: Bool = false
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -54,6 +50,7 @@ final class UserBadgeView: UIView {
     
     private let progressView: UIProgressView = {
         let progressView = UIProgressView()
+        progressView.tintColor = .hpRed3
         progressView.translatesAutoresizingMaskIntoConstraints = false
         return progressView
     }()
@@ -98,15 +95,24 @@ final class UserBadgeView: UIView {
         setupConfiguration()
     }
     
-    func setup(model: UserBadgeViewModel) {
-        titleLabel.text = "\(model.emoji) \(model.badgeName)"
-        descriptionLabel.text = model.description
+    func setup(badge: UserProfileMetaDataBadge) {
+        self.badgeId = badge.badgeId
+        titleLabel.text = "\(badge.emoji) \(badge.badgeName)"
+        descriptionLabel.text = badge.badgeExplain
+        progressView.progress = Float(badge.badgeExp) / Constant.maxExp
+        experienceLabel.text = "\(badge.badgeExp) / \(Int(Constant.maxExp))"
+    }
+    
+    func toggleIsSelected() {
+        isSelected.toggle()
+        backgroundColor = isSelected ? .hpRed5 : .hpWhite
+        layer.borderColor = isSelected ? UIColor.hpRed3.cgColor : UIColor.hpGray4.cgColor
     }
     
 }
 
 
-private extension UserBadgeView {
+private extension MyPageUpdateUserBadgeView {
     
     func setupViews() {
         [titleLabel, descriptionLabel, progressView, nextBadgeLabel, nextBadgeTitleLabel, experienceLabel].forEach(addSubview)
@@ -152,10 +158,11 @@ private extension UserBadgeView {
 }
 
 
-private extension UserBadgeView {
+private extension MyPageUpdateUserBadgeView {
     
     @objc func didTapUserBadgeView() {
         guard let badgeId else { return }
+        toggleIsSelected()
         delegate?.didTapUserBadgeView(badgeId)
     }
     

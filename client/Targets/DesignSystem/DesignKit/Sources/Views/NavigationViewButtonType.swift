@@ -14,6 +14,7 @@ public enum NavigationViewButtonType {
     case home
     case setting
     case edit
+    case delete
     case none
 }
 
@@ -32,6 +33,8 @@ extension NavigationViewButtonType {
             return UIImage(systemName: "gearshape", withConfiguration: config)
         case .edit:
             return UIImage(systemName: "pencil", withConfiguration: config)
+        case .delete:
+            return UIImage(systemName: "trash", withConfiguration: config)
         case .none:
             return nil
         }

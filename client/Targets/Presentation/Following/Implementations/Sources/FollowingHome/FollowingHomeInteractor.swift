@@ -47,4 +47,7 @@ final class FollowingHomeInteractor: PresentableInteractor<FollowingHomePresenta
         router?.detachStoryDetail()
     }
     
+    func storyDidDelete() {
+        router?.detachStoryDetail()
+    }
 }
