@@ -16,6 +16,7 @@ import NetworkAPIKit
 public enum StoryAPI {
     case metaData
     case newStory(StoryContent)
+    case deleteStory(Int)
     case storyDetail(Int)
     case follow(Int)
     case unfollow(Int)
@@ -35,6 +36,7 @@ extension StoryAPI: Target {
         switch self {
         case .metaData: return "/story/meta"
         case .newStory: return "/story/create"
+        case .deleteStory: return "/story/delete"
         case .storyDetail: return "/story/detail"
         case .follow, .unfollow: return "/user/follow"
         case .readComment: return "/comment/read"
@@ -48,6 +50,7 @@ extension StoryAPI: Target {
         switch self {
         case .metaData: return .get
         case .newStory: return .post
+        case .deleteStory: return .delete
         case .storyDetail: return .get
         case .follow: return .post
         case .unfollow: return .delete
@@ -66,25 +69,31 @@ extension StoryAPI: Target {
         switch self {
         case .metaData:
             return .plain
+            
         case .newStory(let content):
             let request = NewStoryRequestDTO(storyContent: content)
             let mediaList = content.images.map { imageData in
                 return Media(data: imageData, type: .jpeg, key: "images")
             }
-            
             return .multipart(MultipartFormData(data: request, mediaList: mediaList))
+            
+        case .deleteStory(let storyId):
+            return .url(parameters: StoryDeleteRequestDTO(storyId: storyId).parameters())
+            
         case .storyDetail(let storyId):
             let request = StoryDetailRequestDTO(storyId: storyId)
-            
             return .url(parameters: request.parameters())
+            
         case .follow(let userId), .unfollow(let userId):
             return .json(FollowRequestDTO(followId: userId))
+            
         case .readComment(let storyId):
             let request = CommentReadRequestDTO(storyId: storyId)
-            
             return .url(parameters: request.parameters())
+            
         case .newComment(let content):
             return .json(NewCommentRequestDTO(content: content))
+            
         case .like(let storyId), .unlike(let storyId):
             return .url(parameters: StoryLikeRequestDTO(storyId: storyId).parameters())
         }
