@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
 import { CommentViewResponseDto, getCommentViewResponse } from './dto/response/comment.view.response.dto';
 import { updateComment } from '../util/util.comment.update';
+import { Transactional } from 'typeorm-transactional';
 import { UserService } from '../user/user.service';
 import { StoryService } from '../story/story.service';
 
@@ -18,6 +19,7 @@ export class CommentService {
     private userService: UserService,
   ) {}
 
+  @Transactional()
   public async getMentionable({ storyId, userId }): Promise<{ userId: number; username: string }[]> {
     const mentionables: { userId: number; username: string }[] = [];
     const story: Story = await this.storyService.getStory(storyId, ['user', 'comments', 'comments.user', 'comments.mentions']);
@@ -37,6 +39,7 @@ export class CommentService {
     });
   }
 
+  @Transactional()
   public async create({ storyId, userId, content, mentions }): Promise<number> {
     const story = await this.storyService.getStory(storyId);
 
@@ -60,12 +63,14 @@ export class CommentService {
     return comment.commentId;
   }
 
+  @Transactional()
   public async read(storyId: number, userId: number): Promise<CommentViewResponseDto> {
     const story = await this.storyService.getStory(storyId, ['comments', 'comments.user', 'comments.mentions', 'comments.user.profileImage']);
     return await getCommentViewResponse(story, userId);
   }
 
-  public async update({ commentId, content, mentions }): Promise<number> {
+  @Transactional()
+  public async update({ storyId, commentId, content, mentions }): Promise<number> {
     const comment: Comment = await this.commentRepository.findOne({ where: { commentId: commentId }, relations: ['mentions', 'mentions.mentions'] });
 
     const newMentionedUsers: User[] = await Promise.all(
@@ -88,6 +93,7 @@ export class CommentService {
     return updatedComment.commentId;
   }
 
+  @Transactional()
   public async delete({ storyId, commentId }): Promise<number> {
     const story = await this.storyService.getStory(storyId);
     story.comments = Promise.resolve((await story.comments).filter((comment) => comment.commentId !== commentId));

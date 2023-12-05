@@ -20,6 +20,7 @@ import { getStoryDetailUserDataResponseDto, StoryDetailUserDataResponseDto } fro
 import { CreateStoryMetaResponseDto, getCreateStoryMetaResponseDto } from './dto/response/story.create.meta.response.dto';
 import { getStoryDetailViewDataResponseJSONDto, StoryDetailViewDataResponseJSONDto } from './dto/response/detail/story.detail.view.data.response.dto';
 import { StoryResultDto } from '../search/dto/response/story.result.dto';
+import { Transactional } from 'typeorm-transactional';
 import { CategoryService } from '../category/category.service';
 
 @Injectable()
@@ -46,6 +47,9 @@ export class StoryService {
     });
   }
 
+
+  @Transactional()
+
   public async getStory(storyId: number, relations?: object): Promise<Story> {
     return await this.storyRepository.findOne({ where: { storyId: storyId }, relations: relations });
   }
@@ -56,6 +60,8 @@ export class StoryService {
     return getCreateStoryMetaResponseDto(badgeList, categoryList);
   }
 
+
+  @Transactional()
   public async create(userId: number, { title, content, categoryId, place, images, badgeId, date }): Promise<number> {
     const badgeList: Badge[] = await this.userService.getBadges(userId);
     const badge: Badge = badgeList.filter((badge: Badge) => badge.badgeId === badgeId)[0];
@@ -70,6 +76,7 @@ export class StoryService {
     return story.storyId;
   }
 
+  @Transactional()
   public async read(userId: number, storyId: number): Promise<StoryDetailViewDataResponseJSONDto> {
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge', 'usersWhoLiked', 'user.followers'] });
     const place: Place = await story.place;
@@ -83,7 +90,13 @@ export class StoryService {
     return getStoryDetailViewDataResponseJSONDto(storyDetailStoryData, storyDetailUserData);
   }
 
+
+  @Transactional()
+  public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
+    const user: User = await this.userRepository.findOne({ where: { oauthId: userId } });
+
   public async update(userId: number, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
+
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['storyImages', 'category', 'badge', 'place'] });
     const badgeList: Badge[] = await this.userService.getBadges(userId);
 
@@ -97,10 +110,19 @@ export class StoryService {
     return story.storyId;
   }
 
+
+  @Transactional()
+  public async delete(userId: string, storyId: number): Promise<void> {
+    const user: User = await this.userRepository.findOne({ where: { oauthId: userId } });
+    user.stories = Promise.resolve((await user.stories).filter((story) => story.storyId !== storyId));
+    await this.userRepository.save(user);
+
   public async delete(userId: number, storyId: number): Promise<void> {
     await this.storyRepository.softDelete(storyId);
+
   }
 
+  @Transactional()
   async getStoriesFromTrie(searchText: string, offset: number, limit: number): Promise<Story[]> {
     if (!this.searchStoryResultCache.hasOwnProperty(searchText)) {
       const seperatedStatement = graphemeSeperation(searchText);
@@ -118,6 +140,38 @@ export class StoryService {
     return results.slice(offset * limit, offset * limit + limit);
   }
 
+  @Transactional()
+  public async like(userId: number, storyId: number): Promise<number> {
+    const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
+
+    story.likeCount += 1;
+    (await user.likedStories).push(story);
+
+    await this.storyRepository.save(story);
+    await this.userRepository.save(user);
+
+    const updatedStory = await this.storyRepository.findOne({ where: { storyId: storyId } });
+
+    return updatedStory.likeCount;
+  }
+
+  @Transactional()
+  public async unlike(userId: number, storyId: number): Promise<number> {
+    const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
+
+    story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
+    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId !== storyId));
+    await this.storyRepository.save(story);
+    await this.userRepository.save(user);
+
+    const updatedStory = await this.storyRepository.findOne({ where: { storyId: storyId } });
+
+    return updatedStory.likeCount;
+  }
+
+  @Transactional()
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number): Promise<StoryResultDto[]> {
     const stories = await this.storyRepository.find({ relations: ['user', 'category'] });
 
@@ -148,6 +202,7 @@ export class StoryService {
     return storyArr.slice(offset * limit, offset * limit + limit);
   }
 
+  @Transactional()
   async getRecommendedStory(offset: number, limit: number): Promise<any[]> {
     try {
       if (this.recommendStoryCache.length <= 0) {
@@ -173,6 +228,7 @@ export class StoryService {
     }
   }
 
+  @Transactional()
   async getFollowStories(userId: number, sortOption: number = 0, offset: number = 0, limit: number = 5): Promise<StoryResultDto[]> {
     const followings = await this.userService.getFollows(userId);
 
@@ -193,6 +249,7 @@ export class StoryService {
     return storyObjects.slice(offset * limit, offset * limit + limit);
   }
 
+  @Transactional()
   private sortByOption(stories: Story[], sortOption: number = 0): Story[] {
     if (sortOption == 0) {
       const sortByCreateDate = (a: Story, b: Story) => new Date(a.createAt).getTime() - new Date(b.createAt).getTime();
