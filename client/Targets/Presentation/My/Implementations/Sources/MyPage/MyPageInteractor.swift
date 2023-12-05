@@ -125,4 +125,8 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.detachStoryDetail()
     }
     
+    func storyDidDelete() {
+        router?.detachStoryDetail()
+    }
+    
 }

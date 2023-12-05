@@ -108,4 +108,8 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         router?.detachStoryDetail()
     }
     
+    func storyDidDelete() {
+        router?.detachStoryDetail()
+    }
+    
 }
