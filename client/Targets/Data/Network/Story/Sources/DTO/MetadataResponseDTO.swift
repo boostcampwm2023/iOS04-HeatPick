@@ -11,18 +11,26 @@ import DomainEntities
 
 public struct MetadataResponseDTO: Decodable {
     
-    public let categories: [CategoryResponseDTO]
-    public let badges: [BadgeResponseDTO]
+    public let meta: Meta
     
-    public init(categories: [CategoryResponseDTO], badges: [BadgeResponseDTO]) {
-        self.categories = categories
-        self.badges = badges
+    public struct Meta: Decodable {
+        public let categories: [CategoryResponseDTO]
+        public let badges: [BadgeResponseDTO]
+        
+        public init(categories: [CategoryResponseDTO], badges: [BadgeResponseDTO]) {
+            self.categories = categories
+            self.badges = badges
+        }
+    }
+    
+    public init(meta: Meta) {
+        self.meta = meta
     }
     
     public func toModel() -> ([StoryCategory], [Badge]) {
-        return (categories.map { StoryCategory(id: $0.categoryId,
+        return (meta.categories.map { StoryCategory(id: $0.categoryId,
                                                title: $0.categoryName) },
-                badges.map { Badge(id: $0.badgeId,
+                meta.badges.map { Badge(id: $0.badgeId,
                                    title: $0.badgeName)})
     }
     
