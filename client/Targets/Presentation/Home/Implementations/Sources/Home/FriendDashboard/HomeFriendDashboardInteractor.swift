@@ -7,6 +7,9 @@
 //
 
 import ModernRIBs
+import CoreKit
+import DomainEntities
+import DomainInterfaces
 
 protocol HomeFriendDashboardRouting: ViewableRouting {}
 
@@ -15,36 +18,68 @@ protocol HomeFriendDashboardPresentable: Presentable {
     func setup(model: HomeFriendDashboardViewModel)
 }
 
-protocol HomeFriendDashboardListener: AnyObject {}
+protocol HomeFriendDashboardListener: AnyObject {
+    func homeFriendDashboardEmptyFriend()
+    func homeFriendDashbardDidTapUser(_ userId: Int)
+}
+
+protocol HomeFriendDashboardInteractorDependency: AnyObject {
+    var userRecommendUseCase: UserRecommendUseCaseInterface { get }
+}
 
 final class HomeFriendDashboardInteractor: PresentableInteractor<HomeFriendDashboardPresentable>, HomeFriendDashboardInteractable, HomeFriendDashboardPresentableListener {
-
+    
     weak var router: HomeFriendDashboardRouting?
     weak var listener: HomeFriendDashboardListener?
-
-    override init(presenter: HomeFriendDashboardPresentable) {
+    
+    private let dependency: HomeFriendDashboardInteractorDependency
+    private let cancelBag = CancelBag()
+    
+    init(
+        presenter: HomeFriendDashboardPresentable,
+        dependency: HomeFriendDashboardInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(model: .init(contentList: [
-            .init(nickname: "호구마츄", profileImageURL: "https://picsum.photos/id/1/300/300"),
-            .init(nickname: "호구마츄1", profileImageURL: "https://picsum.photos/id/2/300/300"),
-            .init(nickname: "호구마츄2", profileImageURL: "https://picsum.photos/id/3/300/300"),
-            .init(nickname: "호구마츄3", profileImageURL: "https://picsum.photos/id/4/300/300"),
-            .init(nickname: "호구마츄4", profileImageURL: "https://picsum.photos/id/5/300/300"),
-            .init(nickname: "호구마츄5", profileImageURL: "https://picsum.photos/id/6/300/300"),
-            .init(nickname: "호구마츄6", profileImageURL: "https://picsum.photos/id/7/300/300"),
-            .init(nickname: "호구마츄7", profileImageURL: "https://picsum.photos/id/8/300/300"),
-            .init(nickname: "호구마츄8", profileImageURL: "https://picsum.photos/id/9/300/300"),
-            .init(nickname: "호구마츄9", profileImageURL: "https://picsum.photos/id/10/300/300"),
-        ]))
+        fetchUserRecommend()
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
+    }
+    
+    func didTapUserProfile(userId: Int) {
+        listener?.homeFriendDashbardDidTapUser(userId)
+    }
+    
+    private func fetchUserRecommend() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.userRecommendUseCase.fetchUserRecommend()
+                .onSuccess(on: .main, with: self) { this, recommends in
+                    this.performAfterFetchingUserRecommend(recommends)
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                }
+        }.store(in: cancelBag)
+    }
+    
+    private func performAfterFetchingUserRecommend(_ recommends: [UserRecommend]) {
+        if recommends.isEmpty {
+            listener?.homeFriendDashboardEmptyFriend()
+            return
+        }
+        let model = HomeFriendDashboardViewModel(
+            contentList: recommends.map { .init(userId: $0.userId, nickname: $0.username, profileImageURL: $0.profileUrl) }
+        )
+        presenter.setup(model: model)
     }
     
 }

@@ -47,6 +47,7 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         super.didBecomeActive()
         router?.attachRecommendDashboard()
         router?.attachHotPlaceDashboard()
+        router?.attachFriendDashboard()
         router?.attachFollowingDashboard()
     }
 
@@ -72,6 +73,17 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     
     func hotPlaceDashboardDidTapStory(id: Int) {
         router?.attachStoryDetail(storyId: id)
+    }
+    
+    // MARK: - Friend
+    
+    func homeFriendDashboardEmptyFriend() {
+        router?.detachFriendDashboard()
+    }
+    
+    func homeFriendDashbardDidTapUser(_ userId: Int) {
+        // TODO: - UserProfile로 routing
+        print(userId)
     }
     
     // MARK: - Following
