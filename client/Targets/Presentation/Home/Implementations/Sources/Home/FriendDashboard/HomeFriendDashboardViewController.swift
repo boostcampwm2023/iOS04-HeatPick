@@ -8,6 +8,7 @@
 
 import ModernRIBs
 import UIKit
+import CoreKit
 import DesignKit
 import BasePresentation
 
@@ -17,7 +18,7 @@ struct HomeFriendDashboardViewModel {
 
 protocol HomeFriendDashboardPresentableListener: AnyObject {}
 
-final class HomeFriendDashboardViewController: UIViewController, HomeFriendDashboardPresentable, HomeFriendDashboardViewControllable {
+final class HomeFriendDashboardViewController: BaseViewController, HomeFriendDashboardPresentable, HomeFriendDashboardViewControllable {
 
     weak var listener: HomeFriendDashboardPresentableListener?
     
@@ -26,39 +27,9 @@ final class HomeFriendDashboardViewController: UIViewController, HomeFriendDashb
         static let contentSpacing: CGFloat = 25
     }
     
-    private lazy var titleView: SeeAllView = {
-        let titleView = SeeAllView()
-        titleView.setup(model: .init(
-            title: "친구 추천",
-            isButtonEnabled: false
-        ))
-        titleView.translatesAutoresizingMaskIntoConstraints = false
-        return titleView
-    }()
-    
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.contentInset = .init(top: 0, left: Constant.spacing, bottom: 0, right: Constant.spacing)
-        return scrollView
-    }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .equalSpacing
-        stackView.spacing = Constant.contentSpacing
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    private let titleView = SeeAllView()
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
     
     func setup(model: HomeFriendDashboardViewModel) {
         stackView.subviews.forEach { $0.removeFromSuperview() }
@@ -70,11 +41,7 @@ final class HomeFriendDashboardViewController: UIViewController, HomeFriendDashb
         }
     }
     
-}
-
-private extension HomeFriendDashboardViewController {
-    
-    func setupViews() {
+    override func setupLayout() {
         view.addSubview(titleView)
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
@@ -96,4 +63,34 @@ private extension HomeFriendDashboardViewController {
             stackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
         ])
     }
+    
+    override func setupAttributes() {
+        titleView.do {
+            $0.setup(model: .init(
+                title: "친구 추천",
+                isButtonEnabled: false
+            ))
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        scrollView.do {
+            $0.showsHorizontalScrollIndicator = false
+            $0.showsVerticalScrollIndicator = false
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.contentInset = .init(top: 0, left: Constant.spacing, bottom: 0, right: Constant.spacing)
+        }
+        
+        stackView.do {
+            $0.axis = .horizontal
+            $0.alignment = .fill
+            $0.distribution = .equalSpacing
+            $0.spacing = Constant.contentSpacing
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    override func bind() {
+        
+    }
+    
 }
