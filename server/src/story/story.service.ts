@@ -47,9 +47,7 @@ export class StoryService {
     });
   }
 
-
   @Transactional()
-
   public async getStory(storyId: number, relations?: object): Promise<Story> {
     return await this.storyRepository.findOne({ where: { storyId: storyId }, relations: relations });
   }
@@ -59,7 +57,6 @@ export class StoryService {
     const categoryList: Category[] = await this.categoryService.getCategoryList();
     return getCreateStoryMetaResponseDto(badgeList, categoryList);
   }
-
 
   @Transactional()
   public async create(userId: number, { title, content, categoryId, place, images, badgeId, date }): Promise<number> {
@@ -90,13 +87,8 @@ export class StoryService {
     return getStoryDetailViewDataResponseJSONDto(storyDetailStoryData, storyDetailUserData);
   }
 
-
   @Transactional()
-  public async update(userId: string, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
-    const user: User = await this.userRepository.findOne({ where: { oauthId: userId } });
-
   public async update(userId: number, { storyId, title, content, categoryId, place, images, badgeId, date }): Promise<number> {
-
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['storyImages', 'category', 'badge', 'place'] });
     const badgeList: Badge[] = await this.userService.getBadges(userId);
 
@@ -110,16 +102,9 @@ export class StoryService {
     return story.storyId;
   }
 
-
   @Transactional()
-  public async delete(userId: string, storyId: number): Promise<void> {
-    const user: User = await this.userRepository.findOne({ where: { oauthId: userId } });
-    user.stories = Promise.resolve((await user.stories).filter((story) => story.storyId !== storyId));
-    await this.userRepository.save(user);
-
   public async delete(userId: number, storyId: number): Promise<void> {
     await this.storyRepository.softDelete(storyId);
-
   }
 
   @Transactional()
@@ -138,37 +123,6 @@ export class StoryService {
 
     const results = this.searchStoryResultCache[searchText];
     return results.slice(offset * limit, offset * limit + limit);
-  }
-
-  @Transactional()
-  public async like(userId: number, storyId: number): Promise<number> {
-    const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
-    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
-
-    story.likeCount += 1;
-    (await user.likedStories).push(story);
-
-    await this.storyRepository.save(story);
-    await this.userRepository.save(user);
-
-    const updatedStory = await this.storyRepository.findOne({ where: { storyId: storyId } });
-
-    return updatedStory.likeCount;
-  }
-
-  @Transactional()
-  public async unlike(userId: number, storyId: number): Promise<number> {
-    const story = await this.storyRepository.findOne({ where: { storyId: storyId } });
-    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
-
-    story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
-    user.likedStories = Promise.resolve((await user.likedStories).filter((story) => story.storyId !== storyId));
-    await this.storyRepository.save(story);
-    await this.userRepository.save(user);
-
-    const updatedStory = await this.storyRepository.findOne({ where: { storyId: storyId } });
-
-    return updatedStory.likeCount;
   }
 
   @Transactional()

@@ -70,7 +70,7 @@ export class CommentService {
   }
 
   @Transactional()
-  public async update({ storyId, commentId, content, mentions }): Promise<number> {
+  public async update({ commentId, content, mentions }): Promise<number> {
     const comment: Comment = await this.commentRepository.findOne({ where: { commentId: commentId }, relations: ['mentions', 'mentions.mentions'] });
 
     const newMentionedUsers: User[] = await Promise.all(
