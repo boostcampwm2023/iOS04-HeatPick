@@ -80,7 +80,7 @@ export class UserService {
     newBadge.emoji = strToEmoji[badgeName];
 
     userBadges.push(newBadge);
-    this.userRepository.save(userObject[0]);
+    await this.userRepository.save(userObject[0]);
   }
 
   @Transactional()
@@ -230,7 +230,7 @@ export class UserService {
       targetbadge.emoji = strToEmoji[targetbadge.badgeName];
       targetbadge.badgeExp = 0;
     }
-    this.userRepository.save(userObject[0]);
+    await this.userRepository.save(userObject[0]);
   }
 
   @Transactional()
