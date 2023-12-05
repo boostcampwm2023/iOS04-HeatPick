@@ -53,8 +53,8 @@ export class CommentController {
   @ApiOperation({ summary: '댓글 수정 API' })
   @ApiResponse({ status: 201, description: 'commentId' })
   async update(@Request() req: any, @Body(new ValidationPipe({ transform: true })) updateCommentDto: UpdateCommentDto): Promise<{ commentId: number }> {
-    const { storyId, commentId, content, mentions } = updateCommentDto;
-    const newCommentId = await this.commentService.update({ storyId, commentId, content, mentions });
+    const { commentId, content, mentions } = updateCommentDto;
+    const newCommentId = await this.commentService.update({ commentId, content, mentions });
     return { commentId: newCommentId };
   }
 

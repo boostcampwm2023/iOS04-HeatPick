@@ -18,8 +18,7 @@ import { ProfileUpdateMetaDataDto } from './dto/response/profile.update.meta.dto
 import { UserProfileDetailStoryDto } from './dto/response/user.profile.detail.story.dto';
 import { In, Repository } from 'typeorm';
 import { StoryService } from '../story/story.service';
-import { StoryResultDto } from '../search/dto/response/story.result.dto';
-import { storyEntityToObjWithOneImg } from '../util/story.entity.to.obj';
+import { Comment } from '../entities/comment.entity';
 
 @Injectable()
 export class UserService {
@@ -37,8 +36,8 @@ export class UserService {
     });
   }
 
-  async getUser(userRecordId: number) {
-    return await this.userRepository.findOne({ where: { userId: userRecordId } });
+  async getUser(userRecordId: number, relations?: object) {
+    return await this.userRepository.findOne({ where: { userId: userRecordId }, relations: relations });
   }
 
   async getBadges(userRecordId: number) {
@@ -299,5 +298,15 @@ export class UserService {
     await this.userRepository.save(user);
 
     return await this.storyService.subLikeCount(storyId);
+  }
+
+  public async mention(user: User, comment: Comment) {
+    user.mentions.push(comment);
+    return await this.userRepository.save(user);
+  }
+
+  public async unMention(user: User, targetComment: Comment) {
+    user.mentions = user.mentions.filter((comment) => comment.commentId !== targetComment.commentId);
+    return await this.userRepository.save(user);
   }
 }

@@ -16,8 +16,18 @@ export class Comment {
   @Column()
   content: string;
 
-  @ManyToMany(() => User, (user) => user.comments)
-  @JoinTable()
+  @ManyToMany(() => User, (user) => user.mentions, { cascade: true })
+  @JoinTable({
+    name: 'user_mention_comment',
+    joinColumn: {
+      name: 'commentId',
+      referencedColumnName: 'commentId',
+    },
+    inverseJoinColumn: {
+      name: 'userId',
+      referencedColumnName: 'userId',
+    },
+  })
   mentions: User[];
 
   @Column()

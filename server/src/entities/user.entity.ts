@@ -64,8 +64,18 @@ export class User {
   @ApiProperty({ description: '유저 팔로워 목록' })
   followers: User[];
 
-  @ManyToMany(() => Comment, (comment) => comment.mentions, { cascade: true })
-  @JoinTable()
+  @ManyToMany(() => Comment, (comment) => comment.mentions, { cascade: ['insert'] })
+  @JoinTable({
+    name: 'user_mention_comment',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'userId',
+    },
+    inverseJoinColumn: {
+      name: 'commentId',
+      referencedColumnName: 'commentId',
+    },
+  })
   @ApiProperty({ description: '댓글에 언급된 목록' })
   mentions: Comment[];
 

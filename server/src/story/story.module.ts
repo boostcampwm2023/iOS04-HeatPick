@@ -9,11 +9,12 @@ import { CategoryService } from '../category/category.service';
 import { UserModule } from '../user/user.module';
 import { userProviders } from '../user/user.providers';
 import { CategoryProvider } from '../category/category.provider';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
-  imports: [DatabaseModule, forwardRef(() => UserModule)],
+  imports: [DatabaseModule, forwardRef(() => UserModule), CategoryModule],
   controllers: [StoryController],
-  providers: [...storyProvider, ...userProviders, ...CategoryProvider, StoryJasoTrie, StoryService, UserService, CategoryService],
-  exports: [StoryService, StoryJasoTrie, CategoryService],
+  providers: [...storyProvider, ...userProviders, ...CategoryProvider, StoryJasoTrie, StoryService],
+  exports: [StoryService, StoryJasoTrie],
 })
 export class StoryModule {}

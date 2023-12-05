@@ -46,8 +46,8 @@ export class StoryService {
     });
   }
 
-  public async getStory(storyId: number): Promise<Story> {
-    return await this.storyRepository.findOne({ where: { storyId: storyId } });
+  public async getStory(storyId: number, relations?: object): Promise<Story> {
+    return await this.storyRepository.findOne({ where: { storyId: storyId }, relations: relations });
   }
 
   public async createMetaData(userId: number): Promise<CreateStoryMetaResponseDto> {
@@ -218,6 +218,22 @@ export class StoryService {
   }
 
   public async subLikeCount(storyId: number) {
+    const story = await this.getStory(storyId);
+    story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
+    await this.storyRepository.save(story);
+
+    return story.likeCount;
+  }
+
+  public async addCommentCount(storyId: number) {
+    const story = await this.getStory(storyId);
+    story.commentCount += 1;
+    await this.storyRepository.save(story);
+
+    return story.likeCount;
+  }
+
+  public async subCommentCount(storyId: number) {
     const story = await this.getStory(storyId);
     story.likeCount <= 0 ? (story.likeCount = 0) : (story.likeCount -= 1);
     await this.storyRepository.save(story);
