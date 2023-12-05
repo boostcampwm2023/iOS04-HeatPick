@@ -17,5 +17,6 @@ public protocol HomeRepositoryInterface: AnyObject {
     func fetchHotPlace(offset: Int, limit: Int) async -> Result<HotPlace, Error>
     func fetchFollowing() async -> Result<HomeFollowingStoryWithPaging, Error>
     func fetchFollowing(offset: Int, limit: Int, sortOption: Int) async -> Result<HomeFollowingStoryWithPaging, Error>
+    func fetchUserRecommend() async -> Result<[UserRecommend], Error>
     
 }

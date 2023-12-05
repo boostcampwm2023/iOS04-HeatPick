@@ -47,6 +47,7 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         super.didBecomeActive()
         router?.attachRecommendDashboard()
         router?.attachHotPlaceDashboard()
+        router?.attachFriendDashboard()
         router?.attachFollowingDashboard()
     }
 
