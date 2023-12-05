@@ -19,7 +19,7 @@ protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
     func didTapEditButton()
     func profileImageViewDidChange(_ imageData: Data)
     func usernameValueChanged(_ username: String)
-    func didTapUserBadgeView(_ badgeId: Int)
+    func didSelectBadge(_ badgeId: Int)
 }
 
 final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
@@ -34,6 +34,8 @@ final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpd
         }
     }
     
+    private var models: [UserProfileMetaDataBadge] = []
+    
     private lazy var navigationView: NavigationView = {
         let navigationView = NavigationView()
         navigationView.setup(model: .init(
@@ -46,42 +48,27 @@ final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpd
         return navigationView
     }()
     
-    private lazy var myPageUpdateUserProfileView: MyPageUpdateUserProfileView = {
-        let contentView = MyPageUpdateUserProfileView()
-        contentView.delegate = self
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        return contentView
+    private lazy var headerView: MyPageupdateUserTableHeaderView = {
+        let headerView = MyPageupdateUserTableHeaderView()
+        headerView.delegate = self
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        return headerView
     }()
     
-    private lazy var myPageUpdateUserBasicInformationView: MyPageUpdateUserBasicInformationView = {
-        let contentView = MyPageUpdateUserBasicInformationView()
-        contentView.delegate = self
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        return contentView
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.register(MyPageUpdateUserBadgeCell.self)
+        tableView.register(MyPageupdateUserTableHeaderView.self)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.tableHeaderView = headerView
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = true
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
     }()
     
-    private lazy var myPageUpdateUserBadgeListView: MyPageUpdateUserBadgeListView = {
-        let contentView = MyPageUpdateUserBadgeListView()
-        contentView.delegate = self
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        return contentView
-    }()
-    
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.contentInset = .zero
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
     
     private lazy var editButton: ActionButton = {
         let button = ActionButton()
@@ -99,11 +86,10 @@ final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpd
         setupViews()
     }
     
-    // TODO: nowBadge 수정
     func setup(model: UserProfileMetaData) {
-        myPageUpdateUserProfileView.setup(profileImageURL: model.profileImageURL)
-        myPageUpdateUserBasicInformationView.setup(username: model.username)
-        myPageUpdateUserBadgeListView.setup(badges: model.badges)
+        models = [model.nowBadge] + model.badges
+        headerView.setup(model: model)
+        tableView.reloadData()
     }
     
 }
@@ -112,32 +98,23 @@ private extension MyPageUpdateUserDashboardViewController {
     
     func setupViews() {
         view.backgroundColor = .hpWhite
-        
-        [navigationView, scrollView, editButton].forEach(view.addSubview)
-        scrollView.addSubview(stackView)
-        [myPageUpdateUserProfileView, myPageUpdateUserBasicInformationView, myPageUpdateUserBadgeListView].forEach(stackView.addArrangedSubview)
-        
+        [navigationView, tableView, editButton].forEach(view.addSubview)
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
             
-            scrollView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: editButton.topAnchor),
-            scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: view.widthAnchor, constant: Constant.bottomOffset),
+            tableView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            headerView.widthAnchor.constraint(equalTo: tableView.widthAnchor),
             
-            stackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            
+            editButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             editButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             editButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             editButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.bottomOffset),
-            editButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight)
         ])
     }
     
@@ -160,7 +137,16 @@ extension MyPageUpdateUserDashboardViewController: NavigationViewDelegate {
     
 }
 
-extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserProfileViewDelegate {
+extension MyPageUpdateUserDashboardViewController: MyPageupdateUserTableHeaderViewDelegate {
+    
+    func usernameValueChanged(_ username: String) {
+        guard !username.isEmpty else {
+            editButton.isEnabled = false
+            return
+        }
+        editButton.isEnabled = true
+        listener?.usernameValueChanged(username)
+    }
     
     func profileImageViewDidTap() {
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
@@ -169,6 +155,40 @@ extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserProfileViewDe
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = self
         present(picker, animated: true)
+    }
+    
+}
+
+extension MyPageUpdateUserDashboardViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        models.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let model = models[safe: indexPath.row] else { return .init() }
+        let cell = tableView.dequeue(MyPageUpdateUserBadgeCell.self, for: indexPath)
+        cell.setup(model: model)
+        return cell
+    }
+    
+}
+
+
+extension MyPageUpdateUserDashboardViewController: UITableViewDelegate  {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.dequeue(MyPageUpdateUserBadgeCell.self, for: indexPath)
+        cell.isHighlight = true
+        print(#function, indexPath.row, cell.isHighlight)
+        guard let model = models[safe: indexPath.row] else { return }
+        listener?.didSelectBadge(model.badgeId)
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        let cell = tableView.dequeue(MyPageUpdateUserBadgeCell.self, for: indexPath)
+        cell.isHighlight = false
+        print(#function, indexPath.row, cell.isHighlight)
     }
     
 }
@@ -185,34 +205,10 @@ extension MyPageUpdateUserDashboardViewController: PHPickerViewControllerDelegat
             DispatchQueue.main.async { [weak self] in
                 guard let image = image as? UIImage,
                       let imageData = image.pngData() else { return }
-                self?.myPageUpdateUserProfileView.setup(image: image)
+                self?.headerView.myPageUpdateUserProfileViewSetup(image: image)
                 self?.listener?.profileImageViewDidChange(imageData)
             }
         }
     }
     
 }
-
-
-extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserBasicInformationViewDelegate {
-    
-    func usernameValueChanged(_ username: String) {
-        guard !username.isEmpty else {
-            editButton.isEnabled = false
-            return
-        }
-        editButton.isEnabled = true
-        listener?.usernameValueChanged(username)
-    }
-    
-}
-
-
-extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserBadgeListViewDelegate {
-    
-    func didTapUserBadgeView(_ badgeId: Int) {
-        listener?.didTapUserBadgeView(badgeId)
-    }
-    
-}
-

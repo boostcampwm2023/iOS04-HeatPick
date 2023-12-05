@@ -52,7 +52,8 @@ public struct UserProfileMetaDataBadgeResponseDTO: Decodable {
     let badgeName: String
     let badgeExp: Int
     let emoji: String
-    let badgeExplain: String
+    // TODO: 옵셔널 제거
+    let badgeExplain: String?
 }
 
 public extension UserProfileMetaDataBadgeResponseDTO {

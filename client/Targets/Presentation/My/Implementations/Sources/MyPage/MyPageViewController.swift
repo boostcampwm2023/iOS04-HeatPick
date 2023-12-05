@@ -22,7 +22,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
         static let tabBarTitle = "마이"
         static let tabBarImage = "person"
         static let tabBarImageSelected = "person.fill"
-        static let contentInset: UIEdgeInsets = .init(top: 40, left: 0, bottom: 40, right: 0)
+        static let contentInset: UIEdgeInsets = .init(top: 20, left: 0, bottom: 20, right: 0)
     }
     
     weak var listener: MyPagePresentableListener?

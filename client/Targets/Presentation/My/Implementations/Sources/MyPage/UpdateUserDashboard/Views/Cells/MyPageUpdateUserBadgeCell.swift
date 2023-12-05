@@ -1,8 +1,8 @@
 //
-//  MyPageUpdateUserBadgeView.swift
+//  MyPageUpdateUserBadgeCell.swift
 //  MyImplementations
 //
-//  Created by 이준복 on 12/4/23.
+//  Created by 이준복 on 12/5/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
@@ -12,13 +12,8 @@ import CoreKit
 import DesignKit
 import DomainEntities
 
-protocol MyPageUpdateUserBadgeViewDelegate: AnyObject {
-    func didTapUserBadgeView(_ badgeId: Int)
-}
 
-final class MyPageUpdateUserBadgeView: UIView {
-    
-    weak var delegate: MyPageUpdateUserBadgeViewDelegate?
+final class MyPageUpdateUserBadgeCell: UITableViewCell {
     
     private enum Constant {
         static let spacing: CGFloat = 5
@@ -26,9 +21,12 @@ final class MyPageUpdateUserBadgeView: UIView {
         static let bottomOffset: CGFloat = -topOffset
         static let maxExp: Float = 1000
     }
-    
-    private var badgeId: Int?
-    private var isSelected: Bool = false
+
+    var isHighlight: Bool = false {
+        didSet {
+            updateUI()
+        }
+    }
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -82,9 +80,20 @@ final class MyPageUpdateUserBadgeView: UIView {
         return label
     }()
     
+    private let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .hpWhite
+        view.clipsToBounds = true
+        view.layer.cornerRadius = Constants.cornerRadiusMedium
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.hpGray4.cgColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConfiguration()
     }
@@ -95,32 +104,37 @@ final class MyPageUpdateUserBadgeView: UIView {
         setupConfiguration()
     }
     
-    func setup(badge: UserProfileMetaDataBadge) {
-        self.badgeId = badge.badgeId
-        titleLabel.text = "\(badge.emoji) \(badge.badgeName)"
-        descriptionLabel.text = badge.badgeExplain
-        progressView.progress = Float(badge.badgeExp) / Constant.maxExp
-        experienceLabel.text = "\(badge.badgeExp) / \(Int(Constant.maxExp))"
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        reset()
     }
     
-    func toggleIsSelected() {
-        isSelected.toggle()
-        backgroundColor = isSelected ? .hpRed5 : .hpWhite
-        layer.borderColor = isSelected ? UIColor.hpRed3.cgColor : UIColor.hpGray4.cgColor
+    func setup(model: UserProfileMetaDataBadge) {
+        titleLabel.text = "\(model.emoji) \(model.badgeName)"
+        descriptionLabel.text = model.badgeExplain
+        progressView.progress = Float(model.badgeExp) / Constant.maxExp
+        experienceLabel.text = "\(model.badgeExp) / \(Int(Constant.maxExp))"
     }
     
 }
 
 
-private extension MyPageUpdateUserBadgeView {
+private extension MyPageUpdateUserBadgeCell {
     
     func setupViews() {
-        [titleLabel, descriptionLabel, progressView, nextBadgeLabel, nextBadgeTitleLabel, experienceLabel].forEach(addSubview)
+        contentView.addSubview(containerView)
+        [titleLabel, descriptionLabel, progressView, nextBadgeLabel, nextBadgeTitleLabel, experienceLabel].forEach(containerView.addSubview)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
+            
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.leadingOffset),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constants.traillingOffset),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: Constant.bottomOffset),
+            
+            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constant.topOffset),
+            titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.leadingOffset),
+            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: Constants.traillingOffset),
             
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
@@ -132,7 +146,7 @@ private extension MyPageUpdateUserBadgeView {
             
             nextBadgeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: Constant.spacing),
             nextBadgeLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            nextBadgeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomOffset),
+            nextBadgeLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: Constant.bottomOffset),
             
             nextBadgeTitleLabel.topAnchor.constraint(equalTo: nextBadgeLabel.topAnchor),
             nextBadgeTitleLabel.leadingAnchor.constraint(equalTo: nextBadgeLabel.trailingAnchor, constant: Constant.spacing),
@@ -146,24 +160,21 @@ private extension MyPageUpdateUserBadgeView {
     }
     
     func setupConfiguration() {
-        clipsToBounds = true
-        layer.cornerRadius = Constants.cornerRadiusMedium
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.hpGray4.cgColor
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapUserBadgeView))
-        addGestureRecognizer(tapGesture)
+        selectionStyle = .none
     }
     
-}
-
-
-private extension MyPageUpdateUserBadgeView {
+    func reset() {
+        titleLabel.text = nil
+        descriptionLabel.text = nil
+        progressView.progress = 0
+        experienceLabel.text = nil
+        isSelected = false
+    }
     
-    @objc func didTapUserBadgeView() {
-        guard let badgeId else { return }
-        toggleIsSelected()
-        delegate?.didTapUserBadgeView(badgeId)
+    func updateUI() {
+        containerView.backgroundColor = isHighlight ? .hpRed5 : .hpWhite
+        print(isHighlight, containerView.backgroundColor)
+        containerView.layer.borderColor = isHighlight ? UIColor.hpRed3.cgColor : UIColor.hpGray4.cgColor
     }
     
 }

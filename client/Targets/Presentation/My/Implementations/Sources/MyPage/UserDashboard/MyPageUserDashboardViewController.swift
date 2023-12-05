@@ -11,7 +11,7 @@ import UIKit
 import DesignKit
 
 protocol MyPageUserDashboardPresentableListener: AnyObject {
-    func profileEidtButtonDidTap()
+    func profileEditButtonDidTap()
     func followButtonDidTap()
 }
 
@@ -73,8 +73,8 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
 
 extension MyPageUserDashboardViewController: MyPageUserViewDelegate {
     
-    func profileEidtButtonDidTap() {
-        listener?.profileEidtButtonDidTap()
+    func profileEditButtonDidTap() {
+        listener?.profileEditButtonDidTap()
     }
     
     func followButtonDidTap() {

@@ -70,7 +70,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     // MARK: - UserDashboard
     
-    func profileEidtButtonDidTap() {
+    func profileEditButtonDidTap() {
         router?.attachupdateUserDashboard()
     }
     
@@ -122,6 +122,10 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     // MARK: - StoryDetail
     
     func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
+    }
+    
+    func storyDidDelete() {
         router?.detachStoryDetail()
     }
     
