@@ -37,10 +37,12 @@ export class UserService {
     });
   }
 
+  @Transactional()
   async getUser(userRecordId: number, relations?: object) {
     return await this.userRepository.findOne({ where: { userId: userRecordId }, relations: relations });
   }
 
+  @Transactional()
   async getBadges(userRecordId: number) {
     const user = await this.userRepository.findOne({ where: { userId: userRecordId }, relations: ['badges'] });
     const badges = await user.badges;
@@ -206,6 +208,7 @@ export class UserService {
     return user.userId;
   }
 
+  @Transactional()
   async resign(userId: number, message: string) {
     return await this.userRepository.softDelete(userId);
   }
@@ -299,6 +302,7 @@ export class UserService {
     return users;
   }
 
+  @Transactional()
   public async like(userId: number, storyId: number): Promise<number> {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
     const story = await this.storyService.getStory(storyId);
@@ -309,6 +313,7 @@ export class UserService {
     return await this.storyService.addLikeCount(storyId);
   }
 
+  @Transactional()
   public async unlike(userId: number, storyId: number): Promise<number> {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
 
@@ -318,11 +323,13 @@ export class UserService {
     return await this.storyService.subLikeCount(storyId);
   }
 
+  @Transactional()
   public async mention(user: User, comment: Comment) {
     user.mentions.push(comment);
     return await this.userRepository.save(user);
   }
 
+  @Transactional()
   public async unMention(user: User, targetComment: Comment) {
     user.mentions = user.mentions.filter((comment) => comment.commentId !== targetComment.commentId);
     return await this.userRepository.save(user);
