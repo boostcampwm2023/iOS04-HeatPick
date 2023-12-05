@@ -75,6 +75,17 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
         router?.attachStoryDetail(storyId: id)
     }
     
+    // MARK: - Friend
+    
+    func homeFriendDashboardEmptyFriend() {
+        router?.detachFriendDashboard()
+    }
+    
+    func homeFriendDashbardDidTapUser(_ userId: Int) {
+        // TODO: - UserProfile로 routing
+        print(userId)
+    }
+    
     // MARK: - Following
     
     func followingDashboardDidTapSeeAll() {

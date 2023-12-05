@@ -16,7 +16,9 @@ struct HomeFriendDashboardViewModel {
     let contentList: [HomeFriendContentViewModel]
 }
 
-protocol HomeFriendDashboardPresentableListener: AnyObject {}
+protocol HomeFriendDashboardPresentableListener: AnyObject {
+    func didTapUserProfile(userId: Int)
+}
 
 final class HomeFriendDashboardViewController: BaseViewController, HomeFriendDashboardPresentable, HomeFriendDashboardViewControllable {
 
@@ -34,9 +36,7 @@ final class HomeFriendDashboardViewController: BaseViewController, HomeFriendDas
     func setup(model: HomeFriendDashboardViewModel) {
         stackView.subviews.forEach { $0.removeFromSuperview() }
         model.contentList.forEach { contentModel in
-            let contentView = HomeFriendContentView()
-            contentView.setup(model: contentModel)
-            contentView.layer.cornerRadius = Constants.cornerRadiusMedium
+            let contentView = makeContentView(model: contentModel)
             stackView.addArrangedSubview(contentView)
         }
     }
@@ -89,8 +89,17 @@ final class HomeFriendDashboardViewController: BaseViewController, HomeFriendDas
         }
     }
     
-    override func bind() {
-        
+    private func makeContentView(model: HomeFriendContentViewModel) -> HomeFriendContentView {
+        return HomeFriendContentView().then {
+            $0.setup(model: model)
+            $0.layer.cornerRadius = Constants.cornerRadiusMedium
+            $0.tapPublisher
+                .with(self)
+                .sink { this, userId in
+                    this.listener?.didTapUserProfile(userId: userId)
+                }
+                .store(in: &cancellables)
+        }
     }
     
 }

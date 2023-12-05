@@ -7,15 +7,28 @@
 //
 
 import UIKit
+import Combine
 import CoreKit
 import DesignKit
 
 struct HomeFriendContentViewModel {
+    let userId: Int
     let nickname: String
     let profileImageURL: String?
 }
 
 final class HomeFriendContentView: UIView {
+    
+    var tapPublisher: AnyPublisher<Int, Never> {
+        return tapGesturePublisher
+            .with(self)
+            .compactMap { this, _ in
+                this.userId
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    private var userId: Int?
     
     private enum Constant {
         static let imageWidth: CGFloat = 75
@@ -25,6 +38,7 @@ final class HomeFriendContentView: UIView {
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
+        imageView.backgroundColor = .hpGray4
         imageView.layer.cornerRadius = Constant.imageHeight / 2
         imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -55,6 +69,7 @@ final class HomeFriendContentView: UIView {
     }
     
     func setup(model: HomeFriendContentViewModel) {
+        userId = model.userId
         nicknameLabel.text = model.nickname
         profileImageView.load(from: model.profileImageURL)
     }

@@ -18,7 +18,10 @@ protocol HomeFriendDashboardPresentable: Presentable {
     func setup(model: HomeFriendDashboardViewModel)
 }
 
-protocol HomeFriendDashboardListener: AnyObject {}
+protocol HomeFriendDashboardListener: AnyObject {
+    func homeFriendDashboardEmptyFriend()
+    func homeFriendDashbardDidTapUser(_ userId: Int)
+}
 
 protocol HomeFriendDashboardInteractorDependency: AnyObject {
     var userRecommendUseCase: UserRecommendUseCaseInterface { get }
@@ -51,6 +54,10 @@ final class HomeFriendDashboardInteractor: PresentableInteractor<HomeFriendDashb
         cancelBag.cancel()
     }
     
+    func didTapUserProfile(userId: Int) {
+        listener?.homeFriendDashbardDidTapUser(userId)
+    }
+    
     private func fetchUserRecommend() {
         Task { [weak self] in
             guard let self else { return }
@@ -65,8 +72,12 @@ final class HomeFriendDashboardInteractor: PresentableInteractor<HomeFriendDashb
     }
     
     private func performAfterFetchingUserRecommend(_ recommends: [UserRecommend]) {
+        if recommends.isEmpty {
+            listener?.homeFriendDashboardEmptyFriend()
+            return
+        }
         let model = HomeFriendDashboardViewModel(
-            contentList: recommends.map { .init(nickname: $0.username, profileImageURL: $0.profileUrl) }
+            contentList: recommends.map { .init(userId: $0.userId, nickname: $0.username, profileImageURL: $0.profileUrl) }
         )
         presenter.setup(model: model)
     }
