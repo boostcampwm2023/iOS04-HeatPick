@@ -23,6 +23,6 @@ dotenv.config();
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [...userProviders, AuthService, JwtStrategy, ImageService],
+  providers: [...userProviders, AuthService, JwtStrategy],
 })
 export class AuthModule {}
