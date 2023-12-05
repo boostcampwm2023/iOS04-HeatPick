@@ -38,4 +38,5 @@ final class HomeFriendDashboardBuilder: Builder<HomeFriendDashboardDependency>, 
         interactor.listener = listener
         return HomeFriendDashboardRouter(interactor: interactor, viewController: viewController)
     }
+    
 }

@@ -31,4 +31,5 @@ final class SearchBeforeCategoryDashboardBuilder: Builder<SearchBeforeCategoryDa
         interactor.listener = listener
         return SearchBeforeCategoryDashboardRouter(interactor: interactor, viewController: viewController)
     }
+    
 }

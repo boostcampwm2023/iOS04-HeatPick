@@ -21,6 +21,7 @@ protocol StoryDetailPresentableListener: AnyObject {
     func followButtonDidTap(userId: Int, userStatus: UserStatus)
     func likeButtonDidTap(state: Bool)
     func commentButtonDidTap()
+    func deleteButtonDidTap()
 }
 
 struct StoryDetailViewModel {
@@ -68,6 +69,7 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
     private let mapView = StoryMapView()
     
     func setup(model: StoryDetailViewModel) {
+        setupNavigationView(model.userProfileViewModel.userStatus)
         simpleUserProfileView.setup(model: model.userProfileViewModel)
         storyHeaderView.setup(model: model.headerViewModel)
         storyImagesView.updateImages(model.images)
@@ -182,6 +184,12 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
         mapView.translatesAutoresizingMaskIntoConstraints = false
     }
     
+    func setupNavigationView(_ userStatus: UserStatus) {
+        if case .me = userStatus {
+            navigationView.setup(model: .init(title: "", leftButtonType: .back, rightButtonTypes: [.delete]))
+        }
+    }
+    
     override func bind() {
         
     }
@@ -192,7 +200,18 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
 extension StoryDetailViewController: NavigationViewDelegate {
    
     func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
-        listener?.storyDetailDidTapClose()
+        switch type {
+        case .back:
+            listener?.storyDetailDidTapClose()
+        case .delete:
+            listener?.deleteButtonDidTap()
+        case .home:
+            break
+        case .close, .edit, .setting, .none:
+            break
+        }
+        
+        
     }
 
 }

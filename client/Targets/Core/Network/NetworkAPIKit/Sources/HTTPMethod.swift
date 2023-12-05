@@ -13,4 +13,6 @@ public enum HTTPMethod: String, Encodable {
     case get = "GET"
     case post = "POST"
     case delete = "DELETE"
+    case patch = "PATCH"
+    
 }
