@@ -11,7 +11,8 @@ import CoreKit
 import DesignKit
 
 protocol MyPageUserViewDelegate: AnyObject {
-    func myPageUserViewDidTapProfile(_ view: MyPageUserView)
+    func profileEidtButtonDidTap()
+    func followButtonDidTap()
 }
 
 struct MyPageUserViewModel {
@@ -35,19 +36,46 @@ final class MyPageUserView: UIView {
         stackView.axis = .horizontal
         stackView.spacing = 10
         stackView.distribution = .equalSpacing
-        stackView.alignment = .leading
+        stackView.alignment = .trailing
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    private lazy var profileImageView: UIImageView = {
+    private let profileStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.distribution = .equalSpacing
+        stackView.alignment = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .profileDefault
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constant.profileImageViewWidth / 2
-        imageView.addTapGesture(target: self, action: #selector(profileDidTap))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
+    }()
+    
+    private lazy var editButton: UIButton = {
+        let button = UIButton(configuration: .filled())
+        button.tintColor = .hpRed3
+        button.setTitle("수정", for: .normal)
+        button.addTarget(self, action: #selector(profileEidtButtonDidTap), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var followButton: UIButton = {
+        let button = UIButton(configuration: .filled())
+        button.tintColor = .hpRed3
+        button.setTitle("팔로우", for: .normal)
+        button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     private let followerView: MyPageUserContnetView = {
@@ -94,27 +122,35 @@ final class MyPageUserView: UIView {
 
 private extension MyPageUserView {
     
-    @objc func profileDidTap() {
-        delegate?.myPageUserViewDidTapProfile(self)
+    @objc func profileEidtButtonDidTap() {
+        delegate?.profileEidtButtonDidTap()
     }
     
+    @objc func followButtonDidTap() {
+        delegate?.followButtonDidTap()
+    }
 }
 
 private extension MyPageUserView {
     
     func setupViews() {
-        [profileImageView, contentStackView].forEach(addSubview)
+        [profileStackView, contentStackView, followButton].forEach(addSubview)
+        [profileImageView, editButton].forEach(profileStackView.addArrangedSubview)
         [followerView, storyView, experienceView].forEach(contentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
-            profileImageView.topAnchor.constraint(equalTo: topAnchor),
-            profileImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            profileImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageViewWidth),
             profileImageView.heightAnchor.constraint(equalToConstant: Constant.profileImageViewHeight),
+            profileStackView.topAnchor.constraint(equalTo: topAnchor),
+            profileStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            profileStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            contentStackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor)
+            contentStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
+            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            
+            followButton.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
+            followButton.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor),
+            followButton.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
     

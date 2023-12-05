@@ -46,8 +46,9 @@ final class MyPageUpdateUserProfileView: UIView {
         setupViews()
     }
     
-    func setup(profileImageURL: String) {
-        if !profileImageURL.isEmpty {
+    func setup(profileImageURL: String?) {
+        if let profileImageURL,
+           !profileImageURL.isEmpty {
             profileImageView.load(from: profileImageURL)
         } else {
             profileImageView.image = .profileDefault

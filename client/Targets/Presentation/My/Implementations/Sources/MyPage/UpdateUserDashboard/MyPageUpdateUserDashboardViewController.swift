@@ -8,16 +8,11 @@
 
 import UIKit
 import PhotosUI
-import ModernRIBs
-import DesignKit
 
-struct UserInfoEditViewModel {
-    let userId: Int
-    let profileImageURL:  String
-    let username: String
-    let nowBadge: MyPageUpdateUserBadgeViewModel
-    let badges: [MyPageUpdateUserBadgeViewModel]
-}
+import ModernRIBs
+
+import DesignKit
+import DomainEntities
 
 protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
     func didTapBack()
@@ -28,7 +23,7 @@ protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
 }
 
 final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
-
+    
     weak var listener: MyPageUpdateUserDashboardPresentableListener?
     
     private enum Constant {
@@ -82,7 +77,7 @@ final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpd
     }()
     
     private let stackView: UIStackView = {
-       let stackView = UIStackView()
+        let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -104,7 +99,8 @@ final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpd
         setupViews()
     }
     
-    func setup(model: UserInfoEditViewModel) {
+    // TODO: nowBadge 수정
+    func setup(model: UserProfileMetaData) {
         myPageUpdateUserProfileView.setup(profileImageURL: model.profileImageURL)
         myPageUpdateUserBasicInformationView.setup(username: model.username)
         myPageUpdateUserBadgeListView.setup(badges: model.badges)
@@ -201,6 +197,11 @@ extension MyPageUpdateUserDashboardViewController: PHPickerViewControllerDelegat
 extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserBasicInformationViewDelegate {
     
     func usernameValueChanged(_ username: String) {
+        guard !username.isEmpty else {
+            editButton.isEnabled = false
+            return
+        }
+        editButton.isEnabled = true
         listener?.usernameValueChanged(username)
     }
     
@@ -214,4 +215,4 @@ extension MyPageUpdateUserDashboardViewController: MyPageUpdateUserBadgeListView
     }
     
 }
- 
+

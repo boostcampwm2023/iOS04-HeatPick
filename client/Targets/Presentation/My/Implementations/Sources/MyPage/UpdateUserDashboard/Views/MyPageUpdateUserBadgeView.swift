@@ -10,14 +10,7 @@ import UIKit
 
 import CoreKit
 import DesignKit
-
-struct MyPageUpdateUserBadgeViewModel {
-    let badgeId: Int
-    let badgeName: String
-    let badgeExp: Int
-    let emoji: String
-    let badgeExplain: String
-}
+import DomainEntities
 
 protocol MyPageUpdateUserBadgeViewDelegate: AnyObject {
     func didTapUserBadgeView(_ badgeId: Int)
@@ -31,9 +24,11 @@ final class MyPageUpdateUserBadgeView: UIView {
         static let spacing: CGFloat = 5
         static let topOffset: CGFloat = 20
         static let bottomOffset: CGFloat = -topOffset
+        static let maxExp: Float = 1000
     }
     
     private var badgeId: Int?
+    private var isSelected: Bool = false
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -55,6 +50,7 @@ final class MyPageUpdateUserBadgeView: UIView {
     
     private let progressView: UIProgressView = {
         let progressView = UIProgressView()
+        progressView.tintColor = .hpRed3
         progressView.translatesAutoresizingMaskIntoConstraints = false
         return progressView
     }()
@@ -99,9 +95,18 @@ final class MyPageUpdateUserBadgeView: UIView {
         setupConfiguration()
     }
     
-    func setup(badge: MyPageUpdateUserBadgeViewModel) {
+    func setup(badge: UserProfileMetaDataBadge) {
+        self.badgeId = badge.badgeId
         titleLabel.text = "\(badge.emoji) \(badge.badgeName)"
         descriptionLabel.text = badge.badgeExplain
+        progressView.progress = Float(badge.badgeExp) / Constant.maxExp
+        experienceLabel.text = "\(badge.badgeExp) / \(Int(Constant.maxExp))"
+    }
+    
+    func toggleIsSelected() {
+        isSelected.toggle()
+        backgroundColor = isSelected ? .hpRed5 : .hpWhite
+        layer.borderColor = isSelected ? UIColor.hpRed3.cgColor : UIColor.hpGray4.cgColor
     }
     
 }
@@ -157,6 +162,7 @@ private extension MyPageUpdateUserBadgeView {
     
     @objc func didTapUserBadgeView() {
         guard let badgeId else { return }
+        toggleIsSelected()
         delegate?.didTapUserBadgeView(badgeId)
     }
     

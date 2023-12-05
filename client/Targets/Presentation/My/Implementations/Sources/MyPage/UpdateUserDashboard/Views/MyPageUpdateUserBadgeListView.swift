@@ -8,6 +8,7 @@
 
 import UIKit
 import DesignKit
+import DomainEntities
 
 protocol MyPageUpdateUserBadgeListViewDelegate: AnyObject {
     func didTapUserBadgeView(_ badgeId: Int)
@@ -16,6 +17,8 @@ protocol MyPageUpdateUserBadgeListViewDelegate: AnyObject {
 final class MyPageUpdateUserBadgeListView: UIView {
     
     weak var delegate: MyPageUpdateUserBadgeListViewDelegate?
+    
+    private var currentBadgeId = -1
     
     private enum Constant {
         static let topOffset: CGFloat = 15
@@ -55,7 +58,7 @@ final class MyPageUpdateUserBadgeListView: UIView {
         setupViews()
     }
     
-    func setup(badges: [MyPageUpdateUserBadgeViewModel]) {
+    func setup(badges: [UserProfileMetaDataBadge]) {
         badges.forEach { badge in
             let contentView = MyPageUpdateUserBadgeView()
             contentView.setup(badge: badge)

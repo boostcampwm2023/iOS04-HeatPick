@@ -6,8 +6,12 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
 import Foundation
+
 import ModernRIBs
+
+import CoreKit
 import DomainEntities
 import DomainInterfaces
 
@@ -16,11 +20,12 @@ protocol MyPageUpdateUserDashboardRouting: ViewableRouting { }
 protocol MyPageUpdateUserDashboardPresentable: Presentable {
     var listener: MyPageUpdateUserDashboardPresentableListener? { get set }
     
-    func setup(model: UserInfoEditViewModel)
+    func setup(model: UserProfileMetaData)
 }
 
 protocol MyPageUpdateUserDashboardListener: AnyObject {
-    func didTapBackUserInfoEditDashboard()
+    func updateUser(model: UserUpdateContent)
+    func detachMyPageUpdateUserDasbaord()
 }
 
 protocol MyPageUpdateUserDashboardInteractorDependency: AnyObject {
@@ -28,11 +33,13 @@ protocol MyPageUpdateUserDashboardInteractorDependency: AnyObject {
 }
 
 final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpdateUserDashboardPresentable>, MyPageUpdateUserDashboardInteractable, MyPageUpdateUserDashboardPresentableListener {
-
+    
     weak var router: MyPageUpdateUserDashboardRouting?
     weak var listener: MyPageUpdateUserDashboardListener?
-
+    
     private let dependency: MyPageUpdateUserDashboardInteractorDependency
+    private var cancelTaskBag: CancelBag = .init()
+    private var userUpdateModel: UserUpdateContent?
     
     init(
         presenter: MyPageUpdateUserDashboardPresentable,
@@ -42,34 +49,47 @@ final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpd
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
-//        presenter.setup(model: )
+        
+        Task { [weak self] in
+            guard let self else { return }
+            await self.dependency.myPageUpdateUserUseCase.fetchUserMedtaData()
+                .onSuccess(on: .main) { usermetaData in
+                    self.presenter.setup(model: usermetaData)
+                    self.userUpdateModel = .init(username: usermetaData.username, selectedBadgeId: usermetaData.nowBadge.badgeId)
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .network)
+                }
+        }.store(in: cancelTaskBag)
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
+        cancelTaskBag.cancel()
     }
     
     func didTapBack() {
-        listener?.didTapBackUserInfoEditDashboard()
+        listener?.detachMyPageUpdateUserDasbaord()
     }
     
     func profileImageViewDidChange(_ imageData: Data) {
-        
+        userUpdateModel?.update(image: imageData)
     }
     
     func usernameValueChanged(_ username: String) {
-        
+        userUpdateModel?.update(username: username)
     }
     
     func didTapUserBadgeView(_ badgeId: Int) {
-        
+        userUpdateModel?.update(selectedBadgeId: badgeId)
     }
     
     func didTapEditButton() {
-        
+        if let userUpdateModel { listener?.updateUser(model: userUpdateModel) }
+        listener?.detachMyPageUpdateUserDasbaord()
     }
     
 }

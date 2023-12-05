@@ -54,6 +54,7 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
         super.willResignActive()
     }
     
+    // TODO: 구현 예정
     func profileImageViewDidChange(_ imageData: Data) {
         
     }
