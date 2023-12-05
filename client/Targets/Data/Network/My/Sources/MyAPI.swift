@@ -16,7 +16,7 @@ public enum MyAPI {
     case profile(id: Int)
     case userStory(id: Int, offset: Int, limit: Int)
     case userMetaData
-    case userUpdate(userUpdate: UserUpdate)
+    case userUpdate(content: UserUpdateContent)
 }
 
 extension MyAPI: Target {
@@ -61,9 +61,10 @@ extension MyAPI: Target {
         case .userMetaData:
             return .plain
             
-        case let .userUpdate(userUpdate):
-            let request = UserUpdateRequestDTO(userUpdate: userUpdate)
-            return .url(parameters: request.parameters())
+        case let .userUpdate(content):
+            let request = UserUpdateRequestDTO(content: content)
+            let media = Media(data: content.image, type: .jpeg, key: "image")
+            return .multipart(.init(data: request, mediaList: [media]))
         }
     }
     

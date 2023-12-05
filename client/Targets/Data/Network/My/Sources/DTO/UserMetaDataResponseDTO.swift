@@ -10,21 +10,36 @@ import Foundation
 import CoreKit
 import DomainEntities
 
+
 public struct UserMetaDataResponseDTO: Decodable {
-    public let userId: Int
-    public let username: String
-    public let profileURL: String
-    public let nowBadge: UserMetaDataBadgeResponseDTO
-    public let badges: [UserMetaDataBadgeResponseDTO]
+    
+    public let profile: UserProfileMetaDataResponseDTO
+    
 }
 
 public extension UserMetaDataResponseDTO {
     
-    func toDomain() -> UserMetaData {
+    func toDomain() -> UserProfileMetaData {
+        profile.toDomain()
+    }
+    
+}
+
+public struct UserProfileMetaDataResponseDTO: Decodable {
+    public let userId: Int
+    public let profileImageURL: String
+    public let username: String
+    public let nowBadge: UserProfileMetaDataBadgeResponseDTO
+    public let badges: [UserProfileMetaDataBadgeResponseDTO]
+}
+
+public extension UserProfileMetaDataResponseDTO {
+    
+    func toDomain() -> UserProfileMetaData {
         .init(
             userId: userId, 
             username: username,
-            profileURL: profileURL,
+            profileImageURL: profileImageURL,
             nowBadge: nowBadge.toDomain(),
             badges: badges.map { $0.toDomain() }
         )
@@ -32,22 +47,22 @@ public extension UserMetaDataResponseDTO {
     
 }
 
-public struct UserMetaDataBadgeResponseDTO: Decodable {
+public struct UserProfileMetaDataBadgeResponseDTO: Decodable {
     let badgeId: Int
-    let emoji: String
     let badgeName: String
     let badgeExp: Int
+    let emoji: String
     let badgeExplain: String
 }
 
-public extension UserMetaDataBadgeResponseDTO {
+public extension UserProfileMetaDataBadgeResponseDTO {
     
-    func toDomain() -> UserMetaDataBadge {
+    func toDomain() -> UserProfileMetaDataBadge {
         .init(
             badgeId: badgeId,
-            emoji: emoji,
             badgeName: badgeName,
             badgeExp: badgeExp,
+            emoji: emoji,
             badgeExplain: badgeExplain
         )
     }

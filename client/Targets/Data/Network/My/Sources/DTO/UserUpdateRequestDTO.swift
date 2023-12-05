@@ -13,13 +13,10 @@ public struct UserUpdateRequestDTO: Encodable {
     
     public let username: String
     public let selectedBadgeId: Int
-    public let image: [String]
     
-    init(userUpdate: UserUpdate) {
-        self.username = userUpdate.username
-        self.selectedBadgeId = userUpdate.selectedBadgeId
-        self.image = userUpdate.image
+    init(content: UserUpdateContent) {
+        self.username = content.username
+        self.selectedBadgeId = content.selectedBadgeId
     }
-    
     
 }

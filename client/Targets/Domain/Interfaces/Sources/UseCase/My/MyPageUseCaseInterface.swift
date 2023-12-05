@@ -14,5 +14,6 @@ public protocol MyPageUseCaseInterface: MyPageProfileUseCaseInterface,
                                         MyPageUpdateUserUseCaseInterface {
     
     func fetchMyPage() async -> Result<MyPage, Error>
+    func fetchUserInfo(userUpdate: UserUpdateContent) async -> Result<Int, Error>
     
 }
