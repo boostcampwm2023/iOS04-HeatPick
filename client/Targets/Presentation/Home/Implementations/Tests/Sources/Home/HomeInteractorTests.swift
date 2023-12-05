@@ -33,14 +33,23 @@ final class HomeInteractorTests: XCTestCase {
         sut.router = router
     }
     
-    func test_active되면_recommend_hotplace_following_대시보드를_attach_한다() {
+    func test_active되면_recommend_hotplace_friend_following_대시보드를_attach_한다() {
         // when
         sut.activate()
         
         // then
         XCTAssertEqual(router.attachRecommendDashboardCallCount, 1)
         XCTAssertEqual(router.attachHotPlaceDashboardCallCount, 1)
+        XCTAssertEqual(router.attachFriendDashboardCallCount, 1)
         XCTAssertEqual(router.attachFollowingDashboardCallCount, 1)
+    }
+    
+    func test_추천친구가_아무도_없으면_friend_dashboard를_detach한다() {
+        // when
+        sut.homeFriendDashboardEmptyFriend()
+        
+        // then
+        XCTAssertEqual(router.detachFriendDashboardCallCount, 1)
     }
     
 }
