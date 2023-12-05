@@ -4,7 +4,7 @@ import { saveImageToLocal } from './util.save.image.local';
 import { dateFormatToISO8601 } from './util.date.format.to.ISO8601';
 
 export const createStoryEntity = async ({ title, content, category, place, images, badge, date }) => {
-  const savedImageNames = await Promise.all(images.map(async (image: Express.Multer.File) => saveImageToLocal('./images/story', image.buffer)));
+  const savedImagePaths = await Promise.all(images.map(async (image: Express.Multer.File) => saveImageToLocal('./images/story', image.buffer, 'story')));
   const story = new Story();
   story.title = title;
   story.content = content;
@@ -14,9 +14,9 @@ export const createStoryEntity = async ({ title, content, category, place, image
   story.likeCount = 0;
   story.commentCount = 0;
   const storyImageArr = await story.storyImages;
-  savedImageNames.forEach((name) => {
+  savedImagePaths.forEach((path) => {
     const storyImageObj = new StoryImage();
-    storyImageObj.imageUrl = `https://server.bc8heatpick.store/image/story?name=${name}`;
+    storyImageObj.imageUrl = path;
     storyImageArr.push(storyImageObj);
   });
   story.badge = badge;

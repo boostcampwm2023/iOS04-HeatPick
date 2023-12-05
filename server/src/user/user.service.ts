@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserJasoTrie } from './../search/trie/userTrie';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { Badge } from 'src/entities/badge.entity';
@@ -159,12 +159,14 @@ export class UserService {
     };
 
     const badges = await Promise.all(
-      (await user.badges).map((badge) => {
-        return {
-          ...badge,
-          badgeExplain: strToExplain[badge.badgeName],
-        };
-      }),
+      (await user.badges)
+        .filter((badge) => badge.badgeId !== representativeBadge.badgeId)
+        .map((badge) => {
+          return {
+            ...badge,
+            badgeExplain: strToExplain[badge.badgeName],
+          };
+        }),
     );
     const userImage = await user.profileImage;
     return {
@@ -184,8 +186,7 @@ export class UserService {
     user.username = username;
     user.representativeBadge = Promise.resolve(selectedBadge);
     const profileObj = new profileImage();
-    const imageName = await saveImageToLocal('./images/profile', image.buffer);
-    profileObj.imageUrl = `https://server.bc8heatpick.store/image/profile?name=${imageName}`;
+    profileObj.imageUrl = image ? await saveImageToLocal('./images/profile', image.buffer, 'profile') : ``;
     user.profileImage = Promise.resolve(profileObj);
 
     await this.userRepository.save(user);
