@@ -10,6 +10,7 @@ import { CreateStoryRequestDto } from './dto/request/story.create.request.dto';
 import { UpdateStoryRequestDto } from './dto/request/story.update.request.dto';
 import { CreateStoryMetaResponseDto, CreateStoryMetaResponseJSONDto } from './dto/response/story.create.meta.response.dto';
 import { StoryDetailViewDataResponseJSONDto } from './dto/response/detail/story.detail.view.data.response.dto';
+import { StoryCreateResponseDto } from './dto/response/story-create-response.dto';
 
 @ApiTags('story')
 @Controller('story')
@@ -35,17 +36,12 @@ export class StoryController {
   @ApiResponse({
     status: 200,
     description: 'storyId',
-    schema: {
-      type: 'object',
-      properties: {
-        storyId: { type: 'number' },
-      },
-    },
+    type: StoryCreateResponseDto,
   })
-  async create(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) createStoryRequestDto: CreateStoryRequestDto): Promise<{ storyId: number }> {
+  async create(@UploadedFiles() images: Array<Express.Multer.File>, @Request() req: any, @Body(new ValidationPipe({ transform: true })) createStoryRequestDto: CreateStoryRequestDto): Promise<StoryCreateResponseDto> {
     const { title, content, categoryId, place, badgeId, date } = createStoryRequestDto;
-    const storyId = await this.storyService.create(req.user.userRecordId, { title, content, categoryId, place, images, badgeId, date });
-    return { storyId: storyId };
+    const storyCreateResponseDto = await this.storyService.create(req.user.userRecordId, { title, content, categoryId, place, images, badgeId, date });
+    return storyCreateResponseDto;
   }
 
   @Get('detail')
