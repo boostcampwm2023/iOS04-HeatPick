@@ -12,10 +12,10 @@ export class Place {
   @Column()
   address: string;
 
-  @Column('decimal', { precision: 30, scale: 20 })
+  @Column('double', { precision: 20, scale: 16 })
   latitude: number;
 
-  @Column('decimal', { precision: 30, scale: 20 })
+  @Column('double', { precision: 20, scale: 16 })
   longitude: number;
 
   @OneToOne(() => Story, (story) => story.place)
