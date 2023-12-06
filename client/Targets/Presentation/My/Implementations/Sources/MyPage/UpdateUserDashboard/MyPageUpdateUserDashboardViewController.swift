@@ -178,17 +178,8 @@ extension MyPageUpdateUserDashboardViewController: UITableViewDataSource {
 extension MyPageUpdateUserDashboardViewController: UITableViewDelegate  {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.dequeue(MyPageUpdateUserBadgeCell.self, for: indexPath)
-        
-        
         guard let model = models[safe: indexPath.row] else { return }
         listener?.didSelectBadge(model.badgeId)
-    }
-    
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        let cell = tableView.dequeue(MyPageUpdateUserBadgeCell.self, for: indexPath)
-        
-        
     }
     
 }

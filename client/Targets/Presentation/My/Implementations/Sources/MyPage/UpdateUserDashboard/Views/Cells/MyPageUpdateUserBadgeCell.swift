@@ -21,14 +21,7 @@ final class MyPageUpdateUserBadgeCell: UITableViewCell {
         static let bottomOffset: CGFloat = -topOffset
         static let maxExp: Float = 1000
     }
-    
-    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
-        if highlighted {
-            updateUI()
-        }
-    }
-    
+        
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "🫡 iOS04"
@@ -117,6 +110,11 @@ final class MyPageUpdateUserBadgeCell: UITableViewCell {
         experienceLabel.text = "\(model.badgeExp) / \(Int(Constant.maxExp))"
     }
     
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: true)
+        updateUI()
+    }
+    
 }
 
 
@@ -173,8 +171,8 @@ private extension MyPageUpdateUserBadgeCell {
     }
     
     func updateUI() {
-        containerView.backgroundColor = .hpRed5
-        containerView.layer.borderColor = UIColor.hpRed3.cgColor
+        containerView.backgroundColor = isSelected ? .hpRed5 : .hpWhite
+        containerView.layer.borderColor = isSelected ? UIColor.hpRed3.cgColor : UIColor.hpGray4.cgColor
     }
     
 }

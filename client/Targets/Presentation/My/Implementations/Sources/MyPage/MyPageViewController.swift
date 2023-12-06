@@ -100,6 +100,11 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
             $0.spacing = 40
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        
+        navigationView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     func setMyProfile(_ username: String) {
@@ -109,8 +114,6 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
                 leftButtonType: .none,
                 rightButtonTypes: [.setting])
             )
-            $0.delegate = self
-            $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
     
@@ -121,8 +124,6 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
                 leftButtonType: .back,
                 rightButtonTypes: [])
             )
-            $0.delegate = self
-            $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
     

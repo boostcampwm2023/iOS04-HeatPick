@@ -77,7 +77,12 @@ final class MyPageUserView: UIView {
     private lazy var followButton: UIButton = {
         let button = UIButton(configuration: .filled())
         button.tintColor = .hpRed3
-        button.setTitle("팔로우", for: .normal)
+        button.configuration?.title = "팔로우"
+        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
+            var transform = transform
+            transform.font = .captionBold
+            return transform
+        }
         button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -86,7 +91,12 @@ final class MyPageUserView: UIView {
     private lazy var profileEditButton: UIButton = {
         let button = UIButton(configuration: .filled())
         button.tintColor = .hpRed3
-        button.setTitle("프로필 수정", for: .normal)
+        button.configuration?.title = "프로필 수정"
+        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
+            var transform = transform
+            transform.font = .captionBold
+            return transform
+        }
         button.addTarget(self, action: #selector(profileEditButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
