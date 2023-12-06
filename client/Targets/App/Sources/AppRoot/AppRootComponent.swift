@@ -121,7 +121,11 @@ final class AppRootComponent: Component<AppRootDependency>,
         self.userProfileUseCase = self.myPageUseCase
         
         let searchNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [SearchURLProtocol.self])
-        self.searchUseCase = SearchUseCase(repository: SearchRepository(session: searchNetworkProvider), locationService: locationService)
+        self.searchUseCase = SearchUseCase(
+            repository: SearchRepository(session: searchNetworkProvider),
+            locationService: locationService,
+            clusteringService: ClusteringService()
+        )
         
         let followingNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [])
         self.followingUseCase = FollowingUseCase(repository: FollowingRepository(session: followingNetworkProvider))

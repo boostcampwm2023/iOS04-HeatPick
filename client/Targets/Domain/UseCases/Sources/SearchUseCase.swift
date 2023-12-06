@@ -9,6 +9,7 @@
 import Combine
 import Foundation
 import CoreLocation
+import CoreKit
 import DomainEntities
 import DomainInterfaces
 
@@ -18,28 +19,86 @@ public final class SearchUseCase: SearchUseCaseInterface {
         return locationService.location
     }
     
-    private let repository: SearchRepositoryInterface
-    private let locationService: LocationServiceInterface
-    
-    public init(repository: SearchRepositoryInterface, locationService: LocationServiceInterface) {
-        self.repository = repository
-        self.locationService = locationService
+    public var recommendPlaces: AnyPublisher<[Cluster], Never> {
+        return recommendPlaceClusterSubject.eraseToAnyPublisher()
     }
     
-    public func fetchResult(searchText: String) async -> Result<DomainEntities.SearchResult, Error> {
+    private let repository: SearchRepositoryInterface
+    private let locationService: LocationServiceInterface
+    private let clusteringService: ClusteringServiceInterface
+    
+    private let recommendPlacesCurrentValue = CurrentValueSubject<[Place], Never>([])
+    private let recommendPlaceClusterSubject = CurrentValueSubject<[Cluster], Never>([])
+    
+    private var boundary: LocationBound?
+    private var zoomLevel: Double?
+    private let cancelBag = CancelBag()
+    
+    public init(
+        repository: SearchRepositoryInterface,
+        locationService: LocationServiceInterface,
+        clusteringService: ClusteringServiceInterface
+    ) {
+        self.repository = repository
+        self.locationService = locationService
+        self.clusteringService = clusteringService
+    }
+    
+    public func boundaryUpdated(zoomLevel: Double, boundary: LocationBound) {
+        self.boundary = boundary
+        if self.zoomLevel != zoomLevel {
+            clusteringService.clustering(bound: boundary, places: recommendPlacesCurrentValue.value)
+        }
+        self.zoomLevel = zoomLevel
+    }
+    
+    public func fetchResult(searchText: String) async -> Result<SearchResult, Error> {
         await repository.fetchSearchResult(searchText: searchText)
     }
     
-    public func fetchStory(searchText: String) async -> Result<[DomainEntities.SearchStory], Error> {
+    public func fetchStory(searchText: String) async -> Result<[SearchStory], Error> {
         await repository.fetchStory(searchText: searchText)
     }
     
-    public func fetchUser(searchText: String) async -> Result<[DomainEntities.SearchUser], Error> {
+    public func fetchUser(searchText: String) async -> Result<[SearchUser], Error> {
         await repository.fetchUser(searchText: searchText)
     }
     
     public func fetchRecommendTexts(searchText: String) async -> Result<[String], Error> {
         await repository.fetchRecommendText(searchText: searchText)
+    }
+    
+    public func fetchRecommendPlace(lat: Double, lng: Double) {
+        registerClusteringCompletionBlock()
+        
+        Task { [weak self] in
+            guard let self else { return }
+            let result = await repository.fetchRecommendPlace(lat: lat, lng: lng)
+                .map {
+                    $0.stories.map { Place(
+                        storyId: $0.id,
+                        title: $0.title,
+                        content: $0.content,
+                        imageURL: $0.imageURL,
+                        lat: $0.lat,
+                        lng: $0.lng,
+                        likes: $0.likes,
+                        comments: $0.comments
+                    )}
+                }
+            switch result {
+            case .success(let places):
+                recommendPlacesCurrentValue.send(places)
+                if let boundary {
+                    clusteringService.clustering(bound: boundary, places: recommendPlacesCurrentValue.value)
+                }
+                
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                recommendPlacesCurrentValue.send([])
+            }
+        }.store(in: cancelBag)
     }
     
     public func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<[Place], Error> {
@@ -77,6 +136,16 @@ public final class SearchUseCase: SearchUseCaseInterface {
     
     public func requestLocality(lat: Double, lng: Double) async -> String? {
         await locationService.requestLocality(lat: lat, lng: lng)
+    }
+    
+    private func registerClusteringCompletionBlock() {
+        clusteringService.clusteringCompletionBlock = { [weak self] result in
+            guard let self else { return }
+            let clusters = result.filter { $0.count != 0 }
+            if clusters != recommendPlaceClusterSubject.value {
+                recommendPlaceClusterSubject.send(clusters)
+            }
+        }
     }
     
 }

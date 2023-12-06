@@ -7,9 +7,13 @@
 //
 
 import Foundation
+import Combine
 import DomainEntities
 
 public protocol SearchMapUseCaseInterface {
     var location: LocationCoordinate? { get }
+    var recommendPlaces: AnyPublisher<[Cluster], Never> { get }
     func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<[Place], Error>
+    func fetchRecommendPlace(lat: Double, lng: Double)
+    func boundaryUpdated(zoomLevel: Double, boundary: LocationBound)
 }

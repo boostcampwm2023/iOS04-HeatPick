@@ -10,11 +10,15 @@ import Foundation
 import NMapsMap
 import DomainEntities
 
+protocol MarkerAdaptable: AnyObject {
+    func clear()
+}
+
 protocol SearchMapMarkerAdapterDelegate: AnyObject {
     func searchMapMarkerDidTap(place: Place)
 }
 
-final class SearchMapMarkerAdapter {
+final class SearchMapMarkerAdapter: MarkerAdaptable {
     
     weak var delegate: SearchMapMarkerAdapterDelegate?
     

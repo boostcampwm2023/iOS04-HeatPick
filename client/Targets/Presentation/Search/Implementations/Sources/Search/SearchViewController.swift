@@ -24,6 +24,7 @@ protocol SearchPresentableListener: AnyObject {
     func didTapLocation(location: SearchMapLocation)
     func mapWillMove()
     func mapDidChangeLocation(location: SearchMapLocation)
+    func mapDidChangeLocation(zoomLevel: Double, southWest: SearchMapLocation, northEast: SearchMapLocation)
     func didTapStoryCreate()
     func didTapReSearch()
 }
@@ -50,7 +51,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     
     weak var listener: SearchPresentableListener?
     
-    private var markerStorage: [SearchMapMarkerAdapter] = []
+    private var markerStorage: [MarkerAdaptable] = []
     
     private lazy var naverMap = NMFNaverMapView(frame: view.frame)
     private let searchTextField = SearchTextField()
@@ -85,6 +86,17 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         
         places.forEach {
             let adapter = makeMarkerAdapter(overlay: overlay, place: $0)
+            adapter.marker.mapView = naverMap.mapView
+            adapter.delegate = self
+            markerStorage.append(adapter)
+        }
+    }
+    
+    func updateMarkers(clusters: [Cluster]) {
+        let overlay = NMFOverlayImage(image: .marker)
+        
+        clusters.forEach {
+            let adapter = makeMarkerAdapter(overlay: overlay, cluster: $0)
             adapter.marker.mapView = naverMap.mapView
             adapter.delegate = self
             markerStorage.append(adapter)
@@ -231,6 +243,14 @@ extension SearchViewController: SearchMapMarkerAdapterDelegate {
     
 }
 
+extension SearchViewController: SearchMapClusterMarkerAdpaterDelegate {
+    
+    func searchMapMarkerDidTap(cluster: Cluster) {
+        print(cluster.places)
+    }
+    
+}
+
 extension SearchViewController: SearchMapSelectedViewDelegate, SearchMapStoryViewDelegate {
     
     func searchMapSelectedViewDidTapCreate(_ view: SearchMapSelectedView) {
@@ -258,6 +278,18 @@ extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegat
             lat: mapView.cameraPosition.target.lat,
             lng: mapView.cameraPosition.target.lng
         ))
+        
+        listener?.mapDidChangeLocation(
+            zoomLevel: mapView.cameraPosition.zoom,
+            southWest: .init(
+                lat: mapView.coveringBounds.southWestLat,
+                lng: mapView.coveringBounds.southWestLng
+            ),
+            northEast: .init(
+                lat: mapView.coveringBounds.northEastLat,
+                lng: mapView.coveringBounds.northEastLng
+            )
+        )
     }
     
     func mapView(_ mapView: NMFMapView, didTap symbol: NMFSymbol) -> Bool {
@@ -303,6 +335,14 @@ private extension SearchViewController {
         marker.iconImage = overlay
         marker.captionText = place.title
         let adapter = SearchMapMarkerAdapter(marker: marker, place: place)
+        return adapter
+    }
+    
+    func makeMarkerAdapter(overlay: NMFOverlayImage, cluster: Cluster) -> SearchMapClusterMarkerAdpater {
+        let marker = NMFMarker(position: .init(lat: cluster.center.lat, lng: cluster.center.lng))
+        marker.iconImage = overlay
+        marker.captionText = "\(cluster.count)개"
+        let adapter = SearchMapClusterMarkerAdpater(marker: marker, cluster: cluster)
         return adapter
     }
     

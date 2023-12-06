@@ -6,6 +6,7 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Combine
 import ModernRIBs
 import CoreKit
 import DomainEntities
@@ -37,6 +38,7 @@ protocol SearchPresentable: Presentable {
     func hideStoryView()
     func moveMap(lat: Double, lng: Double)
     func updateMarkers(places: [Place])
+    func updateMarkers(clusters: [Cluster])
     func removeAllMarker()
     func updateSelectedMarker(title: String, lat: Double, lng: Double)
     func hideSelectedMarker()
@@ -61,6 +63,7 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     private var fetchedLocation: SearchMapLocation?
     private var isInitialCameraMoved = false
     private let cancelBag = CancelBag()
+    private var cancellables = Set<AnyCancellable>()
     
     init(
         presenter: SearchPresentable,
@@ -75,6 +78,7 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     override func didBecomeActive() {
         super.didBecomeActive()
+        bind()
     }
     
     override func willResignActive() {
@@ -115,6 +119,21 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     func searchCurrentLocationStoryListDidTapStory(_ storyId: Int) {
         router?.detachSearchCurrentLocation()
         router?.attachStoryDetail(storyId: storyId)
+    }
+    
+    private func bind() {
+        dependency
+            .searchUseCase
+            .recommendPlaces
+            .receive(on: DispatchQueue.main)
+            .with(self)
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { this, clusters in
+                    this.receiveAfterRecommendClusters(clusters)
+                }
+            )
+            .store(in: &cancellables)
     }
     
 }
@@ -200,6 +219,21 @@ extension SearchInteractor: SearchPresentableListener {
         }
     }
     
+    func mapDidChangeLocation(
+        zoomLevel: Double,
+        southWest: SearchMapLocation,
+        northEast: SearchMapLocation
+    ) {
+        dependency
+            .searchUseCase
+            .boundaryUpdated(
+                zoomLevel: zoomLevel,
+                boundary: .init(
+                    southWest: .init(lat: southWest.lat, lng: southWest.lng),
+                    northEast: .init(lat: northEast.lat, lng: northEast.lng)
+                ))
+    }
+    
     func didTapStoryCreate() {
         guard let selectedLocation else { return }
         router?.attachStoryEditor(location: selectedLocation)
@@ -212,6 +246,11 @@ extension SearchInteractor: SearchPresentableListener {
         fetchPlaces(lat: watchingLocation.lat, lng: watchingLocation.lng)
     }
     
+    private func receiveAfterRecommendClusters(_ clusters: [Cluster]) {
+        presenter.removeAllMarker()
+        presenter.updateMarkers(clusters: clusters)
+    }
+    
 }
 
 private extension SearchInteractor {
@@ -219,22 +258,13 @@ private extension SearchInteractor {
     func fetchPlaces(lat: Double, lng: Double) {
         presenter.removeAllMarker()
         fetchedLocation = SearchMapLocation(lat: lat, lng: lng)
-        Task { [weak self] in
-            guard let self else { return }
-            await dependency.searchUseCase
-                .fetchRecommendPlace(lat: lat, lng: lng)
-                .onSuccess(on: .main, with: self) { this, places in
-                    this.presenter.updateMarkers(places: places)
-                }
-                .onFailure { error in
-                    Log.make(message: error.localizedDescription, log: .interactor)
-                }
-        }.store(in: cancelBag)
+        dependency.searchUseCase
+            .fetchRecommendPlace(lat: lat, lng: lng)
     }
     
     // TODO: - Scale에 따른 로직 추가
     
-     func isReSearchEnabled(location: SearchMapLocation) -> Bool {
+    func isReSearchEnabled(location: SearchMapLocation) -> Bool {
         guard let fetchedLocation else { return false }
         let distance = abs(fetchedLocation.lat - location.lat) + abs(fetchedLocation.lng - location.lng)
         return distance >= 0.02
@@ -254,7 +284,7 @@ extension SearchInteractor {
     func searchStorySeeAllDidTapClose() {
         router?.detachSearchStorySeeAll()
     }
-
+    
     func searchUserSeeAllDidTap(searchText: String) {
         router?.attachSearchUserSeeAll(searchText: searchText)
     }
