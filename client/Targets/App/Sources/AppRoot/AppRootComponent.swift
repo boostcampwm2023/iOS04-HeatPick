@@ -94,7 +94,8 @@ final class AppRootComponent: Component<AppRootDependency>,
         let authNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [AuthURLProtocol.self])
         self.authUseCase = AuthUseCase(
             repository: AuthRepository(session: authNetworkProvider),
-            signInUseCase: SignInUseCase(naverLoginRepository: naverLoginRepository)
+            signInUseCase: SignInUseCase(githubLoginRepository: GithubLoginRepository.shared,
+                                         naverLoginRepository: naverLoginRepository)
         )
         
         let locationService = LocationService()

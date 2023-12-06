@@ -13,8 +13,8 @@ import CoreKit
 import DesignKit
 
 protocol SignInPresentableListener: AnyObject {
+    func githubButtonDidTap()
     func naverButtonDidTap()
-    func appleButtonDidTap()
 }
 
 public final class SignInViewController: UIViewController, SignInPresentable, SignInViewControllable {
@@ -23,17 +23,17 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
     
     private var cancellables = Set<AnyCancellable>()
     
-    private lazy var naverLoginButton: SignInButton = {
+    private let githubLoginButton: SignInButton = {
         let button = SignInButton()
-        button.setup(type: .naver)
+        button.setup(type: .github)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private lazy var appleLoginButton: SignInButton = {
+    private let naverLoginButton: SignInButton = {
         let button = SignInButton()
-        button.setup(type: .apple)
+        button.setup(type: .naver)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -57,30 +57,30 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
 private extension SignInViewController {
     
     func bind() {
+        githubLoginButton.tapPublisher
+            .withOnly(self)
+            .sink { $0.listener?.githubButtonDidTap() }
+            .store(in: &cancellables)
+        
         naverLoginButton.tapPublisher
             .withOnly(self)
             .sink { $0.listener?.naverButtonDidTap() }
-            .store(in: &cancellables)
-        
-        appleLoginButton.tapPublisher
-            .withOnly(self)
-            .sink { $0.listener?.appleButtonDidTap() }
             .store(in: &cancellables)
     }
     
     func setupViews() {
         view.backgroundColor = .white
-        [logoImageView, naverLoginButton, appleLoginButton].forEach { view.addSubview($0) }
+        [logoImageView, githubLoginButton, naverLoginButton].forEach { view.addSubview($0) }
         
         let padding: CGFloat = 20
         
         NSLayoutConstraint.activate([
-            appleLoginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -padding),
-            appleLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
-            appleLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            appleLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
+            githubLoginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -padding),
+            githubLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            githubLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
+            githubLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             
-            naverLoginButton.bottomAnchor.constraint(equalTo: appleLoginButton.topAnchor, constant: -padding),
+            naverLoginButton.bottomAnchor.constraint(equalTo: githubLoginButton.topAnchor, constant: -padding),
             naverLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             naverLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
             naverLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),

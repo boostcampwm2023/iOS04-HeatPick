@@ -11,8 +11,10 @@ import Foundation
 
 public protocol SignInUseCaseInterface {
     
+    var githubAccessToken: AnyPublisher<String, Never> { get }
     var naverAcessToken: AnyPublisher<String, Never> { get }
     
+    func requestGithubLogin()
     func requestNaverLogin()
     func requestAppleLogin()
 }

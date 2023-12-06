@@ -10,6 +10,9 @@ import Foundation
 
 public enum Secret: String {
     
+    case githubLoginClientId = "GithubLoginClientId"
+    case githubLoginClientSecret = "GithubLoginClientSecret"
+    
     case naverLoginConsumerKey = "NaverLoginConsumerKey"
     case naverLoginConsumerSecret = "NaverLoginConsumerSecret"
     

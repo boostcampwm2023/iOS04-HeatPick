@@ -11,11 +11,14 @@ import DesignKit
 
 enum SignInType {
     
+    case github
     case naver
     case apple
     
     var image: UIImage {
         switch self {
+        case .github:
+            return .githubButton
         case .naver:
             return .naverButton
         case .apple:
