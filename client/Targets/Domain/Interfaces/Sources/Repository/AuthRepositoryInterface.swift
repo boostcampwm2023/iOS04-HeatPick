@@ -11,7 +11,8 @@ import DomainEntities
 
 public protocol AuthRepositoryInterface: AnyObject {
     
-    func requestSignIn(token: String) async -> Result<AuthToken, Error>
-    func requestSignUp(token: String, userName: String) async -> Result<AuthToken, Error>
-    
+    func requestSignInWithNaver(token: String) async -> Result<AuthToken, Error>
+    func requestSignInWithGithub(token: String) async -> Result<AuthToken, Error>
+    func requestSignUpnWithNaver(token: String, userName: String) async -> Result<AuthToken, Error>
+    func requestSignUpWithGithub(token: String, userName: String) async -> Result<AuthToken, Error>
 }

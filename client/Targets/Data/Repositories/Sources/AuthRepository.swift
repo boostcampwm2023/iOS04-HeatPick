@@ -21,16 +21,27 @@ public final class AuthRepository: AuthRepositoryInterface {
         self.session = session
     }
     
-    public func requestSignIn(token: String) async -> Result<AuthToken, Error> {
-        let target = AuthAPI.signIn(token: token)
+    public func requestSignInWithNaver(token: String) async -> Result<AuthToken, Error> {
+        let target = AuthAPI.signInWithNaver(token: token)
         let request: Result<SignInResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
-    public func requestSignUp(token: String, userName: String) async -> Result<AuthToken, Error> {
-        let target = AuthAPI.signUp(token: token, username: userName)
+    public func requestSignInWithGithub(token: String) async -> Result<AuthToken, Error> {
+        let target = AuthAPI.signInWithGithub(token: token)
+        let request: Result<SignInResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
+    public func requestSignUpnWithNaver(token: String, userName: String) async -> Result<AuthToken, Error> {
+        let target = AuthAPI.signUpWithNaver(token: token, username: userName)
         let request: Result<SignUpResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
+    public func requestSignUpWithGithub(token: String, userName: String) async -> Result<AuthToken, Error> {
+        let target = AuthAPI.signUpWithGithub(token: token, username: userName)
+        let request: Result<SignUpResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
 }

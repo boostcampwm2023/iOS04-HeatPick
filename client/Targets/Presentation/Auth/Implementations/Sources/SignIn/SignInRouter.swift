@@ -9,6 +9,7 @@
 import ModernRIBs
 import CoreKit
 import AuthInterfaces
+import DomainEntities
 
 protocol SignInInteractable: Interactable, SignUpListener, SignUpSuccessListener, LocationAuthorityListener {
     var router: SignInRouting? { get set }
@@ -42,9 +43,9 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
         interactor.router = self
     }
     
-    func attachSignUp() {
+    func attachSignUp(with service: SignInService) {
         guard signUpRouter == nil else { return }
-        let router = signUpBuilder.build(withListener: interactor)
+        let router = signUpBuilder.build(withListener: interactor, service: service)
         pushRouter(router, animated: true)
         signUpRouter = router
     }
