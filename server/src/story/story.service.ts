@@ -23,6 +23,10 @@ import { StoryResultDto } from '../search/dto/response/story.result.dto';
 import { Transactional } from 'typeorm-transactional';
 import { CategoryService } from '../category/category.service';
 import { StoryCreateResponseDto } from './dto/response/story-create-response.dto';
+import * as dotenv from 'dotenv';
+import axios from 'axios';
+
+dotenv.config();
 
 @Injectable()
 export class StoryService {
@@ -66,6 +70,31 @@ export class StoryService {
     const category: Category = await this.categoryService.getCategory(categoryId);
 
     const user: User = await this.userService.getUser(userId);
+
+    images.map(async (image) => {
+      const data = image.buffer.toString('base64');
+      const options = {
+        headers: {
+          'X-GREEN-EYE-SECRET': `${process.env.SECRET_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      const file = {
+        version: 'V1',
+        requestId: 'requestId',
+        timestamp: Date.now(),
+        images: [
+          {
+            name: 'demo',
+            data: `${data}`,
+          },
+        ],
+      };
+      const response = await axios.post(process.env.INVOKE_URL, file, options);
+
+      const confidence = response.data.images[0].result.confidence;
+    });
+
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     story.user = Promise.resolve(user);
     await this.storyRepository.save(story);
