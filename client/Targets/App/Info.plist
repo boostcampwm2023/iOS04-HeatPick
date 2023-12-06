@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GithubLoginClientSecret</key>
+	<string>$(GITHUB_LOGIN_CLIENT_SECRET)</string>
+	<key>GithubLoginClientId</key>
+	<string>$(GITHUB_LOGIN_CLIENT_ID)</string>
 	<key>NaverSearchLocalClientId</key>
 	<string>$(NAVER_SEARCH_LOCAL_CLIENT_ID)</string>
 	<key>NaverSearchLocalClientSecret</key>
