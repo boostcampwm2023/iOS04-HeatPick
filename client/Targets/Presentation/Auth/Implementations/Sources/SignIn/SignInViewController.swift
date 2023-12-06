@@ -13,6 +13,7 @@ import CoreKit
 import DesignKit
 
 protocol SignInPresentableListener: AnyObject {
+    func githubButtonDidTap()
     func naverButtonDidTap()
     func appleButtonDidTap()
 }
@@ -23,7 +24,15 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
     
     private var cancellables = Set<AnyCancellable>()
     
-    private lazy var naverLoginButton: SignInButton = {
+    private let githubLoginButton: SignInButton = {
+        let button = SignInButton()
+        button.setup(type: .github)
+        button.layer.cornerRadius = 16
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private let naverLoginButton: SignInButton = {
         let button = SignInButton()
         button.setup(type: .naver)
         button.layer.cornerRadius = 16
@@ -31,7 +40,7 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
         return button
     }()
     
-    private lazy var appleLoginButton: SignInButton = {
+    private let appleLoginButton: SignInButton = {
         let button = SignInButton()
         button.setup(type: .apple)
         button.layer.cornerRadius = 16
@@ -57,6 +66,11 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
 private extension SignInViewController {
     
     func bind() {
+        githubLoginButton.tapPublisher
+            .withOnly(self)
+            .sink { $0.listener?.githubButtonDidTap() }
+            .store(in: &cancellables)
+        
         naverLoginButton.tapPublisher
             .withOnly(self)
             .sink { $0.listener?.naverButtonDidTap() }
@@ -70,7 +84,7 @@ private extension SignInViewController {
     
     func setupViews() {
         view.backgroundColor = .white
-        [logoImageView, naverLoginButton, appleLoginButton].forEach { view.addSubview($0) }
+        [logoImageView, githubLoginButton, naverLoginButton, appleLoginButton].forEach { view.addSubview($0) }
         
         let padding: CGFloat = 20
         
@@ -84,6 +98,11 @@ private extension SignInViewController {
             naverLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             naverLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
             naverLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
+            
+            githubLoginButton.bottomAnchor.constraint(equalTo: naverLoginButton.topAnchor, constant: -padding),
+            githubLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            githubLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
+            githubLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             
             logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             logoImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
