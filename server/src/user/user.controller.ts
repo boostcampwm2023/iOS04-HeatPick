@@ -1,22 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  Post,
-  Query,
-  Headers,
-  UseInterceptors,
-  UploadedFile,
-  Delete,
-  Put,
-  ParseIntPipe,
-  ValidationPipe,
-  Param,
-  UseGuards,
-  Req,
-  Request,
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Headers, UseInterceptors, UploadedFile, Delete, Put, ParseIntPipe, ValidationPipe, Param, UseGuards, Req, Request } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { AddBadgeDto } from './dto/request/addBadge.dto';
@@ -208,8 +190,8 @@ export class UserController {
   @Get('recommend')
   @ApiOperation({ summary: '랜덤한 추천 유저 20명을 리턴합니다.' })
   @ApiResponse({ status: 200, description: '추천 유저들을 리턴합니다.', type: UserJsonResponseDto })
-  async getRandomUsers(@Param('userId') userId: number): Promise<UserJsonResponseDto> {
-    const users = await this.userService.recommendUsers(userId);
+  async getRandomUsers(@Req() req: any): Promise<UserJsonResponseDto> {
+    const users = await this.userService.recommendUsers(req.user.userRecordId);
     const transformedUsers = await Promise.all(users.map(async (user) => await userEntityToUserObj(user)));
     return { users: transformedUsers };
   }
