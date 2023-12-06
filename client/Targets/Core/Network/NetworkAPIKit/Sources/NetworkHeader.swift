@@ -23,6 +23,12 @@ public class NetworkHeader {
     }
     
     @discardableResult
+    public func accept(_ value: String) -> Self {
+        headers["Accept"] = value
+        return self
+    }
+    
+    @discardableResult
     public func authorization(_ value: String, usingBearer: Bool = true) -> Self {
         headers["Authorization"] = usingBearer ? "Bearer \(value)" : value
         return self
