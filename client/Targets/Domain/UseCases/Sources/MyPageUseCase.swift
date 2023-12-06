@@ -33,8 +33,8 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         self.repository = repository
     }
     
-    public func fetchMyPage() async -> Result<MyPage, Error> {
-        let result = await repository.fetchMyPage()
+    public func fetchMyProfile() async -> Result<MyPage, Error> {
+        let result = await repository.fetchMyProfile()
         updateProfile(result)
         updateStoryList(result)
         return result
@@ -113,5 +113,8 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         await repository.fetchUserInfo(userUpdate: userUpdate)
     }
     
+    public func fetchProfile(userId: Int) async -> Result<MyPage, Error> {
+        await repository.fetchProfile(userId: userId)
+    }
     
 }

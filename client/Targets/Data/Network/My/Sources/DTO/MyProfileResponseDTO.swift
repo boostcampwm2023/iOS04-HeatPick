@@ -21,6 +21,7 @@ public struct MyProfileProfileResponseDTO: Decodable {
     public let userId: Int
     public let username: String
     public let profileURL: String?
+    public let isFollow: Int
     public let followerCount: Int
     public let storyCount: Int
     public let experience: Int
@@ -56,6 +57,7 @@ public extension MyProfileResponseDTO {
             userId: profile.userId,
             userName: profile.username,
             profileImageURL: profile.profileURL,
+            isFollow: profile.isFollow,
             temperature: profile.temperature,
             temperatureFeeling: profile.temperatureFeeling,
             followerCount: profile.followerCount,

@@ -21,9 +21,10 @@ final class MyPageUpdateUserBadgeCell: UITableViewCell {
         static let bottomOffset: CGFloat = -topOffset
         static let maxExp: Float = 1000
     }
-
-    var isHighlight: Bool = false {
-        didSet {
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        if highlighted {
             updateUI()
         }
     }
@@ -172,9 +173,8 @@ private extension MyPageUpdateUserBadgeCell {
     }
     
     func updateUI() {
-        containerView.backgroundColor = isHighlight ? .hpRed5 : .hpWhite
-        print(isHighlight, containerView.backgroundColor)
-        containerView.layer.borderColor = isHighlight ? UIColor.hpRed3.cgColor : UIColor.hpGray4.cgColor
+        containerView.backgroundColor = .hpRed5
+        containerView.layer.borderColor = UIColor.hpRed3.cgColor
     }
     
 }

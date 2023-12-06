@@ -24,12 +24,14 @@ protocol MyPageInteractable: Interactable,
 protocol MyPageViewControllable: ViewControllable {
     func setDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
+    func setMyProfile(_ username: String)
+    func setUserProfile(_ username: String)
 }
 
 final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControllable>, MyPageRouting {
-    
-    private var userDashboardRouting: ViewableRouting?
-    private var storyDashboardRouting: ViewableRouting?
+
+    private var userDashboardRouting: MyPageUserDashboardRouting?
+    private var storyDashboardRouting: MyPageStoryDashboardRouting?
     private var storySeeAllRouting: ViewableRouting?
     private var settingRouting: ViewableRouting?
     private var storyDetailRouting: ViewableRouting?
@@ -60,6 +62,17 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         viewController.removeDashboard(router.viewControllable)
         self.userDashboardRouting = nil
         detachChild(router)
+    }
+    
+    func setMyProfile(_ username: String) {
+        viewController.setMyProfile(username)
+        userDashboardRouting?.setMyProfile()
+    }
+    
+    func setUserProfile(_ username: String) {
+        viewController.setUserProfile(username)
+        userDashboardRouting?.setUserProfile()
+        storyDashboardRouting?.setUserProfile(username)
     }
     
     func attachStoryDashboard() {

@@ -28,13 +28,18 @@ final class MyPageComponent: Component<MyPageDependency>,
                              SettingDependency,
                              MyPageUpdateUserDashboardDependency {
     
-    
+    var userId: Int?
     var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
     var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
     var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
     var myPageUpdateUserUseCase: MyPageUpdateUserUseCaseInterface { dependency.myPageUseCase }
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
+    
+    init(dependency: MyPageDependency, userId: Int? = nil) {
+        self.userId = userId
+        super.init(dependency: dependency)
+    }
     
 }
 

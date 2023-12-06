@@ -29,12 +29,26 @@ final class MyPageUserView: UIView {
     private enum Constant {
         static let profileImageViewWidth: CGFloat = 100
         static let profileImageViewHeight: CGFloat = 100
+        
+        enum Stack {
+            static let spacing: CGFloat = 10
+        }
     }
+    
+    private let containerContentStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = Constant.Stack.spacing
+        stackView.distribution = .equalSpacing
+        stackView.alignment = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
     
     private let contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = 10
+        stackView.spacing = Constant.Stack.spacing
         stackView.distribution = .equalSpacing
         stackView.alignment = .trailing
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,7 +58,7 @@ final class MyPageUserView: UIView {
     private let profileStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 10
+        stackView.spacing = Constant.Stack.spacing
         stackView.distribution = .equalSpacing
         stackView.alignment = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -118,6 +132,14 @@ final class MyPageUserView: UIView {
         experienceView.updateContent(model.experience)
     }
     
+    func setMyProfile() {
+        followButton.isHidden = true
+    }
+    
+    func setUserProfile() {
+        profileEditButton.isHidden = true
+    }
+    
 }
 
 private extension MyPageUserView {
@@ -134,9 +156,10 @@ private extension MyPageUserView {
 private extension MyPageUserView {
     
     func setupViews() {
-        [profileStackView, contentStackView, profileEditButton].forEach(addSubview)
+        [profileStackView, containerContentStackView].forEach(addSubview)
         [profileImageView, followButton].forEach(profileStackView.addArrangedSubview)
         [followerView, storyView, experienceView].forEach(contentStackView.addArrangedSubview)
+        [contentStackView, profileEditButton].forEach(containerContentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageViewWidth),
@@ -145,12 +168,8 @@ private extension MyPageUserView {
             profileStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             profileStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            contentStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
-            profileEditButton.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
-            profileEditButton.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor),
-            profileEditButton.bottomAnchor.constraint(equalTo: bottomAnchor)
+            containerContentStackView.centerYAnchor.constraint(equalTo: profileStackView.centerYAnchor),
+            containerContentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
     

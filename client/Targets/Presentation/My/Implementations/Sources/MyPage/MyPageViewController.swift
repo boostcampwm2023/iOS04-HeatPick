@@ -14,10 +14,11 @@ import BasePresentation
 
 protocol MyPagePresentableListener: AnyObject {
     func didTapSetting()
+    func didTapBack()
 }
 
 public final class MyPageViewController: BaseViewController, MyPagePresentable, MyPageViewControllable {
-    
+
     private enum Constant {
         static let tabBarTitle = "마이"
         static let tabBarImage = "person"
@@ -77,17 +78,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
     
     public override func setupAttributes() {
         view.backgroundColor = .hpWhite
-        
-        navigationView.do {
-            $0.setup(model: .init(
-                title: "마이페이지",
-                leftButtonType: .none,
-                rightButtonTypes: [.setting])
-            )
-            $0.delegate = self
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        
+                
         scrollView.do {
             $0.contentInset = .zero
             $0.showsHorizontalScrollIndicator = false
@@ -105,8 +96,28 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
         }
     }
     
-    public override func bind() {
-        
+    func setMyProfile(_ username: String) {
+        navigationView.do {
+            $0.setup(model: .init(
+                title: "\(username)",
+                leftButtonType: .none,
+                rightButtonTypes: [.setting])
+            )
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    func setUserProfile(_ username: String) {
+        navigationView.do {
+            $0.setup(model: .init(
+                title: "\(username)",
+                leftButtonType: .back,
+                rightButtonTypes: [])
+            )
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
 }
@@ -114,8 +125,8 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
 extension MyPageViewController: NavigationViewDelegate {
     
     public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
-        guard case .setting = type else { return }
-        listener?.didTapSetting()
+        if case .setting = type { listener?.didTapSetting() }
+        if case .back = type { listener?.didTapBack() }
     }
     
 }

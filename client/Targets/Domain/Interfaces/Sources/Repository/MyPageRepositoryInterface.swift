@@ -11,7 +11,8 @@ import DomainEntities
 
 public protocol MyPageRepositoryInterface: AnyObject {
     
-    func fetchMyPage() async -> Result<MyPage, Error>
+    func fetchMyProfile() async -> Result<MyPage, Error>
+    func fetchProfile(userId: Int) async -> Result<MyPage, Error>
     func fetchUserStory(id: Int, offset: Int, limit: Int) async -> Result<[MyPageStory], Error>
     func fetchUserMedtaData() async -> Result<UserProfileMetaData, Error>
     func fetchUserInfo(userUpdate: UserUpdateContent) async -> Result<Int, Error>

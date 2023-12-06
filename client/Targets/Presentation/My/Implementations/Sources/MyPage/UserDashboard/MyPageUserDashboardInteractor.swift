@@ -12,7 +12,10 @@ import ModernRIBs
 import DomainEntities
 import DomainInterfaces
 
-protocol MyPageUserDashboardRouting: ViewableRouting {}
+protocol MyPageUserDashboardRouting: ViewableRouting {
+    func setMyProfile()
+    func setUserProfile()
+}
 
 protocol MyPageUserDashboardPresentable: Presentable {
     var listener: MyPageUserDashboardPresentableListener? { get set }

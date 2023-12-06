@@ -13,13 +13,23 @@ protocol MyPageUserDashboardInteractable: Interactable {
     var listener: MyPageUserDashboardListener? { get set }
 }
 
-protocol MyPageUserDashboardViewControllable: ViewControllable {}
+protocol MyPageUserDashboardViewControllable: ViewControllable {
+    func setMyProfile()
+    func setUserProfile()
+}
 
 final class MyPageUserDashboardRouter: ViewableRouter<MyPageUserDashboardInteractable, MyPageUserDashboardViewControllable>, MyPageUserDashboardRouting {
-    
+
     override init(interactor: MyPageUserDashboardInteractable, viewController: MyPageUserDashboardViewControllable) {
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
     
+    func setMyProfile() {
+        viewController.setMyProfile()
+    }
+    
+    func setUserProfile() {
+        viewController.setUserProfile()
+    }
 }

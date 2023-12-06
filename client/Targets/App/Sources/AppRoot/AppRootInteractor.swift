@@ -70,4 +70,6 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
         router?.selectFollowing()
     }
     
+    func detachMyPage() { }
+    
 }

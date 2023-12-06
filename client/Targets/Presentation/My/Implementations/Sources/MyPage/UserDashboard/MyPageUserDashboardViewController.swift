@@ -69,6 +69,14 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
         badgeView.setup(title: model.badgeTitle, content: model.badgeContent)
     }
     
+    func setMyProfile() {
+        userView.setMyProfile()
+    }
+    
+    func setUserProfile() {
+        userView.setUserProfile()
+    }
+    
 }
 
 extension MyPageUserDashboardViewController: MyPageUserViewDelegate {

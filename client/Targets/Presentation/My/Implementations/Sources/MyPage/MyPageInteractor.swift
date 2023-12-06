@@ -25,6 +25,8 @@ protocol MyPageRouting: ViewableRouting {
     func detachStoryDetail()
     func attachupdateUserDashboard()
     func detachUpdateUserDashboard() 
+    func setMyProfile(_ username: String)
+    func setUserProfile(_ username: String)
 }
 
 protocol MyPagePresentable: Presentable {
@@ -32,6 +34,7 @@ protocol MyPagePresentable: Presentable {
 }
 
 protocol MyPageInteractorDependency: AnyObject {
+    var userId: Int? { get }
     var myPageUseCase: MyPageUseCaseInterface { get }
 }
 
@@ -57,7 +60,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         super.didBecomeActive()
         router?.attachUserDashboard()
         router?.attachStoryDashboard()
-        fetchMyPage()
+        fetchProfile()
     }
     
     override func willResignActive() {
@@ -66,6 +69,10 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     func didTapSetting() {
         router?.attachSetting()
+    }
+    
+    func didTapBack() {
+        listener?.detachMyPage()
     }
     
     // MARK: - UserDashboard
@@ -105,17 +112,30 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.detachSetting()
     }
     
-    private func fetchMyPage() {
+    private func fetchProfile() {
         Task { [weak self] in
             guard let self else { return }
-            await depedency.myPageUseCase
-                .fetchMyPage()
-                .onSuccess(on: .main, with: self) { this, myPage in
-                    this.myPage = myPage
-                }
-                .onFailure { error in
-                    Log.make(message: error.localizedDescription, log: .interactor)
-                }
+            if let userId = depedency.userId {
+                await depedency.myPageUseCase
+                    .fetchProfile(userId: userId)
+                    .onSuccess(on: .main, with: self) { this, myPage in
+                        this.myPage = myPage
+                        this.router?.setUserProfile(myPage.userName)
+                    }
+                    .onFailure { error in
+                        Log.make(message: error.localizedDescription, log: .interactor)
+                    }
+            } else {
+                await depedency.myPageUseCase
+                    .fetchMyProfile()
+                    .onSuccess(on: .main, with: self) { this, myPage in
+                        this.myPage = myPage
+                        this.router?.setMyProfile(myPage.userName)
+                    }
+                    .onFailure { error in
+                        Log.make(message: error.localizedDescription, log: .interactor)
+                    }
+            }
         }.store(in: cancelBag)
     }
     
@@ -135,7 +155,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
             guard let self else { return }
             await depedency.myPageUseCase.fetchUserInfo(userUpdate: model)
                 .onSuccess { _ in
-                    self.fetchMyPage()
+                    self.fetchProfile()
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .network)

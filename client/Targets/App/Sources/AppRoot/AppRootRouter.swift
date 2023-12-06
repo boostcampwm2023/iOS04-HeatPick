@@ -95,7 +95,7 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         self.followingRouter = followingRouting
         attachChild(followingRouting)
         
-        let myPageRouting = dependency.myPageBuilder.build(withListener: interactor)
+        let myPageRouting = dependency.myPageBuilder.build(withListener: interactor, userId: nil)
         self.myPageRouter = myPageRouting
         attachChild(myPageRouting)
         
