@@ -120,4 +120,8 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         await repository.fetchUserInfo(userUpdate: userUpdate)
     }
     
+    public func requestResign(reason: String) async -> Result<Void, Error> {
+        await repository.requestResign(reason: reason)
+    }
+    
 }

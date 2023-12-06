@@ -12,7 +12,8 @@ import DomainEntities
 public protocol MyPageUseCaseInterface: MyPageProfileUseCaseInterface,
                                         MyPageStoryUseCaseInterface,
                                         MyPageUpdateUserUseCaseInterface,
-                                        UserProfileUserCaseInterface {
+                                        UserProfileUserCaseInterface,
+                                        MyProfileSettingUseCaseInterface {
     
     func fetchMyProfile() async -> Result<MyPage, Error>
     func fetchUserInfo(userUpdate: UserUpdateContent) async -> Result<Int, Error>
