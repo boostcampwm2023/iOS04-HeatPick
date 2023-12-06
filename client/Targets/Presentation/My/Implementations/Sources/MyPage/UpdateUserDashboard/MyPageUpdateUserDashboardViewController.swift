@@ -11,6 +11,7 @@ import PhotosUI
 
 import ModernRIBs
 
+import BasePresentation
 import DesignKit
 import DomainEntities
 
@@ -22,7 +23,7 @@ protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
     func didSelectBadge(_ badgeId: Int)
 }
 
-final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
+final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
     
     weak var listener: MyPageUpdateUserDashboardPresentableListener?
     
@@ -35,70 +36,15 @@ final class MyPageUpdateUserDashboardViewController: UIViewController, MyPageUpd
     }
     
     private var models: [UserProfileMetaDataBadge] = []
+        
+    private let headerView: MyPageupdateUserTableHeaderView = .init()
+    private let tableView: UITableView = .init()
+    private let editButton: ActionButton = .init()
     
-    private lazy var navigationView: NavigationView = {
-        let navigationView = NavigationView()
-        navigationView.setup(model: .init(
-            title: Constant.NavigationView.title,
-            leftButtonType: .back,
-            rightButtonTypes: [])
-        )
-        navigationView.delegate = self
-        navigationView.translatesAutoresizingMaskIntoConstraints = false
-        return navigationView
-    }()
-    
-    private lazy var headerView: MyPageupdateUserTableHeaderView = {
-        let headerView = MyPageupdateUserTableHeaderView()
-        headerView.delegate = self
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        return headerView
-    }()
-    
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(MyPageUpdateUserBadgeCell.self)
-        tableView.register(MyPageupdateUserTableHeaderView.self)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.tableHeaderView = headerView
-        tableView.separatorStyle = .none
-        tableView.allowsSelection = true
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
-    
-    
-    private lazy var editButton: ActionButton = {
-        let button = ActionButton()
-        button.setTitle("변경하기", for: .normal)
-        button.clipsToBounds = true
-        button.layer.cornerRadius = Constants.cornerRadiusMedium
-        button.addTarget(self, action: #selector(didTapEditButton), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
-    
-    func setup(model: UserProfileMetaData) {
-        models = [model.nowBadge] + model.badges
-        headerView.setup(model: model)
-        tableView.reloadData()
-    }
-    
-}
-
-private extension MyPageUpdateUserDashboardViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
+    override func setupLayout() {
         [navigationView, tableView, editButton].forEach(view.addSubview)
+        tableView.tableHeaderView = headerView
+        
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -116,6 +62,52 @@ private extension MyPageUpdateUserDashboardViewController {
             editButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             editButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.bottomOffset),
         ])
+
+    }
+    
+    override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        navigationView.do { navigationView in
+            navigationView.setup(model: .init(
+                title: Constant.NavigationView.title,
+                leftButtonType: .back,
+                rightButtonTypes: [])
+            )
+            navigationView.delegate = self
+            navigationView.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        headerView.do { headerView in
+            headerView.delegate = self
+            headerView.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        tableView.do { tableView in
+            tableView.register(MyPageUpdateUserBadgeCell.self)
+            tableView.register(MyPageupdateUserTableHeaderView.self)
+            tableView.delegate = self
+            tableView.dataSource = self
+            tableView.separatorStyle = .none
+            tableView.allowsSelection = true
+            tableView.rowHeight = UITableView.automaticDimension
+            tableView.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        editButton.do { button in
+            button.setTitle("변경하기", for: .normal)
+            button.clipsToBounds = true
+            button.layer.cornerRadius = Constants.cornerRadiusMedium
+            button.addTarget(self, action: #selector(didTapEditButton), for: .touchUpInside)
+            button.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+    }
+    
+    func setup(model: UserProfileMetaData) {
+        models = [model.nowBadge] + model.badges
+        headerView.setup(model: model)
+        tableView.reloadData()
     }
     
 }
