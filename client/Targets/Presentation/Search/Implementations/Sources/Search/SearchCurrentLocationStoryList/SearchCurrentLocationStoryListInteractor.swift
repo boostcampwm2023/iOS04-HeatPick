@@ -6,23 +6,28 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Foundation
 import ModernRIBs
+import CoreKit
+import DomainEntities
 import DomainInterfaces
 
 protocol SearchCurrentLocationStoryListRouting: ViewableRouting { }
 
 protocol SearchCurrentLocationStoryListPresentable: Presentable {
     var listener: SearchCurrentLocationStoryListPresentableListener? { get set }
-    
     func updateLocation(_ location: String)
     func setup(models: [SearchCurrentLocationStoryListCellModel])
     func append(models: [SearchCurrentLocationStoryListCellModel])
 }
 
-protocol SearchCurrentLocationStoryListListener: AnyObject { }
+protocol SearchCurrentLocationStoryListListener: AnyObject {
+    func searchCurrentLocationStoryListDidTapStory(_ storyId: Int)
+}
 
 protocol SearchCurrentLocationStoryListInteractorDependency: AnyObject {
     var searchCurrentLocationStoryListUseCase: SearchCurrentLocationStoryListUseCaseInterface { get }
+    var location: SearchMapLocation { get }
 }
 
 final class SearchCurrentLocationStoryListInteractor: PresentableInteractor<SearchCurrentLocationStoryListPresentable>, SearchCurrentLocationStoryListInteractable, SearchCurrentLocationStoryListPresentableListener {
@@ -31,6 +36,8 @@ final class SearchCurrentLocationStoryListInteractor: PresentableInteractor<Sear
     weak var listener: SearchCurrentLocationStoryListListener?
     
     private let dependency: SearchCurrentLocationStoryListInteractorDependency
+    private let cancelBag = CancelBag()
+    private var places: [Place] = []
 
     init(
         presenter: SearchCurrentLocationStoryListPresentable,
@@ -43,57 +50,45 @@ final class SearchCurrentLocationStoryListInteractor: PresentableInteractor<Sear
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(models: [
-            .init(
-                thumbnailImageURL: "https://biz.chosun.com/resizer/dYXzciKD59JVPm0QRI6K6jKo-E0=/530x699/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/3DHLMOBFFCKWXDKTOLS4URMFRQ.jpg",
-                title: "윈터",
-                likes: 999,
-                comments: 999,
-                nickname: "junbok97",
-                profileImageURL: "https://avatars.githubusercontent.com/u/71696675?v=4"
-            ),
-            .init(
-                thumbnailImageURL: "https://image.ytn.co.kr/osen/2023/01/4934c786-1e08-4f52-aca2-a600838e5655.jpg",
-                title: "카리나",
-                likes: 888,
-                comments: 888,
-                nickname: "junbok97",
-                profileImageURL: "https://avatars.githubusercontent.com/u/71696675?v=4"
-            ),
-            .init(
-                thumbnailImageURL: "https://images.khan.co.kr/article/2022/11/08/news-p.v1.20221108.1deab8c7f6ed4c5282a8c3e604470063_P1.jpg",
-                title: "장원영",
-                likes: 7777,
-                comments: 6666,
-                nickname: "junbok97",
-                profileImageURL: "https://avatars.githubusercontent.com/u/71696675?v=4"
-            ),
-            .init(
-                thumbnailImageURL: "https://newsimg.sedaily.com/2023/05/04/29PG51DZDP_137.jpg",
-                title: "아이유",
-                likes: 4,
-                comments: 4,
-                nickname: "junbok97",
-                profileImageURL: "https://avatars.githubusercontent.com/u/71696675?v=4"
-            ),
-            .init(
-                thumbnailImageURL: "https://news.nateimg.co.kr/orgImg/ts/2023/08/14/15381770_1161137_5141_org.jpg",
-                title: "유나",
-                likes: 999999,
-                comments: 4,
-                nickname: "junbok97",
-                profileImageURL: "https://avatars.githubusercontent.com/u/71696675?v=4"
-            )
-        ])
+        fetchPlaces()
     }
 
     override func willResignActive() {
         super.willResignActive()
-        
+        cancelBag.cancel()
     }
     
-    func didTapItem(model: SearchCurrentLocationStoryListCellModel) {
-        
+    func didTap(at indexPath: IndexPath) {
+        guard let place = places[safe: indexPath.row] else { return }
+        listener?.searchCurrentLocationStoryListDidTapStory(place.storyId)
+    }
+    
+    private func fetchPlaces() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.searchCurrentLocationStoryListUseCase
+                .fetchRecommendPlace(lat: dependency.location.lat, lng: dependency.location.lng)
+                .onSuccess(on: .main, with: self) { this, places in
+                    this.performAfterFetchtingPlaces(places)
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                }
+        }.store(in: cancelBag)
+    }
+    
+    private func performAfterFetchtingPlaces(_ places: [Place]) {
+        self.places = places
+        let models = places.map { place -> SearchCurrentLocationStoryListCellModel in
+            return .init(
+                thumbnailImageURL: place.imageURL,
+                title: place.title,
+                content: place.content,
+                likes: place.likes,
+                comments: place.comments
+            )
+        }
+        presenter.setup(models: models)
     }
     
 }

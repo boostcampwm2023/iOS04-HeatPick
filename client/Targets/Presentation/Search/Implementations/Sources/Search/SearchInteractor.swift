@@ -15,7 +15,7 @@ import BasePresentation
 import CoreLocation
 
 protocol SearchRouting: ViewableRouting {
-    func attachSearchCurrentLocation()
+    func attachSearchCurrentLocation(location: SearchMapLocation)
     func detachSearchCurrentLocation()
     func attachSearchResult()
     func detachSearchResult()
@@ -111,6 +111,11 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         router?.detachStoryEditor(nil)
     }
     
+    func searchCurrentLocationStoryListDidTapStory(_ storyId: Int) {
+        router?.detachSearchCurrentLocation()
+        router?.attachStoryDetail(storyId: storyId)
+    }
+    
 }
 
 // MARK: - PresentableListener
@@ -118,7 +123,8 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
 extension SearchInteractor: SearchPresentableListener {
     
     func didTapCurrentLocation() {
-        router?.attachSearchCurrentLocation()
+        guard let location = watchingLocation else { return }
+        router?.attachSearchCurrentLocation(location: location)
     }
     
     func didTapSearchTextField() {

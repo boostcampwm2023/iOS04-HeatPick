@@ -36,7 +36,7 @@ protocol MyPageInteractorDependency: AnyObject {
 }
 
 final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageInteractable, MyPagePresentableListener {
-
+    
     weak var router: MyPageRouting?
     weak var listener: MyPageListener?
     
@@ -123,6 +123,10 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     func storyDetailDidTapClose() {
         router?.detachStoryDetail()
+    }
+    
+    func storyDidDelete() {
+        
     }
     
     // MARK: UpdateUser

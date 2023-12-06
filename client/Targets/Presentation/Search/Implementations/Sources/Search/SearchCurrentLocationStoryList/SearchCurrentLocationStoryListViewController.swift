@@ -11,7 +11,7 @@ import DesignKit
 import ModernRIBs
 
 protocol SearchCurrentLocationStoryListPresentableListener: AnyObject {
-    func didTapItem(model: SearchCurrentLocationStoryListCellModel)
+    func didTap(at indexPath: IndexPath)
 }
 
 final class SearchCurrentLocationStoryListViewController: UIViewController, SearchCurrentLocationStoryListPresentable, SearchCurrentLocationStoryListViewControllable {
@@ -25,8 +25,9 @@ final class SearchCurrentLocationStoryListViewController: UIViewController, Sear
     }
     
     private lazy var tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.register(SearchCurrentLocationStoryListCell.self)
+        tableView.backgroundColor = .hpWhite
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -103,8 +104,7 @@ extension SearchCurrentLocationStoryListViewController: UITableViewDataSource {
 extension SearchCurrentLocationStoryListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let model = models[safe: indexPath.row] else { return }
-        listener?.didTapItem(model: model)
+        listener?.didTap(at: indexPath)
     }
     
 }
