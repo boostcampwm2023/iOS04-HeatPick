@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import DomainEntities
 
 protocol StoryCreateSuccessDependency: Dependency {
     // TODO: Declare the set of dependencies required by this RIB, but cannot be
@@ -21,7 +22,7 @@ final class StoryCreateSuccessComponent: Component<StoryCreateSuccessDependency>
 // MARK: - Builder
 
 protocol StoryCreateSuccessBuildable: Buildable {
-    func build(withListener listener: StoryCreateSuccessListener) -> StoryCreateSuccessRouting
+    func build(withListener listener: StoryCreateSuccessListener, badgeInfo: BadgeExp) -> StoryCreateSuccessRouting
 }
 
 final class StoryCreateSuccessBuilder: Builder<StoryCreateSuccessDependency>, StoryCreateSuccessBuildable {
@@ -30,7 +31,7 @@ final class StoryCreateSuccessBuilder: Builder<StoryCreateSuccessDependency>, St
         super.init(dependency: dependency)
     }
 
-    func build(withListener listener: StoryCreateSuccessListener) -> StoryCreateSuccessRouting {
+    func build(withListener listener: StoryCreateSuccessListener, badgeInfo: BadgeExp) -> StoryCreateSuccessRouting {
         let component = StoryCreateSuccessComponent(dependency: dependency)
         let viewController = StoryCreateSuccessViewController()
         let interactor = StoryCreateSuccessInteractor(presenter: viewController)

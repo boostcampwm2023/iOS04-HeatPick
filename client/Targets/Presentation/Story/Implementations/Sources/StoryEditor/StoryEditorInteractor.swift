@@ -149,7 +149,8 @@ private extension StoryEditorInteractor {
             guard let self else { return }
             await dependency.storyUseCase
                 .requestCreateStory(storyContent: content)
-                .onSuccess(on: .main, with: self, { this, story in
+                .onSuccess(on: .main, with: self, { this, created in
+                    let (story, badgeExp) = created
                     this.listener?.storyDidCreate(story.id)
                 })
                 .onFailure(on: .main, with: self, { this, error in

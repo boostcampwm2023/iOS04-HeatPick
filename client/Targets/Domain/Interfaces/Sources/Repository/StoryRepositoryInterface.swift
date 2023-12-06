@@ -13,7 +13,7 @@ import DomainEntities
 public protocol StoryRepositoryInterface: AnyObject {
     
     func requestMetaData() async -> Result<([StoryCategory], [Badge]), Error>
-    func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error>
+    func requestCreateStory(storyContent: StoryContent) async -> Result<(Story, BadgeExp), Error>
     func requestDeleteStory(storyId: Int) async -> Result<Void, Error>
     func requestStoryDetail(storyId: Int) async -> Result<Story, Error>
     func requestFollow(userId: Int) async -> Result<Void, Error>
