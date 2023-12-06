@@ -50,6 +50,7 @@ final class SearchCurrentLocationStoryListInteractor: PresentableInteractor<Sear
 
     override func didBecomeActive() {
         super.didBecomeActive()
+        requestLocality()
         fetchPlaces()
     }
 
@@ -89,6 +90,22 @@ final class SearchCurrentLocationStoryListInteractor: PresentableInteractor<Sear
             )
         }
         presenter.setup(models: models)
+    }
+    
+    private func requestLocality() {
+        Task { [weak self] in
+            guard let self else { return }
+            let locality = await dependency.searchCurrentLocationStoryListUseCase
+                .requestLocality(lat: dependency.location.lat, lng: dependency.location.lng)
+            
+            await MainActor.run { [weak self] in
+                self?.performAfterRequestLocality(locality)
+            }
+        }.store(in: cancelBag)
+    }
+    
+    private func performAfterRequestLocality(_ locality: String?) {
+        presenter.updateLocation(locality ?? "현재 위치")
     }
     
 }

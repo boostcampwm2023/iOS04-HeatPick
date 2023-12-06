@@ -75,4 +75,8 @@ public final class SearchUseCase: SearchUseCaseInterface {
         await repository.fetchSearchLocal(searchText: query)
     }
     
+    public func requestLocality(lat: Double, lng: Double) async -> String? {
+        await locationService.requestLocality(lat: lat, lng: lng)
+    }
+    
 }
