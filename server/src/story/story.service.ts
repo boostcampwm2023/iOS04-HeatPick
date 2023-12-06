@@ -23,6 +23,11 @@ import { StoryResultDto } from '../search/dto/response/story.result.dto';
 import { Transactional } from 'typeorm-transactional';
 import { CategoryService } from '../category/category.service';
 import { StoryCreateResponseDto } from './dto/response/story-create-response.dto';
+import * as dotenv from 'dotenv';
+import axios from 'axios';
+import { ImageUnhealthyException } from 'src/exception/custom.exception/image.unhealty.exception';
+
+dotenv.config();
 
 @Injectable()
 export class StoryService {
@@ -63,9 +68,36 @@ export class StoryService {
   public async create(userId: number, { title, content, categoryId, place, images, badgeId, date }): Promise<StoryCreateResponseDto> {
     const badgeList: Badge[] = await this.userService.getBadges(userId);
     const badge: Badge = badgeList.filter((badge: Badge) => badge.badgeId === badgeId)[0];
+
     const category: Category = await this.categoryService.getCategory(categoryId);
 
     const user: User = await this.userService.getUser(userId);
+
+    images.map(async (image) => {
+      const data = image.buffer.toString('base64');
+      const options = {
+        headers: {
+          'X-GREEN-EYE-SECRET': `${process.env.GREEN_EYE_SECRET_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      const file = {
+        version: 'V1',
+        requestId: 'requestId',
+        timestamp: Date.now(),
+        images: [
+          {
+            name: 'demo',
+            data: `${data}`,
+          },
+        ],
+      };
+      const response = await axios.post(process.env.INVOKE_URL, file, options);
+
+      const confidence = response.data.images[0].result.confidence;
+      if (confidence < 0.8) throw new ImageUnhealthyException();
+    });
+
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     story.user = Promise.resolve(user);
     await this.storyRepository.save(story);
