@@ -21,7 +21,7 @@ protocol SearchInteractable: Interactable,
                              StoryDetailListener,
                              SearchStorySeeAllListener,
                              SearchUserSeeAllListener,
-                             MyPageListener {
+                             UserProfileListener {
     var router: SearchRouting? { get set }
     var listener: SearchListener? { get set }
     var presentationAdapter: AdaptivePresentationControllerDelegateAdapter { get }
@@ -37,7 +37,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     private var searchResultRouter: SearchResultRouting?
     private var storyEditorRouter: ViewableRouting?
     private var storyDeatilRouter: ViewableRouting?
-    private var myPageRouter: ViewableRouting?
+    private var userProfileRouter: ViewableRouting?
     private var searchStorySeeAllRouter: ViewableRouting?
     private var searchUserSeeAllRouter: ViewableRouting?
     
@@ -129,16 +129,18 @@ extension SearchRouter {
 extension SearchRouter {
     
     func attachUserDetail(userId: Int) {
-        guard myPageRouter == nil else { return }
-        let router = dependency.myPageBuilder.build(withListener: interactor, userId: userId)
+        guard userProfileRouter == nil else { return }
+        let router = dependency.userProfileBuilder.build(withListener: interactor, userId: userId)
         pushRouter(router, animated: true)
-        myPageRouter = router
+        userProfileRouter = router
     }
     
     func detachUserDetail() {
-        guard let router = myPageRouter else { return }
+        Log.make(message: "\(String(describing: self)) \(#function) start", log: .default)
+        guard let router = userProfileRouter else { return }
         popRouter(router, animated: true)
-        myPageRouter = nil
+        userProfileRouter = nil
+        Log.make(message: "\(String(describing: self)) \(#function) finish", log: .default)
     }
     
     func attachSearchUserSeeAll(searchText: String) {

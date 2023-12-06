@@ -50,7 +50,7 @@ protocol SearchPresentable: Presentable {
 final class SearchInteractor: PresentableInteractor<SearchPresentable>,
                               AdaptivePresentationControllerDelegate,
                               SearchInteractable {
-
+    
     weak var router: SearchRouting?
     weak var listener: SearchListener?
     let presentationAdapter: AdaptivePresentationControllerDelegateAdapter
@@ -108,7 +108,7 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         router?.detachStoryEditor(nil)
     }
     
-    func detachMyPage() {
+    func detachUserProfile() {
         router?.detachUserDetail()
     }
     

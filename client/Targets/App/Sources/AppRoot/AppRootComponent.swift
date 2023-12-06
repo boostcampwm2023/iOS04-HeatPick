@@ -42,6 +42,7 @@ final class AppRootComponent: Component<AppRootDependency>,
                               SearchDependency,
                               FollowingHomeDependency,
                               MyPageDependency,
+                              UserProfileDependency,
                               StoryEditorDependency,
                               StoryDetailDependency {
     
@@ -50,6 +51,7 @@ final class AppRootComponent: Component<AppRootDependency>,
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
     let storyUseCase: StoryUseCaseInterface
     let myPageUseCase: MyPageUseCaseInterface
+    let userProfileUseCase: UserProfileUserCaseInterface
     let searchUseCase: SearchUseCaseInterface
     let followingUseCase: FollowingUseCaseInterface
     
@@ -84,6 +86,10 @@ final class AppRootComponent: Component<AppRootDependency>,
         StoryDetailBuilder(dependency: self)
     }()
     
+    lazy var userProfileBuilder: UserProfileBuildable = {
+        UserProfileBuilder(dependency: self)
+    }()
+    
     override init(dependency: AppRootDependency) {
         let naverLoginRepository: NaverLoginRepositoryInterface = {
             let repository = NaverLoginRepository()
@@ -110,6 +116,8 @@ final class AppRootComponent: Component<AppRootDependency>,
         let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [MyURLProtocol.self])
         self.myPageUseCase = MyPageUseCase(repository: MyPageRepository(session: myPageNetworkProvider))
         self.signOutRequestService = SignoutService.shared
+        
+        self.userProfileUseCase = self.myPageUseCase
         
         let searchNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [SearchURLProtocol.self])
         self.searchUseCase = SearchUseCase(repository: SearchRepository(session: searchNetworkProvider), locationService: locationService)

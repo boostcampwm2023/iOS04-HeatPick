@@ -28,7 +28,6 @@ final class MyPageComponent: Component<MyPageDependency>,
                              SettingDependency,
                              MyPageUpdateUserDashboardDependency {
     
-    var userId: Int?
     var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
     var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
     var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
@@ -36,8 +35,7 @@ final class MyPageComponent: Component<MyPageDependency>,
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
     
-    init(dependency: MyPageDependency, userId: Int? = nil) {
-        self.userId = userId
+    override init(dependency: MyPageDependency) {
         super.init(dependency: dependency)
     }
     

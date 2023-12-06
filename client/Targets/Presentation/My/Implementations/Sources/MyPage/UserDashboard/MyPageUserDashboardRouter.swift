@@ -15,7 +15,6 @@ protocol MyPageUserDashboardInteractable: Interactable {
 
 protocol MyPageUserDashboardViewControllable: ViewControllable {
     func setMyProfile()
-    func setUserProfile()
 }
 
 final class MyPageUserDashboardRouter: ViewableRouter<MyPageUserDashboardInteractable, MyPageUserDashboardViewControllable>, MyPageUserDashboardRouting {
@@ -28,8 +27,5 @@ final class MyPageUserDashboardRouter: ViewableRouter<MyPageUserDashboardInterac
     func setMyProfile() {
         viewController.setMyProfile()
     }
-    
-    func setUserProfile() {
-        viewController.setUserProfile()
-    }
+
 }

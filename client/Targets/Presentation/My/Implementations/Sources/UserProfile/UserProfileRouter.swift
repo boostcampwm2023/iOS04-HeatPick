@@ -7,33 +7,106 @@
 //
 
 import ModernRIBs
+import MyInterfaces
+import StoryInterfaces
 
-protocol UserProfileInteractable: Interactable {
+protocol UserProfileInteractable: Interactable,
+                                  UserProfileUserDashboardListener,
+                                  MyPageStoryDashboardListener,
+                                  MyPageStorySeeAllListener,
+                                  StoryDetailListener {
     var router: UserProfileRouting? { get set }
     var listener: UserProfileListener? { get set }
 }
 
-protocol UserProfileViewControllable: ViewControllable {
-    // TODO: Declare methods the router invokes to manipulate the view hierarchy. Since
-    // this RIB does not own its own view, this protocol is conformed to by one of this
-    // RIB's ancestor RIBs' view.
+protocol UserProfileViewControllable: ProfileViewControllable {
+    func setUserProfile(_ username: String)
 }
 
-final class UserProfileRouter: Router<UserProfileInteractable>, UserProfileRouting {
+final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfileViewControllable>, UserProfileRouting {
+        
+    private var userDashboardRouting: UserProfileUserDashboardRouting?
+    private var storyDashboardRouting: MyPageStoryDashboardRouting?
+    private var storySeeAllRouting: ViewableRouting?
+    private var settingRouting: ViewableRouting?
+    private var storyDetailRouting: ViewableRouting?
+    private var updateUserDashoardRouting: ViewableRouting?
 
-    // TODO: Constructor inject child builder protocols to allow building children.
-    init(interactor: UserProfileInteractable, viewController: UserProfileViewControllable) {
-        self.viewController = viewController
-        super.init(interactor: interactor)
+    
+    private let dependency: UserProfileRouterDependency
+    
+    init(
+        interactor: UserProfileInteractable,
+        viewController: UserProfileViewControllable,
+        dependency: UserProfileRouterDependency
+    ) {
+        self.dependency = dependency
+        super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
-
-    func cleanupViews() {
-        // TODO: Since this router does not own its view, it needs to cleanup the views
-        // it may have added to the view hierarchy, when its interactor is deactivated.
+    
+    func setUserProfile(_ username: String) {
+        viewController.setUserProfile(username)
+        userDashboardRouting?.setUserProfile()
+        storyDashboardRouting?.setUserProfile(username)
     }
 
-    // MARK: - Private
+    
+    func attachUserDashboard() {
+        guard userDashboardRouting == nil else { return }
+        let router = dependency.userDashboardBuilder.build(withListener: interactor)
+        viewController.setDashboard(router.viewControllable)
+        self.userDashboardRouting = router
+        attachChild(router)
+    }
+    
+    func detachUserDashboard() {
+        guard let router = userDashboardRouting else { return }
+        viewController.removeDashboard(router.viewControllable)
+        self.userDashboardRouting = nil
+        detachChild(router)
+    }
 
-    private let viewController: UserProfileViewControllable
+    
+    func attachStoryDashboard() {
+        guard storyDashboardRouting == nil else { return }
+        let router = dependency.storyDashboardBuilder.build(withListener: interactor)
+        viewController.setDashboard(router.viewControllable)
+        self.storyDashboardRouting = router
+        attachChild(router)
+    }
+    
+    func detachStoryDashboard() {
+        guard let router = storyDashboardRouting else { return }
+        viewController.removeDashboard(router.viewControllable)
+        self.storyDashboardRouting = nil
+        detachChild(router)
+    }
+    
+    func attachStorySeeAll(userId: Int) {
+        guard storySeeAllRouting == nil else { return }
+        let router = dependency.storySeeAllBuilder.build(withListener: interactor, userId: userId)
+        pushRouter(router, animated: true)
+        self.storySeeAllRouting = router
+    }
+    
+    func detachStorySeeAll() {
+        guard let router = storySeeAllRouting else { return }
+        popRouter(router, animated: true)
+        self.storySeeAllRouting = nil
+    }
+    
+    func attachStoryDetail(id: Int) {
+        guard storyDetailRouting == nil else { return }
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: id)
+        pushRouter(router, animated: true)
+        self.storyDetailRouting = router
+    }
+    
+    func detachStoryDetail() {
+        guard let router = storyDetailRouting else { return }
+        popRouter(router, animated: true)
+        self.storyDetailRouting = nil
+    }
+    
 }

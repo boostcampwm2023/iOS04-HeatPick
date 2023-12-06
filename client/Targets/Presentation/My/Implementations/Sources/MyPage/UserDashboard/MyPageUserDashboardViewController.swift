@@ -12,6 +12,9 @@ import DesignKit
 
 protocol MyPageUserDashboardPresentableListener: AnyObject {
     func profileEditButtonDidTap()
+}
+
+protocol UserProfileUserDashboardPresentableListener: AnyObject {
     func followButtonDidTap()
 }
 
@@ -27,13 +30,14 @@ struct MyPageUserDashboardViewControllerModel {
     let badgeContent: String
 }
 
-final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashboardPresentable, MyPageUserDashboardViewControllable {
+final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashboardPresentable, MyPageUserDashboardViewControllable, UserProfileUserDashboardViewControllable, UserProfileUserDashboardPresentable {
+    
+    weak var myProfileListener: MyPageUserDashboardPresentableListener?
+    weak var userProfileListener: UserProfileUserDashboardPresentableListener?
     
     private enum Constant {
         static let spacing: CGFloat = 20
     }
-    
-    weak var listener: MyPageUserDashboardPresentableListener?
 
     private let temperatureView = MyPageTemperatureView()
     private let badgeView = MyPageBadgeView()
@@ -82,11 +86,11 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
 extension MyPageUserDashboardViewController: MyPageUserViewDelegate {
     
     func profileEditButtonDidTap() {
-        listener?.profileEditButtonDidTap()
+        myProfileListener?.profileEditButtonDidTap()
     }
     
     func followButtonDidTap() {
-        listener?.followButtonDidTap()
+        userProfileListener?.followButtonDidTap()
     }
     
 }

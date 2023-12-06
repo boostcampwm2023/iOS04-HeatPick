@@ -7,30 +7,25 @@
 //
 
 import ModernRIBs
-import DomainInterfaces
+import MyInterfaces
 
-protocol UserProfileDependency: Dependency {
-    var userProfileUserCaseInterface: UserProfileUserCaseInterface { get }
-}
+public final class UserProfileBuilder: Builder<UserProfileDependency>, UserProfileBuildable {
 
-final class UserProfileComponent: Component<UserProfileDependency> {
-
-    
-}
-
-// MARK: - Builder
-
-
-final class UserProfileBuilder: Builder<UserProfileDependency>, UserProfileBuildable {
-
-    override init(dependency: UserProfileDependency) {
+    public override init(dependency: UserProfileDependency) {
         super.init(dependency: dependency)
     }
 
-    func build(withListener listener: UserProfileListener) -> UserProfileRouting {
-        let component = UserProfileComponent(dependency: dependency)
-        let interactor = UserProfileInteractor()
+    public func build(withListener listener: UserProfileListener, userId: Int) -> ViewableRouting {
+        let component = UserProfileComponent(dependency: dependency, userId: userId)
+        let viewController = MyPageViewController()
+        let interactor = UserProfileInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
-        return UserProfileRouter(interactor: interactor, viewController: component.UserProfileViewController)
+        
+        return UserProfileRouter(
+            interactor: interactor,
+            viewController: viewController,
+            dependency: UserProfileRouterComponent(component: component)
+        )
     }
+    
 }

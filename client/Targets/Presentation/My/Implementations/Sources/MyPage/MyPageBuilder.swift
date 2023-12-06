@@ -16,8 +16,8 @@ public final class MyPageBuilder: Builder<MyPageDependency>, MyPageBuildable {
         super.init(dependency: dependency)
     }
     
-    public func build(withListener listener: MyPageListener, userId: Int? = nil) -> ViewableRouting {
-        let component = MyPageComponent(dependency: dependency, userId: userId)
+    public func build(withListener listener: MyPageListener) -> ViewableRouting {
+        let component = MyPageComponent(dependency: dependency)
         let viewController = MyPageViewController()
         let interactor = MyPageInteractor(presenter: viewController, depedency: component)
         interactor.listener = listener

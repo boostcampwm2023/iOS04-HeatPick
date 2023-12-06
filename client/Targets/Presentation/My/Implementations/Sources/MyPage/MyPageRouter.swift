@@ -21,11 +21,13 @@ protocol MyPageInteractable: Interactable,
     var listener: MyPageListener? { get set }
 }
 
-protocol MyPageViewControllable: ViewControllable {
+protocol ProfileViewControllable: ViewControllable {
     func setDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
+}
+
+protocol MyPageViewControllable: ProfileViewControllable {
     func setMyProfile(_ username: String)
-    func setUserProfile(_ username: String)
 }
 
 final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControllable>, MyPageRouting {
@@ -69,12 +71,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         userDashboardRouting?.setMyProfile()
     }
     
-    func setUserProfile(_ username: String) {
-        viewController.setUserProfile(username)
-        userDashboardRouting?.setUserProfile()
-        storyDashboardRouting?.setUserProfile(username)
-    }
-    
+    // MARK: Story
     func attachStoryDashboard() {
         guard storyDashboardRouting == nil else { return }
         let router = dependency.storyDashboardBuilder.build(withListener: interactor)
@@ -103,19 +100,6 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         self.storySeeAllRouting = nil
     }
     
-    func attachSetting() {
-        guard settingRouting == nil else { return }
-        let router = dependency.settingBuilder.build(withListener: interactor)
-        pushRouter(router, animated: true)
-        self.settingRouting = router
-    }
-    
-    func detachSetting() {
-        guard let router = settingRouting else { return }
-        popRouter(router, animated: true)
-        self.settingRouting = nil
-    }
-    
     func attachStoryDetail(id: Int) {
         guard storyDetailRouting == nil else { return }
         let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: id)
@@ -129,6 +113,21 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         self.storyDetailRouting = nil
     }
     
+    // MARK: Setting
+    func attachSetting() {
+        guard settingRouting == nil else { return }
+        let router = dependency.settingBuilder.build(withListener: interactor)
+        pushRouter(router, animated: true)
+        self.settingRouting = router
+    }
+    
+    func detachSetting() {
+        guard let router = settingRouting else { return }
+        popRouter(router, animated: true)
+        self.settingRouting = nil
+    }
+    
+    // MARK: UpdateProfile
     func attachupdateUserDashboard() {
         guard updateUserDashoardRouting == nil else { return }
         let router = dependency.updateUserDashboardBuilder.build(withListener: interactor)

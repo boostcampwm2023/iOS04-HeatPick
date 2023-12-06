@@ -25,7 +25,6 @@ public final class AuthUseCase: AuthUseCaseInterface {
               let token = String(data: data, encoding: .utf8) else {
             return false
         }
-        print(token)
         return !token.isEmpty
     }
     

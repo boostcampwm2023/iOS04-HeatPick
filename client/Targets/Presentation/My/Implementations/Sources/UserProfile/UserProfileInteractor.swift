@@ -8,30 +8,101 @@
 
 import ModernRIBs
 
-protocol UserProfileRouting: Routing {
-    func cleanupViews()
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
+import CoreKit
+import MyInterfaces
+import DomainEntities
+import DomainInterfaces
+
+protocol UserProfileRouting: ProfileRouting {
+    func setUserProfile(_ username: String)
 }
 
+protocol UserProfilePresentable: Presentable {
+    var userProfileListener: UserProfilePresentableListener? { get set }
+}
 
-final class UserProfileInteractor: Interactor, UserProfileInteractable {
+protocol UserProfileInteractorDependency: AnyObject {
+    var userId: Int { get }
+    var userProfileUseCase: UserProfileUserCaseInterface { get }
+}
 
+final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>, UserProfilePresentableListener, UserProfileInteractable {
+    
     weak var router: UserProfileRouting?
     weak var listener: UserProfileListener?
-
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init() {}
-
+    
+    private let dependency: UserProfileInteractorDependency
+    private let cancelBag = CancelBag()
+    private var myPage: MyPage?
+    
+    init(
+        presenter: UserProfilePresentable,
+        dependency: UserProfileInteractorDependency
+    ) {
+        self.dependency = dependency
+        super.init(presenter: presenter)
+        presenter.userProfileListener = self
+    }
+    
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        router?.attachUserDashboard()
+        router?.attachStoryDashboard()
+        fetchProfile()
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
-
-        router?.cleanupViews()
-        // TODO: Pause any business logic.
+        cancelBag.cancel()
     }
+    
+    func didTapBack() {
+        listener?.detachUserProfile()
+    }
+    
+    func storyDashboardDidTapSeeAll() {
+        guard let myPage else { return }
+        router?.attachStorySeeAll(userId: myPage.userId)
+    }
+    
+    func storyDashboardDidTapStory(id: Int) {
+        router?.attachStoryDetail(id: id)
+    }
+    
+    func myPageStorySeeAllDidTapClose() {
+        router?.detachStorySeeAll()
+    }
+    
+    func myPageStorySeeAllDidTapStory(id: Int) {
+        router?.attachStoryDetail(id: id)
+    }
+    
+    private func fetchProfile() {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.userProfileUseCase
+                .fetchProfile(userId: dependency.userId)
+                .onSuccess(on: .main, with: self) { this, myPage in
+                    this.myPage = myPage
+                    this.router?.setUserProfile(myPage.userName)
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                }
+        }.store(in: cancelBag)
+    }
+
+    func storyDetailDidTapClose() {
+        router?.detachStoryDetail()
+    }
+    
+    func storyDidDelete() {
+        router?.detachStoryDetail()
+    }
+    
+    // TODO: 팔로우 버튼
+    func followButtonDidTap() {
+        
+    }
+        
 }

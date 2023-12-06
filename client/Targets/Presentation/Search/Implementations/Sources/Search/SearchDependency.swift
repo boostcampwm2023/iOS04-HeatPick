@@ -17,7 +17,7 @@ public protocol SearchDependency: Dependency {
     var searchUseCase: SearchUseCaseInterface { get }
     var storyEditorBuilder: StoryEditorBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
-    var myPageBuilder: MyPageBuildable { get }
+    var userProfileBuilder: UserProfileBuildable { get }
 }
 
 protocol SearchInteractorDependency: AnyObject {
@@ -31,5 +31,5 @@ protocol SearchRouterDependency {
     var storyDetailBuilder: StoryDetailBuildable { get }
     var searchStorySeeAllBuilder: SearchStorySeeAllBuildable { get }
     var searchUserSeeAllBuilder: SearchUserSeeAllBuildable { get }
-    var myPageBuilder: MyPageBuildable { get }
+    var userProfileBuilder: UserProfileBuildable { get }
 }

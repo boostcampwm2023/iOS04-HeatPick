@@ -14,10 +14,16 @@ import BasePresentation
 
 protocol MyPagePresentableListener: AnyObject {
     func didTapSetting()
+}
+
+protocol UserProfilePresentableListener: AnyObject {
     func didTapBack()
 }
 
-public final class MyPageViewController: BaseViewController, MyPagePresentable, MyPageViewControllable {
+public final class MyPageViewController: BaseViewController, MyPagePresentable, MyPageViewControllable, UserProfilePresentable, UserProfileViewControllable  {
+    
+    weak var myPageListener: MyPagePresentableListener?
+    weak var userProfileListener: UserProfilePresentableListener?
 
     private enum Constant {
         static let tabBarTitle = "마이"
@@ -25,8 +31,6 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
         static let tabBarImageSelected = "person.fill"
         static let contentInset: UIEdgeInsets = .init(top: 20, left: 0, bottom: 20, right: 0)
     }
-    
-    weak var listener: MyPagePresentableListener?
     
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
@@ -39,6 +43,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         setupTabBar()
+ 
     }
     
     func setDashboard(_ viewControllable: ViewControllable) {
@@ -68,6 +73,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -125,8 +131,8 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
 extension MyPageViewController: NavigationViewDelegate {
     
     public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
-        if case .setting = type { listener?.didTapSetting() }
-        if case .back = type { listener?.didTapBack() }
+        if case .setting = type { myPageListener?.didTapSetting() }
+        if case .back = type { userProfileListener?.didTapBack() }
     }
     
 }
