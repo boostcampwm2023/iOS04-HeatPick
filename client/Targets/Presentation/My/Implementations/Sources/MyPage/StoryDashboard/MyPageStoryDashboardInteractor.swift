@@ -13,7 +13,9 @@ import BasePresentation
 import DomainEntities
 import DomainInterfaces
 
-protocol MyPageStoryDashboardRouting: ViewableRouting {}
+protocol MyPageStoryDashboardRouting: ViewableRouting {
+    func setUserProfile(_ username: String)
+}
 
 protocol MyPageStoryDashboardPresentable: Presentable {
     var listener: MyPageStoryDashboardPresentableListener? { get set }

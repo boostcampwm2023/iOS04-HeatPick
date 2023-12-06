@@ -12,23 +12,27 @@ import MyInterfaces
 import DomainEntities
 import DomainInterfaces
 
-protocol MyPageRouting: ViewableRouting {
+protocol ProfileRouting: ViewableRouting {
     func attachUserDashboard()
     func detachUserDashboard()
     func attachStoryDashboard()
     func detachStoryDashboard()
     func attachStorySeeAll(userId: Int)
     func detachStorySeeAll()
-    func attachSetting()
-    func detachSetting()
     func attachStoryDetail(id: Int)
     func detachStoryDetail()
+}
+
+protocol MyPageRouting: ProfileRouting {
+    func attachSetting()
+    func detachSetting()
     func attachupdateUserDashboard()
     func detachUpdateUserDashboard() 
+    func setMyProfile(_ username: String)
 }
 
 protocol MyPagePresentable: Presentable {
-    var listener: MyPagePresentableListener? { get set }
+    var myPageListener: MyPagePresentableListener? { get set }
 }
 
 protocol MyPageInteractorDependency: AnyObject {
@@ -40,7 +44,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     weak var router: MyPageRouting?
     weak var listener: MyPageListener?
     
-    private let depedency: MyPageInteractorDependency
+    private let dependency: MyPageInteractorDependency
     private let cancelBag = CancelBag()
     private var myPage: MyPage?
     
@@ -48,16 +52,16 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         presenter: MyPagePresentable,
         depedency: MyPageInteractorDependency
     ) {
-        self.depedency = depedency
+        self.dependency = depedency
         super.init(presenter: presenter)
-        presenter.listener = self
+        presenter.myPageListener = self
     }
     
     override func didBecomeActive() {
         super.didBecomeActive()
         router?.attachUserDashboard()
         router?.attachStoryDashboard()
-        fetchMyPage()
+        fetchProfile()
     }
     
     override func willResignActive() {
@@ -68,9 +72,9 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.attachSetting()
     }
     
-    // MARK: - UserDashboard
+    // MARK: - MyPageUpdateUser
     
-    func profileEidtButtonDidTap() {
+    func profileEditButtonDidTap() {
         router?.attachupdateUserDashboard()
     }
     
@@ -105,18 +109,19 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.detachSetting()
     }
     
-    private func fetchMyPage() {
+    private func fetchProfile() {
         Task { [weak self] in
             guard let self else { return }
-            await depedency.myPageUseCase
-                .fetchMyPage()
+            await dependency.myPageUseCase
+                .fetchMyProfile()
                 .onSuccess(on: .main, with: self) { this, myPage in
                     this.myPage = myPage
+                    this.router?.setMyProfile(myPage.userName)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
-        }.store(in: cancelBag)
+            }.store(in: cancelBag)
     }
     
     // MARK: - StoryDetail
@@ -126,16 +131,16 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     }
     
     func storyDidDelete() {
-        
+        router?.detachStoryDetail()
     }
     
     // MARK: UpdateUser
     func updateUser(model: UserUpdateContent) {
         Task { [weak self] in
             guard let self else { return }
-            await depedency.myPageUseCase.fetchUserInfo(userUpdate: model)
+            await dependency.myPageUseCase.fetchUserInfo(userUpdate: model)
                 .onSuccess { _ in
-                    self.fetchMyPage()
+                    self.fetchProfile()
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .network)

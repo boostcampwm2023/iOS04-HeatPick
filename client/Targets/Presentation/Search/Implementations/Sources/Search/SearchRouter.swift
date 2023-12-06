@@ -12,6 +12,7 @@ import CoreKit
 import BasePresentation
 import SearchInterfaces
 import StoryInterfaces
+import MyInterfaces
 
 protocol SearchInteractable: Interactable,
                              SearchCurrentLocationStoryListListener,
@@ -19,22 +20,14 @@ protocol SearchInteractable: Interactable,
                              StoryEditorListener,
                              StoryDetailListener,
                              SearchStorySeeAllListener,
-                             SearchUserSeeAllListener {
+                             SearchUserSeeAllListener,
+                             UserProfileListener {
     var router: SearchRouting? { get set }
     var listener: SearchListener? { get set }
     var presentationAdapter: AdaptivePresentationControllerDelegateAdapter { get }
 }
 
 protocol SearchViewControllable: ViewControllable {}
-
-protocol SearchRouterDependency {
-    var searchCurrentLocationBuilder: SearchCurrentLocationStoryListBuildable { get }
-    var searchResultBuilder: SearchResultBuildable { get }
-    var storyEditorBuilder: StoryEditorBuildable { get }
-    var storyDetailBuilder: StoryDetailBuildable { get }
-    var searchStorySeeAllBuilder: SearchStorySeeAllBuildable { get }
-    var searchUserSeeAllBuilder: SearchUserSeeAllBuildable { get }
-}
 
 final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControllable>, SearchRouting {
     
@@ -44,6 +37,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     private var searchResultRouter: SearchResultRouting?
     private var storyEditorRouter: ViewableRouting?
     private var storyDeatilRouter: ViewableRouting?
+    private var userProfileRouter: ViewableRouting?
     private var searchStorySeeAllRouter: ViewableRouting?
     private var searchUserSeeAllRouter: ViewableRouting?
     
@@ -135,11 +129,18 @@ extension SearchRouter {
 extension SearchRouter {
     
     func attachUserDetail(userId: Int) {
-        
+        guard userProfileRouter == nil else { return }
+        let router = dependency.userProfileBuilder.build(withListener: interactor, userId: userId)
+        pushRouter(router, animated: true)
+        userProfileRouter = router
     }
     
     func detachUserDetail() {
-        
+        Log.make(message: "\(String(describing: self)) \(#function) start", log: .default)
+        guard let router = userProfileRouter else { return }
+        popRouter(router, animated: true)
+        userProfileRouter = nil
+        Log.make(message: "\(String(describing: self)) \(#function) finish", log: .default)
     }
     
     func attachSearchUserSeeAll(searchText: String) {

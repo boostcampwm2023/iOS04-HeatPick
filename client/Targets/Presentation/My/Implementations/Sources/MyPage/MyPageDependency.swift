@@ -28,13 +28,16 @@ final class MyPageComponent: Component<MyPageDependency>,
                              SettingDependency,
                              MyPageUpdateUserDashboardDependency {
     
-    
     var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
     var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
     var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
     var myPageUpdateUserUseCase: MyPageUpdateUserUseCaseInterface { dependency.myPageUseCase }
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
+    
+    override init(dependency: MyPageDependency) {
+        super.init(dependency: dependency)
+    }
     
 }
 

@@ -84,12 +84,12 @@ private extension MyPageUpdateUserBasicInformationView {
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             
             usernameTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
-            usernameTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
-            usernameTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
+            usernameTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
+            usernameTextField.trailingAnchor.constraint(equalTo: trailingAnchor),
             usernameTextField.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomOffset),
             usernameTextField.heightAnchor.constraint(equalToConstant: Constant.UsernameTextField.height)
         ])

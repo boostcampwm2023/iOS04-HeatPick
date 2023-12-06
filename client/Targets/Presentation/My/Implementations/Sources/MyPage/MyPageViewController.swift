@@ -16,16 +16,21 @@ protocol MyPagePresentableListener: AnyObject {
     func didTapSetting()
 }
 
-public final class MyPageViewController: BaseViewController, MyPagePresentable, MyPageViewControllable {
+protocol UserProfilePresentableListener: AnyObject {
+    func didTapBack()
+}
+
+public final class MyPageViewController: BaseViewController, MyPagePresentable, MyPageViewControllable, UserProfilePresentable, UserProfileViewControllable  {
     
+    weak var myPageListener: MyPagePresentableListener?
+    weak var userProfileListener: UserProfilePresentableListener?
+
     private enum Constant {
         static let tabBarTitle = "마이"
         static let tabBarImage = "person"
         static let tabBarImageSelected = "person.fill"
-        static let contentInset: UIEdgeInsets = .init(top: 40, left: 0, bottom: 40, right: 0)
+        static let contentInset: UIEdgeInsets = .init(top: 20, left: 0, bottom: 20, right: 0)
     }
-    
-    weak var listener: MyPagePresentableListener?
     
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
@@ -38,6 +43,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         setupTabBar()
+ 
     }
     
     func setDashboard(_ viewControllable: ViewControllable) {
@@ -67,6 +73,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -77,17 +84,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
     
     public override func setupAttributes() {
         view.backgroundColor = .hpWhite
-        
-        navigationView.do {
-            $0.setup(model: .init(
-                title: "마이페이지",
-                leftButtonType: .none,
-                rightButtonTypes: [.setting])
-            )
-            $0.delegate = self
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        
+                
         scrollView.do {
             $0.contentInset = .zero
             $0.showsHorizontalScrollIndicator = false
@@ -103,10 +100,31 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
             $0.spacing = 40
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        
+        navigationView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
-    public override func bind() {
-        
+    func setMyProfile(_ username: String) {
+        navigationView.do {
+            $0.setup(model: .init(
+                title: "\(username)",
+                leftButtonType: .none,
+                rightButtonTypes: [.setting])
+            )
+        }
+    }
+    
+    func setUserProfile(_ username: String) {
+        navigationView.do {
+            $0.setup(model: .init(
+                title: "\(username)",
+                leftButtonType: .back,
+                rightButtonTypes: [])
+            )
+        }
     }
     
 }
@@ -114,8 +132,8 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
 extension MyPageViewController: NavigationViewDelegate {
     
     public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
-        guard case .setting = type else { return }
-        listener?.didTapSetting()
+        if case .setting = type { myPageListener?.didTapSetting() }
+        if case .back = type { userProfileListener?.didTapBack() }
     }
     
 }

@@ -74,6 +74,13 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
         }
     }
     
+    func setUserProfile(_ username: String) {
+        seeAllView.setup(model: .init(
+            title: "\(username)의 스토리",
+            isButtonEnabled: true
+        ))
+    }
+    
 }
 
 extension MyPageStoryDashboardViewController: SeeAllViewDelegate {

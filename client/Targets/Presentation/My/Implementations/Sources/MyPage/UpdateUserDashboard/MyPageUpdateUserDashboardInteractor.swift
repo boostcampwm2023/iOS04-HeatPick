@@ -83,7 +83,7 @@ final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpd
         userUpdateModel?.update(username: username)
     }
     
-    func didTapUserBadgeView(_ badgeId: Int) {
+    func didSelectBadge(_ badgeId: Int) {
         userUpdateModel?.update(selectedBadgeId: badgeId)
     }
     

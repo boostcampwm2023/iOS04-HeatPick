@@ -11,12 +11,7 @@ import HomeInterfaces
 import SearchInterfaces
 import StoryInterfaces
 import DomainInterfaces
-
-public protocol SearchDependency: Dependency {
-    var searchUseCase: SearchUseCaseInterface { get }
-    var storyEditorBuilder: StoryEditorBuildable { get }
-    var storyDetailBuilder: StoryDetailBuildable { get }
-}
+import MyInterfaces
 
 final class SearchComponent: Component<SearchDependency>,
                              SearchInteractorDependency,
@@ -31,6 +26,7 @@ final class SearchComponent: Component<SearchDependency>,
     var searchMapUseCase: SearchMapUseCaseInterface { dependency.searchUseCase }
     var storyEditorBuilder: StoryEditorBuildable { dependency.storyEditorBuilder }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
+    var userProfileBuilder: UserProfileBuildable { dependency.userProfileBuilder }
     var searchStorySeeAllUseCase: SearchStorySeeAllUseCaseInterface { dependency.searchUseCase }
     var searchUserSeeAllUseCase: SearchUserSeeAllUseCaseInterface { dependency.searchUseCase }
     
@@ -42,14 +38,17 @@ final class SearchRouterComponent: SearchRouterDependency {
     let searchResultBuilder: SearchResultBuildable
     let storyEditorBuilder: StoryEditorBuildable
     let storyDetailBuilder: StoryDetailBuildable
+    let userProfileBuilder: UserProfileBuildable
     let searchStorySeeAllBuilder: SearchStorySeeAllBuildable
     let searchUserSeeAllBuilder: SearchUserSeeAllBuildable
+    
     
     init(component: SearchComponent) {
         self.searchCurrentLocationBuilder = SearchCurrentLocationStoryListBuilder(dependency: component)
         self.searchResultBuilder = SearchResultBuilder(dependency: component)
         self.storyEditorBuilder = component.storyEditorBuilder
         self.storyDetailBuilder = component.storyDetailBuilder
+        self.userProfileBuilder = component.userProfileBuilder
         self.searchStorySeeAllBuilder = SearchStorySeeAllBuilder(dependency: component)
         self.searchUserSeeAllBuilder = SearchUserSeeAllBuilder(dependency: component)
     }

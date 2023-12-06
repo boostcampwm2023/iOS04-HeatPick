@@ -46,14 +46,11 @@ protocol SearchPresentable: Presentable {
     func hideReSearchView()
 }
 
-protocol SearchInteractorDependency: AnyObject {
-    var searchUseCase: SearchUseCaseInterface { get }
-}
 
 final class SearchInteractor: PresentableInteractor<SearchPresentable>,
                               AdaptivePresentationControllerDelegate,
                               SearchInteractable {
-
+    
     weak var router: SearchRouting?
     weak var listener: SearchListener?
     let presentationAdapter: AdaptivePresentationControllerDelegateAdapter
@@ -109,6 +106,10 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     
     func storyEditorDidTapClose() {
         router?.detachStoryEditor(nil)
+    }
+    
+    func detachUserProfile() {
+        router?.detachUserDetail()
     }
     
     func searchCurrentLocationStoryListDidTapStory(_ storyId: Int) {

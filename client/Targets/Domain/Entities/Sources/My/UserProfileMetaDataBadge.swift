@@ -14,9 +14,10 @@ public struct UserProfileMetaDataBadge {
     public let badgeName: String
     public let badgeExp: Int
     public let emoji: String
-    public let badgeExplain: String
+    // TODO: 옵셔널 제거
+    public let badgeExplain: String?
     
-    public init(badgeId: Int, badgeName: String, badgeExp: Int, emoji: String, badgeExplain: String) {
+    public init(badgeId: Int, badgeName: String, badgeExp: Int, emoji: String, badgeExplain: String?) {
         self.badgeId = badgeId
         self.badgeName = badgeName
         self.badgeExp = badgeExp

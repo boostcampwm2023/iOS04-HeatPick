@@ -1,57 +1,56 @@
 //
-//  MyPageUserDashboardInteractor.swift
+//  UserProfileUserDashboardInteractor.swift
 //  MyImplementations
 //
-//  Created by 홍성준 on 11/22/23.
+//  Created by 이준복 on 12/6/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
 import Combine
 import Foundation
+
 import ModernRIBs
+
+import CoreKit
 import DomainEntities
 import DomainInterfaces
 
-protocol MyPageUserDashboardRouting: ViewableRouting {
-    func setMyProfile()
+protocol UserProfileUserDashboardRouting: ViewableRouting {
+    func setUserProfile()
 }
 
-protocol ProfileUserDashboardPresentable: Presentable {
-    func setup(model: MyPageUserDashboardViewControllerModel)
+protocol UserProfileUserDashboardPresentable: ProfileUserDashboardPresentable {
+    var userProfileListener: UserProfileUserDashboardPresentableListener? { get set }
 }
 
-protocol MyPageUserDashboardPresentable: ProfileUserDashboardPresentable {
-    var myProfileListener: MyPageUserDashboardPresentableListener? { get set }
+protocol UserProfileUserDashboardListener: AnyObject {
+    func followButtonDidTap()
 }
 
-protocol MyPageUserDashboardListener: AnyObject {
-    func profileEditButtonDidTap()
+protocol UserProfileUserDashboardInteractorDependency: AnyObject {
+    var userProfileUserUseCase: MyPageProfileUseCaseInterface { get }
 }
 
-protocol MyPageUserDashboardInteractorDependency: AnyObject {
-    var myPageProfileUseCase: MyPageProfileUseCaseInterface { get }
-}
-
-final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashboardPresentable>, MyPageUserDashboardInteractable, MyPageUserDashboardPresentableListener {
-
-    weak var router: MyPageUserDashboardRouting?
-    weak var listener: MyPageUserDashboardListener?
+final class UserProfileUserDashboardInteractor: PresentableInteractor<UserProfileUserDashboardPresentable>, UserProfileUserDashboardInteractable, UserProfileUserDashboardPresentableListener {
     
-    private let dependency: MyPageUserDashboardInteractorDependency
-    private var cancellables = Set<AnyCancellable>()
+    weak var router: UserProfileUserDashboardRouting?
+    weak var listener: UserProfileUserDashboardListener?
 
+    private let dependency: UserProfileUserDashboardInteractorDependency
+    private var cancellables = Set<AnyCancellable>()
+    
     init(
-        presenter: MyPageUserDashboardPresentable,
-        dependency: MyPageUserDashboardInteractorDependency
+        presenter: UserProfileUserDashboardPresentable,
+        dependency: UserProfileUserDashboardInteractorDependency
     ) {
         self.dependency = dependency
         super.init(presenter: presenter)
-        presenter.myProfileListener = self
+        presenter.userProfileListener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
-        dependency.myPageProfileUseCase
+        dependency.userProfileUserUseCase
             .profilePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profile in
@@ -64,8 +63,10 @@ final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashb
         super.willResignActive()
     }
     
-    func profileEditButtonDidTap() {
-        listener?.profileEditButtonDidTap()
+    
+    // TODO: follow 로직
+    func followButtonDidTap() {
+        
     }
     
 }

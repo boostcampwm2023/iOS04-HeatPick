@@ -21,8 +21,14 @@ public final class MyPageRepository: MyPageRepositoryInterface {
         self.session = session
     }
     
-    public func fetchMyPage() async -> Result<MyPage, Error> {
+    public func fetchMyProfile() async -> Result<MyPage, Error> {
         let target = MyAPI.myProfile
+        let request: Result<MyProfileResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
+    public func fetchProfile(userId: Int) async -> Result<MyPage, Error> {
+        let target = MyAPI.profile(id: userId)
         let request: Result<MyProfileResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
@@ -45,4 +51,5 @@ public final class MyPageRepository: MyPageRepositoryInterface {
         return request.map { $0.userId }
     }
     
+
 }

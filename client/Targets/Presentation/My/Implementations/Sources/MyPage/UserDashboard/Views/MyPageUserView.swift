@@ -11,7 +11,7 @@ import CoreKit
 import DesignKit
 
 protocol MyPageUserViewDelegate: AnyObject {
-    func profileEidtButtonDidTap()
+    func profileEditButtonDidTap()
     func followButtonDidTap()
 }
 
@@ -29,12 +29,26 @@ final class MyPageUserView: UIView {
     private enum Constant {
         static let profileImageViewWidth: CGFloat = 100
         static let profileImageViewHeight: CGFloat = 100
+        
+        enum Stack {
+            static let spacing: CGFloat = 10
+        }
     }
+    
+    private let containerContentStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = Constant.Stack.spacing
+        stackView.distribution = .equalSpacing
+        stackView.alignment = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
     
     private let contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = 10
+        stackView.spacing = Constant.Stack.spacing
         stackView.distribution = .equalSpacing
         stackView.alignment = .trailing
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,7 +58,7 @@ final class MyPageUserView: UIView {
     private let profileStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 10
+        stackView.spacing = Constant.Stack.spacing
         stackView.distribution = .equalSpacing
         stackView.alignment = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -60,20 +74,30 @@ final class MyPageUserView: UIView {
         return imageView
     }()
     
-    private lazy var editButton: UIButton = {
+    private lazy var followButton: UIButton = {
         let button = UIButton(configuration: .filled())
         button.tintColor = .hpRed3
-        button.setTitle("수정", for: .normal)
-        button.addTarget(self, action: #selector(profileEidtButtonDidTap), for: .touchUpInside)
+        button.configuration?.title = "팔로우"
+        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
+            var transform = transform
+            transform.font = .captionBold
+            return transform
+        }
+        button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private lazy var followButton: UIButton = {
+    private lazy var profileEditButton: UIButton = {
         let button = UIButton(configuration: .filled())
         button.tintColor = .hpRed3
-        button.setTitle("팔로우", for: .normal)
-        button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
+        button.configuration?.title = "프로필 수정"
+        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
+            var transform = transform
+            transform.font = .captionBold
+            return transform
+        }
+        button.addTarget(self, action: #selector(profileEditButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -118,12 +142,20 @@ final class MyPageUserView: UIView {
         experienceView.updateContent(model.experience)
     }
     
+    func setMyProfile() {
+        followButton.isHidden = true
+    }
+    
+    func setUserProfile() {
+        profileEditButton.isHidden = true
+    }
+    
 }
 
 private extension MyPageUserView {
     
-    @objc func profileEidtButtonDidTap() {
-        delegate?.profileEidtButtonDidTap()
+    @objc func profileEditButtonDidTap() {
+        delegate?.profileEditButtonDidTap()
     }
     
     @objc func followButtonDidTap() {
@@ -134,9 +166,10 @@ private extension MyPageUserView {
 private extension MyPageUserView {
     
     func setupViews() {
-        [profileStackView, contentStackView, followButton].forEach(addSubview)
-        [profileImageView, editButton].forEach(profileStackView.addArrangedSubview)
+        [profileStackView, containerContentStackView].forEach(addSubview)
+        [profileImageView, followButton].forEach(profileStackView.addArrangedSubview)
         [followerView, storyView, experienceView].forEach(contentStackView.addArrangedSubview)
+        [contentStackView, profileEditButton].forEach(containerContentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageViewWidth),
@@ -145,12 +178,8 @@ private extension MyPageUserView {
             profileStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             profileStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            contentStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
-            followButton.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
-            followButton.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor),
-            followButton.bottomAnchor.constraint(equalTo: bottomAnchor)
+            containerContentStackView.centerYAnchor.constraint(equalTo: profileStackView.centerYAnchor),
+            containerContentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
     
