@@ -12,10 +12,11 @@ import Foundation
 import ModernRIBs
 import CoreKit
 import AuthInterfaces
+import DomainEntities
 import DomainInterfaces
 
 protocol SignInRouting: ViewableRouting {
-    func attachSignUp()
+    func attachSignUp(with service: SignInService)
     func detachSignUp()
     func attachSignUpSuccess()
     func detachSignUpSuccess()
@@ -60,12 +61,12 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     private func bind() {
         dependency.authUseCase.githubToken
             .sink { [weak self] token in
-                self?.requestSignIn(token: token)
+                self?.requestGithubSignIn(token: token)
             }.store(in: &cancellables)
         
         dependency.authUseCase.naverToken
             .sink { [weak self] token in
-                self?.requestSignIn(token: token)
+                self?.requestNaverSignIn(token: token)
             }.store(in: &cancellables)
     }
 
@@ -77,14 +78,32 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
         dependency.authUseCase.requestNaverSignIn()
     }
     
-    private func requestSignIn(token: String) {
+    private func requestNaverSignIn(token: String) {
         Task { [weak self] in
             guard let self else { return }
             await dependency.authUseCase
-                .requestSignIn(token: token)
+                .requestSignIn(token: token, with: .naver)
                 .onSuccess(on: .main, with: self) { this, authToken in
                     if authToken.token.isEmpty {
-                        this.router?.attachSignUp()
+                        this.router?.attachSignUp(with: .naver)
+                    } else {
+                        this.router?.attachLocationAuthority()
+                    }
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                }
+        }
+    }
+    
+    private func requestGithubSignIn(token: String) {
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.authUseCase
+                .requestSignIn(token: token, with: .github)
+                .onSuccess(on: .main, with: self) { this, authToken in
+                    if authToken.token.isEmpty {
+                        this.router?.attachSignUp(with: .github)
                     } else {
                         this.router?.attachLocationAuthority()
                     }

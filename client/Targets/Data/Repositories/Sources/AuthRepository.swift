@@ -21,14 +21,14 @@ public final class AuthRepository: AuthRepositoryInterface {
         self.session = session
     }
     
-    public func requestSignIn(token: String) async -> Result<AuthToken, Error> {
-        let target = AuthAPI.signIn(token: token)
+    public func requestSignIn(token: String, with service: SignInService) async -> Result<AuthToken, Error> {
+        let target = AuthAPI.signIn(token: token, service: service)
         let request: Result<SignInResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
-    public func requestSignUp(token: String, userName: String) async -> Result<AuthToken, Error> {
-        let target = AuthAPI.signUp(token: token, username: userName)
+    public func requestSignUp(token: String, service: SignInService, userName: String) async -> Result<AuthToken, Error> {
+        let target = AuthAPI.signUp(token: token, service: service, username: userName)
         let request: Result<SignUpResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }

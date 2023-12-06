@@ -9,10 +9,11 @@
 import Foundation
 import BaseAPI
 import NetworkAPIKit
+import DomainEntities
 
 public enum AuthAPI {
-    case signIn(token: String)
-    case signUp(token: String, username: String)
+    case signIn(token: String, service: SignInService)
+    case signUp(token: String, service: SignInService, username: String)
 }
 
 extension AuthAPI: Target {
@@ -23,8 +24,8 @@ extension AuthAPI: Target {
     
     public var path: String {
         switch self {
-        case .signIn: return "/auth/signin"
-        case .signUp: return "/auth/signup"
+        case .signIn(_, let service): return "/auth/signin/\(service.rawValue)"
+        case .signUp(_, let service, _): return "/auth/signup/\(service.rawValue)"
         }
     }
     
@@ -38,10 +39,10 @@ extension AuthAPI: Target {
     
     public var task: Task {
         switch self {
-        case .signIn(let token):
+        case .signIn(let token, _):
             return .json(SignInRequestDTO(OAuthToken: token))
             
-        case .signUp(let token, let username):
+        case .signUp(let token, _, let username):
             return .json(SignUpRequestDTO(
                 OAuthToken: token, 
                 username: username

@@ -11,7 +11,7 @@ import DomainEntities
 
 public protocol AuthRepositoryInterface: AnyObject {
     
-    func requestSignIn(token: String) async -> Result<AuthToken, Error>
-    func requestSignUp(token: String, userName: String) async -> Result<AuthToken, Error>
+    func requestSignIn(token: String, with service: SignInService) async -> Result<AuthToken, Error>
+    func requestSignUp(token: String, service: SignInService, userName: String) async -> Result<AuthToken, Error>
     
 }

@@ -55,18 +55,18 @@ public final class AuthUseCase: AuthUseCaseInterface {
         signInUseCase.requestNaverLogin()
     }
     
-    public func requestSignIn(token: String) async -> Result<AuthToken, Error> {
-        let result = await repository.requestSignIn(token: token)
+    public func requestSignIn(token: String, with service: SignInService) async -> Result<AuthToken, Error> {
+        let result = await repository.requestSignIn(token: token, with: service)
         saveAccessTokenIfEnabled(result: result)
         return result
     }
     
-    public func requestSignUp(userName: String) async -> Result<AuthToken, Error> {
+    public func requestSignUp(userName: String, with service: SignInService) async -> Result<AuthToken, Error> {
         guard let token = currentToken.value else {
             let error = NetworkError.unknown("Empty Token")
             return .failure(error)
         }
-        let result = await repository.requestSignUp(token: token, userName: userName)
+        let result = await repository.requestSignUp(token: token, service: service, userName: userName)
         saveAccessTokenIfEnabled(result: result)
         return result
     }
