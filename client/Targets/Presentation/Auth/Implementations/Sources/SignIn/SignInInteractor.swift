@@ -77,10 +77,6 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
         dependency.authUseCase.requestNaverSignIn()
     }
     
-    func appleButtonDidTap() {
-        
-    }
-    
     private func requestSignIn(token: String) {
         Task { [weak self] in
             guard let self else { return }

@@ -15,7 +15,6 @@ import DesignKit
 protocol SignInPresentableListener: AnyObject {
     func githubButtonDidTap()
     func naverButtonDidTap()
-    func appleButtonDidTap()
 }
 
 public final class SignInViewController: UIViewController, SignInPresentable, SignInViewControllable {
@@ -35,14 +34,6 @@ public final class SignInViewController: UIViewController, SignInPresentable, Si
     private let naverLoginButton: SignInButton = {
         let button = SignInButton()
         button.setup(type: .naver)
-        button.layer.cornerRadius = 16
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private let appleLoginButton: SignInButton = {
-        let button = SignInButton()
-        button.setup(type: .apple)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -75,34 +66,24 @@ private extension SignInViewController {
             .withOnly(self)
             .sink { $0.listener?.naverButtonDidTap() }
             .store(in: &cancellables)
-        
-        appleLoginButton.tapPublisher
-            .withOnly(self)
-            .sink { $0.listener?.appleButtonDidTap() }
-            .store(in: &cancellables)
     }
     
     func setupViews() {
         view.backgroundColor = .white
-        [logoImageView, githubLoginButton, naverLoginButton, appleLoginButton].forEach { view.addSubview($0) }
+        [logoImageView, githubLoginButton, naverLoginButton].forEach { view.addSubview($0) }
         
         let padding: CGFloat = 20
         
         NSLayoutConstraint.activate([
-            appleLoginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -padding),
-            appleLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
-            appleLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            appleLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
-            
-            naverLoginButton.bottomAnchor.constraint(equalTo: appleLoginButton.topAnchor, constant: -padding),
-            naverLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
-            naverLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            naverLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
-            
-            githubLoginButton.bottomAnchor.constraint(equalTo: naverLoginButton.topAnchor, constant: -padding),
+            githubLoginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -padding),
             githubLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             githubLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
             githubLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
+            
+            naverLoginButton.bottomAnchor.constraint(equalTo: githubLoginButton.topAnchor, constant: -padding),
+            naverLoginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            naverLoginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
+            naverLoginButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             
             logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             logoImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
