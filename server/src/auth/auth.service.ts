@@ -8,6 +8,7 @@ import { Badge } from 'src/entities/badge.entity';
 import { strToEmoji } from 'src/util/util.string.to.badge.content';
 import { Repository } from 'typeorm';
 import { saveImageToLocal } from '../util/util.save.image.local';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -64,17 +65,13 @@ export class AuthService {
   }
 
   async getId(token: string): Promise<string> {
-    const header = 'Bearer ' + token;
-    const api_url = 'https://openapi.naver.com/v1/nid/me';
     try {
-      const response = await fetch(api_url, {
-        method: 'GET',
+      const response = await axios.get('https://api.github.com/user', {
         headers: {
-          Authorization: header,
+          Authorization: `token ${token}`,
         },
       });
-      const responseJson = await response.json();
-      return responseJson.response.id;
+      return response.data.id;
     } catch (error) {
       throw new invalidTokenException();
     }
