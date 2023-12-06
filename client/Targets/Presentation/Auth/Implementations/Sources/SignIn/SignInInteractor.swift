@@ -46,11 +46,7 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
         self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
-        
-        dependency.authUseCase.naverToken
-            .sink { [weak self] token in
-                self?.requestSignIn(token: token)
-            }.store(in: &cancellables)
+        bind()
     }
 
     override func didBecomeActive() {
@@ -59,6 +55,22 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     
     override func willResignActive() {
         super.willResignActive()
+    }
+    
+    private func bind() {
+        dependency.authUseCase.githubToken
+            .sink { [weak self] token in
+                self?.requestSignIn(token: token)
+            }.store(in: &cancellables)
+        
+        dependency.authUseCase.naverToken
+            .sink { [weak self] token in
+                self?.requestSignIn(token: token)
+            }.store(in: &cancellables)
+    }
+
+    func githubButtonDidTap() {
+        dependency.authUseCase.requestGithubSignIn()
     }
     
     func naverButtonDidTap() {
