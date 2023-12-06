@@ -57,9 +57,9 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
         interactor.router = self
     }
     
-    func attachSearchCurrentLocation() {
+    func attachSearchCurrentLocation(location: SearchMapLocation) {
         guard searchCurrentLocationRouter == nil else { return }
-        let router = dependency.searchCurrentLocationBuilder.build(withListener: interactor)
+        let router = dependency.searchCurrentLocationBuilder.build(withListener: interactor, location: location)
         attachChild(router)
         router.viewControllable.uiviewController.presentationController?.delegate = interactor.presentationAdapter
         viewController.present(router.viewControllable, animated: true)
@@ -68,7 +68,7 @@ final class SearchRouter: ViewableRouter<SearchInteractable, SearchViewControlla
     
     func detachSearchCurrentLocation() {
         guard let router = searchCurrentLocationRouter else { return }
-        popRouter(router, animated: true)
+        dismissRouter(router, animated: true)
         searchCurrentLocationRouter = nil
     }
     
