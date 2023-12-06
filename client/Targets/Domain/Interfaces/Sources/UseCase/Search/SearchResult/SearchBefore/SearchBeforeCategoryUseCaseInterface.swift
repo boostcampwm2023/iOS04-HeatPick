@@ -7,7 +7,10 @@
 //
 
 import Foundation
+import DomainEntities
 
 public protocol SearchBeforeCategoryUseCaseInterface {
+    
+    func fetchCategory() async -> Result<[StoryCategory], Error>
     
 }
