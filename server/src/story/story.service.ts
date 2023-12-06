@@ -77,7 +77,7 @@ export class StoryService {
       const data = image.buffer.toString('base64');
       const options = {
         headers: {
-          'X-GREEN-EYE-SECRET': `${process.env.SECRET_KEY}`,
+          'X-GREEN-EYE-SECRET': `${process.env.GREEN_EYE_SECRET_KEY}`,
           'Content-Type': 'application/json',
         },
       };
