@@ -10,6 +10,7 @@ import UIKit
 
 public extension UIImage {
     
+    static let githubButton: UIImage = .init(resource: .githubButton)
     static let naverButton: UIImage = .init(resource: .naverButton)
     static let appleButton: UIImage = .init(resource: .appleButton)
     static let logoWithSubtitle: UIImage = .init(resource: .logoWithSubtitle)
