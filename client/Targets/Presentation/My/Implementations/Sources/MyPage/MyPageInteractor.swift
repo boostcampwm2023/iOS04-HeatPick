@@ -40,7 +40,7 @@ protocol MyPageInteractorDependency: AnyObject {
 }
 
 final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageInteractable, MyPagePresentableListener {
-
+    
     weak var router: MyPageRouting?
     weak var listener: MyPageListener?
     

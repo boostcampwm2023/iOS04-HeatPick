@@ -16,6 +16,10 @@ import NetworkAPIKit
 
 public final class AuthUseCase: AuthUseCaseInterface {
     
+    public var githubToken: AnyPublisher<String, Never> {
+        return signInUseCase.githubAccessToken
+    }
+    
     public var naverToken: AnyPublisher<String, Never> {
         return signInUseCase.naverAcessToken
     }
@@ -39,7 +43,12 @@ public final class AuthUseCase: AuthUseCaseInterface {
     ) {
         self.repository = repository
         self.signInUseCase = signInUseCase
+        receiveGithubToken()
         receiveNaverToken()
+    }
+    
+    public func requestGithubSignIn() {
+        signInUseCase.requestGithubLogin()
     }
     
     public func requestNaverSignIn() {
@@ -60,6 +69,15 @@ public final class AuthUseCase: AuthUseCaseInterface {
         let result = await repository.requestSignUp(token: token, userName: userName)
         saveAccessTokenIfEnabled(result: result)
         return result
+    }
+    
+    private func receiveGithubToken() {
+        signInUseCase
+            .githubAccessToken
+            .sink(receiveValue: { [weak self] token in
+                self?.currentToken.send(token)
+            })
+            .store(in: &cancellables)
     }
     
     private func receiveNaverToken() {

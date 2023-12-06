@@ -7,5 +7,9 @@
 //
 
 import Foundation
+import DomainEntities
 
-public protocol SearchCurrentLocationStoryListUseCaseInterface {}
+public protocol SearchCurrentLocationStoryListUseCaseInterface {
+    func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<[Place], Error>
+    func requestLocality(lat: Double, lng: Double) async -> String?
+}

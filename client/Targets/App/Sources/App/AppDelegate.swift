@@ -3,6 +3,7 @@ import Combine
 import ModernRIBs
 
 import FoundationKit
+import DataRepositories
 import NMapsMap
 
 @main
@@ -21,6 +22,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.launchRouter = router
         launchRouter?.launch(from: window)
         receiveSignOut()
+        return true
+    }
+    
+    func application( _ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        if let code = url.absoluteString.components(separatedBy: "code=").last {
+            GithubLoginRepository.shared.requestToken(with: code)
+        }
+        
         return true
     }
     

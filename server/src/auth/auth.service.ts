@@ -8,6 +8,7 @@ import { Badge } from 'src/entities/badge.entity';
 import { strToEmoji } from 'src/util/util.string.to.badge.content';
 import { Repository } from 'typeorm';
 import { saveImageToLocal } from '../util/util.save.image.local';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -16,8 +17,15 @@ export class AuthService {
     private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
-  async signIn(OAuthToken: string): Promise<string> {
-    const userId = await this.getId(OAuthToken);
+  async signIn(OAuthToken: string, loginOption: number): Promise<string> {
+    let userId: string;
+    if (loginOption === 0) {
+      userId = await this.getGithubId(OAuthToken);
+    } else if (loginOption === 1) {
+      userId = await this.getNaverId(OAuthToken);
+    } else {
+      throw new Error('Unsupported login option');
+    }
 
     const user = await this.userRepository.findOne({ where: { oauthId: userId } });
 
@@ -28,11 +36,18 @@ export class AuthService {
     return accessToken;
   }
 
-  async signUp(image: Express.Multer.File, OAuthToken: string, username: string): Promise<string> {
+  async signUp(image: Express.Multer.File, OAuthToken: string, username: string, loginOption: number): Promise<string> {
     let imagePath = '';
     if (image) imagePath = await saveImageToLocal('./images/profile', image.buffer, 'profile');
 
-    const userId = await this.getId(OAuthToken);
+    let userId: string;
+    if (loginOption === 0) {
+      userId = await this.getGithubId(OAuthToken);
+    } else if (loginOption === 1) {
+      userId = await this.getNaverId(OAuthToken);
+    } else {
+      throw new Error('Unsupported login option');
+    }
 
     const userObj = new User();
     userObj.username = username;
@@ -63,7 +78,20 @@ export class AuthService {
     return accessToken;
   }
 
-  async getId(token: string): Promise<string> {
+  async getGithubId(token: string): Promise<string> {
+    try {
+      const response = await axios.get('https://api.github.com/user', {
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
+      return response.data.id;
+    } catch (error) {
+      throw new invalidTokenException();
+    }
+  }
+
+  async getNaverId(token: string): Promise<string> {
     const header = 'Bearer ' + token;
     const api_url = 'https://openapi.naver.com/v1/nid/me';
     try {

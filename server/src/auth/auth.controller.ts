@@ -11,9 +11,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('signup')
+  @Post('signup/github')
   @UseInterceptors(FileInterceptor('image'))
-  @ApiOperation({ summary: 'Create user' })
+  @ApiOperation({ summary: '깃허브 토큰으로 Create user' })
   @ApiResponse({
     status: 201,
     description: '새로 발급한 Access 토큰을 string 형태로 반환합니다.',
@@ -24,8 +24,43 @@ export class AuthController {
       },
     },
   })
-  async signUp(@UploadedFile() image: Express.Multer.File, @Body() registerDto: RegisterDto) {
-    const token = await this.authService.signUp(image, registerDto.OAuthToken, registerDto.username);
+  async githubSignUp(@UploadedFile() image: Express.Multer.File, @Body() registerDto: RegisterDto) {
+    const token = await this.authService.signUp(image, registerDto.OAuthToken, registerDto.username, 0);
+    return { accessToken: token };
+  }
+
+  @Post('signup/naver')
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiOperation({ summary: '네이버 토큰으로 Create user' })
+  @ApiResponse({
+    status: 201,
+    description: '새로 발급한 Access 토큰을 string 형태로 반환합니다.',
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: { type: 'string' },
+      },
+    },
+  })
+  async naverSignUp(@UploadedFile() image: Express.Multer.File, @Body() registerDto: RegisterDto) {
+    const token = await this.authService.signUp(image, registerDto.OAuthToken, registerDto.username, 1);
+    return { accessToken: token };
+  }
+
+  @ApiOperation({ summary: 'Github Log in' })
+  @ApiResponse({
+    status: 201,
+    description: 'Access Token',
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: { type: 'string' },
+      },
+    },
+  })
+  @Post('signin/github')
+  async signIn(@Body() authCredentialDto: AuthCredentialDto) {
+    const token = await this.authService.signIn(authCredentialDto.OAuthToken, 0);
     return { accessToken: token };
   }
 
@@ -40,9 +75,9 @@ export class AuthController {
       },
     },
   })
-  @Post('signin')
-  async signIn(@Body() authCredentialDto: AuthCredentialDto) {
-    const token = await this.authService.signIn(authCredentialDto.OAuthToken);
+  @Post('signin/naver')
+  async naverSignIn(@Body() authCredentialDto: AuthCredentialDto) {
+    const token = await this.authService.signIn(authCredentialDto.OAuthToken, 1);
     return { accessToken: token };
   }
 }
