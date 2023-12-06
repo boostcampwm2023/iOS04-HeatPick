@@ -10,7 +10,10 @@ import Foundation
 import FoundationKit
 import ModernRIBs
 
-protocol SettingRouting: ViewableRouting {}
+protocol SettingRouting: ViewableRouting {
+    func attachResignDashboard()
+    func detachResignDashboard()
+}
 
 protocol SettingPresentable: Presentable {
     var listener: SettingPresentableListener? { get set }
@@ -21,12 +24,10 @@ protocol SettingListener: AnyObject {
     func settingDidTapClose()
 }
 
-protocol SettingInteractorDependency: AnyObject {
-    var signOutRequestService: SignOutRequestServiceInterface { get }
-}
+
 
 final class SettingInteractor: PresentableInteractor<SettingPresentable>, SettingInteractable, SettingPresentableListener {
-    
+
     weak var router: SettingRouting?
     weak var listener: SettingListener?
     
@@ -60,11 +61,20 @@ final class SettingInteractor: PresentableInteractor<SettingPresentable>, Settin
     }
     
     func didTapResign() {
-        print("# 회원탈퇴 Attach")
+        router?.attachResignDashboard()
     }
     
     func didTapSignOut() {
         dependency.signOutRequestService.signOut(type: .signOut)
+    }
+    
+    func didTapBack() {
+        router?.detachResignDashboard()
+    }
+    
+    // TODO: 바로 로그아웃 처리 ??
+    func resign() {
+        dependency.signOutRequestService.signOut(type: .resign)
     }
     
 }
