@@ -15,6 +15,7 @@ public enum SearchAPI {
     case story(searchText: String)
     case user(searchText: String)
     case recommend(searchText: String)
+    case category
 }
 
 extension SearchAPI: Target {
@@ -28,6 +29,7 @@ extension SearchAPI: Target {
         case .story: "/search/story"
         case .user: "/search/user"
         case .recommend: "/search/recommend"
+        case .category: "/category"
         }
     }
     
@@ -49,6 +51,8 @@ extension SearchAPI: Target {
             makeSearchRequestDTO(searchText: searchText)
         case .recommend(let searchText):
             makeSearchRequestDTO(searchText: searchText)
+        case .category:
+            .plain
         }
     }
     

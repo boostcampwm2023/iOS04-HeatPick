@@ -26,20 +26,24 @@ public final class SearchUseCase: SearchUseCaseInterface {
         self.locationService = locationService
     }
     
-    public func fetchResult(searchText: String) async -> Result<DomainEntities.SearchResult, Error> {
+    public func fetchResult(searchText: String) async -> Result<SearchResult, Error> {
         await repository.fetchSearchResult(searchText: searchText)
     }
     
-    public func fetchStory(searchText: String) async -> Result<[DomainEntities.SearchStory], Error> {
+    public func fetchStory(searchText: String) async -> Result<[SearchStory], Error> {
         await repository.fetchStory(searchText: searchText)
     }
     
-    public func fetchUser(searchText: String) async -> Result<[DomainEntities.SearchUser], Error> {
+    public func fetchUser(searchText: String) async -> Result<[SearchUser], Error> {
         await repository.fetchUser(searchText: searchText)
     }
     
     public func fetchRecommendTexts(searchText: String) async -> Result<[String], Error> {
         await repository.fetchRecommendText(searchText: searchText)
+    }
+    
+    public func fetchCategory() async -> Result<[StoryCategory], Error> {
+        await repository.fetchCategory()
     }
     
     public func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<[Place], Error> {

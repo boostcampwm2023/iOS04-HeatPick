@@ -43,6 +43,12 @@ public final class SearchRepository: SearchRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
+    public func fetchCategory() async -> Result<[StoryCategory], Error> {
+        let target = SearchAPI.category
+        let request: Result<CategoryResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
     // TODO: Combine으로 ??
     public func fetchRecommendText(searchText: String) async -> Result<[String], Error> {
         let target = SearchAPI.recommend(searchText: searchText)
