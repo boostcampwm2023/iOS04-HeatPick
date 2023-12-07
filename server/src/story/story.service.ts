@@ -136,7 +136,6 @@ export class StoryService {
     await this.storyRepository.softDelete(storyId);
   }
 
-  @Transactional()
   async getStoriesFromTrie(searchText: string, offset: number, limit: number): Promise<Story[]> {
     const seperatedStatement = graphemeSeperation(searchText);
     const ids = this.storyTitleJasoTrie.search(seperatedStatement, 100);
@@ -150,7 +149,6 @@ export class StoryService {
     return results.slice(offset * limit, offset * limit + limit);
   }
 
-  @Transactional()
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number): Promise<StoryResultDto[]> {
     const stories = await this.storyRepository.find({ relations: ['user', 'category'] });
 
@@ -181,7 +179,6 @@ export class StoryService {
     return storyArr.slice(offset * limit, offset * limit + limit);
   }
 
-  @Transactional()
   async getRecommendedStory(offset: number, limit: number): Promise<any[]> {
     try {
       const stories = await this.storyRepository.find({
@@ -203,9 +200,9 @@ export class StoryService {
     }
   }
 
-  @Transactional()
   async getFollowStories(userId: number, sortOption: number = 0, offset: number = 0, limit: number = 5): Promise<StoryResultDto[]> {
     const followings = await this.userService.getFollows(userId);
+    if (followings.length <= 0) return [];
 
     const storyPromises = followings.map(async (following) => {
       const stories = await following.stories;
@@ -224,7 +221,6 @@ export class StoryService {
     return storyObjects.slice(offset * limit, offset * limit + limit);
   }
 
-  @Transactional()
   private sortByOption(stories: Story[], sortOption: number = 0): Story[] {
     if (sortOption == 0) {
       const sortByCreateDate = (a: Story, b: Story) => new Date(a.createAt).getTime() - new Date(b.createAt).getTime();
