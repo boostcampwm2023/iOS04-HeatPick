@@ -20,6 +20,7 @@ import { In, Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 import { StoryService } from '../story/story.service';
 import { Comment } from '../entities/comment.entity';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class UserService {
@@ -31,6 +32,7 @@ export class UserService {
     @Inject(forwardRef(() => StoryService))
     private storyService: StoryService,
     private userJasoTrie: UserJasoTrie,
+    private notificationService: NotificationService,
   ) {
     this.userRepository.find().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));
@@ -305,10 +307,12 @@ export class UserService {
   @Transactional()
   public async like(userId: number, storyId: number): Promise<number> {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
-    const story = await this.storyService.getStory(storyId);
+    const story = await this.storyService.getStory(storyId, ['user']);
 
     (await user.likedStories).push(story);
     await this.userRepository.save(user);
+
+    this.notificationService.sendFcmNotification((await story.user).userId, `좋아요 알림❤️`, `${user.username}님이 ${story.title} 게시글에 좋아요를 눌렀습니다❤️`);
 
     return await this.storyService.addLikeCount(storyId);
   }
