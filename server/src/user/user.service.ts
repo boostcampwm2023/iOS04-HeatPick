@@ -235,6 +235,8 @@ export class UserService {
     });
     user.likedStories = Promise.resolve([]);
 
+    await this.userRepository.save(user);
+
     return await this.userRepository.remove(await this.userRepository.findOne({ where: { userId: userId } }));
   }
 
