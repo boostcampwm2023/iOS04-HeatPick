@@ -13,15 +13,18 @@ import DomainInterfaces
 public protocol SignInDependency: Dependency {
     var authUseCase: AuthUseCaseInterface { get }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
+    var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { get }
 }
 
 final class SignInComponent: Component<SignInDependency>,
                              SignInInteractorDependency,
                              SignUpDependency,
                              SignUpSuccessDependency,
-                             LocationAuthorityDependency {
+                             LocationAuthorityDependency,
+                             NotificationPermissionDependency {
     var authUseCase: AuthUseCaseInterface { dependency.authUseCase }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
+    var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { dependency.notificationPermissionUseCase }
 }
 
 public final class SignInBuilder: Builder<SignInDependency>, SignInBuildable {
@@ -37,6 +40,7 @@ public final class SignInBuilder: Builder<SignInDependency>, SignInBuildable {
         let signUpBuilder: SignUpBuildable = SignUpBuilder(dependency: component)
         let signUpSuccessBuilder: SignUpSuccessBuildable = SignUpSuccessBuilder(dependency: component)
         let locationAuthorityBuilder: LocationAuthorityBuildable = LocationAuthorityBuilder(dependency: component)
+        let notificationPermissionBuilder = NotificationPermissionBuilder(dependency: component)
         
         let interactor = SignInInteractor(
             presenter: viewController,
@@ -48,7 +52,8 @@ public final class SignInBuilder: Builder<SignInDependency>, SignInBuildable {
             viewController: viewController,
             signUpBuilder: signUpBuilder,
             signUpSuccessBuilder: signUpSuccessBuilder,
-            locationAuthorityBuilder: locationAuthorityBuilder
+            locationAuthorityBuilder: locationAuthorityBuilder,
+            notificationPermissionBuilder: notificationPermissionBuilder
         )
     }
 }
