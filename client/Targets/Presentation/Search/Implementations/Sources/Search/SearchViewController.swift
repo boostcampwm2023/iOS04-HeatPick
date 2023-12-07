@@ -20,6 +20,7 @@ protocol SearchPresentableListener: AnyObject {
     func didTapStory(storyId: Int)
     func didAppear()
     func didTapMarker(place: Place)
+    func didTapCluster(cluster: Cluster)
     func didTapSymbol(symbol: SearchMapSymbol)
     func didTapLocation(location: SearchMapLocation)
     func mapWillMove()
@@ -60,6 +61,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     private let selectedMarker = NMFMarker()
     private let selectedView = SearchMapSelectedView()
     private let reSearchView = SearchMapReSearchView()
+    private let selectedClusterView = SearchMapClusterListView()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -93,10 +95,8 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     }
     
     func updateMarkers(clusters: [Cluster]) {
-        let overlay = NMFOverlayImage(image: .marker)
-        
         clusters.forEach {
-            let adapter = makeMarkerAdapter(overlay: overlay, cluster: $0)
+            let adapter = MarkerFactory.makeMarkerAdpater(cluster: $0)
             adapter.marker.mapView = naverMap.mapView
             adapter.delegate = self
             markerStorage.append(adapter)
@@ -125,18 +125,14 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         storyView.isHidden = false
     }
     
-    func hideStoryView() {
-        guard storyView.isHidden == false else { return }
-        storyView.isHidden = true
+    func showClusterListView(models: [SearchMapClusterListCellModel]) {
+        selectedClusterView.setup(models: models)
+        selectedClusterView.isHidden = false
     }
     
     func showSelectedView(title: String) {
         selectedView.setup(title: title)
         selectedView.isHidden = false
-    }
-    
-    func hideSelectedView() {
-        selectedView.isHidden = true
     }
     
     func showReSearchView() {
@@ -147,10 +143,17 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         reSearchView.isHidden = true
     }
     
+    func deselectAll() {
+        hideSelectedMarker()
+        selectedView.isHidden = true
+        selectedClusterView.isHidden = true
+        storyView.isHidden = true
+    }
+    
     override func setupLayout() {
         view = naverMap
         
-        [searchTextField, reSearchView, showSearchHomeListButton, storyView, selectedView].forEach(view.addSubview)
+        [searchTextField, reSearchView, showSearchHomeListButton, storyView, selectedView, selectedClusterView].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
             searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
@@ -172,7 +175,12 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
             
             selectedView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             selectedView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            selectedView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            selectedView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            
+            selectedClusterView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            selectedClusterView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
+            selectedClusterView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            selectedClusterView.heightAnchor.constraint(equalToConstant: 250),
         ])
     }
     
@@ -186,7 +194,6 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         }
         
         searchTextField.do {
-            $0.addTapGesture(target: self, action: #selector(searchTextFieldDidTap))
             $0.placeholder = Constant.SearchTextField.placeholder
             $0.clipsToBounds = true
             $0.layer.cornerRadius = Constants.cornerRadiusMedium
@@ -199,7 +206,6 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
             $0.configuration?.baseBackgroundColor = .hpWhite
             $0.clipsToBounds = true
             $0.layer.cornerRadius = Constant.ShowSearchHomeListButton.length / 2
-            $0.addTarget(self, action: #selector(showSearchHomeListButtonDidTap), for: .touchUpInside)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -224,13 +230,55 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         
         reSearchView.do {
             $0.isHidden = true
-            $0.addTapGesture(target: self, action: #selector(reSearchViewDidTap))
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        selectedClusterView.do {
+            $0.isHidden = true
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
     
     override func bind() {
+        searchTextField
+            .tapGesturePublisher
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapSearchTextField()
+            }
+            .store(in: &cancellables)
         
+        showSearchHomeListButton
+            .tapPublisher
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapCurrentLocation()
+            }
+            .store(in: &cancellables)
+        
+        reSearchView
+            .tapGesturePublisher
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapReSearch()
+            }
+            .store(in: &cancellables)
+        
+        selectedClusterView
+            .buttonTapPublisher
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapStoryCreate()
+            }
+            .store(in: &cancellables)
+        
+        selectedClusterView
+            .itemSelectPublisher
+            .with(self)
+            .sink { this, model in
+                this.listener?.didTapStory(storyId: model.storyId)
+            }
+            .store(in: &cancellables)
     }
     
 }
@@ -246,7 +294,7 @@ extension SearchViewController: SearchMapMarkerAdapterDelegate {
 extension SearchViewController: SearchMapClusterMarkerAdpaterDelegate {
     
     func searchMapMarkerDidTap(cluster: Cluster) {
-        print(cluster.places)
+        listener?.didTapCluster(cluster: cluster)
     }
     
 }
@@ -309,19 +357,6 @@ extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegat
 
 private extension SearchViewController {
     
-    @objc func storyViewDidTap() {
-        guard let storyId = storyView.storyID else { return }
-        listener?.didTapStory(storyId: storyId)
-    }
-    
-    @objc func reSearchViewDidTap() {
-        listener?.didTapReSearch()
-    }
-    
-}
-
-private extension SearchViewController {
-    
     func setupTabBar() {
         tabBarItem = .init(
             title: Constant.TabBar.title,
@@ -336,26 +371,6 @@ private extension SearchViewController {
         marker.captionText = place.title
         let adapter = SearchMapMarkerAdapter(marker: marker, place: place)
         return adapter
-    }
-    
-    func makeMarkerAdapter(overlay: NMFOverlayImage, cluster: Cluster) -> SearchMapClusterMarkerAdpater {
-        let marker = NMFMarker(position: .init(lat: cluster.center.lat, lng: cluster.center.lng))
-        marker.iconImage = overlay
-        marker.captionText = "\(cluster.count)개"
-        let adapter = SearchMapClusterMarkerAdpater(marker: marker, cluster: cluster)
-        return adapter
-    }
-    
-}
-
-private extension SearchViewController {
-    
-    @objc func searchTextFieldDidTap() {
-        listener?.didTapSearchTextField()
-    }
-    
-    @objc func showSearchHomeListButtonDidTap() {
-        listener?.didTapCurrentLocation()
     }
     
 }
