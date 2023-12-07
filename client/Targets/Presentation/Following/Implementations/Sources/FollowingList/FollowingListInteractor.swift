@@ -37,6 +37,7 @@ final class FollowingListInteractor: PresentableInteractor<FollowingListPresenta
     private let cancelBag = CancelBag()
     private var stories: [HomeFollowingStory] = []
     private var isLoading = false
+    private var option: HomeFollowingSortOption = .recent
     
     init(
         presenter: FollowingListPresentable,
@@ -49,7 +50,7 @@ final class FollowingListInteractor: PresentableInteractor<FollowingListPresenta
     
     override func didBecomeActive() {
         super.didBecomeActive()
-        fetchFollowing()
+        fetchFollowing(option: option)
     }
     
     override func willResignActive() {
@@ -68,12 +69,17 @@ final class FollowingListInteractor: PresentableInteractor<FollowingListPresenta
     }
     
     func didTapOption(option: HomeFollowingSortOption) {
+        self.option = option
         cancelBag.cancel()
         stopLoading()
         fetchFollowing(option: option)
     }
     
-    private func fetchFollowing(option: HomeFollowingSortOption = .recent) {
+    func didRefresh() {
+        fetchFollowing(option: option)
+    }
+    
+    private func fetchFollowing(option: HomeFollowingSortOption) {
         startLoading()
         Task { [weak self] in
             guard let self else { return }
