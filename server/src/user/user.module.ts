@@ -6,9 +6,10 @@ import { userProviders } from './user.providers';
 import { UserController } from './user.controller';;
 import { StoryModule } from '../story/story.module';
 import { storyProvider } from '../story/story.providers';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [DatabaseModule, forwardRef(() => StoryModule)],
+  imports: [DatabaseModule, forwardRef(() => StoryModule), NotificationModule],
   controllers: [UserController],
   providers: [...userProviders, ...storyProvider, UserService, UserJasoTrie],
   exports: [UserService, UserJasoTrie],
