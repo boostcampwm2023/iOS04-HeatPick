@@ -46,16 +46,22 @@ final class ResignDashboardViewController: BaseViewController, ResignDashboardPr
     
     override func setupLayout() {
         view.backgroundColor = .hpWhite
-        [titleLabel, textView, resignButton].forEach(view.addSubview)
+        [navigationView, titleLabel, textView, resignButton].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
+            navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            
             titleLabel.topAnchor.constraint(equalTo: navigationView.bottomAnchor, constant: Constant.topOffset),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             
             resignButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             resignButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            resignButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: Constant.bottomOffset),
+            resignButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.bottomOffset),
+            resignButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             
             textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.topOffset),
             textView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
@@ -84,6 +90,7 @@ final class ResignDashboardViewController: BaseViewController, ResignDashboardPr
         
         textView.do { textView in
             textView.text = Constant.TextView.placeHolder
+            textView.textColor = .hpGray3
             textView.clipsToBounds = true
             textView.layer.borderWidth = 1
             textView.layer.borderColor = UIColor.hpGray4.cgColor

@@ -17,8 +17,6 @@ final class SearchingDashboardComponent: Component<SearchingDashboardDependency>
     var searhResultsearchingUseCase: SearhResultSearchingUseCaseInterface { dependency.searhResultsearchingUseCase }
 }
 
-// MARK: - Builder
-
 protocol SearchingDashboardBuildable: Buildable {
     func build(withListener listener: SearchingDashboardListener) -> SearchingDashboardRouting
 }

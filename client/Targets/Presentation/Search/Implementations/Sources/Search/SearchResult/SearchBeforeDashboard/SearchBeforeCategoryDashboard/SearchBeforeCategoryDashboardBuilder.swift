@@ -7,12 +7,16 @@
 //
 
 import ModernRIBs
+import DomainInterfaces
 
-protocol SearchBeforeCategoryDashboardDependency: Dependency { }
+protocol SearchBeforeCategoryDashboardDependency: Dependency { 
+    var searchBeforeCategoryUseCase: SearchBeforeCategoryUseCaseInterface { get }
+}
 
-final class SearchBeforeCategoryDashboardComponent: Component<SearchBeforeCategoryDashboardDependency> { }
-
-// MARK: - Builder
+final class SearchBeforeCategoryDashboardComponent: Component<SearchBeforeCategoryDashboardDependency>,
+                                                    SearchBeforeCategoryDashboardInteractorDependency {
+    var searchBeforeCategoryUseCase: SearchBeforeCategoryUseCaseInterface { dependency.searchBeforeCategoryUseCase }
+}
 
 protocol SearchBeforeCategoryDashboardBuildable: Buildable {
     func build(withListener listener: SearchBeforeCategoryDashboardListener) -> SearchBeforeCategoryDashboardRouting
@@ -27,7 +31,7 @@ final class SearchBeforeCategoryDashboardBuilder: Builder<SearchBeforeCategoryDa
     func build(withListener listener: SearchBeforeCategoryDashboardListener) -> SearchBeforeCategoryDashboardRouting {
         let component = SearchBeforeCategoryDashboardComponent(dependency: dependency)
         let viewController = SearchBeforeCategoryDashboardViewController()
-        let interactor = SearchBeforeCategoryDashboardInteractor(presenter: viewController)
+        let interactor = SearchBeforeCategoryDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return SearchBeforeCategoryDashboardRouter(interactor: interactor, viewController: viewController)
     }

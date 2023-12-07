@@ -18,6 +18,7 @@ final class SearchBeforeDashboardComponent: Component<SearchBeforeDashboardDepen
                                             SearchBeforeCategoryDashboardDependency {
     
     var searchBeforeRecentSearchesUsecase: SearchBeforeRecentSearchesUseCaseInterface { dependency.searhResultSearchBeforeUseCase }
+    var searchBeforeCategoryUseCase: SearchBeforeCategoryUseCaseInterface { dependency.searhResultSearchBeforeUseCase }
     
 }
 
