@@ -44,7 +44,7 @@ export class StoryService {
 
   @Cron(CronExpression.EVERY_HOUR)
   async loadSearchHistoryTrie() {
-    this.storyRepository.find({ relations: ['user'] }).then((everyStory) => {
+    this.storyRepository.find({ select: ['storyId', 'title'], relations: ['user'] }).then((everyStory) => {
       everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
     });
   }
