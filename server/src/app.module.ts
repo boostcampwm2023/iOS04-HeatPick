@@ -16,6 +16,7 @@ import { SlackService } from './slack/slack.service';
 import { APP_FILTER } from '@nestjs/core';
 import { SlackExceptionFilter } from './exception/slack-exception.filter';
 import axios from 'axios';
+import { NotificationModule } from './notification/notification.module';
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
@@ -41,7 +42,7 @@ export class AppLoggerMiddleware implements NestMiddleware {
   }
 }
 @Module({
-  imports: [DatabaseModule, AuthModule, StoryModule, SearchModule, ImageModule, CommentModule],
+  imports: [DatabaseModule, AuthModule, StoryModule, SearchModule, ImageModule, CommentModule, NotificationModule],
   controllers: [AppController],
   providers: [
     AppService,
