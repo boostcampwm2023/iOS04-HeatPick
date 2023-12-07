@@ -42,11 +42,12 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     private var description: String = ""
     private var category: StoryCategory?
     private var badge: Badge?
+    private var numberOfImages: Int = 0
     
     private var isButtonEnabled: Bool {
         guard let category, let badge else { return false }
         
-        return !(title.isEmpty || description.isEmpty)
+        return !(title.isEmpty || description.isEmpty || numberOfImages == 0)
     }
     
     init(
@@ -93,6 +94,16 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     
     func badgeDidChange(_ badge: Badge?) {
         self.badge = badge
+        presenter.setSaveButton(isButtonEnabled)
+    }
+    
+    func imageDidAdd() {
+        numberOfImages += 1
+        presenter.setSaveButton(isButtonEnabled)
+    }
+    
+    func imageDidRemove() {
+        numberOfImages -= 1
         presenter.setSaveButton(isButtonEnabled)
     }
     

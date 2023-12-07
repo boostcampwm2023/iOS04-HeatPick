@@ -25,6 +25,8 @@ protocol StoryEditorPresentableListener: AnyObject {
     func descriptionDidChange(_ description: String)
     func categoryDidChange(_ category: StoryCategory?)
     func badgeDidChange(_ badge: Badge?)
+    func imageDidAdd()
+    func imageDidRemove()
     
     func didTapSave(content: StoryContent)
 }
@@ -129,6 +131,7 @@ final class StoryEditorViewController: BaseViewController, StoryEditorViewContro
         }
         
         imageField.do {
+            $0.delegate = self
             $0.presenterDelegate = self
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -218,6 +221,18 @@ extension StoryEditorViewController: TitleFieldDelegate {
     
 }
 
+// MARK: - Image Field Delegate
+extension StoryEditorViewController: ImageFieldDelegate {
+    
+    func imageDidAdd() {
+        listener?.imageDidAdd()
+    }
+    
+    func imageDidRemove() {
+        listener?.imageDidRemove()
+    }
+    
+}
 // MARK: - Image Selector Delegate
 extension StoryEditorViewController: ImageSelectorPickerPresenterDelegate {
     
