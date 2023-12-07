@@ -19,6 +19,7 @@ protocol StoryCreateSuccessPresentableListener: AnyObject {
 }
 
 struct StoryCreateSuccessViewModel {
+    let emoji: String
     let badge: String
     let prevExp: Int
     let exp: Int
@@ -34,6 +35,7 @@ final class StoryCreateSuccessViewController: BaseViewController, StoryCreateSuc
         static let expHeight: CGFloat = 84
     }
     
+    private let emojiLabel = UILabel()
     private let badgeLabel = UILabel()
     private let rollingNumberView = RollingNumberView()
     private let titleLabel = UILabel()
@@ -42,6 +44,7 @@ final class StoryCreateSuccessViewController: BaseViewController, StoryCreateSuc
     
     
     func setup(_ model: StoryCreateSuccessViewModel) {
+        emojiLabel.text = model.emoji
         badgeLabel.text = model.badge
         setExp(from: model.prevExp, to: model.exp)
         
@@ -53,9 +56,12 @@ final class StoryCreateSuccessViewController: BaseViewController, StoryCreateSuc
     }
     
     override func setupLayout() {
-        [badgeLabel, rollingNumberView, titleLabel, descriptionLabel, confirmButton].forEach(view.addSubview)
+        [emojiLabel, badgeLabel, rollingNumberView, titleLabel, descriptionLabel, confirmButton].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
+            emojiLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            emojiLabel.bottomAnchor.constraint(equalTo: badgeLabel.topAnchor, constant: -Constant.padding),
+            
             badgeLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             badgeLabel.bottomAnchor.constraint(equalTo: rollingNumberView.topAnchor, constant: -Constant.padding),
             
@@ -80,6 +86,12 @@ final class StoryCreateSuccessViewController: BaseViewController, StoryCreateSuc
     
     override func setupAttributes() {
         view.backgroundColor = .hpWhite
+        
+        emojiLabel.do {
+            $0.font = .boldSystemFont(ofSize: 40)
+            $0.textColor = .hpBlack
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         badgeLabel.do {
             $0.font = .largeBold

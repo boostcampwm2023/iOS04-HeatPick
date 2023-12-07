@@ -50,7 +50,8 @@ final class StoryCreateSuccessInteractor: PresentableInteractor<StoryCreateSucce
     }
     
     func viewDidAppear() {
-        presenter.setup(StoryCreateSuccessViewModel(badge: dependency.badgeInfo.name,
+        presenter.setup(StoryCreateSuccessViewModel(emoji: dependency.badgeInfo.emoji,
+                                                    badge: dependency.badgeInfo.name,
                                                     prevExp: dependency.badgeInfo.prevExp,
                                                     exp: dependency.badgeInfo.nowExp))
     }

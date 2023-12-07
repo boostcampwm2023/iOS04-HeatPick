@@ -10,11 +10,13 @@ import Foundation
 
 public struct BadgeExp {
     
+    public let emoji: String
     public let name: String
     public let prevExp: Int
     public let nowExp: Int
     
-    public init(name: String, prevExp: Int, nowExp: Int) {
+    public init(emoji: String, name: String, prevExp: Int, nowExp: Int) {
+        self.emoji = emoji
         self.name = name
         self.prevExp = prevExp
         self.nowExp = nowExp

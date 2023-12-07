@@ -16,11 +16,13 @@ public struct NewStoryResponseDTO: Decodable {
     let badge: BadgeExpResponseDTO
     
     public struct BadgeExpResponseDTO: Decodable {
+        let badgeEmoji: String
         let badgeName: String
         let prevExp: Int
         let nowExp: Int
         
-        public init(badgeName: String, prevExp: Int, nowExp: Int) {
+        public init(badgeEmoji: String, badgeName: String, prevExp: Int, nowExp: Int) {
+            self.badgeEmoji = badgeEmoji
             self.badgeName = badgeName
             self.prevExp = prevExp
             self.nowExp = nowExp
@@ -34,6 +36,6 @@ public struct NewStoryResponseDTO: Decodable {
     }
     
     public func toDomain() -> (Story, BadgeExp) {
-        return (Story(id: storyId, storyContent: nil), BadgeExp(name: badge.badgeName, prevExp: badge.prevExp, nowExp: badge.nowExp))
+        return (Story(id: storyId, storyContent: nil), BadgeExp(emoji: badge.badgeEmoji, name: badge.badgeName, prevExp: badge.prevExp, nowExp: badge.nowExp))
     }
 }
