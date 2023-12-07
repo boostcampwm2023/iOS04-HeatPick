@@ -3,8 +3,6 @@ import { SearchService } from './search.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from 'src/user/user.service';
 import { StoryService } from './../story/story.service';
-import { graphemeSeperation } from 'src/util/util.graphmeModify';
-import { PlaceService } from './../place/place.service';
 import { SearchResultDto } from './dto/response/search.result.dto';
 import { storyEntityToObjWithOneImg } from 'src/util/story.entity.to.obj';
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
@@ -24,8 +22,6 @@ export class SearchController {
     private storyService: StoryService,
     @Inject(UserService)
     private userService: UserService,
-    @Inject(PlaceService)
-    private placeService: PlaceService,
   ) {}
 
   @Get('story')
@@ -82,7 +78,6 @@ export class SearchController {
 
     const searchStatement = searchText ? searchText : '';
     let stories = await this.storyService.getStoriesFromTrie(searchStatement, 0, 100);
-
     if (categoryId) stories = stories.filter((story) => story.category && story.category.categoryId === numericCategoryId);
 
     const storyArr = await Promise.all(
