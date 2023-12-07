@@ -45,7 +45,7 @@ export class StoryService {
 
   @Cron(CronExpression.EVERY_HOUR)
   async loadSearchHistoryTrie() {
-    this.storyRepository.find({ relations: ['user'] }).then((everyStory) => {
+    this.storyRepository.find({ select: ['storyId', 'title'], relations: ['user'] }).then((everyStory) => {
       everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
     });
   }
@@ -143,6 +143,7 @@ export class StoryService {
     const seperatedStatement = graphemeSeperation(searchText);
     const ids = this.storyTitleJasoTrie.search(seperatedStatement, 100);
     const stories = await this.storyRepository.find({
+      select: ['storyId', 'title', 'content', 'likeCount', 'commentCount', 'storyImages', 'category', 'user', 'place'],
       where: {
         storyId: In(ids),
       },
@@ -184,13 +185,7 @@ export class StoryService {
 
   async getRecommendedStory(offset: number, limit: number): Promise<any[]> {
     try {
-      const stories = await this.storyRepository.find({
-        order: {
-          likeCount: 'DESC',
-        },
-        relations: ['user', 'user.profileImage', 'storyImages', 'category'],
-      });
-
+      const stories = await this.storyRepository.createQueryBuilder('story').where('story.likeCount + story.commentCount >= :likeCommentCount').setParameter('likeCommentCount', 10).cache(30000).orderBy('story.likeCount', 'DESC').limit(20).getMany();
       const storyArr = await Promise.all(
         stories.map(async (story) => {
           return storyEntityToObjWithOneImg(story);
