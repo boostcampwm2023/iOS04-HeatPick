@@ -212,12 +212,12 @@ export class UserService {
 
   @Transactional()
   async resign(userId: number, message: string) {
-    const user: User = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'comments', 'following', 'followers', 'following.followers', 'followers.following', 'likedStories'] });
+    const user: User = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'stories', 'representativeBadge', 'comments', 'following', 'followers', 'following.followers', 'followers.following', 'likedStories'] });
+
+    user.likedStories = Promise.resolve([]);
     user.badges = Promise.resolve([]);
     user.representativeBadge = Promise.resolve(null);
     user.comments = Promise.resolve([]);
-
-    await Promise.all((await user.stories).map(async (story) => await this.storyService.delete(story.storyId)));
     user.stories = Promise.resolve([]);
 
     await Promise.all(
@@ -232,14 +232,12 @@ export class UserService {
         await this.userRepository.save(user);
       }),
     );
-    user.mentions = [];
 
     await Promise.all(
       (await user.likedStories).map(async (story) => {
         await this.storyService.subLikeCount(story.storyId);
       }),
     );
-    user.likedStories = Promise.resolve([]);
 
     await this.userRepository.save(user);
 
@@ -342,7 +340,7 @@ export class UserService {
     (await user.likedStories).push(story);
     await this.userRepository.save(user);
 
-    this.notificationService.sendFcmNotification((await story.user).userId, `좋아요 알림❤️`, `${user.username}님이 ${story.title} 게시글에 좋아요를 눌렀습니다❤️`);
+    await this.notificationService.sendFcmNotification((await story.user).userId, `좋아요 알림❤️`, `${user.username}님이 ${story.title} 게시글에 좋아요를 눌렀습니다❤️`);
 
     return await this.storyService.addLikeCount(storyId);
   }
