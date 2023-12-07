@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class StoryCreateBadgeResponseDto {
+  @ApiProperty({ description: `뱃지 이모지` })
+  badgeEmoji: string;
+
   @ApiProperty({ description: `변화된 뱃지 정보` })
   badgeName: string;
   @ApiProperty({ description: `이전 경험치` })
