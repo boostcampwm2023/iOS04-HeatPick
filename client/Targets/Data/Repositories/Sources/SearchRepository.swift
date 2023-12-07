@@ -25,8 +25,8 @@ public final class SearchRepository: SearchRepositoryInterface {
         loadRecentSearches()
     }
     
-    public func fetchSearchResult(searchText: String?, categoryId: Int?) async -> Result<SearchResult, Error> {
-        let target = SearchAPI.searchResult(searchText: searchText, categoryId: categoryId)
+    public func fetchSearchResult(search: SearchRequest) async -> Result<SearchResult, Error> {
+        let target = SearchAPI.searchResult(search: search)
         let request: Result<SearchResultResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
@@ -43,7 +43,7 @@ public final class SearchRepository: SearchRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
-    public func fetchCategory() async -> Result<[StoryCategory], Error> {
+    public func fetchCategory() async -> Result<[SearchCategory], Error> {
         let target = SearchAPI.category
         let request: Result<CategoryResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }

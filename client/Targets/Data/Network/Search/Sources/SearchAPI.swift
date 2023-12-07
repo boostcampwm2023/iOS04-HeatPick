@@ -9,9 +9,10 @@
 import Foundation
 import BaseAPI
 import NetworkAPIKit
+import DomainEntities
 
 public enum SearchAPI {
-    case searchResult(searchText: String?, categoryId: Int?)
+    case searchResult(search: SearchRequest)
     case story(searchText: String)
     case user(searchText: String)
     case recommend(searchText: String)
@@ -43,8 +44,8 @@ extension SearchAPI: Target {
     
     public var task: Task {
         switch self {
-        case let .searchResult(searchText, categoryId):
-            .url(parameters: SearchResultRequestDTO(searchText: searchText, categoryId: categoryId).parameters())
+        case let .searchResult(search):
+            .url(parameters: SearchResultRequestDTO(search).parameters())
         case let .story(searchText):
             makeSearchRequestDTO(searchText: searchText)
         case let .user(searchText):

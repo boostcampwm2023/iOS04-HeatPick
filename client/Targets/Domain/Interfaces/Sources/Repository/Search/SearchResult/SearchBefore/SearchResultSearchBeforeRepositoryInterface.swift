@@ -15,6 +15,6 @@ public protocol SearchResultSearchBeforeRepositoryInterface {
     func appendRecentSearch(searchText: String) -> String?
     func loadRecentSearches()
     func saveRecentSearches()
-    func fetchCategory() async -> Result<[StoryCategory], Error>
+    func fetchCategory() async -> Result<[SearchCategory], Error>
     
 }
