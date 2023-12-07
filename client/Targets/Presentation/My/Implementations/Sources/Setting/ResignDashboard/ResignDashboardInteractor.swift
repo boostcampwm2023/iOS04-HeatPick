@@ -10,11 +10,14 @@ import ModernRIBs
 
 import CoreKit
 import DomainInterfaces
+import FoundationKit
 
 protocol ResignDashboardRouting: ViewableRouting { }
 
 protocol ResignDashboardPresentable: Presentable {
     var listener: ResignDashboardPresentableListener? { get set }
+    
+    func isResign(_ result: Bool)
 }
 
 protocol ResignDashboardListener: AnyObject {
@@ -57,19 +60,24 @@ final class ResignDashboardInteractor: PresentableInteractor<ResignDashboardPres
     }
     
     // TODO: 실패했을때는 ... 흠
-    func resignButtonDidTap(_ reason: String) {
+    func resignButtonDidTap(_ message: String) {
         Task { [weak self] in
             guard let self else { return }
             await self.dependency.myProfileResignUseCase
-                .requestResign(reason: reason)
-                .onSuccess { _ in
-                    self.listener?.resign()
+                .requestResign(message: message)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.presenter.isResign(true)
                 }
                 .onFailure { error in
+                    self.presenter.isResign(false)
                     Log.make(message: error.localizedDescription, log: .network)
                 }
         }.store(in: cancelBag)
     }
     
+    
+    func resign() {
+        listener?.resign()
+    }
     
 }

@@ -10,6 +10,6 @@ import Foundation
 
 public protocol MyProfileResignUseCaseInterface: AnyObject {
     
-    func requestResign(reason: String) async -> Result<Void, Error>
+    func requestResign(message: String) async -> Result<Void, Error>
     
 }

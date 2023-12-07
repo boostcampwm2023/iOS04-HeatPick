@@ -15,10 +15,11 @@ import DesignKit
 
 protocol ResignDashboardPresentableListener: AnyObject {
     func didTapBack()
-    func resignButtonDidTap(_ reason: String)
+    func resignButtonDidTap(_ message: String)
+    func resign()
 }
 
-final class ResignDashboardViewController: BaseViewController, ResignDashboardPresentable, ResignDashboardViewControllable {
+final class ResignDashboardViewController: BaseViewController, ResignDashboardViewControllable {
 
     weak var listener: ResignDashboardPresentableListener?
     
@@ -36,6 +37,13 @@ final class ResignDashboardViewController: BaseViewController, ResignDashboardPr
         enum TextView {
             static let inset: CGFloat = 20
             static let placeHolder = "탈퇴 사유를 입력해주세요"
+        }
+        
+        enum Alert {
+            static let title = "알림"
+            
+            static let fail = "탈퇴에 실패했어요\n 잠시 후 다시 시도해주세요"
+            static let success = "탈퇴가 완료되었어요\n 다시 이용해주시기를 기다릴게요"
         }
     }
 
@@ -116,10 +124,28 @@ final class ResignDashboardViewController: BaseViewController, ResignDashboardPr
     
 }
 
+extension ResignDashboardViewController: ResignDashboardPresentable {
+    
+    func isResign(_ result: Bool) {
+        if result {
+            present(type: .completeResign) { [weak self] in
+                self?.listener?.resign()
+            }
+        } else {
+            present(type: .didFailResign) { }
+        }
+    }
+    
+}
+
+
 private extension ResignDashboardViewController {
     
     @objc func resignButtonDidTap() {
-        listener?.resignButtonDidTap(textView.text)
+        present(type: .resign) { [weak self] in
+            guard let self else { return }
+            self.listener?.resignButtonDidTap(self.textView.text)
+        }
     }
     
 }

@@ -10,10 +10,10 @@ import Foundation
 
 public struct MyProfileResignRequestDTO: Encodable {
     
-    let reason: String
+    let message: String
     
-    public init(reason: String) {
-        self.reason = reason
+    public init(message: String) {
+        self.message = message
     }
     
 }

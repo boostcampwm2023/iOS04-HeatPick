@@ -72,9 +72,8 @@ final class SettingInteractor: PresentableInteractor<SettingPresentable>, Settin
         router?.detachResignDashboard()
     }
     
-    // TODO: 바로 로그아웃 처리 ??
     func resign() {
-        dependency.signOutRequestService.signOut(type: .resign)
+        dependency.signOutRequestService.signOut()
     }
     
 }

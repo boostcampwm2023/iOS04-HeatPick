@@ -73,7 +73,6 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
                 .onFailure { error in
                     print(error.localizedDescription)
                 }
-            
         }
     }
     
