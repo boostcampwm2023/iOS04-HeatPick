@@ -19,7 +19,14 @@ public extension UIImage {
     static let map: UIImage = .init(resource: .map)
     static let bell: UIImage = .init(resource: .bell)
     static let spinner: UIImage = .init(resource: .spinner)
+    
+    // MARK: - MARKER
+    
     static let marker: UIImage = .init(resource: .marker)
     static let markerBlue: UIImage = .init(resource: .markerBlue)
+    static let markerSmall: UIImage = .init(resource: .markerSmall)
+    static let markerMedium: UIImage = .init(resource: .markerMedium)
+    static let markerLarge: UIImage = .init(resource: .markerLarge)
+    static let markerXlarge: UIImage = .init(resource: .markerXlarge)
     
 }
