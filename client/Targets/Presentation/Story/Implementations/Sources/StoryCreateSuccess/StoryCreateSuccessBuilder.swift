@@ -14,9 +14,14 @@ protocol StoryCreateSuccessDependency: Dependency {
     // created by this RIB.
 }
 
-final class StoryCreateSuccessComponent: Component<StoryCreateSuccessDependency> {
+final class StoryCreateSuccessComponent: Component<StoryCreateSuccessDependency>,
+                                         StoryCreateSuccessInteractorDependency {
 
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    let badgeInfo: BadgeExp
+    init(dependency: StoryCreateSuccessDependency, badgeInfo: BadgeExp) {
+        self.badgeInfo = badgeInfo
+        super.init(dependency: dependency)
+    }
 }
 
 // MARK: - Builder
@@ -32,9 +37,9 @@ final class StoryCreateSuccessBuilder: Builder<StoryCreateSuccessDependency>, St
     }
 
     func build(withListener listener: StoryCreateSuccessListener, badgeInfo: BadgeExp) -> StoryCreateSuccessRouting {
-        let component = StoryCreateSuccessComponent(dependency: dependency)
+        let component = StoryCreateSuccessComponent(dependency: dependency, badgeInfo: badgeInfo)
         let viewController = StoryCreateSuccessViewController()
-        let interactor = StoryCreateSuccessInteractor(presenter: viewController)
+        let interactor = StoryCreateSuccessInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return StoryCreateSuccessRouter(interactor: interactor, viewController: viewController)
     }

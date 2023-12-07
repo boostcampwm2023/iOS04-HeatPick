@@ -8,41 +8,51 @@
 
 import ModernRIBs
 
+import DomainEntities
+
 protocol StoryCreateSuccessRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
 }
 
 protocol StoryCreateSuccessPresentable: Presentable {
     var listener: StoryCreateSuccessPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    func setup(_ model: StoryCreateSuccessViewModel)
 }
 
 protocol StoryCreateSuccessListener: AnyObject {
     func successConfirmButtonDidTap()
 }
 
+protocol StoryCreateSuccessInteractorDependency: AnyObject {
+    var badgeInfo: BadgeExp { get }
+}
+
 final class StoryCreateSuccessInteractor: PresentableInteractor<StoryCreateSuccessPresentable>,
                                           StoryCreateSuccessInteractable,
                                           StoryCreateSuccessPresentableListener {
-
+    
     weak var router: StoryCreateSuccessRouting?
     weak var listener: StoryCreateSuccessListener?
-
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: StoryCreateSuccessPresentable) {
+    private let dependency: StoryCreateSuccessInteractorDependency
+    
+    init(presenter: StoryCreateSuccessPresentable, dependency: StoryCreateSuccessInteractorDependency) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
+    }
+    
+    func viewDidAppear() {
+        presenter.setup(StoryCreateSuccessViewModel(badge: dependency.badgeInfo.name,
+                                                    prevExp: dependency.badgeInfo.prevExp,
+                                                    exp: dependency.badgeInfo.nowExp))
     }
     
     func confirmButtonDidTap() {

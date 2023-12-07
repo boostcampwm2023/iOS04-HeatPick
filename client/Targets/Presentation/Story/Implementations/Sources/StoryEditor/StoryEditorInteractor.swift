@@ -163,8 +163,8 @@ private extension StoryEditorInteractor {
                 .requestCreateStory(storyContent: content)
                 .onSuccess(on: .main, with: self, { this, created in
                     let (story, badgeExp) = created
-                    this.router?.attachSuccess(badgeExp)
                     this.storyId = story.id
+                    this.router?.attachSuccess(badgeExp)
                 })
                 .onFailure(on: .main, with: self, { this, error in
                     Log.make(message: "fail to save story with \(error.localizedDescription)", log: .interactor)

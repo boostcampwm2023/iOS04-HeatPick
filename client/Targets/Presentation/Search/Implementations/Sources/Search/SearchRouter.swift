@@ -123,6 +123,9 @@ extension SearchRouter {
         router.viewControllable.dismiss(animated: true)
         detachChild(router)
         storyEditorRouter = nil
+        if let completion {
+            completion()
+        }
     }
     
 }
