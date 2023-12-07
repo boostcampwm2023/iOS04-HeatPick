@@ -87,15 +87,15 @@ export class UserService {
 
   @Transactional()
   async getProfile(requestUserId: number, targetUserId: number): Promise<UserProfileDetailDataDto> {
-    const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
-    const mainBadge = await user.representativeBadge;
+    const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage', 'representativeBadge'] });
+    const mainBadge = await user?.representativeBadge;
     const stories = await user.stories;
     const userImage = await user.profileImage;
     return {
       userId: user.userId,
       username: user.username,
       profileURL: userImage ? userImage.imageUrl : '',
-      isFollow: user.followers.some((user) => user.userId === requestUserId) || requestUserId === targetUserId ? 0 : 1,
+      isFollow: user.followers.some((user) => user.userId === requestUserId) || requestUserId === targetUserId,
       temperature: user.temperature,
       temperatureFeeling: getTemperatureFeeling(user.temperature),
       followerCount: user.followers.length,
