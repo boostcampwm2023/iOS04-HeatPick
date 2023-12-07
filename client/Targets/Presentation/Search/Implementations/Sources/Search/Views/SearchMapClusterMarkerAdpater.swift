@@ -36,4 +36,5 @@ final class SearchMapClusterMarkerAdpater: MarkerAdaptable {
         marker.mapView = nil
     }
     
+    
 }

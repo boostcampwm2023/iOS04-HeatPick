@@ -91,6 +91,7 @@ private extension SearchMapClusterListCell {
             $0.clipsToBounds = true
             $0.layer.cornerRadius = Constants.cornerRadiusMedium
             $0.contentMode = .scaleAspectFill
+            $0.backgroundColor = .hpGray4
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         

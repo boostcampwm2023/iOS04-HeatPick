@@ -95,10 +95,8 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     }
     
     func updateMarkers(clusters: [Cluster]) {
-        let overlay = NMFOverlayImage(image: .marker)
-        
         clusters.forEach {
-            let adapter = makeMarkerAdapter(overlay: overlay, cluster: $0)
+            let adapter = MarkerFactory.makeMarkerAdpater(cluster: $0)
             adapter.marker.mapView = naverMap.mapView
             adapter.delegate = self
             markerStorage.append(adapter)
@@ -372,14 +370,6 @@ private extension SearchViewController {
         marker.iconImage = overlay
         marker.captionText = place.title
         let adapter = SearchMapMarkerAdapter(marker: marker, place: place)
-        return adapter
-    }
-    
-    func makeMarkerAdapter(overlay: NMFOverlayImage, cluster: Cluster) -> SearchMapClusterMarkerAdpater {
-        let marker = NMFMarker(position: .init(lat: cluster.center.lat, lng: cluster.center.lng))
-        marker.iconImage = overlay
-        marker.captionText = "\(cluster.count)개"
-        let adapter = SearchMapClusterMarkerAdpater(marker: marker, cluster: cluster)
         return adapter
     }
     
