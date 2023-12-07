@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Place } from 'src/entities/place.entity';
 import { graphemeSeperation } from 'src/util/util.graphmeModify';
 import { In, Repository } from 'typeorm';
-import { PlaceJasoTrie } from './../search/trie/placeTrie';
 import { LocationDTO } from './dto/location.dto';
 import { calculateDistance } from 'src/util/util.haversine';
 import { Cron, CronExpression } from '@nestjs/schedule';
@@ -13,24 +12,7 @@ export class PlaceService {
   constructor(
     @Inject('PLACE_REPOSITORY')
     private placeRepository: Repository<Place>,
-    private placeJasoTrie: PlaceJasoTrie,
-  ) {
-    this.loadPlaceTrie();
-  }
-
-  @Cron(CronExpression.EVERY_HOUR)
-  loadPlaceTrie() {
-    this.placeRepository.find().then((everyPlace) => {
-      everyPlace.forEach((place) => this.placeJasoTrie.insert(graphemeSeperation(place.title), place.placeId));
-    });
-  }
-
-  @Transactional()
-  async getPlaceFromTrie(seperatedStatement: string[]) {
-    const ids = this.placeJasoTrie.search(seperatedStatement, 10);
-    const places = await this.placeRepository.find({ where: { placeId: In(ids) } });
-    return places;
-  }
+  ) {}
 
   @Transactional()
   async getPlaceByPosition(locationDto: LocationDTO) {

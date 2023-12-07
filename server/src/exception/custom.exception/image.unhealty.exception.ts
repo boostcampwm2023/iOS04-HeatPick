@@ -2,6 +2,6 @@ import { ConflictException } from '@nestjs/common';
 
 export class ImageUnhealthyException extends ConflictException {
   constructor() {
-    super('Valid 하지 않은 ID입니다.');
+    super('허용되지 않는 이미지가 검색되었습니다.');
   }
 }
