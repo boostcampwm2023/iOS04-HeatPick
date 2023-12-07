@@ -140,6 +140,7 @@ export class StoryService {
     const seperatedStatement = graphemeSeperation(searchText);
     const ids = this.storyTitleJasoTrie.search(seperatedStatement, 100);
     const stories = await this.storyRepository.find({
+      select: ['storyId', 'title', 'content', 'likeCount', 'commentCount', 'storyImages', 'category', 'user', 'place'],
       where: {
         storyId: In(ids),
       },
