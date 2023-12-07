@@ -41,8 +41,8 @@ extension StoryAPI: Target {
         case .follow, .unfollow: return "/user/follow"
         case .readComment: return "/comment/read"
         case .newComment: return "/comment/create"
-        case .like: return "/story/like"
-        case .unlike: return "/story/unlike"
+        case .like: return "/user/like"
+        case .unlike: return "/user/unlike"
         }
     }
     

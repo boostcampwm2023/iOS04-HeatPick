@@ -175,7 +175,7 @@ private extension StoryDetailInteractor {
                 .onFailure(on: .main, with: self) { this, error in
                     Log.make(message: "fail to like with \(error.localizedDescription)", log: .interactor)
                     this.presenter.didFailToLike()
-                    this.presenter.present(type: .didFailToFollow) { }
+                    this.presenter.present(type: .didFailToLike) { }
                 }
             
         }.store(in: cancelBag)
