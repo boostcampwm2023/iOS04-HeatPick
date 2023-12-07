@@ -7,9 +7,10 @@ import { userProviders } from '../user/user.providers';
 import { CommentProviders } from './comment.providers';
 import { UserModule } from '../user/user.module';
 import { StoryModule } from '../story/story.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule, StoryModule],
+  imports: [DatabaseModule, UserModule, StoryModule, NotificationModule],
   controllers: [CommentController],
   providers: [...storyProvider, ...userProviders, ...CommentProviders, CommentService],
   exports: [],

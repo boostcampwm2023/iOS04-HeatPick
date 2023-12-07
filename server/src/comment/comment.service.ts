@@ -9,6 +9,7 @@ import { updateComment } from '../util/util.comment.update';
 import { Transactional } from 'typeorm-transactional';
 import { UserService } from '../user/user.service';
 import { StoryService } from '../story/story.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class CommentService {
@@ -17,6 +18,7 @@ export class CommentService {
     private commentRepository: Repository<Comment>,
     private storyService: StoryService,
     private userService: UserService,
+    private notificationService: NotificationService,
   ) {}
 
   @Transactional()
@@ -41,7 +43,7 @@ export class CommentService {
 
   @Transactional()
   public async create({ storyId, userId, content, mentions }): Promise<number> {
-    const story = await this.storyService.getStory(storyId);
+    const story = await this.storyService.getStory(storyId, ['user']);
 
     const mentionedUsers: User[] = await Promise.all(
       mentions.map(async (userId: number) => {
@@ -59,6 +61,8 @@ export class CommentService {
     for (const mentionedUser of mentionedUsers) {
       await this.userService.mention(mentionedUser, comment);
     }
+
+    this.notificationService.sendFcmNotification((await story.user).userId, '댓글 알림💭', `${user.username}님이 ${story.title} 게시글에 댓글을 달았습니다💭`);
 
     return comment.commentId;
   }

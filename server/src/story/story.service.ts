@@ -31,8 +31,6 @@ dotenv.config();
 
 @Injectable()
 export class StoryService {
-  private searchStoryResultCache = {};
-  private recommendStoryCache = [];
   constructor(
     @Inject('STORY_REPOSITORY')
     private storyRepository: Repository<Story>,
@@ -46,8 +44,6 @@ export class StoryService {
 
   @Cron(CronExpression.EVERY_HOUR)
   async loadSearchHistoryTrie() {
-    this.recommendStoryCache = [];
-    this.searchStoryResultCache = {};
     this.storyRepository.find({ relations: ['user'] }).then((everyStory) => {
       everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
     });
@@ -140,25 +136,19 @@ export class StoryService {
     await this.storyRepository.softDelete(storyId);
   }
 
-  @Transactional()
   async getStoriesFromTrie(searchText: string, offset: number, limit: number): Promise<Story[]> {
-    if (!this.searchStoryResultCache.hasOwnProperty(searchText)) {
-      const seperatedStatement = graphemeSeperation(searchText);
-      const ids = this.storyTitleJasoTrie.search(seperatedStatement, 100);
-      const stories = await this.storyRepository.find({
-        where: {
-          storyId: In(ids),
-        },
-        relations: ['category', 'user'],
-      });
-      this.searchStoryResultCache[searchText] = stories;
-    }
-
-    const results = this.searchStoryResultCache[searchText];
+    const seperatedStatement = graphemeSeperation(searchText);
+    const ids = this.storyTitleJasoTrie.search(seperatedStatement, 100);
+    const stories = await this.storyRepository.find({
+      where: {
+        storyId: In(ids),
+      },
+      relations: ['category', 'user'],
+    });
+    const results = stories;
     return results.slice(offset * limit, offset * limit + limit);
   }
 
-  @Transactional()
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number): Promise<StoryResultDto[]> {
     const stories = await this.storyRepository.find({ relations: ['user', 'category'] });
 
@@ -189,35 +179,30 @@ export class StoryService {
     return storyArr.slice(offset * limit, offset * limit + limit);
   }
 
-  @Transactional()
   async getRecommendedStory(offset: number, limit: number): Promise<any[]> {
     try {
-      if (this.recommendStoryCache.length <= 0) {
-        const stories = await this.storyRepository.find({
-          order: {
-            likeCount: 'DESC',
-          },
-          relations: ['user', 'user.profileImage', 'storyImages', 'category'],
-        });
+      const stories = await this.storyRepository.find({
+        order: {
+          likeCount: 'DESC',
+        },
+        relations: ['user', 'user.profileImage', 'storyImages', 'category'],
+      });
 
-        const storyArr = await Promise.all(
-          stories.map(async (story) => {
-            return storyEntityToObjWithOneImg(story);
-          }),
-        );
+      const storyArr = await Promise.all(
+        stories.map(async (story) => {
+          return storyEntityToObjWithOneImg(story);
+        }),
+      );
 
-        this.recommendStoryCache = storyArr;
-      }
-
-      return this.recommendStoryCache.slice(offset * limit, offset * limit + limit);
+      return storyArr.slice(offset * limit, offset * limit + limit);
     } catch (error) {
       throw error;
     }
   }
 
-  @Transactional()
   async getFollowStories(userId: number, sortOption: number = 0, offset: number = 0, limit: number = 5): Promise<StoryResultDto[]> {
     const followings = await this.userService.getFollows(userId);
+    if (followings.length <= 0) return [];
 
     const storyPromises = followings.map(async (following) => {
       const stories = await following.stories;
@@ -236,7 +221,6 @@ export class StoryService {
     return storyObjects.slice(offset * limit, offset * limit + limit);
   }
 
-  @Transactional()
   private sortByOption(stories: Story[], sortOption: number = 0): Story[] {
     if (sortOption == 0) {
       const sortByCreateDate = (a: Story, b: Story) => new Date(a.createAt).getTime() - new Date(b.createAt).getTime();

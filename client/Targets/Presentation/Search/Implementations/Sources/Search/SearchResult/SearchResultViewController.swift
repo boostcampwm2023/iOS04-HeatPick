@@ -13,6 +13,7 @@ import ModernRIBs
 
 import CoreKit
 import DesignKit
+import DomainEntities
 import BasePresentation
 
 
@@ -26,7 +27,7 @@ protocol SearchResultPresentableListener: AnyObject {
     func detachSearchResult()
 }
 
-final class SearchResultViewController: BaseViewController, SearchResultPresentable, SearchResultViewControllable {
+final class SearchResultViewController: BaseViewController, SearchResultViewControllable {
     
     weak var listener: SearchResultPresentableListener?
     
@@ -54,10 +55,6 @@ final class SearchResultViewController: BaseViewController, SearchResultPresenta
         let viewController = viewControllable.uiviewController
         stackView.removeArrangedSubview(viewController.view)
         viewController.removeFromParent()
-    }
-    
-    func setSearchText(_ searchText: String) {
-        searchNavigationView.setSearchText(searchText)
     }
     
     override func setupLayout() {
@@ -91,9 +88,17 @@ final class SearchResultViewController: BaseViewController, SearchResultPresenta
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
-    
-    override func bind() {
         
+}
+
+extension SearchResultViewController: SearchResultPresentable {
+    
+    func setSearchText(_ searchText: String) {
+        searchNavigationView.setSearchText(searchText)
+    }
+    
+    func setCategory(_ category: SearchCategory) {
+        searchNavigationView.setCategory(category)
     }
     
 }

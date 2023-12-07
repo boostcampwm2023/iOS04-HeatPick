@@ -1,7 +1,4 @@
-import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
-import { HistoryJasoTrie } from './trie/historyTrie';
-import { graphemeCombination, graphemeSeperation } from '../util/util.graphmeModify';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { SearchHistory } from 'src/entities/search.entity';
 
@@ -11,27 +8,11 @@ import axios from 'axios';
 import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
-export class SearchService implements OnModuleInit {
+export class SearchService {
   constructor(
-    private searchHistoryJasoTrie: HistoryJasoTrie,
     @Inject('SEARCH_REPOSITORY')
     private searchRepository: Repository<SearchHistory>,
   ) {}
-
-  async onModuleInit() {
-    await this.loadSearchHistoryTrie();
-  }
-
-  @Transactional()
-  @Cron(CronExpression.EVERY_HOUR)
-  async loadSearchHistoryTrie() {
-    const everyHistory = await this.searchRepository.find();
-    everyHistory.forEach((history) => this.searchHistoryJasoTrie.insert(graphemeSeperation(history.content)));
-  }
-
-  insertHistoryToTree(seperatedStatement: string[]) {
-    this.searchHistoryJasoTrie.insert(seperatedStatement);
-  }
 
   async searchRecommend(searchText: string): Promise<string[]> {
     const [signature, accessKey, timestamp] = makeSignature();
