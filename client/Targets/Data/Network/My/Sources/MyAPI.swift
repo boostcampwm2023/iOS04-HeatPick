@@ -18,6 +18,8 @@ public enum MyAPI {
     case userMetaData
     case userUpdate(content: UserUpdateContent)
     case resign(message: String)
+    case follow(id: Int)
+    case unfollow(id: Int)
 }
 
 extension MyAPI: Target {
@@ -34,14 +36,17 @@ extension MyAPI: Target {
         case .userMetaData: return "/user/updateMetaData"
         case .userUpdate: return "/user/update"
         case .resign: return "/user/resign"
+        case .follow, .unfollow: return "/user/follow"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
-        case .userUpdate: return .patch
-        case .resign: return .delete
-        default: return .get
+        case .userUpdate: .patch
+        case .resign: .delete
+        case .follow: .post
+        case .unfollow: .delete
+        default: .get
         }
     }
     
@@ -71,6 +76,9 @@ extension MyAPI: Target {
             
         case let .resign(message):
             return .json(MyProfileResignRequestDTO(message: message))
+            
+        case .follow(let userId), .unfollow(let userId):
+            return .json(FollowRequestDTO(followId: userId))
         }
     }
     

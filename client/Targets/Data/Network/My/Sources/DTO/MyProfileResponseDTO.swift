@@ -52,7 +52,7 @@ public struct MyProfileStoryResponseDTO: Decodable {
 
 public extension MyProfileResponseDTO {
     
-    func toDomain() -> MyPage {
+    func toDomain() -> Profile {
         return .init(
             userId: profile.userId,
             userName: profile.username,

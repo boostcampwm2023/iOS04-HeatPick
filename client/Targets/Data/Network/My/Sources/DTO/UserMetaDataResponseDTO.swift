@@ -19,7 +19,7 @@ public struct UserMetaDataResponseDTO: Decodable {
 
 public extension UserMetaDataResponseDTO {
     
-    func toDomain() -> UserProfileMetaData {
+    func toDomain() -> ProfileUpdateMetaData {
         profile.toDomain()
     }
     
@@ -35,7 +35,7 @@ public struct UserProfileMetaDataResponseDTO: Decodable {
 
 public extension UserProfileMetaDataResponseDTO {
     
-    func toDomain() -> UserProfileMetaData {
+    func toDomain() -> ProfileUpdateMetaData {
         .init(
             userId: userId, 
             username: username,
@@ -58,7 +58,7 @@ public struct UserProfileMetaDataBadgeResponseDTO: Decodable {
 
 public extension UserProfileMetaDataBadgeResponseDTO {
     
-    func toDomain() -> UserProfileMetaDataBadge {
+    func toDomain() -> ProfileUpdateMetaDataBadge {
         .init(
             badgeId: badgeId,
             badgeName: badgeName,
