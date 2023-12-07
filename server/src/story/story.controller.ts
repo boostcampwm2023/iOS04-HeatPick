@@ -31,7 +31,7 @@ export class StoryController {
   }
 
   @Post('create')
-  @UseInterceptors(FilesInterceptor('images', 3))
+  @UseInterceptors(FilesInterceptor('images', 5))
   @ApiOperation({ summary: '스토리 생성' })
   @ApiResponse({
     status: 200,

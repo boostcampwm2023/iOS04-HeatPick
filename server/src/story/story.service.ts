@@ -70,30 +70,32 @@ export class StoryService {
 
     const user: User = await this.userService.getUser(userId);
 
-    images.map(async (image) => {
-      const data = image.buffer.toString('base64');
-      const options = {
-        headers: {
-          'X-GREEN-EYE-SECRET': `${process.env.GREEN_EYE_SECRET_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      };
-      const file = {
-        version: 'V1',
-        requestId: 'requestId',
-        timestamp: Date.now(),
-        images: [
-          {
-            name: 'demo',
-            data: `${data}`,
+    await Promise.all(
+      images.map(async (image) => {
+        const data = image.buffer.toString('base64');
+        const options = {
+          headers: {
+            'X-GREEN-EYE-SECRET': `${process.env.GREEN_EYE_SECRET_KEY}`,
+            'Content-Type': 'application/json',
           },
-        ],
-      };
-      const response = await axios.post(process.env.INVOKE_URL, file, options);
+        };
+        const file = {
+          version: 'V1',
+          requestId: 'requestId',
+          timestamp: Date.now(),
+          images: [
+            {
+              name: 'demo',
+              data: `${data}`,
+            },
+          ],
+        };
+        const response = await axios.post(process.env.INVOKE_URL, file, options);
 
-      const confidence = response.data.images[0].result.confidence;
-      if (confidence < 0.8) throw new ImageUnhealthyException();
-    });
+        const confidence = response.data.images[0].result.confidence;
+        if (confidence < 0.8) throw new ImageUnhealthyException();
+      }),
+    );
 
     const story: Story = await createStoryEntity({ title, content, category, place, images, badge, date });
     story.user = Promise.resolve(user);
