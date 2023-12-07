@@ -151,7 +151,7 @@ export class StoryService {
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number): Promise<StoryResultDto[]> {
-    const stories = await this.storyRepository.createQueryBuilder('story').leftJoinAndSelect('story.user', 'user').leftJoinAndSelect('story.category', 'category').cache(30000).getMany();
+    const stories = await this.storyRepository.createQueryBuilder('story').where('story.likeCount + story.commentCount >= :likeCommentCount').setParameter('likeCommentCount', 10).cache(30000).orderBy('story.likeCount', 'DESC').getMany();
 
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;
