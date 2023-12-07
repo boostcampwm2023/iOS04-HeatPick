@@ -16,7 +16,10 @@ import DomainEntities
 import DomainInterfaces
 import StoryInterfaces
 
-protocol StoryEditorRouting: ViewableRouting {}
+protocol StoryEditorRouting: ViewableRouting {
+    func attachSuccess(_ badgeInfo: BadgeExp)
+    func detachSuccess()
+}
 
 protocol StoryEditorPresentable: Presentable {
     var listener: StoryEditorPresentableListener? { get set }
@@ -37,6 +40,8 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
     weak var listener: StoryEditorListener?
     private let dependency: StoryEditorInteractorDependency
     private var cancelBag: CancelBag = CancelBag()
+    
+    private var storyId: Int?
     
     private var title: String = ""
     private var description: String = ""
@@ -111,6 +116,13 @@ final class StoryEditorInteractor: PresentableInteractor<StoryEditorPresentable>
         saveStory(content: content)
     }
     
+    // MARK: - StoryCreateSuccess listener
+    func successConfirmButtonDidTap() {
+        router?.detachSuccess()
+        guard let storyId else { return }
+        listener?.storyDidCreate(storyId)
+    }
+    
 }
 
 private extension StoryEditorInteractor {
@@ -160,8 +172,10 @@ private extension StoryEditorInteractor {
             guard let self else { return }
             await dependency.storyUseCase
                 .requestCreateStory(storyContent: content)
-                .onSuccess(on: .main, with: self, { this, story in
-                    this.listener?.storyDidCreate(story.id)
+                .onSuccess(on: .main, with: self, { this, created in
+                    let (story, badgeExp) = created
+                    this.storyId = story.id
+                    this.router?.attachSuccess(badgeExp)
                 })
                 .onFailure(on: .main, with: self, { this, error in
                     Log.make(message: "fail to save story with \(error.localizedDescription)", log: .interactor)

@@ -28,7 +28,7 @@ public final class StoryRepository: StoryRepositoryInterface {
         return request.map { $0.toModel() }
     }
     
-    public func requestCreateStory(storyContent: StoryContent) async -> Result<Story, Error> {
+    public func requestCreateStory(storyContent: StoryContent) async -> Result<(Story, BadgeExp), Error> {
         let target = StoryAPI.newStory(storyContent)
         let request: Result<NewStoryResponseDTO, Error> = await session.request(target)
         

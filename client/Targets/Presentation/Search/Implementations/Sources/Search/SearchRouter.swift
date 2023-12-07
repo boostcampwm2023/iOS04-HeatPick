@@ -113,14 +113,19 @@ extension SearchRouter {
     func attachStoryEditor(location: SearchMapLocation) {
         guard storyEditorRouter == nil else { return }
         let router = dependency.storyEditorBuilder.build(withListener: interactor, location: .init(lat: location.lat, lng: location.lng))
-        pushRouter(router, animated: true)
+        viewControllable.present(NavigationControllable(viewControllable: router.viewControllable), animated: true, isFullScreen: true)
+        attachChild(router)
         storyEditorRouter = router
     }
     
     func detachStoryEditor(_ completion: (() -> Void)?) {
         guard let router = storyEditorRouter else { return }
-        popRouter(router, animated: true)
+        router.viewControllable.dismiss(animated: true)
+        detachChild(router)
         storyEditorRouter = nil
+        if let completion {
+            completion()
+        }
     }
     
 }

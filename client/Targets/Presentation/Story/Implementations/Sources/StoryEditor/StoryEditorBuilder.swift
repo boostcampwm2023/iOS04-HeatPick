@@ -16,12 +16,20 @@ public protocol StoryEditorDependency: Dependency {
     var storyUseCase: StoryUseCaseInterface { get }
 }
 
-final class StoryEditorComponent: Component<StoryEditorDependency>, StoryEditorInteractorDependency {
+final class StoryEditorComponent: Component<StoryEditorDependency>,
+                                  StoryEditorInteractorDependency,
+                                  StoryEditorRouterDependency,
+                                  StoryCreateSuccessDependency {
+    
     var location: Location
     var storyUseCase: StoryUseCaseInterface {
         dependency.storyUseCase
     }
     
+    lazy var successBuilder: StoryCreateSuccessBuildable = {
+        StoryCreateSuccessBuilder(dependency: self)
+    }()
+
     init(dependency: StoryEditorDependency, location: Location) {
         self.location = location
         super.init(dependency: dependency)
@@ -43,6 +51,8 @@ public final class StoryEditorBuilder: Builder<StoryEditorDependency>, StoryEdit
             dependency: component
         )
         interactor.listener = listener
-        return StoryEditorRouter(interactor: interactor, viewController: viewController)
+        return StoryEditorRouter(interactor: interactor,
+                                 viewController: viewController,
+                                 dependency: component)
     }
 }

@@ -103,7 +103,7 @@ final class StoryEditorViewController: BaseViewController, StoryEditorViewContro
         }
         
         navigationView.do {
-            $0.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: [.none]))
+            $0.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .close, rightButtonTypes: [.none]))
             $0.delegate = self
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
