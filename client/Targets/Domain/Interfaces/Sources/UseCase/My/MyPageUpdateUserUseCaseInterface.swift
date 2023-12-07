@@ -11,6 +11,6 @@ import DomainEntities
 
 public protocol MyPageUpdateUserUseCaseInterface: AnyObject {
     
-    func fetchUserMedtaData() async -> Result<UserProfileMetaData, Error>
+    func fetchUserMedtaData() async -> Result<ProfileUpdateMetaData, Error>
     
 }
