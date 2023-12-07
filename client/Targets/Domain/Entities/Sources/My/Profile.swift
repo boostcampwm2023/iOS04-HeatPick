@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct MyPage {
+public struct Profile {
     
     public let userId: Int
     public let userName: String
@@ -23,7 +23,20 @@ public struct MyPage {
     public let mainBadge: MyPageBadge
     public let stories: [MyPageStory]
     
-    public init(userId: Int, userName: String, profileImageURL: String?, isFollow: Bool, temperature: Int, temperatureFeeling: String, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, mainBadge: MyPageBadge, stories: [MyPageStory]) {
+    public init(
+        userId: Int,
+        userName: String,
+        profileImageURL: String?,
+        isFollow: Bool, 
+        temperature: Int,
+        temperatureFeeling: String,
+        followerCount: Int,
+        storyCount: Int,
+        experience: Int,
+        maxExperience: Int,
+        mainBadge: MyPageBadge,
+        stories: [MyPageStory]
+    ) {
         self.userId = userId
         self.userName = userName
         self.profileImageURL = profileImageURL

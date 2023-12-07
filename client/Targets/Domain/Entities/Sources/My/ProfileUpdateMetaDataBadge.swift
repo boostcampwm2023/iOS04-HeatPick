@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct UserProfileMetaDataBadge {
+public struct ProfileUpdateMetaDataBadge {
     
     public let badgeId: Int
     public let badgeName: String
