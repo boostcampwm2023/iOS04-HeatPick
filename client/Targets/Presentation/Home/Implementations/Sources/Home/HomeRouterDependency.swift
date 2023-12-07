@@ -8,11 +8,13 @@
 
 import ModernRIBs
 import StoryInterfaces
+import MyInterfaces
 
 protocol HomeRouterDependency: AnyObject {
     var base: HomeBaseRouterDependency { get }
     var seeAll: HomeSeeAllRouterDependency { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
+    var userProfileBuilder: UserProfileBuildable { get }
 }
 
 protocol HomeBaseRouterDependency: AnyObject {

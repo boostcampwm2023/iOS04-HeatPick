@@ -11,6 +11,7 @@ import CoreKit
 import DomainEntities
 import HomeInterfaces
 import StoryInterfaces
+import MyInterfaces
 
 protocol HomeInteractable: Interactable,
                            HomeRecommendDashboardListener,
@@ -19,7 +20,8 @@ protocol HomeInteractable: Interactable,
                            HomeFriendDashboardListener,
                            RecommendSeeAllListener,
                            HotPlaceSeeAllListener,
-                           StoryDetailListener {
+                           StoryDetailListener,
+                           UserProfileListener {
     var router: HomeRouting? { get set }
     var listener: HomeListener? { get set }
 }
@@ -31,7 +33,7 @@ protocol HomeViewControllable: ViewControllable {
 }
 
 final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, HomeRouting {
-    
+
     private let dependency: HomeRouterDependency
     
     // MARK: - Base
@@ -49,6 +51,10 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
     // MARK: - Story
     
     private var storyDetailRouting: ViewableRouting?
+    
+    // MARK: - Friend
+    private var userProfileRouter: ViewableRouting?
+
     
     init(
         interactor: HomeInteractable,
@@ -146,5 +152,20 @@ final class HomeRouter: ViewableRouter<HomeInteractable, HomeViewControllable>, 
         popRouter(router, animated: true)
         self.storyDetailRouting = nil
     }
+    
+    // MARK: - Friend
+    func attachUserProfile(userId: Int) {
+        guard userProfileRouter == nil else { return }
+        let profileRouting = dependency.userProfileBuilder.build(withListener: interactor, userId: userId)
+        userProfileRouter = profileRouting
+        pushRouter(profileRouting, animated: true)
+    }
+    
+    func detachUserProfile() {
+        guard let router = userProfileRouter else { return }
+        popRouter(router, animated: true)
+        userProfileRouter = nil
+    }
+    
     
 }

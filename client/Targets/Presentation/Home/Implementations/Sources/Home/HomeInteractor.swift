@@ -17,6 +17,8 @@ protocol HomeRouting: ViewableRouting {
     func attachFollowingDashboard()
     func attachFriendDashboard()
     func detachFriendDashboard()
+    func attachUserProfile(userId: Int)
+    func detachUserProfile()
     func attachRecommendSeeAll(location: LocationCoordinate)
     func detachRecommendSeeAll()
     func attachHotPlaceSeeAll()
@@ -82,8 +84,11 @@ final class HomeInteractor: PresentableInteractor<HomePresentable>, HomeInteract
     }
     
     func homeFriendDashbardDidTapUser(_ userId: Int) {
-        // TODO: - UserProfile로 routing
-        print(userId)
+        router?.attachUserProfile(userId: userId)
+    }
+    
+    func detachUserProfile() {
+        router?.detachUserProfile()
     }
     
     // MARK: - Following

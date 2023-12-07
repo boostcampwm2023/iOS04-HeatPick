@@ -8,17 +8,21 @@
 
 import ModernRIBs
 import StoryInterfaces
+import MyInterfaces
 
 final class HomeRouterComponent: HomeRouterDependency {
+    
     
     let base: HomeBaseRouterDependency
     let seeAll: HomeSeeAllRouterDependency
     let storyDetailBuilder: StoryDetailBuildable
-    
+    let userProfileBuilder: UserProfileBuildable
+
     init(component: HomeComponent) {
         self.base = HomeBaseRouterComponent(component: component)
         self.seeAll = HomeSeeAllRouterComponent(component: component)
         self.storyDetailBuilder = component.storyDetailBuilder
+        self.userProfileBuilder = component.userProfileBuilder
     }
     
 }
