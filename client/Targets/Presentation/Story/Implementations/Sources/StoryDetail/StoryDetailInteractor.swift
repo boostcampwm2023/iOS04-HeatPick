@@ -19,6 +19,8 @@ import StoryInterfaces
 protocol StoryDetailRouting: ViewableRouting {
     func attachComment(storyId: Int)
     func detachComment()
+    func attachProfile(userId: Int)
+    func detachProfile()
 }
 
 protocol StoryDetailPresentable: Presentable {
@@ -67,6 +69,10 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
         listener?.storyDetailDidTapClose()
     }
     
+    func profileDidTap(userId: Int) {
+        router?.attachProfile(userId: userId)
+    }
+    
     func followButtonDidTap(userId: Int, userStatus: UserStatus) {
         switch userStatus {
         case .me: 
@@ -93,6 +99,11 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
     func deleteButtonDidTap() {
         requestDeleteStory()
     }
+    
+    func detachUserProfile() {
+        router?.detachProfile()
+    }
+    
 }
 
 private extension StoryDetailInteractor {

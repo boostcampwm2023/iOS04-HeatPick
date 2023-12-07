@@ -11,9 +11,11 @@ import ModernRIBs
 import DomainEntities
 import DomainInterfaces
 import StoryInterfaces
+import MyInterfaces
 
 public protocol StoryDetailDependency: Dependency {
     var storyUseCase: StoryUseCaseInterface { get }
+    var userProfileBuilder: UserProfileBuildable { get }
 }
 
 final class StoryDetailComponent: Component<StoryDetailDependency>,
@@ -29,6 +31,10 @@ final class StoryDetailComponent: Component<StoryDetailDependency>,
     lazy var commentBuilder: CommentBuildable = {
        return CommentBuilder(dependency: self)
     }()
+    
+    var userProfileBuilder: UserProfileBuildable {
+        dependency.userProfileBuilder
+    }
     
     init(dependency: StoryDetailDependency, storyId: Int) {
         self.storyId = storyId

@@ -19,6 +19,7 @@ import BasePresentation
 
 protocol StoryDetailPresentableListener: AnyObject {
     func storyDetailDidTapClose()
+    func profileDidTap(userId: Int)
     func followButtonDidTap(userId: Int, userStatus: UserStatus)
     func likeButtonDidTap(state: Bool)
     func commentButtonDidTap()
@@ -213,6 +214,10 @@ extension StoryDetailViewController: NavigationViewDelegate {
 
 // MARK: - ProfileView delegate
 extension StoryDetailViewController: SimpleUserProfileViewDelegate {
+    
+    func profileDidTap(userId: Int) {
+        listener?.profileDidTap(userId: userId)
+    }
     
     func followButtonDidTap(userId: Int, userStatus: UserStatus) {
         listener?.followButtonDidTap(userId: userId, userStatus: userStatus)
