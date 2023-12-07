@@ -103,7 +103,7 @@ final class MyPageUpdateUserBadgeCell: UITableViewCell {
         reset()
     }
     
-    func setup(model: UserProfileMetaDataBadge) {
+    func setup(model: ProfileUpdateMetaDataBadge) {
         titleLabel.text = "\(model.emoji) \(model.badgeName)"
         descriptionLabel.text = model.badgeExplain
         progressView.progress = Float(model.badgeExp) / Constant.maxExp

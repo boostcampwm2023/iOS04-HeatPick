@@ -8,15 +8,15 @@
 
 import Foundation
 
-public struct UserProfileMetaData {
+public struct ProfileUpdateMetaData {
  
     public let userId: Int
     public let username: String
     public let profileImageURL: String
-    public let nowBadge: UserProfileMetaDataBadge
-    public let badges: [UserProfileMetaDataBadge]
+    public let nowBadge: ProfileUpdateMetaDataBadge
+    public let badges: [ProfileUpdateMetaDataBadge]
     
-    public init(userId: Int, username: String, profileImageURL: String, nowBadge: UserProfileMetaDataBadge, badges: [UserProfileMetaDataBadge]) {
+    public init(userId: Int, username: String, profileImageURL: String, nowBadge: ProfileUpdateMetaDataBadge, badges: [ProfileUpdateMetaDataBadge]) {
         self.userId = userId
         self.username = username
         self.profileImageURL = profileImageURL

@@ -13,7 +13,7 @@ import StoryInterfaces
 import DomainInterfaces
 
 public protocol UserProfileDependency: Dependency {
-    var userProfileUseCase: UserProfileUserCaseInterface { get }
+    var userProfileUseCase: UserProfileUseCaseInterface { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
 }
 
@@ -25,7 +25,7 @@ public final class UserProfileComponent: Component<UserProfileDependency>,
     
     var userId: Int
 
-    var userProfileUseCase: UserProfileUserCaseInterface { dependency.userProfileUseCase }
+    var userProfileUseCase: UserProfileUseCaseInterface { dependency.userProfileUseCase }
     var userProfileUserUseCase: MyPageProfileUseCaseInterface { dependency.userProfileUseCase }
     var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.userProfileUseCase }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }

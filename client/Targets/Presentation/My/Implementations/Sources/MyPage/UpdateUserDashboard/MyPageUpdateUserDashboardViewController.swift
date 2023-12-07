@@ -35,7 +35,7 @@ final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageU
         }
     }
     
-    private var models: [UserProfileMetaDataBadge] = []
+    private var models: [ProfileUpdateMetaDataBadge] = []
         
     private let headerView: MyPageupdateUserTableHeaderView = .init()
     private let tableView: UITableView = .init()
@@ -103,7 +103,7 @@ final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageU
         
     }
     
-    func setup(model: UserProfileMetaData) {
+    func setup(model: ProfileUpdateMetaData) {
         models = [model.nowBadge] + model.badges
         headerView.setup(model: model)
         tableView.reloadData()

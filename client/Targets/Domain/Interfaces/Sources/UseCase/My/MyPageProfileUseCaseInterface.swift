@@ -12,6 +12,8 @@ import DomainEntities
 
 public protocol MyPageProfileUseCaseInterface: AnyObject {
     
-    var profilePublisher: AnyPublisher<MyPageProfile, Never> { get }
+    var profilePublisher: AnyPublisher<Profile, Never> { get }
     
+    func requestFollow(userId: Int) async -> Result<Void, Error>
+    func requestUnfollow(userId: Int) async -> Result<Void, Error>
 }

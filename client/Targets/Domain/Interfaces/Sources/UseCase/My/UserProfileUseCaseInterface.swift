@@ -10,10 +10,10 @@ import Foundation
 import Combine
 import DomainEntities
 
-public protocol UserProfileUserCaseInterface: MyPageProfileUseCaseInterface,
+public protocol UserProfileUseCaseInterface: MyPageProfileUseCaseInterface,
                                               MyPageStoryUseCaseInterface,
                                               MyPageStoryUseCaseInterface {
     
-    func fetchProfile(userId: Int) async -> Result<MyPage, Error>
+    func fetchProfile(userId: Int) async -> Result<Profile, Error>
     
 }

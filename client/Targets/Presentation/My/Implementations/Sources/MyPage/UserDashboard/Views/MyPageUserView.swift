@@ -18,6 +18,7 @@ protocol MyPageUserViewDelegate: AnyObject {
 struct MyPageUserViewModel {
     let profileImageURL: String?
     let follower: String
+    let isFollow: Bool
     let story: String
     let experience: String
 }
@@ -32,6 +33,11 @@ final class MyPageUserView: UIView {
         
         enum Stack {
             static let spacing: CGFloat = 10
+        }
+        
+        enum FollowButton {
+            static let unFollow = "팔로우"
+            static let following = "팔로잉"
         }
     }
     
@@ -76,13 +82,18 @@ final class MyPageUserView: UIView {
     
     private lazy var followButton: UIButton = {
         let button = UIButton(configuration: .filled())
-        button.tintColor = .hpRed3
-        button.configuration?.title = "팔로우"
+        button.configuration?.title = Constant.FollowButton.unFollow
+        button.configuration?.baseBackgroundColor = .hpRed3
+        button.configuration?.baseForegroundColor = .hpWhite
         button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
             var transform = transform
             transform.font = .captionBold
             return transform
         }
+        button.clipsToBounds = true
+        button.layer.borderColor = UIColor.hpRed3.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = Constants.cornerRadiusMedium
         button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -134,12 +145,16 @@ final class MyPageUserView: UIView {
         if let profileImageURL = model.profileImageURL,
            !profileImageURL.isEmpty {
             profileImageView.load(from: model.profileImageURL)
-        } else {
-            profileImageView.image = .profileDefault
-        }
+        } else { profileImageView.image = .profileDefault }
+        
+        updateFollowButton(model.isFollow)
         followerView.updateContent(model.follower)
         storyView.updateContent(model.story)
         experienceView.updateContent(model.experience)
+    }
+    
+    func updateFollowButton(_ isFollow: Bool) {
+        isFollow ? updateFollowing() : updateUnFollow()
     }
     
     func setMyProfile() {
@@ -181,6 +196,18 @@ private extension MyPageUserView {
             containerContentStackView.centerYAnchor.constraint(equalTo: profileStackView.centerYAnchor),
             containerContentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+    }
+    
+    private func updateUnFollow() {
+        followButton.configuration?.title = Constant.FollowButton.unFollow
+        followButton.configuration?.baseBackgroundColor = .hpRed3
+        followButton.configuration?.baseForegroundColor = .hpWhite
+    }
+    
+    private func updateFollowing() {
+        followButton.configuration?.title = Constant.FollowButton.following
+        followButton.configuration?.baseBackgroundColor = .hpWhite
+        followButton.configuration?.baseForegroundColor = .hpRed3
     }
     
 }

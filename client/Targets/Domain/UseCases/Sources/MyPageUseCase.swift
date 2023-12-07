@@ -12,10 +12,10 @@ import DomainEntities
 import DomainInterfaces
 
 public final class MyPageUseCase: MyPageUseCaseInterface {
-    
+
     public var hasMore: Bool = false
     
-    public var profilePublisher: AnyPublisher<MyPageProfile, Never> {
+    public var profilePublisher: AnyPublisher<Profile, Never> {
         return profileSubject.eraseToAnyPublisher()
     }
     
@@ -25,7 +25,7 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
     
     private let repository: MyPageRepositoryInterface
     private let storyListSubject = PassthroughSubject<[MyPageStory], Never>()
-    private let profileSubject = PassthroughSubject<MyPageProfile, Never>()
+    private let profileSubject = PassthroughSubject<Profile, Never>()
     private var storyOffset = 0
     private let pageLimit = 10
     
@@ -33,15 +33,15 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         self.repository = repository
     }
     
-    public func fetchMyProfile() async -> Result<MyPage, Error> {
+    public func fetchMyProfile() async -> Result<Profile, Error> {
         let result = await repository.fetchMyProfile()
         updateProfile(result)
         updateStoryList(result)
         return result
     }
     
-    public func fetchProfile(userId: Int) async -> Result<MyPage, Error> {
-        let result = await repository.fetchProfile(userId: userId)
+    public func fetchProfile(userId: Int) async -> Result<Profile, Error> {
+        let result = await repository.fetchUserProfile(userId: userId)
         updateProfile(result)
         updateStoryList(result)
         return result
@@ -69,29 +69,16 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         return result
     }
     
-    private func updateProfile(_ result: Result<MyPage, Error>) {
+    private func updateProfile(_ result: Result<Profile, Error>) {
         switch result {
-        case .success(let page):
-            let profile = MyPageProfile(
-                userId: page.userId,
-                userName: page.userName,
-                profileImageURL: page.profileImageURL,
-                temperature: page.temperature,
-                temperatureFeeling: page.temperatureFeeling,
-                followerCount: page.followerCount,
-                storyCount: page.storyCount,
-                experience: page.experience,
-                maxExperience: page.maxExperience,
-                mainBadge: page.mainBadge
-            )
+        case let .success(profile):
             profileSubject.send(profile)
-            
         case .failure:
             return
         }
     }
     
-    private func updateStoryList(_ result: Result<MyPage, Error>) {
+    private func updateStoryList(_ result: Result<Profile, Error>) {
         switch result {
         case .success(let page):
             let storyList: [MyPageStory] = page.stories.map { story in
@@ -111,17 +98,25 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         }
     }
     
-    public func fetchUserMedtaData() async -> Result<UserProfileMetaData, Error> {
+    public func fetchUserMedtaData() async -> Result<ProfileUpdateMetaData, Error> {
         await repository.fetchUserMedtaData()
     }
     
     
-    public func fetchUserInfo(userUpdate: UserUpdateContent) async -> Result<Int, Error> {
-        await repository.fetchUserInfo(userUpdate: userUpdate)
+    public func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error> {
+        await repository.patchUserUpdate(userUpdate: userUpdate)
     }
     
     public func requestResign(message: String) async -> Result<Void, Error> {
         await repository.requestResign(message: message)
+    }
+    
+    public func requestFollow(userId: Int) async -> Result<Void, Error> {
+        await repository.requestFollow(userId: userId)
+    }
+    
+    public func requestUnfollow(userId: Int) async -> Result<Void, Error> {
+        await repository.requestUnfollow(userId: userId)
     }
     
 }

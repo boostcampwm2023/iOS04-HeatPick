@@ -21,13 +21,13 @@ public final class MyPageRepository: MyPageRepositoryInterface {
         self.session = session
     }
     
-    public func fetchMyProfile() async -> Result<MyPage, Error> {
+    public func fetchMyProfile() async -> Result<Profile, Error> {
         let target = MyAPI.myProfile
         let request: Result<MyProfileResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
-    public func fetchProfile(userId: Int) async -> Result<MyPage, Error> {
+    public func fetchUserProfile(userId: Int) async -> Result<Profile, Error> {
         let target = MyAPI.profile(id: userId)
         let request: Result<MyProfileResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
@@ -39,13 +39,13 @@ public final class MyPageRepository: MyPageRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
-    public func fetchUserMedtaData() async -> Result<UserProfileMetaData, Error> {
+    public func fetchUserMedtaData() async -> Result<ProfileUpdateMetaData, Error> {
         let target = MyAPI.userMetaData
         let request: Result<UserMetaDataResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
-    public func fetchUserInfo(userUpdate: UserUpdateContent) async -> Result<Int, Error> {
+    public func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error> {
         let target = MyAPI.userUpdate(content: userUpdate)
         let request: Result<UserUpdateResponseDTO, Error> = await session.request(target)
         return request.map { $0.userId }
@@ -53,6 +53,16 @@ public final class MyPageRepository: MyPageRepositoryInterface {
     
     public func requestResign(message: String) async -> Result<Void, Error> {
         let target = MyAPI.resign(message: message)
+        return await session.request(target)
+    }
+    
+    public func requestFollow(userId: Int) async -> Result<Void, Error> {
+        let target = MyAPI.follow(id: userId)
+        return await session.request(target)
+    }
+    
+    public func requestUnfollow(userId: Int) async -> Result<Void, Error> {
+        let target = MyAPI.unfollow(id: userId)
         return await session.request(target)
     }
 

@@ -52,7 +52,7 @@ final class AppRootComponent: Component<AppRootDependency>,
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
     let storyUseCase: StoryUseCaseInterface
     let myPageUseCase: MyPageUseCaseInterface
-    let userProfileUseCase: UserProfileUserCaseInterface
+    let userProfileUseCase: UserProfileUseCaseInterface
     let searchUseCase: SearchUseCaseInterface
     let followingUseCase: FollowingUseCaseInterface
     let notificationPermissionUseCase: NotificationPermissionUseCaseInterface = PushService.shared

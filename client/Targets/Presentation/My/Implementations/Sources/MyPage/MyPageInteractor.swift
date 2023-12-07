@@ -43,7 +43,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     private let dependency: MyPageInteractorDependency
     private let cancelBag = CancelBag()
-    private var myPage: MyPage?
+    private var myPage: Profile?
     
     init(
         presenter: MyPagePresentable,
@@ -136,7 +136,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     func updateUser(model: UserUpdateContent) {
         Task { [weak self] in
             guard let self else { return }
-            await dependency.myPageUseCase.fetchUserInfo(userUpdate: model)
+            await dependency.myPageUseCase.patchUserUpdate(userUpdate: model)
                 .onSuccess { _ in
                     self.fetchProfile()
                 }

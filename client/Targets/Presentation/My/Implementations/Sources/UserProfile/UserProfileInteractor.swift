@@ -23,7 +23,7 @@ protocol UserProfilePresentable: Presentable {
 
 protocol UserProfileInteractorDependency: AnyObject {
     var userId: Int { get }
-    var userProfileUseCase: UserProfileUserCaseInterface { get }
+    var userProfileUseCase: UserProfileUseCaseInterface { get }
 }
 
 final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>, UserProfilePresentableListener, UserProfileInteractable {
@@ -33,7 +33,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     
     private let dependency: UserProfileInteractorDependency
     private let cancelBag = CancelBag()
-    private var myPage: MyPage?
+    private var myPage: Profile?
     
     init(
         presenter: UserProfilePresentable,
@@ -77,7 +77,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
         router?.attachStoryDetail(id: id)
     }
     
-    private func fetchProfile() {
+    func fetchProfile() {
         Task { [weak self] in
             guard let self else { return }
             await dependency.userProfileUseCase
@@ -98,11 +98,6 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     
     func storyDidDelete() {
         router?.detachStoryDetail()
-    }
-    
-    // TODO: 팔로우 버튼
-    func followButtonDidTap() {
-        
     }
         
 }

@@ -16,12 +16,9 @@ protocol MyPageUserDashboardRouting: ViewableRouting {
     func setMyProfile()
 }
 
-protocol ProfileUserDashboardPresentable: Presentable {
-    func setup(model: MyPageUserDashboardViewControllerModel)
-}
-
-protocol MyPageUserDashboardPresentable: ProfileUserDashboardPresentable {
+protocol MyPageUserDashboardPresentable: Presentable {
     var myProfileListener: MyPageUserDashboardPresentableListener? { get set }
+    func setup(model: MyProfileViewControllerModel)
 }
 
 protocol MyPageUserDashboardListener: AnyObject {
@@ -55,7 +52,7 @@ final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashb
             .profilePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profile in
-                self?.presenter.setup(model: profile.toModel())
+                self?.presenter.setup(model: MyProfile(profile: profile).toModel())
             }
             .store(in: &cancellables)
     }
@@ -70,9 +67,9 @@ final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashb
     
 }
 
-private extension MyPageProfile {
+private extension MyProfile {
     
-    func toModel() -> MyPageUserDashboardViewControllerModel {
+    func toModel() -> MyProfileViewControllerModel {
         return .init(
             userName: userName,
             profileImageURL: profileImageURL,

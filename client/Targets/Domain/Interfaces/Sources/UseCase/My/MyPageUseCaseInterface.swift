@@ -12,10 +12,10 @@ import DomainEntities
 public protocol MyPageUseCaseInterface: MyPageProfileUseCaseInterface,
                                         MyPageStoryUseCaseInterface,
                                         MyPageUpdateUserUseCaseInterface,
-                                        UserProfileUserCaseInterface,
+                                        UserProfileUseCaseInterface,
                                         MyProfileSettingUseCaseInterface {
     
-    func fetchMyProfile() async -> Result<MyPage, Error>
-    func fetchUserInfo(userUpdate: UserUpdateContent) async -> Result<Int, Error>
+    func fetchMyProfile() async -> Result<Profile, Error>
+    func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error>
     
 }
