@@ -11,12 +11,18 @@ import PhotosUI
 
 import DesignKit
 
+protocol ImageFieldDelegate: AnyObject {
+    func imageDidAdd()
+    func imageDidRemove()
+}
+
 final class ImageField: UIView {
     
     var images: [Data] {
         stackView.arrangedSubviews.compactMap { ($0 as? ImageSelector)?.image }
     }
     
+    weak var delegate: ImageFieldDelegate?
     weak var presenterDelegate: ImageSelectorPickerPresenterDelegate? {
         didSet {
             setPresenter()
@@ -111,10 +117,12 @@ extension ImageField: ImageSelectorDelegate {
     
     func imageDidAdd() {
         addImageSelector()
+        delegate?.imageDidAdd()
     }
     
     func imageDidRemove(from selector: ImageSelector) {
         selector.removeFromSuperview()
+        delegate?.imageDidRemove()
         
         if let selector = stackView.arrangedSubviews.last as? ImageSelector,
                 selector.isSelected {
