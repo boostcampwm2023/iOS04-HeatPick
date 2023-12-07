@@ -218,7 +218,7 @@ private extension SimpleUserProfileView {
 private extension SimpleUserProfileView {
     
     @objc func profileDidTap() {
-        guard let userId else { return }
+        guard let userId, .me != userStatus else { return }
         delegate?.profileDidTap(userId: userId)
     }
     
