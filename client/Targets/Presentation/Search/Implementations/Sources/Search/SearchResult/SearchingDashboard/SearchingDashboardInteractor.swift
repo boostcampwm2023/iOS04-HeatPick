@@ -24,7 +24,7 @@ protocol SearchingDashboardPresentable: Presentable {
 
 protocol SearchingDashboardListener: AnyObject {
     var editingSearchTextPublisher: AnyPublisher<String, Never> { get }
-    func showSearchAfterDashboard(_ searchText: String)
+    func showSearchAfterDashboard(searchText: String)
 }
 
 protocol SearchingDashboardInteractorDependency: AnyObject {
@@ -39,7 +39,7 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     private let dependecy: SearchingDashboardInteractorDependency
     
     private var cancellables: Set<AnyCancellable> = []
-    private var cancelTaskBag: CancelBag = .init()
+    private var cancelBag: CancelBag = .init()
     
     init(
         presenter: SearchingDashboardPresentable,
@@ -65,16 +65,16 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
                         .onFailure { error in
                             Log.make(message: error.localizedDescription, log: .network)
                         }
-                }.store(in: cancelTaskBag)
+                }.store(in: cancelBag)
             }.store(in: &cancellables)
     }
     
     override func willResignActive() {
         super.willResignActive()
-        cancelTaskBag.cancel()
+        cancelBag.cancel()
     }
     
     func didTapRecommendText(_ recommendText: String) {
-        listener?.showSearchAfterDashboard(recommendText)
+        listener?.showSearchAfterDashboard(searchText: recommendText)
     }
 }

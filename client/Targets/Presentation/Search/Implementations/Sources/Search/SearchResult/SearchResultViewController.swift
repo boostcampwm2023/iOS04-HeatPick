@@ -21,7 +21,7 @@ protocol SearchResultPresentableListener: AnyObject {
     
     func showSearchBeforeDashboard()
     func showSearchingDashboard()
-    func showSearchAfterDashboard(_ searchText: String)
+    func showSearchAfterDashboard(searchText: String)
     
     func detachSearchResult()
 }
@@ -113,7 +113,7 @@ extension SearchResultViewController: SearchNavigationViewDelegate {
     }
     
     func showSearchAfterDashboard(_ searchText: String) {
-        listener?.showSearchAfterDashboard(searchText)
+        listener?.showSearchAfterDashboard(searchText: searchText)
     }
     
     func didTapBack() {

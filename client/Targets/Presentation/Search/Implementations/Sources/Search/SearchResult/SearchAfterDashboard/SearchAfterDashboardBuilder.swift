@@ -7,29 +7,6 @@
 //
 
 import ModernRIBs
-import DomainInterfaces
-
-final class SearchAfterDashboardComponent: Component<SearchAfterDashboardDependency>,
-                                           SearchAfterDashboardInteractorDependency,
-                                           SearchAfterLocalDashboardDependency,
-                                           SearchAfterStoryDashboardDependency,
-                                           SearchAfterUserDashboardDependency {
-    var searhResultSearchAfterUseCase: SearhResultSearchAfterUseCaseInterface { dependency.searhResultSearchAfterUseCase }
-}
-
-final class SearchAfterDashboardRouterComponent: SearchAfterDashboardRouterDependency {
-    
-    let searchAfterLocalDashboardBuilder: SearchAfterLocalDashboardBuildable
-    let searchAfterStoryDashboardBuilder: SearchAfterStoryDashboardBuildable
-    let searchAfterUserDashboardBuilder: SearchAfterUserDashboardBuildable
-    
-    init(component: SearchAfterDashboardComponent) {
-        self.searchAfterLocalDashboardBuilder = SearchAfterLocalDashboardBuilder(dependency: component)
-        self.searchAfterStoryDashboardBuilder = SearchAfterStoryDashboardBuilder(dependency: component)
-        self.searchAfterUserDashboardBuilder = SearchAfterUserDashboardBuilder(dependency: component)
-    }
-    
-}
 
 protocol SearchAfterDashboardBuildable: Buildable {
     func build(withListener listener: SearchAfterDashboardListener) -> SearchAfterDashboardRouting
@@ -53,4 +30,5 @@ final class SearchAfterDashboardBuilder: Builder<SearchAfterDashboardDependency>
             dependency: routerComponent
         )
     }
+    
 }

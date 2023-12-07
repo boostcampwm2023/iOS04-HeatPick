@@ -96,7 +96,6 @@ final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageU
         
         editButton.do { button in
             button.setTitle("변경하기", for: .normal)
-            button.clipsToBounds = true
             button.layer.cornerRadius = Constants.cornerRadiusMedium
             button.addTarget(self, action: #selector(didTapEditButton), for: .touchUpInside)
             button.translatesAutoresizingMaskIntoConstraints = false

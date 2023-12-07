@@ -24,14 +24,14 @@ protocol SearchBeforeDashboardPresentable: Presentable {
 
 protocol SearchBeforeDashboardListener: AnyObject {
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
-    func showSearchAfterDashboard(_ searchText: String)
+    func showSearchAfterDashboard(searchText: String)
+    func showSearchAfterDashboard(categoryId: Int)
 }
 
 
 final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeDashboardPresentable>,
                                              SearchBeforeDashboardInteractable,
                                              SearchBeforeDashboardPresentableListener {
-
     
     
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { endEditingSearchTextSubject.eraseToAnyPublisher() }
@@ -62,8 +62,12 @@ final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeD
         router?.detachSearchBeforeCategoryDashboard()
     }
     
-    func showSearchAfterDashboard(_ searchText: String) {
-        listener?.showSearchAfterDashboard(searchText)
+    func showSearchAfterDashboard(searchText: String) {
+        listener?.showSearchAfterDashboard(searchText: searchText)
+    }
+    
+    func showSearchAfterDashboard(categoryId: Int) {
+        listener?.showSearchAfterDashboard(categoryId: categoryId)
     }
     
 }

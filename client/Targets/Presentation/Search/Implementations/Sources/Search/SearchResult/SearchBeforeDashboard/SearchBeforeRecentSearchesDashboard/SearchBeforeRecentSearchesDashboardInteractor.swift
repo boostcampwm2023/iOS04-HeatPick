@@ -25,7 +25,7 @@ protocol SearchBeforeRecentSearchesDashboardPresentable: Presentable {
 
 protocol SearchBeforeRecentSearchesDashboardListener: AnyObject {
     var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
-    func showSearchAfterDashboard(_ searchText: String)
+    func showSearchAfterDashboard(searchText: String)
 }
 
 protocol SearchBeforeRecentSearchesDashboardInteractorDependency: AnyObject {
@@ -67,7 +67,7 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
     }
     
     func didTapSearchBeforeRecentSearchesView(searchText: String) {
-        listener?.showSearchAfterDashboard(searchText)
+        listener?.showSearchAfterDashboard(searchText: searchText)
     }
     
 }

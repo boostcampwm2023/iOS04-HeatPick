@@ -6,8 +6,9 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import CoreKit
 import ModernRIBs
+
+import CoreKit
 import MyInterfaces
 import DomainEntities
 import DomainInterfaces
@@ -33,10 +34,6 @@ protocol MyPageRouting: ProfileRouting {
 
 protocol MyPagePresentable: Presentable {
     var myPageListener: MyPagePresentableListener? { get set }
-}
-
-protocol MyPageInteractorDependency: AnyObject {
-    var myPageUseCase: MyPageUseCaseInterface { get }
 }
 
 final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageInteractable, MyPagePresentableListener {
@@ -66,6 +63,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
     }
     
     func didTapSetting() {

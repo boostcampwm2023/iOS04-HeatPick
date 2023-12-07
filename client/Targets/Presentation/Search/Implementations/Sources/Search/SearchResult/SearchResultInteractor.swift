@@ -45,7 +45,7 @@ protocol SearchResultListener: AnyObject {
     func didTapUser(userId: Int)
 }
 
-final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable, SearchResultPresentableListener {
+final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable {
     
     weak var router: SearchResultRouting?
     weak var listener: SearchResultListener?
@@ -76,25 +76,17 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
         router?.detachSearchAfterDashboard()
     }
     
-    func detachSearchResult() {
-        listener?.detachSearchResult()
-    }
-    
-}
-
-extension SearchResultInteractor {
-    
-    func editing(_ text: String) {
-        editingSearchTextSubject.send(text)
-    }
-    
     func endEditing(_ text: String) {
         endEditingSearchTextSubject.send(text)
     }
     
 }
 
-extension SearchResultInteractor {
+extension SearchResultInteractor: SearchResultPresentableListener {
+    
+    func editing(_ text: String) {
+        editingSearchTextSubject.send(text)
+    }
     
     func showSearchBeforeDashboard() {
         router?.hideSearchingDashboard()
@@ -108,18 +100,32 @@ extension SearchResultInteractor {
         router?.showSearchingDashboard()
     }
     
-    func showSearchAfterDashboard(_ searchText: String) {
+    func showSearchAfterDashboard(searchText: String) {
         endEditing(searchText)
         presenter.setSearchText(searchText)
         router?.hideSearchBeforeDashboard()
         router?.hideSearchingDashboard()
         router?.showSearchAfterDashboard()
     }
+    
+    func detachSearchResult() {
+        listener?.detachSearchResult()
+    }
+    
+}
+
+// MARK: SearchBeforeDashboardListener
+extension SearchResultInteractor {
+    
+    // TODO: Category
+    func showSearchAfterDashboard(categoryId: Int) {
+        
+    }
 
 }
 
 
-// MARK: SearchAfter
+// MARK: SearchAfterDashboardListener
 extension SearchResultInteractor {
     
     func searchStorySeeAllDidTap(searchText: String) {
