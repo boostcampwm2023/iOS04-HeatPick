@@ -132,7 +132,7 @@ export class StoryService {
   }
 
   @Transactional()
-  public async delete(userId: number, storyId: number): Promise<void> {
+  public async delete(storyId: number): Promise<void> {
     await this.storyRepository.softDelete(storyId);
   }
 
