@@ -12,7 +12,7 @@ import CoreKit
 import DesignKit
 
 protocol SearchBeforeRecentSearchesDashboardPresentableListener: AnyObject {
-    func didTapSearchBeforeRecentSearchesView(searchText: String)
+    func recentSearchViewDidTap(_ recentSearch: String)
 }
 
 final class SearchBeforeRecentSearchesDashboardViewController: UIViewController, SearchBeforeRecentSearchesDashboardPresentable, SearchBeforeRecentSearchesDashboardViewControllable {
@@ -79,7 +79,7 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
         emptyView.isHidden = !isEmpty
         scrollView.isHidden = isEmpty
         models.forEach { model in
-            let contentView = SearchBeforeRecentSearchesView()
+            let contentView = SearchBeforeRecentSearchView()
             contentView.setup(model)
             contentView.delegate = self
             stackView.insertArrangedSubview(contentView, at: 0)
@@ -90,7 +90,7 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
     func append(model: String) {
         emptyView.isHidden = true
         scrollView.isHidden = false
-        let contentView = SearchBeforeRecentSearchesView()
+        let contentView = SearchBeforeRecentSearchView()
         contentView.setup(model)
         contentView.delegate = self
         stackView.insertArrangedSubview(contentView, at: 0)
@@ -130,10 +130,10 @@ private extension SearchBeforeRecentSearchesDashboardViewController {
     
 }
 
-extension SearchBeforeRecentSearchesDashboardViewController: searchBeforeRecentSearchesViewDelegate {
+extension SearchBeforeRecentSearchesDashboardViewController: searchBeforeRecentSearchViewDelegate {
     
-    func didTapSearchBeforeRecentSearchesView(searchText: String) {
-        listener?.didTapSearchBeforeRecentSearchesView(searchText: searchText)
+    func recentSearchViewDidTap(_ recentSearch: String) {
+        listener?.recentSearchViewDidTap(recentSearch)
     }
     
 }

@@ -17,11 +17,11 @@ protocol SearchBeforeCategoryDashboardRouting: ViewableRouting { }
 protocol SearchBeforeCategoryDashboardPresentable: Presentable {
     var listener: SearchBeforeCategoryDashboardPresentableListener? { get set }
     
-    func setup(models: [StoryCategory])
+    func setup(models: [SearchCategory])
 }
 
 protocol SearchBeforeCategoryDashboardListener: AnyObject {
-    func showSearchAfterDashboard(categoryId: Int)
+    func categoryViewDidTap(_ category: SearchCategory)
 }
 
 protocol SearchBeforeCategoryDashboardInteractorDependency: AnyObject {
@@ -48,17 +48,17 @@ final class SearchBeforeCategoryDashboardInteractor: PresentableInteractor<Searc
 
     override func didBecomeActive() {
         super.didBecomeActive()
-//        Task { [weak self] in
-//            guard let self else { return }
-//            await self.dependency.searchBeforeCategoryUseCase
-//                .fetchCategory()
-//                .onSuccess(on: .main, with: self) { this, models in
-//                    this.presenter.setup(models: models)
-//                }
-//                .onFailure { error in
-//                    Log.make(message: error.localizedDescription, log: .network)
-//                }
-//        }.store(in: cancelBag)
+        Task { [weak self] in
+            guard let self else { return }
+            await self.dependency.searchBeforeCategoryUseCase
+                .fetchCategory()
+                .onSuccess(on: .main, with: self) { this, models in
+                    this.presenter.setup(models: models)
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .network)
+                }
+        }.store(in: cancelBag)
     }
 
     override func willResignActive() {
@@ -66,8 +66,8 @@ final class SearchBeforeCategoryDashboardInteractor: PresentableInteractor<Searc
         cancelBag.cancel()
     }
 
-    func categoryViewDidTap(_ categoryId: Int) {
-        listener?.showSearchAfterDashboard(categoryId: categoryId)
+    func categoryViewDidTap(_ category: SearchCategory) {
+        listener?.categoryViewDidTap(category)
     }
     
 }

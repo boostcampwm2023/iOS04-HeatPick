@@ -52,8 +52,8 @@ public final class SearchUseCase: SearchUseCaseInterface {
         self.zoomLevel = zoomLevel
     }
     
-    public func fetchResult(searchText: String) async -> Result<SearchResult, Error> {
-        await repository.fetchSearchResult(searchText: searchText)
+    public func fetchSearchResult(search: SearchRequest) async -> Result<SearchResult, Error> {
+        await repository.fetchSearchResult(search: search)
     }
     
     public func fetchStory(searchText: String) async -> Result<[SearchStory], Error> {
@@ -99,6 +99,10 @@ public final class SearchUseCase: SearchUseCaseInterface {
                 recommendPlacesCurrentValue.send([])
             }
         }.store(in: cancelBag)
+    }
+    
+    public func fetchCategory() async -> Result<[SearchCategory], Error> {
+        await repository.fetchCategory()
     }
     
     public func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<[Place], Error> {

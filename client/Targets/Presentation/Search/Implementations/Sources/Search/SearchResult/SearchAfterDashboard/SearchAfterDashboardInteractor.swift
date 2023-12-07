@@ -30,7 +30,7 @@ protocol SearchAfterDashboardPresentable: Presentable {
 }
 
 protocol SearchAfterDashboardListener: AnyObject {
-    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
+    var endEditingSearchTextPublisher: AnyPublisher<SearchRequest, Never> { get }
     
     func searchStorySeeAllDidTap(searchText: String)
     func didTapStory(storyId: Int)
@@ -73,13 +73,14 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
         router?.attachSearchAfterUserDashboard()
         
         listener?.endEditingSearchTextPublisher
-            .sink { [weak self] searchText in
+            .sink { [weak self] searchRequest in
+                Log.make(message: "\(String(describing: self)) \(#function) \(searchRequest))", log: .default)
                 guard let self else { return }
                 Task {
                     await self.dependency.searhResultSearchAfterUseCase
-                        .fetchResult(searchText: searchText)
+                        .fetchSearchResult(search: searchRequest)
                         .onSuccess { searchResult in
-                            self.searchText = searchText
+                            self.searchText = searchRequest.searchText
                             self.searchResultStoriesSubject.send(searchResult.stories)
                             self.searchResultUsersSubject.send(searchResult.users)
                         }
@@ -91,7 +92,7 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
                 
                 Task {
                     await self.dependency.searhResultSearchAfterUseCase
-                        .fetchNaverLocal(query: searchText)
+                        .fetchNaverLocal(query: searchRequest.searchText ?? "")
                         .onSuccess { naverSearchLocals in
                             self.searchResultLocalsSubject.send(naverSearchLocals)
                         }

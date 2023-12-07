@@ -8,8 +8,8 @@
 
 import Foundation
 
-public protocol SearhResultSearchBeforeUseCaseInterface: SearchBeforeRecentSearchesUseCaseInterface, 
-                                                            SearchBeforeCategoryUseCaseInterface {
+public protocol SearhResultSearchBeforeUseCaseInterface: SearchBeforeRecentSearchesUseCaseInterface,
+                                                         SearchBeforeCategoryUseCaseInterface {
     
 }
 
