@@ -17,7 +17,7 @@ public struct CategoryResponseDTO: Decodable {
 
 public extension CategoryResponseDTO {
     
-    func toDomain() -> [StoryCategory] {
+    func toDomain() -> [SearchCategory] {
         categories.map { $0.toDomain() }
     }
     
@@ -38,8 +38,8 @@ public struct CategoryDTO: Decodable {
 
 public extension CategoryDTO {
     
-    func toDomain() -> StoryCategory {
-        .init(id: categoryId, title: categoryName)
+    func toDomain() -> SearchCategory {
+        .init(categoryId: categoryId, categoryName: categoryName)
     }
     
 }

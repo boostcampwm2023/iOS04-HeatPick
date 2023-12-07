@@ -7,10 +7,16 @@
 //
 
 import Foundation
+import DomainEntities
 
 public struct SearchResultRequestDTO: Encodable {
 
     let searchText: String?
     let categoryId: Int?
+    
+    init(_ request: SearchRequest) {
+        self.searchText = request.searchText
+        self.categoryId = request.categoryId
+    }
     
 }
