@@ -18,10 +18,12 @@ protocol StoryCreateSuccessPresentable: Presentable {
 }
 
 protocol StoryCreateSuccessListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func successConfirmButtonDidTap()
 }
 
-final class StoryCreateSuccessInteractor: PresentableInteractor<StoryCreateSuccessPresentable>, StoryCreateSuccessInteractable, StoryCreateSuccessPresentableListener {
+final class StoryCreateSuccessInteractor: PresentableInteractor<StoryCreateSuccessPresentable>,
+                                          StoryCreateSuccessInteractable,
+                                          StoryCreateSuccessPresentableListener {
 
     weak var router: StoryCreateSuccessRouting?
     weak var listener: StoryCreateSuccessListener?
@@ -41,5 +43,9 @@ final class StoryCreateSuccessInteractor: PresentableInteractor<StoryCreateSucce
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    func confirmButtonDidTap() {
+        listener?.successConfirmButtonDidTap()
     }
 }
