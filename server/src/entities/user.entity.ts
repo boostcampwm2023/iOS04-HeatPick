@@ -46,12 +46,12 @@ export class User {
   recentActive: Date;
 
   @OneToMany(() => Comment, (comment) => comment.user, { cascade: true })
-  comments: Comment;
+  comments: Promise<Comment[]>;
 
   @OneToMany(() => Badge, (badge) => badge.user, { cascade: true })
   badges: Promise<Badge[]>;
 
-  @OneToOne(() => Badge, (badge) => badge.representativeUser, { cascade: true })
+  @OneToOne(() => Badge, (badge) => badge.representativeUser)
   representativeBadge: Promise<Badge>;
 
   @ManyToMany(() => User, (user) => user.following)

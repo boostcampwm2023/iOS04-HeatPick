@@ -212,7 +212,14 @@ export class UserService {
 
   @Transactional()
   async resign(userId: number, message: string) {
-    return await this.userRepository.softDelete(userId);
+    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'comments'] });
+    user.badges = Promise.resolve([]);
+    user.representativeBadge = Promise.resolve(null);
+    user.comments = Promise.resolve([]);
+    user.stories = Promise.resolve([]);
+    await this.userRepository.save(user);
+
+    return await this.userRepository.remove(await this.userRepository.findOne({ where: { userId: userId } }));
   }
 
   @Transactional()
