@@ -10,10 +10,12 @@ import ModernRIBs
 import HomeInterfaces
 import DomainInterfaces
 import StoryInterfaces
+import MyInterfaces
 
 public protocol HomeDependency: Dependency {
     var homeUseCase: HomeUseCaseInterface { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
+    var userProfileBuilder: UserProfileBuildable { get }
 }
 
 final class HomeComponent: Component<HomeDependency>,
@@ -28,6 +30,7 @@ final class HomeComponent: Component<HomeDependency>,
     var followingUseCase: HomeFollowingUseCaseInterface { dependency.homeUseCase }
     var userRecommendUseCase: UserRecommendUseCaseInterface { dependency.homeUseCase }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
+    var userProfileBuilder: UserProfileBuildable { dependency.userProfileBuilder }
 }
 
 public final class HomeBuilder: Builder<HomeDependency>, HomeBuildable {
