@@ -8,60 +8,117 @@
 
 import ModernRIBs
 import UIKit
+import Combine
+import CoreKit
 import DomainEntities
+import BasePresentation
 
 protocol FollowingListPresentableListener: AnyObject {
     func didTapItem(at indexPath: IndexPath)
     func didTapOption(option: HomeFollowingSortOption)
     func willDisplay(at indexPath: IndexPath)
+    func didRefresh()
 }
 
-final class FollowingListViewController: UIViewController, FollowingListPresentable, FollowingListViewControllable {
+final class FollowingListViewController: BaseViewController, FollowingListPresentable, FollowingListViewControllable {
     
     weak var listener: FollowingListPresentableListener?
     
     private var models: [FollowingListCellModel] = []
     
-    private lazy var titleView: FollowingTitleView = {
-        let titleView = FollowingTitleView()
-        titleView.delegate = self
-        titleView.translatesAutoresizingMaskIntoConstraints = false
-        return titleView
-    }()
-    
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.backgroundColor = .white
-        tableView.register(FollowingListCell.self)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.contentInset = .zero
-        tableView.separatorStyle = .none
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
-    
-    private let separator: UIView = {
-        let view = UIView()
-        view.backgroundColor = .hpGray4
-        view.isHidden = true
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    private let titleView = FollowingTitleView()
+    private let refreshControl = UIRefreshControl()
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let emptyView = FollowingEmptyView()
+    private let separator = UIView()
     
     func setup(models: [FollowingListCellModel]) {
         self.models = models
         tableView.reloadData()
+        emptyView.stopLoading()
+        refreshControl.endRefreshing()
+        emptyView.isHidden = !models.isEmpty
     }
     
     func append(models: [FollowingListCellModel]) {
         self.models.append(contentsOf: models)
         tableView.reloadData()
+        refreshControl.endRefreshing()
+    }
+    
+    override func setupLayout() {
+        [titleView, separator, tableView, emptyView].forEach(view.addSubview)
+        
+        NSLayoutConstraint.activate([
+            titleView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            separator.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
+            separator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 1),
+            
+            tableView.topAnchor.constraint(equalTo: separator.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            emptyView.heightAnchor.constraint(equalTo: tableView.heightAnchor)
+        ])
+    }
+    
+    @objc private func refreshControlValueChanged() {
+        listener?.didRefresh()
+    }
+    
+    override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
+        titleView.do {
+            $0.delegate = self
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        refreshControl.do {
+            $0.backgroundColor = .hpWhite
+            $0.addTarget(self, action: #selector(refreshControlValueChanged), for: .valueChanged)
+        }
+        
+        tableView.do {
+            $0.backgroundColor = .hpWhite
+            $0.refreshControl = refreshControl
+            $0.register(FollowingListCell.self)
+            $0.delegate = self
+            $0.dataSource = self
+            $0.contentInset = .zero
+            $0.separatorStyle = .none
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        emptyView.do {
+            $0.backgroundColor = .hpWhite
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        separator.do {
+            $0.backgroundColor = .hpGray4
+            $0.isHidden = true
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    override func bind() {
+        emptyView.refreshTapPublisher
+            .withOnly(self)
+            .sink { this in
+                this.emptyView.startLoading()
+                this.listener?.didRefresh()
+            }
+            .store(in: &cancellables)
     }
     
 }
@@ -111,32 +168,6 @@ extension FollowingListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return nil
-    }
-    
-}
-
-private extension FollowingListViewController {
-    
-    func setupViews() {
-        view.backgroundColor = .hpWhite
-        
-        [titleView, separator, tableView].forEach(view.addSubview)
-        
-        NSLayoutConstraint.activate([
-            titleView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            
-            separator.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
-            separator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            separator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            separator.heightAnchor.constraint(equalToConstant: 1),
-            
-            tableView.topAnchor.constraint(equalTo: separator.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
     }
     
 }
