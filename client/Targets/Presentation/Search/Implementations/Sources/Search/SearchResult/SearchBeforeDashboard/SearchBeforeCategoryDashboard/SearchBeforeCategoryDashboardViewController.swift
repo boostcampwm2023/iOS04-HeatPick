@@ -15,7 +15,7 @@ import DesignKit
 import DomainEntities
 
 protocol SearchBeforeCategoryDashboardPresentableListener: AnyObject {
-    func categoryViewDidTap(_ categoryId: Int)
+    func categoryViewDidTap(_ category: SearchCategory)
 }
 
 final class SearchBeforeCategoryDashboardViewController: UIViewController, SearchBeforeCategoryDashboardPresentable, SearchBeforeCategoryDashboardViewControllable {
@@ -88,7 +88,7 @@ final class SearchBeforeCategoryDashboardViewController: UIViewController, Searc
         setupViews()
     }
 
-    func setup(models: [StoryCategory]) {
+    func setup(models: [SearchCategory]) {
         let isEmpty = models.isEmpty
         emptyView.isHidden = !isEmpty
         scrollView.isHidden = isEmpty
@@ -132,9 +132,9 @@ private extension SearchBeforeCategoryDashboardViewController {
 }
 
 extension SearchBeforeCategoryDashboardViewController: SearchBeforeCategoryViewDelegate {
-    func categoryViewDidTap(_ categoryId: Int) {
-        listener?.categoryViewDidTap(categoryId)
+    
+    func categoryViewDidTap(_ category: SearchCategory) {
+        listener?.categoryViewDidTap(category)
     }
 
-    
 }

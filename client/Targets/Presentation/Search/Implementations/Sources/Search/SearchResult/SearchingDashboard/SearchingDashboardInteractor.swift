@@ -24,7 +24,7 @@ protocol SearchingDashboardPresentable: Presentable {
 
 protocol SearchingDashboardListener: AnyObject {
     var editingSearchTextPublisher: AnyPublisher<String, Never> { get }
-    func showSearchAfterDashboard(searchText: String)
+    func didTapRecommendText(_ recommendText: String)
 }
 
 protocol SearchingDashboardInteractorDependency: AnyObject {
@@ -75,6 +75,6 @@ final class SearchingDashboardInteractor: PresentableInteractor<SearchingDashboa
     }
     
     func didTapRecommendText(_ recommendText: String) {
-        listener?.showSearchAfterDashboard(searchText: recommendText)
+        listener?.didTapRecommendText(recommendText)
     }
 }

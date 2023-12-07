@@ -9,13 +9,13 @@
 import UIKit
 import DesignKit
 
-protocol searchBeforeRecentSearchesViewDelegate: AnyObject {
-    func didTapSearchBeforeRecentSearchesView(searchText: String)
+protocol searchBeforeRecentSearchViewDelegate: AnyObject {
+    func recentSearchViewDidTap(_ recentSearch: String)
 }
 
-final class SearchBeforeRecentSearchesView: UIView {
+final class SearchBeforeRecentSearchView: UIView {
     
-    weak var delegate: searchBeforeRecentSearchesViewDelegate?
+    weak var delegate: searchBeforeRecentSearchViewDelegate?
     
     private enum Constant {
         static let topOffset: CGFloat = 5
@@ -24,7 +24,7 @@ final class SearchBeforeRecentSearchesView: UIView {
         static let trailingOffset: CGFloat = -leadingOffset
     }
     
-    private var searchText: String?
+    private var recentSearch: String?
     
     private let titleLabel: UILabel = {
        let label = UILabel()
@@ -50,14 +50,14 @@ final class SearchBeforeRecentSearchesView: UIView {
     }
 
     
-    func setup(_ searchText: String) {
-        self.searchText = searchText
-        titleLabel.text = searchText
+    func setup(_ recentSearch: String) {
+        self.recentSearch = recentSearch
+        titleLabel.text = recentSearch
     }
     
 }
 
-private extension SearchBeforeRecentSearchesView {
+private extension SearchBeforeRecentSearchView {
     
     func setupViews() {
         addSubview(titleLabel)
@@ -86,11 +86,11 @@ private extension SearchBeforeRecentSearchesView {
 
 }
 
-private extension SearchBeforeRecentSearchesView {
+private extension SearchBeforeRecentSearchView {
     
     @objc func didTapSearchBeforeRecentSearchesView() {
-        guard let searchText else { return }
-        delegate?.didTapSearchBeforeRecentSearchesView(searchText: searchText)
+        guard let recentSearch else { return }
+        delegate?.recentSearchViewDidTap(recentSearch)
     }
     
 }

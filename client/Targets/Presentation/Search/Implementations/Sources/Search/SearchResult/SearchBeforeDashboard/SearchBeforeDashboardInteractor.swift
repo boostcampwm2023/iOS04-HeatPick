@@ -9,6 +9,7 @@
 import Combine
 import ModernRIBs
 import CoreKit
+import DomainEntities
 import DomainInterfaces
 
 protocol SearchBeforeDashboardRouting: ViewableRouting {
@@ -23,19 +24,17 @@ protocol SearchBeforeDashboardPresentable: Presentable {
 }
 
 protocol SearchBeforeDashboardListener: AnyObject {
-    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { get }
-    func showSearchAfterDashboard(searchText: String)
-    func showSearchAfterDashboard(categoryId: Int)
+    var endEditingSearchTextPublisher: AnyPublisher<SearchRequest, Never> { get }
+    func recentSearchViewDidTap(_ recentSearch: String)
+    func categoryViewDidTap(_ category: SearchCategory)
 }
-
 
 final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeDashboardPresentable>,
                                              SearchBeforeDashboardInteractable,
                                              SearchBeforeDashboardPresentableListener {
     
-    
-    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { endEditingSearchTextSubject.eraseToAnyPublisher() }
-    private var endEditingSearchTextSubject: PassthroughSubject<String, Never> = .init()
+    var endEditingSearchTextPublisher: AnyPublisher<String?, Never> { endEditingSearchTextSubject.eraseToAnyPublisher() }
+    private var endEditingSearchTextSubject: PassthroughSubject<String?, Never> = .init()
     private var cancellables = Set<AnyCancellable>()
     
     weak var router: SearchBeforeDashboardRouting?
@@ -52,8 +51,10 @@ final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeD
         router?.attachSearchBeforeCategoryDashboard()
         
         listener?.endEditingSearchTextPublisher
-            .sink(receiveValue: endEditingSearchTextSubject.send)
-            .store(in: &cancellables)
+            .sink { [weak self] searchRequest in
+                guard let self else { return }
+                self.endEditingSearchTextSubject.send(searchRequest.searchText)
+            }.store(in: &cancellables)
     }
     
     override func willResignActive() {
@@ -62,12 +63,12 @@ final class SearchBeforeDashboardInteractor: PresentableInteractor<SearchBeforeD
         router?.detachSearchBeforeCategoryDashboard()
     }
     
-    func showSearchAfterDashboard(searchText: String) {
-        listener?.showSearchAfterDashboard(searchText: searchText)
+    func recentSearchViewDidTap(_ recentSearch: String) {
+        listener?.recentSearchViewDidTap(recentSearch)
     }
     
-    func showSearchAfterDashboard(categoryId: Int) {
-        listener?.showSearchAfterDashboard(categoryId: categoryId)
+    func categoryViewDidTap(_ category: SearchCategory) {
+        listener?.categoryViewDidTap(category)
     }
     
 }

@@ -10,9 +10,8 @@ import UIKit
 import DesignKit
 import DomainEntities
 
-// TODO: CategoryId 넘겨주어야 함
 protocol SearchBeforeCategoryViewDelegate: AnyObject {
-    func categoryViewDidTap(_ categoryId: Int)
+    func categoryViewDidTap(_ category: SearchCategory)
 }
 
 final class SearchBeforeCategoryView: UIView {
@@ -25,9 +24,9 @@ final class SearchBeforeCategoryView: UIView {
         static let bottomOffset: CGFloat = -topOffset
     }
     
-    private var categoryId: Int?
+    private var category: SearchCategory?
     
-    private let titleLabel: UILabel = {
+    private let categoryNameLabel: UILabel = {
         let label = UILabel()
         label.font = .bodySemibold
         label.text = "카테고리"
@@ -59,9 +58,9 @@ final class SearchBeforeCategoryView: UIView {
         setupView()
     }
     
-    func setup(_ model: StoryCategory) {
-        self.categoryId = model.id
-        titleLabel.text = model.title
+    func setup(_ model: SearchCategory) {
+        self.category = model
+        categoryNameLabel.text = model.categoryName
     }
     
 }
@@ -69,14 +68,14 @@ final class SearchBeforeCategoryView: UIView {
 private extension SearchBeforeCategoryView {
     
     func setupView() {
-        [titleLabel, descriptionLabel].forEach { addSubview($0) }
+        [categoryNameLabel, descriptionLabel].forEach { addSubview($0) }
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
+            categoryNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
+            categoryNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            categoryNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             
-            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
+            descriptionLabel.topAnchor.constraint(equalTo: categoryNameLabel.bottomAnchor, constant: Constant.spacing),
             descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
             descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomOffset),
@@ -91,7 +90,7 @@ private extension SearchBeforeCategoryView {
         
         let tapGesture = UITapGestureRecognizer(
             target: self,
-            action: #selector(didTapSearchBeforeCategoryView)
+            action: #selector(categoryViewDidTap)
         )
         addGestureRecognizer(tapGesture)
     }
@@ -100,9 +99,9 @@ private extension SearchBeforeCategoryView {
 
 private extension SearchBeforeCategoryView {
     
-    @objc func didTapSearchBeforeCategoryView() {
-        guard let categoryId else { return }
-        delegate?.categoryViewDidTap(categoryId)
+    @objc func categoryViewDidTap() {
+        guard let category else { return }
+        delegate?.categoryViewDidTap(category)
     }
     
 }

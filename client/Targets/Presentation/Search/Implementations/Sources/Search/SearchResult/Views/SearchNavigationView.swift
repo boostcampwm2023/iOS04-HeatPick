@@ -7,9 +7,10 @@
 //
 
 import UIKit
+
 import CoreKit
-import Combine
 import DesignKit
+import DomainEntities
 
 public protocol SearchNavigationViewDelegate: AnyObject {
     func didTapBack()
@@ -41,18 +42,17 @@ public final class SearchNavigationView: UIView {
         return button
     }()
     
-    private lazy var searchTextField: SearchTextField = {
-        let textField = SearchTextField()
-        textField.placeholder = Constant.searchTextFieldPlaceholder
+    private lazy var searchTextField: UISearchTextField = {
+        let textField = UISearchTextField()
         textField.delegate = self
-        textField.returnKeyType = .done
-        textField.clipsToBounds = true
-        textField.layer.cornerRadius = Constants.cornerRadiusMedium
         textField.addTarget(self, action: #selector(searchTextFieldValueChanged), for: .editingChanged)
-        textField.setContentHuggingPriority(.init(200), for: .horizontal)
-        textField.autocorrectionType = .no
-        textField.spellCheckingType = .no
+        textField.placeholder = Constant.searchTextFieldPlaceholder
+        textField.backgroundColor = .hpWhite
+        textField.returnKeyType = .search
         textField.clearButtonMode = .always
+        textField.spellCheckingType = .no
+        textField.autocorrectionType = .no
+        textField.tokenBackgroundColor = .hpBlack
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -70,6 +70,12 @@ public final class SearchNavigationView: UIView {
     func setSearchText(_ searchText: String) {
         searchTextField.text = searchText
         searchTextField.resignFirstResponder()
+    }
+    
+    func setCategory(_ category: SearchCategory) {
+        let token = UISearchToken(icon: nil, text: category.categoryName)
+        token.representedObject = category
+        searchTextField.tokens = [token]
     }
     
 }
@@ -99,7 +105,7 @@ private extension SearchNavigationView {
         delegate?.didTapBack()
     }
     
-    @objc func searchTextFieldValueChanged(_ sender: UITextField) {
+    @objc func searchTextFieldValueChanged(_ sender: UISearchTextField) {
         guard let searchText = sender.text else { return }
         delegate?.editing(searchText)
     }
@@ -114,7 +120,7 @@ extension SearchNavigationView: UITextFieldDelegate {
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         let searchText = textField.text ?? ""
-        if searchText.isEmpty {
+        if searchText.isEmpty && searchTextField.tokens.isEmpty {
             delegate?.showSearchBeforeDashboard()
         } else {
             delegate?.showSearchAfterDashboard(searchText)
@@ -125,5 +131,5 @@ extension SearchNavigationView: UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
-
+    
 }

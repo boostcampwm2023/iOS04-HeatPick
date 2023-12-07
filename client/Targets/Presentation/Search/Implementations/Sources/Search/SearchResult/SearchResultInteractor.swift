@@ -8,9 +8,11 @@
 
 
 import Combine
-import ModernRIBs
-import CoreKit
 
+import ModernRIBs
+
+import CoreKit
+import DomainEntities
 
 protocol SearchResultRouting: ViewableRouting {
     func attachSearchBeforeDashboard()
@@ -33,6 +35,7 @@ protocol SearchResultPresentable: Presentable {
     var listener: SearchResultPresentableListener? { get set }
     
     func setSearchText(_ searchText: String)
+    func setCategory(_ category: SearchCategory)
 }
 
 protocol SearchResultListener: AnyObject { 
@@ -51,11 +54,12 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
     weak var listener: SearchResultListener?
     
     var editingSearchTextPublisher: AnyPublisher<String, Never> { editingSearchTextSubject.eraseToAnyPublisher() }
-    var endEditingSearchTextPublisher: AnyPublisher<String, Never> { endEditingSearchTextSubject.eraseToAnyPublisher() }
+    var endEditingSearchTextPublisher: AnyPublisher<SearchRequest, Never> { endEditingSearchTextSubject.eraseToAnyPublisher() }
     
     private var editingSearchTextSubject: PassthroughSubject<String, Never> = .init()
-    private var endEditingSearchTextSubject: PassthroughSubject<String, Never> = .init()
+    private var endEditingSearchTextSubject: PassthroughSubject<SearchRequest, Never> = .init()
     
+    private var searchRequest: SearchRequest = .init(searchText: nil, categoryId: nil)
     
     override init(presenter: SearchResultPresentable) {
         super.init(presenter: presenter)
@@ -76,8 +80,9 @@ final class SearchResultInteractor: PresentableInteractor<SearchResultPresentabl
         router?.detachSearchAfterDashboard()
     }
     
-    func endEditing(_ text: String) {
-        endEditingSearchTextSubject.send(text)
+    func endEditing(_ searchText: String) {
+        searchRequest.update(searchText: searchText)
+        endEditingSearchTextSubject.send(searchRequest)
     }
     
 }
@@ -117,11 +122,25 @@ extension SearchResultInteractor: SearchResultPresentableListener {
 // MARK: SearchBeforeDashboardListener
 extension SearchResultInteractor {
     
-    // TODO: Category
-    func showSearchAfterDashboard(categoryId: Int) {
-        
+    func categoryViewDidTap(_ category: SearchCategory) {
+        presenter.setCategory(category)
+        searchRequest.update(categoryId: category.categoryId)
     }
+    
+    func recentSearchViewDidTap(_ recentSearch: String) {
+        showSearchAfterDashboard(searchText: recentSearch)
+    }
+    
 
+}
+
+// MARK: SearchingDashboardListener {
+extension SearchResultInteractor {
+    
+    func didTapRecommendText(_ recommendText: String) {
+        showSearchAfterDashboard(searchText: recommendText)
+    }
+    
 }
 
 
