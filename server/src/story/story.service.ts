@@ -26,6 +26,7 @@ import { StoryCreateResponseDto } from './dto/response/story-create-response.dto
 import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { ImageUnhealthyException } from 'src/exception/custom.exception/image.unhealty.exception';
+import { strToEmoji } from '../util/util.string.to.badge.content';
 
 dotenv.config();
 
@@ -99,7 +100,7 @@ export class StoryService {
     await this.storyRepository.save(story);
 
     if (badge) await this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: userId, exp: 10 });
-    return { storyId: story.storyId, badge: { badgeName: badge.badgeName, prevExp: badge.badgeExp - 10, nowExp: badge.badgeExp } };
+    return { storyId: story.storyId, badge: { badgeName: `${strToEmoji[story.badge.badgeName]}${story.badge.badgeName}`, prevExp: badge.badgeExp - 10, nowExp: badge.badgeExp } };
   }
 
   @Transactional()
