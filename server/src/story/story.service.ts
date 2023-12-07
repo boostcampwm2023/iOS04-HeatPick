@@ -151,7 +151,7 @@ export class StoryService {
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number): Promise<StoryResultDto[]> {
-    const stories = await this.storyRepository.find({ relations: ['user', 'category'] });
+    const stories = await this.storyRepository.createQueryBuilder('story').leftJoinAndSelect('story.user', 'user').leftJoinAndSelect('story.category', 'category').cache(30000).getMany();
 
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;
@@ -182,13 +182,7 @@ export class StoryService {
 
   async getRecommendedStory(offset: number, limit: number): Promise<any[]> {
     try {
-      const stories = await this.storyRepository.find({
-        order: {
-          likeCount: 'DESC',
-        },
-        relations: ['user', 'user.profileImage', 'storyImages', 'category'],
-      });
-
+      const stories = await this.storyRepository.createQueryBuilder('story').where('story.likeCount + story.commentCount >= :likeCommentCount').setParameter('likeCommentCount', 10).cache(30000).orderBy('story.likeCount', 'DESC').limit(20).getMany();
       const storyArr = await Promise.all(
         stories.map(async (story) => {
           return storyEntityToObjWithOneImg(story);

@@ -26,6 +26,7 @@ export const databaseProviders = [
           connectTimeout: 20000,
           idleTimeout: 60000,
         },
+        cache: true,
       });
 
       return addTransactionalDataSource(await dataSource.initialize());
