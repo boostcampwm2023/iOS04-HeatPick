@@ -14,6 +14,11 @@ open class BaseViewController: UIViewController {
     
     public let navigationView = NavigationView()
     public var cancellables = Set<AnyCancellable>()
+    public var isPopGestureEnabled: Bool = true {
+        didSet {
+            navigationController?.interactivePopGestureRecognizer?.isEnabled = isPopGestureEnabled
+        }
+    }
     
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +32,16 @@ open class BaseViewController: UIViewController {
         if isMovingFromParent {
             navigationView.sendCloseEvent()
         }
+    }
+    
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = isPopGestureEnabled
+    }
+    
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     
     open func setupLayout() {}

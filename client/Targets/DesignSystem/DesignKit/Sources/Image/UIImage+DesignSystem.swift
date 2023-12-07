@@ -17,6 +17,7 @@ public extension UIImage {
     static let profileDefault: UIImage = .init(resource: .profileDefault)
     static let congratulation: UIImage = .init(resource: .congratulation)
     static let map: UIImage = .init(resource: .map)
+    static let bell: UIImage = .init(resource: .bell)
     static let spinner: UIImage = .init(resource: .spinner)
     static let marker: UIImage = .init(resource: .marker)
     static let markerBlue: UIImage = .init(resource: .markerBlue)

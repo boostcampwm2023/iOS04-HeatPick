@@ -11,7 +11,11 @@ import CoreKit
 import AuthInterfaces
 import DomainEntities
 
-protocol SignInInteractable: Interactable, SignUpListener, SignUpSuccessListener, LocationAuthorityListener {
+protocol SignInInteractable: Interactable,
+                             SignUpListener,
+                             SignUpSuccessListener,
+                                LocationAuthorityListener,
+                             NotificationPermissionListener {
     var router: SignInRouting? { get set }
     var listener: SignInListener? { get set }
 }
@@ -29,16 +33,21 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
     private let locationAuthorityBuilder: LocationAuthorityBuildable
     private var locationAuthorityRouter: ViewableRouting?
     
+    private let notificationPermissionBuilder: NotificationPermissionBuildable
+    private var notificationPermissionRouter: ViewableRouting?
+    
     init(
         interactor: SignInInteractable,
         viewController: SignInViewControllable,
         signUpBuilder: SignUpBuildable,
         signUpSuccessBuilder: SignUpSuccessBuildable,
-        locationAuthorityBuilder: LocationAuthorityBuildable
+        locationAuthorityBuilder: LocationAuthorityBuildable,
+        notificationPermissionBuilder: NotificationPermissionBuildable
     ) {
         self.signUpBuilder = signUpBuilder
         self.signUpSuccessBuilder = signUpSuccessBuilder
         self.locationAuthorityBuilder = locationAuthorityBuilder
+        self.notificationPermissionBuilder = notificationPermissionBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -80,6 +89,19 @@ final class SignInRouter: ViewableRouter<SignInInteractable, SignInViewControlla
         guard let router = locationAuthorityRouter else { return }
         popRouter(router, animated: true)
         locationAuthorityRouter = nil
+    }
+    
+    func attachNotificationPermission() {
+        guard notificationPermissionRouter == nil else { return }
+        let router = notificationPermissionBuilder.build(withListener: interactor)
+        pushRouter(router, animated: true)
+        notificationPermissionRouter = router
+    }
+    
+    func detachNotificationPermission() {
+        guard let router = notificationPermissionRouter else { return }
+        popRouter(router, animated: true)
+        notificationPermissionRouter = nil
     }
     
 }

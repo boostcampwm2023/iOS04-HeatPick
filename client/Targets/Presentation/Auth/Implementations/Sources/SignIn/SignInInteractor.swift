@@ -22,6 +22,8 @@ protocol SignInRouting: ViewableRouting {
     func detachSignUpSuccess()
     func attachLocationAuthority()
     func detachLocationAuthority()
+    func attachNotificationPermission()
+    func detachNotificationPermission()
 }
 
 protocol SignInPresentable: Presentable {
@@ -133,10 +135,20 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     // MARK: - LocationAuthority
     
     func locationAuthorityDidComplete() {
-        listener?.signInDidComplete()
+        router?.attachNotificationPermission()
     }
     
     func locationAuthorityDidSkip() {
+        router?.attachNotificationPermission()
+    }
+    
+    // MARK: - NotificationPermission
+    
+    func notificationPermissionDidComplete() {
+        listener?.signInDidComplete()
+    }
+    
+    func notificationPermissionDidSkip() {
         listener?.signInDidComplete()
     }
     
