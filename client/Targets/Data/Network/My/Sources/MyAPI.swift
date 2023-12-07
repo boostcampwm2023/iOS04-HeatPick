@@ -17,6 +17,7 @@ public enum MyAPI {
     case userStory(id: Int, offset: Int, limit: Int)
     case userMetaData
     case userUpdate(content: UserUpdateContent)
+    case resign(reason: String)
 }
 
 extension MyAPI: Target {
@@ -32,12 +33,14 @@ extension MyAPI: Target {
         case .userStory: return "/user/story"
         case .userMetaData: return "/user/updateMetaData"
         case .userUpdate: return "/user/update"
+        case .resign: return "/user/resign"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
         case .userUpdate: return .patch
+        case .resign: return .delete
         default: return .get
         }
     }
@@ -51,7 +54,7 @@ extension MyAPI: Target {
         case .myProfile:
             return .plain
             
-        case .profile(let id):
+        case let .profile(id):
             return .url(parameters: ["userId": id])
             
         case let .userStory(id, offset, limit):
@@ -65,6 +68,9 @@ extension MyAPI: Target {
             let request = UserUpdateRequestDTO(content: content)
             let media = Media(data: content.image, type: .jpeg, key: "image")
             return .multipart(.init(data: request, mediaList: [media]))
+            
+        case let .resign(reason):
+            return .json(MyProfileResignRequestDTO(reason: reason))
         }
     }
     

@@ -20,6 +20,7 @@ import { In, Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 import { StoryService } from '../story/story.service';
 import { Comment } from '../entities/comment.entity';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class UserService {
@@ -31,6 +32,7 @@ export class UserService {
     @Inject(forwardRef(() => StoryService))
     private storyService: StoryService,
     private userJasoTrie: UserJasoTrie,
+    private notificationService: NotificationService,
   ) {
     this.userRepository.find().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));
@@ -87,15 +89,15 @@ export class UserService {
 
   @Transactional()
   async getProfile(requestUserId: number, targetUserId: number): Promise<UserProfileDetailDataDto> {
-    const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage'] });
-    const mainBadge = await user.representativeBadge;
+    const user = await this.userRepository.findOne({ where: { userId: targetUserId }, relations: ['following', 'followers', 'stories', 'stories.storyImages', 'stories.usersWhoLiked', 'profileImage', 'representativeBadge'] });
+    const mainBadge = await user?.representativeBadge;
     const stories = await user.stories;
     const userImage = await user.profileImage;
     return {
       userId: user.userId,
       username: user.username,
       profileURL: userImage ? userImage.imageUrl : '',
-      isFollow: user.followers.some((user) => user.userId === requestUserId) || requestUserId === targetUserId ? 0 : 1,
+      isFollow: user.followers.some((user) => user.userId === requestUserId) || requestUserId === targetUserId,
       temperature: user.temperature,
       temperatureFeeling: getTemperatureFeeling(user.temperature),
       followerCount: user.followers.length,
@@ -305,10 +307,12 @@ export class UserService {
   @Transactional()
   public async like(userId: number, storyId: number): Promise<number> {
     const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['likedStories'] });
-    const story = await this.storyService.getStory(storyId);
+    const story = await this.storyService.getStory(storyId, ['user']);
 
     (await user.likedStories).push(story);
     await this.userRepository.save(user);
+
+    this.notificationService.sendFcmNotification((await story.user).userId, `좋아요 알림❤️`, `${user.username}님이 ${story.title} 게시글에 좋아요를 눌렀습니다❤️`);
 
     return await this.storyService.addLikeCount(storyId);
   }

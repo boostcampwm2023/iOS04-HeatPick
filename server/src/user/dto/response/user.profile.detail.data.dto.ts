@@ -13,7 +13,7 @@ export class UserProfileDetailDataDto {
   profileURL: string;
 
   @ApiProperty()
-  isFollow: number;
+  isFollow: boolean;
 
   @ApiProperty()
   followerCount: number;

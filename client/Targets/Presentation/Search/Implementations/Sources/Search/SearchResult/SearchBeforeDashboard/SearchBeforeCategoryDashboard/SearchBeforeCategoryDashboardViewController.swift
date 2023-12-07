@@ -6,13 +6,16 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import ModernRIBs
-import DesignKit
-import CoreKit
 import UIKit
 
+import ModernRIBs
+
+import CoreKit
+import DesignKit
+import DomainEntities
+
 protocol SearchBeforeCategoryDashboardPresentableListener: AnyObject {
-    func didTapSearchBeforeRecentSearchesView()
+    func categoryViewDidTap(_ categoryId: Int)
 }
 
 final class SearchBeforeCategoryDashboardViewController: UIViewController, SearchBeforeCategoryDashboardPresentable, SearchBeforeCategoryDashboardViewControllable {
@@ -85,7 +88,7 @@ final class SearchBeforeCategoryDashboardViewController: UIViewController, Searc
         setupViews()
     }
 
-    func setup(models: [SearchBeforeCategoryViewModel]) {
+    func setup(models: [StoryCategory]) {
         let isEmpty = models.isEmpty
         emptyView.isHidden = !isEmpty
         scrollView.isHidden = isEmpty
@@ -129,9 +132,9 @@ private extension SearchBeforeCategoryDashboardViewController {
 }
 
 extension SearchBeforeCategoryDashboardViewController: SearchBeforeCategoryViewDelegate {
-    
-    func didTapSearchBeforeCategoryView() {
-        listener?.didTapSearchBeforeRecentSearchesView()
+    func categoryViewDidTap(_ categoryId: Int) {
+        listener?.categoryViewDidTap(categoryId)
     }
+
     
 }

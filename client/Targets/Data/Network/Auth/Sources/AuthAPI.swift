@@ -11,8 +11,10 @@ import BaseAPI
 import NetworkAPIKit
 
 public enum AuthAPI {
-    case signIn(token: String)
-    case signUp(token: String, username: String)
+    case signInWithNaver(token: String)
+    case signInWithGithub(token: String)
+    case signUpWithNaver(token: String, username: String)
+    case signUpWithGithub(token: String, username: String)
 }
 
 extension AuthAPI: Target {
@@ -23,8 +25,10 @@ extension AuthAPI: Target {
     
     public var path: String {
         switch self {
-        case .signIn: return "/auth/signin"
-        case .signUp: return "/auth/signup"
+        case .signInWithNaver: return "/auth/signin/naver"
+        case .signInWithGithub: return "/auth/signin/github"
+        case .signUpWithNaver: return "/auth/signup/naver"
+        case .signUpWithGithub: return "/auth/signup/github"
         }
     }
     
@@ -38,12 +42,18 @@ extension AuthAPI: Target {
     
     public var task: Task {
         switch self {
-        case .signIn(let token):
+        case .signInWithNaver(let token):
             return .json(SignInRequestDTO(OAuthToken: token))
-            
-        case .signUp(let token, let username):
+        case .signInWithGithub(let token):
+            return .json(SignInRequestDTO(OAuthToken: token))
+        case .signUpWithNaver(let token, let username):
             return .json(SignUpRequestDTO(
                 OAuthToken: token, 
+                username: username
+            ))
+        case .signUpWithGithub(let token, let username):
+            return .json(SignUpRequestDTO(
+                OAuthToken: token,
                 username: username
             ))
         }

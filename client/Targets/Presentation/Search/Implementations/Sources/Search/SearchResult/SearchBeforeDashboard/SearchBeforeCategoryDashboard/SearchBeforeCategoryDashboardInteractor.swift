@@ -8,45 +8,66 @@
 
 import ModernRIBs
 
+import CoreKit
+import DomainEntities
+import DomainInterfaces
+
 protocol SearchBeforeCategoryDashboardRouting: ViewableRouting { }
 
 protocol SearchBeforeCategoryDashboardPresentable: Presentable {
     var listener: SearchBeforeCategoryDashboardPresentableListener? { get set }
     
-    func setup(models: [SearchBeforeCategoryViewModel])
+    func setup(models: [StoryCategory])
 }
 
-protocol SearchBeforeCategoryDashboardListener: AnyObject { }
+protocol SearchBeforeCategoryDashboardListener: AnyObject {
+    func showSearchAfterDashboard(categoryId: Int)
+}
+
+protocol SearchBeforeCategoryDashboardInteractorDependency: AnyObject {
+    var searchBeforeCategoryUseCase: SearchBeforeCategoryUseCaseInterface { get }
+}
 
 final class SearchBeforeCategoryDashboardInteractor: PresentableInteractor<SearchBeforeCategoryDashboardPresentable>, SearchBeforeCategoryDashboardInteractable, SearchBeforeCategoryDashboardPresentableListener {
-
+    
     weak var router: SearchBeforeCategoryDashboardRouting?
     weak var listener: SearchBeforeCategoryDashboardListener?
+    
+    private var cancelBag: CancelBag = .init()
 
-    override init(presenter: SearchBeforeCategoryDashboardPresentable) {
+    private let dependency: SearchBeforeCategoryDashboardInteractorDependency
+    
+    init(
+        presenter: SearchBeforeCategoryDashboardPresentable,
+        dependency: SearchBeforeCategoryDashboardInteractorDependency
+    ) {
+        self.dependency = dependency
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        presenter.setup(models: [
-            .init(title: "여행", description: "여행을 떠나요"),
-            .init(title: "맛집", description: "이 세상에 모든 맛집을 찾아서"),
-            .init(title: "네이버 부스트캠프", description: "iOS04조 S029_이준복, S031_임정민, S042_홍성준, J138_정세호, J154_최검기"),
-            .init(title: "리그오브 레전드", description: "빛상혁"),
-            .init(title: "테스트1", description: ""),
-            .init(title: "테스트2", description: "테스트2"),
-            .init(title: "테스트3", description: "테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 테스트3 ")
-        ])
+//        Task { [weak self] in
+//            guard let self else { return }
+//            await self.dependency.searchBeforeCategoryUseCase
+//                .fetchCategory()
+//                .onSuccess(on: .main, with: self) { this, models in
+//                    this.presenter.setup(models: models)
+//                }
+//                .onFailure { error in
+//                    Log.make(message: error.localizedDescription, log: .network)
+//                }
+//        }.store(in: cancelBag)
     }
 
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
     }
-    
-    func didTapSearchBeforeRecentSearchesView() {
-        
+
+    func categoryViewDidTap(_ categoryId: Int) {
+        listener?.showSearchAfterDashboard(categoryId: categoryId)
     }
     
 }

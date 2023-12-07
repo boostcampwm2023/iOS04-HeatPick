@@ -51,5 +51,9 @@ public final class MyPageRepository: MyPageRepositoryInterface {
         return request.map { $0.userId }
     }
     
+    public func requestResign(reason: String) async -> Result<Void, Error> {
+        let target = MyAPI.resign(reason: reason)
+        return await session.request(target)
+    }
 
 }

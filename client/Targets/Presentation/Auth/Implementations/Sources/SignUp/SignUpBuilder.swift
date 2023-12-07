@@ -7,6 +7,7 @@
 //
 
 import ModernRIBs
+import DomainEntities
 import DomainInterfaces
 
 protocol SignUpDependency: Dependency {
@@ -15,12 +16,18 @@ protocol SignUpDependency: Dependency {
 
 final class SignUpComponent: Component<SignUpDependency>, SignUpInteractorDependency {
     var authUseCase: AuthUseCaseInterface { dependency.authUseCase }
+    let service: SignInService
+    
+    init(dependency: SignUpDependency, service: SignInService) {
+        self.service = service
+        super.init(dependency: dependency)
+    }
 }
 
 // MARK: - Builder
 
 protocol SignUpBuildable: Buildable {
-    func build(withListener listener: SignUpListener) -> SignUpRouting
+    func build(withListener listener: SignUpListener, service: SignInService) -> SignUpRouting
 }
 
 final class SignUpBuilder: Builder<SignUpDependency>, SignUpBuildable {
@@ -29,8 +36,8 @@ final class SignUpBuilder: Builder<SignUpDependency>, SignUpBuildable {
         super.init(dependency: dependency)
     }
 
-    func build(withListener listener: SignUpListener) -> SignUpRouting {
-        let component = SignUpComponent(dependency: dependency)
+    func build(withListener listener: SignUpListener, service: SignInService) -> SignUpRouting {
+        let component = SignUpComponent(dependency: dependency, service: service)
         let viewController = SignUpViewController()
         let interactor = SignUpInteractor(
             presenter: viewController,

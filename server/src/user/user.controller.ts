@@ -16,6 +16,7 @@ import { UserJsonResponseDto } from './dto/response/user.response.dto';
 import { ProfileUpdateMetaDataJsonDto } from './dto/response/profile.update.meta.dto';
 import { UserProfileDetailStoryJsonDto } from './dto/response/user.profile.detail.story.dto';
 import { StoryRecommendResponseDto } from '../search/dto/response/story.result.dto';
+import { UserDeleteDto } from './dto/request/user.delete.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -112,8 +113,12 @@ export class UserController {
 
   @Delete('resign')
   @ApiOperation({ summary: `회원 탈퇴` })
-  @ApiResponse({ status: 201, description: '회원 탈퇴 되었습니다.' })
-  async resign(@Req() req: any, @Body() message: string) {
+  @ApiResponse({
+    status: 201,
+    description: '회원 탈퇴 되었습니다.',
+  })
+  async resign(@Req() req: any, @Body() userDeleteDto: UserDeleteDto) {
+    const { message } = userDeleteDto;
     return this.userService.resign(req.user.userRecordId, message);
   }
 

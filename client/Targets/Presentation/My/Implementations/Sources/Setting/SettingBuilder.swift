@@ -8,14 +8,7 @@
 
 import ModernRIBs
 import FoundationKit
-
-protocol SettingDependency: Dependency {
-    var signOutRequestService: SignOutRequestServiceInterface { get }
-}
-
-final class SettingComponent: Component<SettingDependency>, SettingInteractorDependency {
-    var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService}
-}
+import DomainInterfaces
 
 protocol SettingBuildable: Buildable {
     func build(withListener listener: SettingListener) -> SettingRouting
@@ -32,7 +25,11 @@ final class SettingBuilder: Builder<SettingDependency>, SettingBuildable {
         let viewController = SettingViewController()
         let interactor = SettingInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
-        return SettingRouter(interactor: interactor, viewController: viewController)
+        return SettingRouter(
+            interactor: interactor,
+            viewController: viewController,
+            dependency: SettingRouterComponent(componet: component)
+        )
     }
     
 }

@@ -11,6 +11,8 @@ import Foundation
 
 import CoreKit
 import ModernRIBs
+
+import DomainEntities
 import DomainInterfaces
 
 protocol SignUpRouting: ViewableRouting {}
@@ -27,6 +29,7 @@ protocol SignUpListener: AnyObject {
 
 protocol SignUpInteractorDependency: AnyObject {
     var authUseCase: AuthUseCaseInterface { get }
+    var service: SignInService { get }
 }
 
 final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpInteractable, SignUpPresentableListener {
@@ -63,7 +66,7 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
         Task { [weak self] in
             guard let self else { return }
             await dependency.authUseCase
-                .requestSignUp(userName: userNameSubject.value)
+                .requestSignUp(userName: userNameSubject.value, with: dependency.service)
                 .onSuccess(on: .main, with: self, { this, token in
                     this.listener?.signUpDidComplete()
                 })

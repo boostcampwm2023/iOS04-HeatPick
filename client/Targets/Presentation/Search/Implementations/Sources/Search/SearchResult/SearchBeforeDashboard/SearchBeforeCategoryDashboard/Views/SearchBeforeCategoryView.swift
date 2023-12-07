@@ -8,15 +8,11 @@
 
 import UIKit
 import DesignKit
+import DomainEntities
 
 // TODO: CategoryId 넘겨주어야 함
 protocol SearchBeforeCategoryViewDelegate: AnyObject {
-    func didTapSearchBeforeCategoryView()
-}
-
-struct SearchBeforeCategoryViewModel: Decodable {
-    let title: String
-    let description: String
+    func categoryViewDidTap(_ categoryId: Int)
 }
 
 final class SearchBeforeCategoryView: UIView {
@@ -28,6 +24,8 @@ final class SearchBeforeCategoryView: UIView {
         static let topOffset: CGFloat = 10
         static let bottomOffset: CGFloat = -topOffset
     }
+    
+    private var categoryId: Int?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -61,9 +59,9 @@ final class SearchBeforeCategoryView: UIView {
         setupView()
     }
     
-    func setup(_ model: SearchBeforeCategoryViewModel) {
+    func setup(_ model: StoryCategory) {
+        self.categoryId = model.id
         titleLabel.text = model.title
-        descriptionLabel.text = model.description
     }
     
 }
@@ -103,7 +101,8 @@ private extension SearchBeforeCategoryView {
 private extension SearchBeforeCategoryView {
     
     @objc func didTapSearchBeforeCategoryView() {
-        delegate?.didTapSearchBeforeCategoryView()
+        guard let categoryId else { return }
+        delegate?.categoryViewDidTap(categoryId)
     }
     
 }

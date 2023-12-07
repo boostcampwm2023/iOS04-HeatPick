@@ -24,12 +24,6 @@ protocol SearchResultViewControllable: ViewControllable {
     func removeDashboard(_ viewControllable: ViewControllable)
 }
 
-protocol SearchResultRouterDependency {
-    var searchBeforeDashboardBuilder: SearchBeforeDashboardBuildable { get }
-    var searchingDashboardBuilder: SearchingDashboardBuildable { get }
-    var searchAfterDashboardBuilder: SearchAfterDashboardBuildable { get }
-}
-
 final class SearchResultRouter: ViewableRouter<SearchResultInteractable, SearchResultViewControllable>, SearchResultRouting {
     
     private let dependency: SearchResultRouterDependency

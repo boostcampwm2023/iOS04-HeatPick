@@ -16,5 +16,7 @@ public protocol MyPageRepositoryInterface: AnyObject {
     func fetchUserStory(id: Int, offset: Int, limit: Int) async -> Result<[MyPageStory], Error>
     func fetchUserMedtaData() async -> Result<UserProfileMetaData, Error>
     func fetchUserInfo(userUpdate: UserUpdateContent) async -> Result<Int, Error>
+    func requestResign(reason: String) async -> Result<Void, Error>
+    
     
 }

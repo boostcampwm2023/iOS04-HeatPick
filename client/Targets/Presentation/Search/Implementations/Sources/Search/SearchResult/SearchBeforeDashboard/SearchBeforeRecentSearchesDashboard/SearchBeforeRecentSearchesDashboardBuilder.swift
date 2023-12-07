@@ -20,8 +20,6 @@ SearchBeforeRecentSearchesDashboardInteractorDependency {
     }
 }
 
-// MARK: - Builder
-
 protocol SearchBeforeRecentSearchesDashboardBuildable: Buildable {
     func build(withListener listener: SearchBeforeRecentSearchesDashboardListener) -> SearchBeforeRecentSearchesDashboardRouting
 }
