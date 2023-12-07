@@ -59,6 +59,12 @@ final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpd
                 .onSuccess(on: .main) { usermetaData in
                     self.presenter.setup(model: usermetaData)
                     self.userUpdateModel = .init(username: usermetaData.username, selectedBadgeId: usermetaData.nowBadge.badgeId)
+                    // TODO: 서버에서 이미지 없을 시 기존 이미지 사용하게 수정 요청
+                    Task {
+                        if let imageData = ImageCacheManager.shared.fetch(from: usermetaData.profileImageURL) {
+                            self.userUpdateModel?.update(image: imageData)
+                        }
+                    }
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .network)
