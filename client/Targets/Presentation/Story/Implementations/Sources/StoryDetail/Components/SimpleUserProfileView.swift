@@ -70,6 +70,7 @@ fileprivate extension UserStatus {
 }
 
 protocol SimpleUserProfileViewDelegate: AnyObject {
+    func profileDidTap(userId: Int)
     func followButtonDidTap(userId: Int, userStatus: UserStatus)
 }
 
@@ -101,11 +102,11 @@ final class SimpleUserProfileView: UIView {
         return stackView
     }()
     
-    private let profileImage: UIImageView = {
+    private lazy var profileImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .profileDefault
         imageView.contentMode = .scaleAspectFill
-        
+        imageView.addTapGesture(target: self, action: #selector(profileDidTap))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -216,7 +217,12 @@ private extension SimpleUserProfileView {
 // MARK: objc
 private extension SimpleUserProfileView {
     
-    @objc func followButtonDidTap() { 
+    @objc func profileDidTap() {
+        guard let userId, .me != userStatus else { return }
+        delegate?.profileDidTap(userId: userId)
+    }
+    
+    @objc func followButtonDidTap() {
         guard let userId else { return }
         followButton.isEnabled = false
         delegate?.followButtonDidTap(userId: userId, userStatus: userStatus)
