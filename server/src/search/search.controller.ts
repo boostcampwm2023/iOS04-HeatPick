@@ -81,7 +81,8 @@ export class SearchController {
     const numericCategoryId: number | undefined = categoryId !== undefined ? +categoryId : undefined;
 
     const searchStatement = searchText ? searchText : '';
-    let stories = await this.storyService.getStoriesFromTrie(searchStatement, 0, 5);
+    let stories = await this.storyService.getStoriesFromTrie(searchStatement, 0, 100);
+
     if (categoryId) stories = stories.filter((story) => story.category && story.category.categoryId === numericCategoryId);
 
     const storyArr = await Promise.all(
