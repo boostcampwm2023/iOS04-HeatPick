@@ -6,7 +6,7 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import NMapsMap
 import DomainEntities
 

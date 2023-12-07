@@ -35,17 +35,16 @@ protocol SearchRouting: ViewableRouting {
 protocol SearchPresentable: Presentable {
     var listener: SearchPresentableListener? { get set }
     func showStoryView(model: SearchMapStoryViewModel)
-    func hideStoryView()
+    func showClusterListView(models: [SearchMapClusterListCellModel])
     func moveMap(lat: Double, lng: Double)
     func updateMarkers(places: [Place])
     func updateMarkers(clusters: [Cluster])
     func removeAllMarker()
     func updateSelectedMarker(title: String, lat: Double, lng: Double)
-    func hideSelectedMarker()
     func showSelectedView(title: String)
-    func hideSelectedView()
     func showReSearchView()
     func hideReSearchView()
+    func deselectAll()
 }
 
 
@@ -170,6 +169,7 @@ extension SearchInteractor: SearchPresentableListener {
     }
     
     func didTapMarker(place: Place) {
+        presenter.deselectAll()
         presenter.showStoryView(model: .init(
             storyID: place.storyId,
             thumbnailImageURL: place.imageURL,
@@ -178,38 +178,35 @@ extension SearchInteractor: SearchPresentableListener {
             likes: place.likes,
             comments: place.comments
         ))
-        presenter.hideSelectedView()
         selectedLocation = .init(lat: place.lat, lng: place.lng)
     }
     
     func didTapSymbol(symbol: SearchMapSymbol) {
+        presenter.deselectAll()
         presenter.updateSelectedMarker(
             title: symbol.title,
             lat: symbol.lat,
             lng: symbol.lng
         )
-        presenter.hideStoryView()
         presenter.showSelectedView(title: symbol.title)
         selectedLocation = .init(lat: symbol.lat, lng: symbol.lng)
     }
     
     func didTapLocation(location: SearchMapLocation) {
         let title = "위치 정보가 없어요"
+        presenter.deselectAll()
         presenter.updateSelectedMarker(
             title: "",
             lat: location.lat,
             lng: location.lng
         )
-        presenter.hideStoryView()
         presenter.showSelectedView(title: title)
         selectedLocation = location
     }
     
     func mapWillMove() {
         selectedLocation = nil
-        presenter.hideStoryView()
-        presenter.hideSelectedView()
-        presenter.hideSelectedMarker()
+        presenter.deselectAll()
     }
     
     func mapDidChangeLocation(location: SearchMapLocation) {
@@ -239,6 +236,46 @@ extension SearchInteractor: SearchPresentableListener {
         cancelBag.cancel()
         presenter.hideReSearchView()
         fetchPlaces(lat: watchingLocation.lat, lng: watchingLocation.lng)
+    }
+    
+    func didTapCluster(cluster: Cluster) {
+        presenter.deselectAll()
+        selectedLocation = .init(lat: cluster.center.lat, lng: cluster.center.lng)
+        
+        if cluster.count == 1,
+           let place = cluster.places.first {
+            
+            presenter.showStoryView(model: .init(
+                storyID: place.storyId,
+                thumbnailImageURL: place.imageURL,
+                title: place.title,
+                subtitle: place.content,
+                likes: place.likes,
+                comments: place.comments
+            ))
+            
+            presenter.updateSelectedMarker(
+                title: place.title,
+                lat: place.lat,
+                lng: place.lng
+            )
+        } else {
+            let models: [SearchMapClusterListCellModel] = cluster.places.map { .init(
+                storyId: $0.storyId,
+                title: $0.title,
+                contnet: $0.content,
+                likes: $0.likes,
+                comments: $0.comments,
+                thumbnailUrl: $0.imageURL
+            )}
+            presenter.showClusterListView(models: models)
+            presenter.updateSelectedMarker(
+                title: "",
+                lat: cluster.center.lat,
+                lng: cluster.center.lng
+            )
+            
+        }
     }
     
     private func receiveAfterRecommendClusters(_ clusters: [Cluster]) {
