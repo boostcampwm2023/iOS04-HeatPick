@@ -75,37 +75,45 @@ final class UserProfileUserDashboardInteractor: PresentableInteractor<UserProfil
     }
     
     func followButtonDidTap() {
-        if isFollow {
-            Task { [weak self] in
-                guard let self,
-                      let userId else { return }
-                await dependency.userProfileUserUseCase
-                    .requestUnfollow(userId: userId)
-                    .onSuccess(on: .main, with: self) { this, _ in
-                        this.isFollow = false
-                        this.presenter.updateFollow(this.isFollow)
-                        this.listener?.fetchProfile()
-                    }
-                    .onFailure { error in
-                        Log.make(message: error.localizedDescription, log: .interactor)
-                    }
-            }.store(in: cancelBag)
-        } else {
-            Task { [weak self] in
-                guard let self,
-                      let userId else { return }
-                await dependency.userProfileUserUseCase
-                    .requestFollow(userId: userId)
-                    .onSuccess(on: .main, with: self) { this, _ in
-                        this.isFollow = true
-                        this.presenter.updateFollow(this.isFollow)
-                        this.listener?.fetchProfile()
-                    }
-                    .onFailure { error in
-                        Log.make(message: error.localizedDescription, log: .interactor)
-                    }
-            }.store(in: cancelBag)
-        }
+        isFollow ? unfollow() : follow()
+    }
+    
+}
+
+private extension UserProfileUserDashboardInteractor {
+    
+    private func follow() {
+        Task { [weak self] in
+            guard let self,
+                  let userId else { return }
+            await dependency.userProfileUserUseCase
+                .requestFollow(userId: userId)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.isFollow = true
+                    this.presenter.updateFollow(this.isFollow)
+                    this.listener?.fetchProfile()
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                }
+        }.store(in: cancelBag)
+    }
+    
+    private func unfollow() {
+        Task { [weak self] in
+            guard let self,
+                  let userId else { return }
+            await dependency.userProfileUserUseCase
+                .requestUnfollow(userId: userId)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.isFollow = false
+                    this.presenter.updateFollow(this.isFollow)
+                    this.listener?.fetchProfile()
+                }
+                .onFailure { error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                }
+        }.store(in: cancelBag)
     }
     
 }

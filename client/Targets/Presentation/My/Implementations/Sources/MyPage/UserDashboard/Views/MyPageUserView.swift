@@ -36,7 +36,7 @@ final class MyPageUserView: UIView {
         }
         
         enum FollowButton {
-            static let follow = "팔로우"
+            static let unFollow = "팔로우"
             static let following = "팔로잉"
         }
     }
@@ -82,14 +82,17 @@ final class MyPageUserView: UIView {
     
     private lazy var followButton: UIButton = {
         let button = UIButton(configuration: .filled())
-        button.tintColor = .hpRed3
-        button.configuration?.title = Constant.FollowButton.follow
+        button.configuration?.title = Constant.FollowButton.unFollow
+        button.configuration?.baseBackgroundColor = .hpRed3
+        button.configuration?.baseForegroundColor = .hpWhite
         button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
             var transform = transform
             transform.font = .captionBold
             return transform
         }
         button.clipsToBounds = true
+        button.layer.borderColor = UIColor.hpRed3.cgColor
+        button.layer.borderWidth = 1
         button.layer.cornerRadius = Constants.cornerRadiusMedium
         button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -151,11 +154,7 @@ final class MyPageUserView: UIView {
     }
     
     func updateFollowButton(_ isFollow: Bool) {
-        if isFollow {
-            followButton.configuration?.title = Constant.FollowButton.following
-        } else {
-            followButton.configuration?.title = Constant.FollowButton.follow
-        }
+        isFollow ? updateFollowing() : updateUnFollow()
     }
     
     func setMyProfile() {
@@ -197,6 +196,18 @@ private extension MyPageUserView {
             containerContentStackView.centerYAnchor.constraint(equalTo: profileStackView.centerYAnchor),
             containerContentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+    }
+    
+    private func updateUnFollow() {
+        followButton.configuration?.title = Constant.FollowButton.unFollow
+        followButton.configuration?.baseBackgroundColor = .hpRed3
+        followButton.configuration?.baseForegroundColor = .hpWhite
+    }
+    
+    private func updateFollowing() {
+        followButton.configuration?.title = Constant.FollowButton.following
+        followButton.configuration?.baseBackgroundColor = .hpWhite
+        followButton.configuration?.baseForegroundColor = .hpRed3
     }
     
 }
