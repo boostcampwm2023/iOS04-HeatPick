@@ -9,6 +9,7 @@ extension Project {
         deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.0", devices: .iphone),
         appTargets: Set<AppTarget> = [.release, .dev],
         infoPlist: InfoPlist,
+        entitlements: Path? = nil,
         dependencies: [TargetDependency]
     ) -> Project {
         var targets: [Target] = []
@@ -23,10 +24,13 @@ extension Project {
                 infoPlist: infoPlist,
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
+                entitlements: entitlements,
                 dependencies: dependencies,
-                settings: .settings(configurations: [
+                settings: .settings(
+                    base: .init().automaticCodeSigning(devTeam: "B3PWYBKFUK"),
+                    configurations: [
                     .debug(name: .debug, xcconfig: XCConfig.secret),
-                    .release(name: .release, xcconfig: XCConfig.secret)
+                    .release(name: .release, xcconfig: XCConfig.secret),
                 ])
             )
             targets.append(target)
@@ -42,8 +46,11 @@ extension Project {
                 infoPlist: infoPlist,
                 sources: ["Sources/**"],
                 resources: ["Resources/**"],
+                entitlements: entitlements,
                 dependencies: dependencies,
-                settings: .settings(configurations: [
+                settings: .settings(
+                    base: .init().automaticCodeSigning(devTeam: "B3PWYBKFUK"),
+                    configurations: [
                     .debug(name: .debug, xcconfig: XCConfig.secret),
                     .release(name: .release, xcconfig: XCConfig.secret),
                 ])

@@ -7,6 +7,7 @@ let proejct = Project.framework(
     featureTargets: [.framework],
     dependencies: [
         .SPM.NaverLogin,
-        .SPM.NaverMap
+        .SPM.NaverMap,
+        .SPM.Firebase
     ]
 )

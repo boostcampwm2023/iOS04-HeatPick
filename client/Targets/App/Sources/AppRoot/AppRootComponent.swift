@@ -14,6 +14,7 @@ import AuthAPI
 import HomeAPI
 import MyAPI
 import StoryAPI
+import CoreKit
 import FoundationKit
 import NetworkAPIKit
 import DomainUseCases
@@ -54,6 +55,7 @@ final class AppRootComponent: Component<AppRootDependency>,
     let userProfileUseCase: UserProfileUserCaseInterface
     let searchUseCase: SearchUseCaseInterface
     let followingUseCase: FollowingUseCaseInterface
+    let notificationPermissionUseCase: NotificationPermissionUseCaseInterface = PushService.shared
     
     let naverLoginRepository: NaverLoginRepositoryInterface
     let signOutRequestService: SignOutRequestServiceInterface
