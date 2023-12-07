@@ -112,7 +112,16 @@ export class UserController {
 
   @Delete('resign')
   @ApiOperation({ summary: `회원 탈퇴` })
-  @ApiResponse({ status: 201, description: '회원 탈퇴 되었습니다.' })
+  @ApiResponse({
+    status: 201,
+    description: '회원 탈퇴 되었습니다.',
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+    },
+  })
   async resign(@Req() req: any, @Body() message: string) {
     return this.userService.resign(req.user.userRecordId, message);
   }
