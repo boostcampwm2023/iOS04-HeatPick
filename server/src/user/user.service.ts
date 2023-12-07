@@ -212,12 +212,25 @@ export class UserService {
 
   @Transactional()
   async resign(userId: number, message: string) {
-    const user = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'comments'] });
+    const user: User = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'representativeBadge', 'comments', 'following', 'followers', 'following.followers', 'followers.following', 'likedStories'] });
     user.badges = Promise.resolve([]);
     user.representativeBadge = Promise.resolve(null);
     user.comments = Promise.resolve([]);
     user.stories = Promise.resolve([]);
-    await this.userRepository.save(user);
+    user.following.map(async (user) => {
+      user.followers = user.followers.filter((user) => user.userId !== user.userId);
+      await this.userRepository.save(user);
+    });
+    user.followers.map(async (user) => {
+      user.following = user.following.filter((user) => user.userId !== user.userId);
+      await this.userRepository.save(user);
+    });
+    user.mentions = [];
+
+    (await user.likedStories).map(async (story) => {
+      await this.storyService.subLikeCount(story.storyId);
+    });
+    user.likedStories = Promise.resolve([]);
 
     return await this.userRepository.remove(await this.userRepository.findOne({ where: { userId: userId } }));
   }
@@ -250,7 +263,6 @@ export class UserService {
     try {
       const followUser = await this.userRepository.findOne({ where: { userId: followId }, relations: ['following', 'followers'] });
       const followerUser = await this.userRepository.findOne({ where: { userId: followerId }, relations: ['following', 'followers'] });
-
       followerUser.following.push(followUser);
       followUser.followers.push(followerUser);
 
