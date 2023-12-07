@@ -18,6 +18,7 @@ protocol MyPageUserViewDelegate: AnyObject {
 struct MyPageUserViewModel {
     let profileImageURL: String?
     let follower: String
+    let isFollow: Bool
     let story: String
     let experience: String
 }
@@ -32,6 +33,11 @@ final class MyPageUserView: UIView {
         
         enum Stack {
             static let spacing: CGFloat = 10
+        }
+        
+        enum FollowButton {
+            static let follow = "팔로우"
+            static let following = "팔로잉"
         }
     }
     
@@ -77,12 +83,14 @@ final class MyPageUserView: UIView {
     private lazy var followButton: UIButton = {
         let button = UIButton(configuration: .filled())
         button.tintColor = .hpRed3
-        button.configuration?.title = "팔로우"
+        button.configuration?.title = Constant.FollowButton.follow
         button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
             var transform = transform
             transform.font = .captionBold
             return transform
         }
+        button.clipsToBounds = true
+        button.layer.cornerRadius = Constants.cornerRadiusMedium
         button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -134,12 +142,20 @@ final class MyPageUserView: UIView {
         if let profileImageURL = model.profileImageURL,
            !profileImageURL.isEmpty {
             profileImageView.load(from: model.profileImageURL)
-        } else {
-            profileImageView.image = .profileDefault
-        }
+        } else { profileImageView.image = .profileDefault }
+        
+        updateFollowButton(model.isFollow)
         followerView.updateContent(model.follower)
         storyView.updateContent(model.story)
         experienceView.updateContent(model.experience)
+    }
+    
+    func updateFollowButton(_ isFollow: Bool) {
+        if isFollow {
+            followButton.configuration?.title = Constant.FollowButton.following
+        } else {
+            followButton.configuration?.title = Constant.FollowButton.follow
+        }
     }
     
     func setMyProfile() {

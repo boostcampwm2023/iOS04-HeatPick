@@ -60,7 +60,7 @@ final class MyPageupdateUserTableHeaderView: UITableViewHeaderFooterView {
         setupViews()
     }
     
-    func setup(model: UserProfileMetaData) {
+    func setup(model: ProfileUpdateMetaData) {
          myPageUpdateUserProfileView.setup(profileImageURL: model.profileImageURL)
         myPageUpdateUserBasicInformationView.setup(username: model.username)
     }

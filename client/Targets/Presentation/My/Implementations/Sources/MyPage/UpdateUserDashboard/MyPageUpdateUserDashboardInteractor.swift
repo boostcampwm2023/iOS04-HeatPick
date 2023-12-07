@@ -20,7 +20,7 @@ protocol MyPageUpdateUserDashboardRouting: ViewableRouting { }
 protocol MyPageUpdateUserDashboardPresentable: Presentable {
     var listener: MyPageUpdateUserDashboardPresentableListener? { get set }
     
-    func setup(model: UserProfileMetaData)
+    func setup(model: ProfileUpdateMetaData)
 }
 
 protocol MyPageUpdateUserDashboardListener: AnyObject {
