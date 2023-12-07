@@ -55,18 +55,31 @@ public final class AuthUseCase: AuthUseCaseInterface {
         signInUseCase.requestNaverLogin()
     }
     
-    public func requestSignIn(token: String) async -> Result<AuthToken, Error> {
-        let result = await repository.requestSignIn(token: token)
+    public func requestSignIn(token: String, with service: SignInService) async -> Result<AuthToken, Error> {
+        var result: Result<AuthToken, Error>
+        switch service {
+        case .naver:
+            result = await repository.requestSignInWithNaver(token: token)
+        case .github:
+            result = await repository.requestSignInWithGithub(token: token)
+        }
+        
         saveAccessTokenIfEnabled(result: result)
         return result
     }
     
-    public func requestSignUp(userName: String) async -> Result<AuthToken, Error> {
+    public func requestSignUp(userName: String, with service: SignInService) async -> Result<AuthToken, Error> {
         guard let token = currentToken.value else {
             let error = NetworkError.unknown("Empty Token")
             return .failure(error)
         }
-        let result = await repository.requestSignUp(token: token, userName: userName)
+        var result: Result<AuthToken, Error>
+        switch service {
+        case .naver:
+            result = await repository.requestSignUpnWithNaver(token: token, userName: userName)
+        case .github:
+            result = await repository.requestSignUpWithGithub(token: token, userName: userName)
+        }
         saveAccessTokenIfEnabled(result: result)
         return result
     }

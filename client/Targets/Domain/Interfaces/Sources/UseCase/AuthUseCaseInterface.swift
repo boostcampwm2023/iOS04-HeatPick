@@ -17,7 +17,7 @@ public protocol AuthUseCaseInterface: AnyObject {
     var isAuthorized: Bool { get }
     func requestGithubSignIn()
     func requestNaverSignIn()
-    func requestSignIn(token: String) async -> Result<AuthToken, Error>
-    func requestSignUp(userName: String) async -> Result<AuthToken, Error>
+    func requestSignIn(token: String, with service: SignInService) async -> Result<AuthToken, Error>
+    func requestSignUp(userName: String, with service: SignInService) async -> Result<AuthToken, Error>
     
 }
