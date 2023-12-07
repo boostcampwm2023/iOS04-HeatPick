@@ -219,19 +219,14 @@ extension SearchInteractor: SearchPresentableListener {
         }
     }
     
-    func mapDidChangeLocation(
-        zoomLevel: Double,
-        southWest: SearchMapLocation,
-        northEast: SearchMapLocation
-    ) {
+    func mapDidChangeLocation(zoomLevel: Double, southWest: SearchMapLocation, northEast: SearchMapLocation) {
+        let boundary = LocationBound(
+            southWest: .init(lat: southWest.lat, lng: southWest.lng),
+            northEast: .init(lat: northEast.lat, lng: northEast.lng)
+        )
         dependency
             .searchUseCase
-            .boundaryUpdated(
-                zoomLevel: zoomLevel,
-                boundary: .init(
-                    southWest: .init(lat: southWest.lat, lng: southWest.lng),
-                    northEast: .init(lat: northEast.lat, lng: northEast.lng)
-                ))
+            .boundaryUpdated(zoomLevel: zoomLevel, boundary: boundary)
     }
     
     func didTapStoryCreate() {

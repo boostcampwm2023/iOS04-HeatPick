@@ -186,7 +186,6 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         }
         
         searchTextField.do {
-            $0.addTapGesture(target: self, action: #selector(searchTextFieldDidTap))
             $0.placeholder = Constant.SearchTextField.placeholder
             $0.clipsToBounds = true
             $0.layer.cornerRadius = Constants.cornerRadiusMedium
@@ -199,7 +198,6 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
             $0.configuration?.baseBackgroundColor = .hpWhite
             $0.clipsToBounds = true
             $0.layer.cornerRadius = Constant.ShowSearchHomeListButton.length / 2
-            $0.addTarget(self, action: #selector(showSearchHomeListButtonDidTap), for: .touchUpInside)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -224,13 +222,34 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         
         reSearchView.do {
             $0.isHidden = true
-            $0.addTapGesture(target: self, action: #selector(reSearchViewDidTap))
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
     
     override func bind() {
+        searchTextField
+            .tapGesturePublisher
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapSearchTextField()
+            }
+            .store(in: &cancellables)
         
+        showSearchHomeListButton
+            .tapPublisher
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapCurrentLocation()
+            }
+            .store(in: &cancellables)
+        
+        reSearchView
+            .tapGesturePublisher
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapReSearch()
+            }
+            .store(in: &cancellables)
     }
     
 }
@@ -309,19 +328,6 @@ extension SearchViewController: NMFMapViewCameraDelegate, NMFMapViewTouchDelegat
 
 private extension SearchViewController {
     
-    @objc func storyViewDidTap() {
-        guard let storyId = storyView.storyID else { return }
-        listener?.didTapStory(storyId: storyId)
-    }
-    
-    @objc func reSearchViewDidTap() {
-        listener?.didTapReSearch()
-    }
-    
-}
-
-private extension SearchViewController {
-    
     func setupTabBar() {
         tabBarItem = .init(
             title: Constant.TabBar.title,
@@ -344,18 +350,6 @@ private extension SearchViewController {
         marker.captionText = "\(cluster.count)개"
         let adapter = SearchMapClusterMarkerAdpater(marker: marker, cluster: cluster)
         return adapter
-    }
-    
-}
-
-private extension SearchViewController {
-    
-    @objc func searchTextFieldDidTap() {
-        listener?.didTapSearchTextField()
-    }
-    
-    @objc func showSearchHomeListButtonDidTap() {
-        listener?.didTapCurrentLocation()
     }
     
 }
