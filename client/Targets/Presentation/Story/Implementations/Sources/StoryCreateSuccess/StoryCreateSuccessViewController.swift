@@ -36,6 +36,7 @@ final class StoryCreateSuccessViewController: BaseViewController, StoryCreateSuc
     
     private let badgeLabel = UILabel()
     private let rollingNumberView = RollingNumberView()
+    private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let confirmButton = ActionButton()
     
@@ -52,7 +53,7 @@ final class StoryCreateSuccessViewController: BaseViewController, StoryCreateSuc
     }
     
     override func setupLayout() {
-        [badgeLabel, rollingNumberView, descriptionLabel, confirmButton].forEach(view.addSubview)
+        [badgeLabel, rollingNumberView, titleLabel, descriptionLabel, confirmButton].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
             badgeLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
@@ -62,8 +63,11 @@ final class StoryCreateSuccessViewController: BaseViewController, StoryCreateSuc
             rollingNumberView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
             rollingNumberView.heightAnchor.constraint(equalToConstant: Constant.expHeight),
             
+            titleLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: rollingNumberView.bottomAnchor, constant: Constant.padding),
+            
             descriptionLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            descriptionLabel.topAnchor.constraint(equalTo: rollingNumberView.bottomAnchor, constant: Constant.padding),
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.padding),
             
             confirmButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             confirmButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
@@ -88,8 +92,15 @@ final class StoryCreateSuccessViewController: BaseViewController, StoryCreateSuc
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        descriptionLabel.do {
+        titleLabel.do {
             $0.font = .largeSemibold
+            $0.textColor = .hpBlack
+            $0.text = "성공적으로 저장했어요"
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        descriptionLabel.do {
+            $0.font = .captionRegular
             $0.textColor = .hpBlack
             $0.text = "성공적으로 스토리를 저장했어요"
             $0.translatesAutoresizingMaskIntoConstraints = false
