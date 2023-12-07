@@ -13,7 +13,8 @@ let dependencies = Dependencies(
     swiftPackageManager: .init([
         .ModernRIBs,
         .NaverLogin,
-        .NaverMap
+        .NaverMap,
+        .Firebase
     ]),
     platforms: [.iOS]
 )
