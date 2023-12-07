@@ -128,11 +128,11 @@ extension ResignDashboardViewController: ResignDashboardPresentable {
     
     func isResign(_ result: Bool) {
         if result {
-            presentAlert(title: Constant.Alert.title, message: Constant.Alert.success) { [weak self] in
+            present(type: .completeResign) { [weak self] in
                 self?.listener?.resign()
             }
         } else {
-            presentAlert(title: Constant.Alert.title, message: Constant.Alert.fail) { }
+            present(type: .didFailResign) { }
         }
     }
     
@@ -142,7 +142,10 @@ extension ResignDashboardViewController: ResignDashboardPresentable {
 private extension ResignDashboardViewController {
     
     @objc func resignButtonDidTap() {
-        listener?.resignButtonDidTap(textView.text)
+        present(type: .resign) { [weak self] in
+            guard let self else { return }
+            self.listener?.resignButtonDidTap(self.textView.text)
+        }
     }
     
 }

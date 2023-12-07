@@ -10,6 +10,7 @@ import ModernRIBs
 
 import CoreKit
 import DomainInterfaces
+import FoundationKit
 
 protocol ResignDashboardRouting: ViewableRouting { }
 
