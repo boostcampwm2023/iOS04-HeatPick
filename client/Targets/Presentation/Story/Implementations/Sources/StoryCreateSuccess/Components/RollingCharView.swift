@@ -11,6 +11,33 @@ import UIKit
 final class RollingCharView: UIView {
     private var items: [Character] = []
     
+    private lazy var topGradientLayer: CAGradientLayer = {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.25)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 0.0)
+        let baseColor = UIColor.white
+        gradientLayer.colors = [
+            baseColor.withAlphaComponent(0),
+            baseColor.withAlphaComponent(1),
+        ].map{$0.cgColor}
+        layer.addSublayer(gradientLayer)
+        return gradientLayer
+    }()
+    
+    private lazy var bottomGradientLayer: CAGradientLayer = {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.75)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+        let baseColor = UIColor.white
+        gradientLayer.colors = [
+            baseColor.withAlphaComponent(0),
+            baseColor.withAlphaComponent(1),
+        ].map{$0.cgColor}
+        layer.addSublayer(gradientLayer)
+        return gradientLayer
+    }()
+    
+    
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
@@ -30,7 +57,7 @@ final class RollingCharView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -41,6 +68,12 @@ final class RollingCharView: UIView {
         setupViews()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topGradientLayer.frame = bounds
+        bottomGradientLayer.frame = bounds
+    }
+ 
     func setup(items: [Character]) {
         self.items = items
         
