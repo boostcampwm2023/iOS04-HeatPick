@@ -13,7 +13,7 @@ public struct MyPage {
     public let userId: Int
     public let userName: String
     public let profileImageURL: String?
-    public let isFollow: Int
+    public let isFollow: Bool
     public let temperature: Int
     public let temperatureFeeling: String
     public let followerCount: Int
@@ -23,7 +23,7 @@ public struct MyPage {
     public let mainBadge: MyPageBadge
     public let stories: [MyPageStory]
     
-    public init(userId: Int, userName: String, profileImageURL: String?, isFollow: Int, temperature: Int, temperatureFeeling: String, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, mainBadge: MyPageBadge, stories: [MyPageStory]) {
+    public init(userId: Int, userName: String, profileImageURL: String?, isFollow: Bool, temperature: Int, temperatureFeeling: String, followerCount: Int, storyCount: Int, experience: Int, maxExperience: Int, mainBadge: MyPageBadge, stories: [MyPageStory]) {
         self.userId = userId
         self.userName = userName
         self.profileImageURL = profileImageURL

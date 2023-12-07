@@ -21,7 +21,7 @@ public struct MyProfileProfileResponseDTO: Decodable {
     public let userId: Int
     public let username: String
     public let profileURL: String?
-    public let isFollow: Int
+    public let isFollow: Bool
     public let followerCount: Int
     public let storyCount: Int
     public let experience: Int

@@ -17,7 +17,7 @@ public enum MyAPI {
     case userStory(id: Int, offset: Int, limit: Int)
     case userMetaData
     case userUpdate(content: UserUpdateContent)
-    case resign(reason: String)
+    case resign(message: String)
 }
 
 extension MyAPI: Target {
@@ -69,8 +69,8 @@ extension MyAPI: Target {
             let media = Media(data: content.image, type: .jpeg, key: "image")
             return .multipart(.init(data: request, mediaList: [media]))
             
-        case let .resign(reason):
-            return .json(MyProfileResignRequestDTO(reason: reason))
+        case let .resign(message):
+            return .json(MyProfileResignRequestDTO(message: message))
         }
     }
     
