@@ -12,6 +12,7 @@ public enum SecretManager {
     
     public enum SecretType: String {
         case accessToken
+        case messagingToken
     }
     
     public static func read(type: SecretType) -> Data? {
