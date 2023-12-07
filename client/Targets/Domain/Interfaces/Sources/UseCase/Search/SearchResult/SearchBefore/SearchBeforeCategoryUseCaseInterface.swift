@@ -11,6 +11,6 @@ import DomainEntities
 
 public protocol SearchBeforeCategoryUseCaseInterface {
     
-    func fetchCategory() async -> Result<[StoryCategory], Error>
+    func fetchCategory() async -> Result<[SearchCategory], Error>
     
 }
