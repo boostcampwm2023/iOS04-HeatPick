@@ -116,12 +116,6 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: '회원 탈퇴 되었습니다.',
-    schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string' },
-      },
-    },
   })
   async resign(@Req() req: any, @Body() userDeleteDto: UserDeleteDto) {
     const { message } = userDeleteDto;
