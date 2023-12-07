@@ -52,8 +52,8 @@ public final class SearchUseCase: SearchUseCaseInterface {
         self.zoomLevel = zoomLevel
     }
     
-    public func fetchResult(searchText: String) async -> Result<SearchResult, Error> {
-        await repository.fetchSearchResult(searchText: searchText)
+    public func fetchSearchResult(searchText: String?, categoryId: Int?) async -> Result<SearchResult, Error> {
+        await repository.fetchSearchResult(searchText: searchText, categoryId: categoryId)
     }
     
     public func fetchStory(searchText: String) async -> Result<[SearchStory], Error> {

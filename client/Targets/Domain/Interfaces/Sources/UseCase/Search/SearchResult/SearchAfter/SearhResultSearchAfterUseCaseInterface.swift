@@ -11,7 +11,7 @@ import DomainEntities
 
 public protocol SearhResultSearchAfterUseCaseInterface {
     
-    func fetchResult(searchText: String) async -> Result<SearchResult, Error>
+    func fetchSearchResult(searchText: String?, categoryId: Int?) async -> Result<SearchResult, Error>
     func fetchNaverLocal(query: String) async -> Result<[SearchLocal], Error>
     
 }

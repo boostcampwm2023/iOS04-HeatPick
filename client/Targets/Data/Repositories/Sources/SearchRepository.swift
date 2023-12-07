@@ -25,8 +25,8 @@ public final class SearchRepository: SearchRepositoryInterface {
         loadRecentSearches()
     }
     
-    public func fetchSearchResult(searchText: String) async -> Result<SearchResult, Error> {
-        let target = SearchAPI.searchResult(searchText: searchText)
+    public func fetchSearchResult(searchText: String?, categoryId: Int?) async -> Result<SearchResult, Error> {
+        let target = SearchAPI.searchResult(searchText: searchText, categoryId: categoryId)
         let request: Result<SearchResultResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }

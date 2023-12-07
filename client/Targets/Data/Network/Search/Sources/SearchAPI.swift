@@ -11,7 +11,7 @@ import BaseAPI
 import NetworkAPIKit
 
 public enum SearchAPI {
-    case searchResult(searchText: String)
+    case searchResult(searchText: String?, categoryId: Int?)
     case story(searchText: String)
     case user(searchText: String)
     case recommend(searchText: String)
@@ -43,13 +43,13 @@ extension SearchAPI: Target {
     
     public var task: Task {
         switch self {
-        case .searchResult(let searchText):
+        case let .searchResult(searchText, categoryId):
+            .url(parameters: SearchResultRequestDTO(searchText: searchText, categoryId: categoryId).parameters())
+        case let .story(searchText):
             makeSearchRequestDTO(searchText: searchText)
-        case .story(let searchText):
+        case let .user(searchText):
             makeSearchRequestDTO(searchText: searchText)
-        case .user(let searchText):
-            makeSearchRequestDTO(searchText: searchText)
-        case .recommend(let searchText):
+        case let .recommend(searchText):
             makeSearchRequestDTO(searchText: searchText)
         case .category:
             .plain
