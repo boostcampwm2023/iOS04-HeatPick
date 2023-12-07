@@ -87,7 +87,7 @@ export class StoryController {
     },
   })
   async delete(@Request() req: any, @Query('storyId', ParseIntPipe) storyId: number): Promise<{ storyId: number }> {
-    await this.storyService.delete(req.user.userRecordId, storyId);
+    await this.storyService.delete(storyId);
     return { storyId: storyId };
   }
 

@@ -216,7 +216,10 @@ export class UserService {
     user.badges = Promise.resolve([]);
     user.representativeBadge = Promise.resolve(null);
     user.comments = Promise.resolve([]);
+
+    (await user.stories).map(async (story) => await this.storyService.delete(story.storyId));
     user.stories = Promise.resolve([]);
+
     user.following.map(async (user) => {
       user.followers = user.followers.filter((user) => user.userId !== user.userId);
       await this.userRepository.save(user);
