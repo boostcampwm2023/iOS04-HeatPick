@@ -37,6 +37,7 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
     weak var router: SignUpRouting?
     weak var listener: SignUpListener?
     private var userNameSubject = CurrentValueSubject<String, Never>("")
+    private var profileImageDataSubject = CurrentValueSubject<Data?, Never>(nil)
     private let dependency: SignUpInteractorDependency
     private var cancellables = Set<AnyCancellable>()
     
@@ -57,16 +58,15 @@ final class SignUpInteractor: PresentableInteractor<SignUpPresentable>, SignUpIn
         super.willResignActive()
     }
     
-    // TODO: 구현 예정
     func profileImageViewDidChange(_ imageData: Data) {
-        
+        profileImageDataSubject.send(imageData)
     }
     
     func signUpButtonDidTap() {
         Task { [weak self] in
             guard let self else { return }
             await dependency.authUseCase
-                .requestSignUp(userName: userNameSubject.value, with: dependency.service)
+                .requestSignUp(userName: userNameSubject.value, profileImage: profileImageDataSubject.value, with: dependency.service)
                 .onSuccess(on: .main, with: self, { this, token in
                     this.listener?.signUpDidComplete()
                 })

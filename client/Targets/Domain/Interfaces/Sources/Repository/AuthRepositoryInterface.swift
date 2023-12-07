@@ -13,6 +13,6 @@ public protocol AuthRepositoryInterface: AnyObject {
     
     func requestSignInWithNaver(token: String) async -> Result<AuthToken, Error>
     func requestSignInWithGithub(token: String) async -> Result<AuthToken, Error>
-    func requestSignUpnWithNaver(token: String, userName: String) async -> Result<AuthToken, Error>
-    func requestSignUpWithGithub(token: String, userName: String) async -> Result<AuthToken, Error>
+    func requestSignUpnWithNaver(content: AuthContent) async -> Result<AuthToken, Error>
+    func requestSignUpWithGithub(content: AuthContent) async -> Result<AuthToken, Error>
 }

@@ -33,14 +33,14 @@ public final class AuthRepository: AuthRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
-    public func requestSignUpnWithNaver(token: String, userName: String) async -> Result<AuthToken, Error> {
-        let target = AuthAPI.signUpWithNaver(token: token, username: userName)
+    public func requestSignUpnWithNaver(content: AuthContent) async -> Result<AuthToken, Error> {
+        let target = AuthAPI.signUpWithNaver(content: content)
         let request: Result<SignUpResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
-    public func requestSignUpWithGithub(token: String, userName: String) async -> Result<AuthToken, Error> {
-        let target = AuthAPI.signUpWithGithub(token: token, username: userName)
+    public func requestSignUpWithGithub(content: AuthContent) async -> Result<AuthToken, Error> {
+        let target = AuthAPI.signUpWithGithub(content: content)
         let request: Result<SignUpResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
