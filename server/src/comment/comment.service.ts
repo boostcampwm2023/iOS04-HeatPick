@@ -62,7 +62,7 @@ export class CommentService {
       await this.userService.mention(mentionedUser, comment);
     }
 
-    await this.notificationService.sendFcmNotification((await story.user).userId, '댓글 알림💭', `${user.username}님이 ${story.title} 게시글에 댓글을 달았습니다💭`);
+    //await this.notificationService.sendFcmNotification((await story.user).userId, '댓글 알림💭', `${user.username}님이 ${story.title} 게시글에 댓글을 달았습니다💭`);
 
     return comment.commentId;
   }
