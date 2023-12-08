@@ -180,7 +180,8 @@ export class StoryService {
         return storyEntityToObjWithOneImg(story);
       }),
     );
-    return storyArr.slice(offset * limit, offset * limit + limit);
+    const nonEmptyStoryArr = storyArr.filter((story) => story !== undefined && story !== null);
+    return nonEmptyStoryArr.slice(offset * limit, offset * limit + limit);
   }
 
   async getRecommendedStory(offset: number, limit: number): Promise<any[]> {
@@ -191,8 +192,8 @@ export class StoryService {
           return storyEntityToObjWithOneImg(story);
         }),
       );
-
-      return storyArr.slice(offset * limit, offset * limit + limit);
+      const nonEmptyStoryArr = storyArr.filter((story) => story !== undefined && story !== null);
+      return nonEmptyStoryArr.slice(offset * limit, offset * limit + limit);
     } catch (error) {
       throw error;
     }
