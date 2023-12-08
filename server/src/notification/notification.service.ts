@@ -44,8 +44,8 @@ export class NotificationService {
         }),
       });
 
-      //this.logger.log(response.text());
-      //return response.text();
+      this.logger.log(response.text());
+      return response.text();
     } catch (error) {
       throw new FcmSendNotificationFailedException();
     }

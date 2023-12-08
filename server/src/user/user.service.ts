@@ -340,8 +340,11 @@ export class UserService {
     (await user.likedStories).push(story);
     await this.userRepository.save(user);
 
-    //await this.notificationService.sendFcmNotification((await story.user).userId, `좋아요 알림❤️`, `${user.username}님이 ${story.title} 게시글에 좋아요를 눌렀습니다❤️`);
-
+    try {
+      await this.notificationService.sendFcmNotification((await story.user).userId, `좋아요 알림❤️`, `${user.username}님이 ${story.title} 게시글에 좋아요를 눌렀습니다❤️`);
+    } catch (e) {
+      return await this.storyService.addLikeCount(storyId);
+    }
     return await this.storyService.addLikeCount(storyId);
   }
 
