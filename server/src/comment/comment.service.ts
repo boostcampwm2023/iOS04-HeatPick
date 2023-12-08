@@ -61,9 +61,11 @@ export class CommentService {
     for (const mentionedUser of mentionedUsers) {
       await this.userService.mention(mentionedUser, comment);
     }
-
-    //await this.notificationService.sendFcmNotification((await story.user).userId, '댓글 알림💭', `${user.username}님이 ${story.title} 게시글에 댓글을 달았습니다💭`);
-
+    try {
+      await this.notificationService.sendFcmNotification((await story.user).userId, '댓글 알림💭', `${user.username}님이 ${story.title} 게시글에 댓글을 달았습니다💭`);
+    } catch (e) {
+      return comment.commentId;
+    }
     return comment.commentId;
   }
 
