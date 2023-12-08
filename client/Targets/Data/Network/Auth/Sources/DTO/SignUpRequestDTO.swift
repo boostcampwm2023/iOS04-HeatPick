@@ -7,15 +7,16 @@
 //
 
 import Foundation
+import DomainEntities
 
 public struct SignUpRequestDTO: Encodable {
     
     public let OAuthToken: String
     public let username: String
     
-    public init(OAuthToken: String, username: String) {
-        self.OAuthToken = OAuthToken
-        self.username = username
+    public init(content: AuthContent) {
+        self.OAuthToken = content.token
+        self.username = content.username
     }
     
 }

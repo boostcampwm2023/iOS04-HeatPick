@@ -9,12 +9,13 @@
 import Foundation
 import BaseAPI
 import NetworkAPIKit
+import DomainEntities
 
 public enum AuthAPI {
     case signInWithNaver(token: String)
     case signInWithGithub(token: String)
-    case signUpWithNaver(token: String, username: String)
-    case signUpWithGithub(token: String, username: String)
+    case signUpWithNaver(content: AuthContent)
+    case signUpWithGithub(content: AuthContent)
 }
 
 extension AuthAPI: Target {
@@ -46,17 +47,22 @@ extension AuthAPI: Target {
             return .json(SignInRequestDTO(OAuthToken: token))
         case .signInWithGithub(let token):
             return .json(SignInRequestDTO(OAuthToken: token))
-        case .signUpWithNaver(let token, let username):
-            return .json(SignUpRequestDTO(
-                OAuthToken: token, 
-                username: username
-            ))
-        case .signUpWithGithub(let token, let username):
-            return .json(SignUpRequestDTO(
-                OAuthToken: token,
-                username: username
-            ))
+        case let .signUpWithNaver(content):
+            return makeSingUpRequest(content: content)
+        case let .signUpWithGithub(content):
+            return makeSingUpRequest(content: content)
         }
+    }
+    
+}
+
+private extension AuthAPI {
+    
+    func makeSingUpRequest(content: AuthContent) -> Task {
+        let request = SignUpRequestDTO(content: content)
+        guard let data = content.image else { return .json(request) }
+        let media = Media(data: data, type: .jpeg, key: "image")
+        return .multipart(.init(data: request, mediaList: [media]))
     }
     
 }

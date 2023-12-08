@@ -18,6 +18,6 @@ public protocol AuthUseCaseInterface: AnyObject {
     func requestGithubSignIn()
     func requestNaverSignIn()
     func requestSignIn(token: String, with service: SignInService) async -> Result<AuthToken, Error>
-    func requestSignUp(userName: String, with service: SignInService) async -> Result<AuthToken, Error>
+    func requestSignUp(userName: String, profileImage: Data?, with service: SignInService) async -> Result<AuthToken, Error>
     
 }
