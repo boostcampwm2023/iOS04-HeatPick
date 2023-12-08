@@ -96,8 +96,9 @@ export class SearchController {
         }),
       );
     }
+    const nonEmptyStoryArr = storyArr.filter((story) => story !== undefined && story !== null);
 
-    const truncatedStoryArr = storyArr.splice(0, 5);
+    const truncatedStoryArr = nonEmptyStoryArr.splice(0, 5);
     const truncatedUserArr = userArr.splice(0, 5);
     const result: SearchResultDto = { stories: truncatedStoryArr, users: truncatedUserArr };
 
