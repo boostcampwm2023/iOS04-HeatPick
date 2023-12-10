@@ -13,6 +13,7 @@ import FoundationKit
 import DomainEntities
 import DomainInterfaces
 import NetworkAPIKit
+import UserNotifications
 
 public final class AuthUseCase: AuthUseCaseInterface {
     
@@ -32,17 +33,44 @@ public final class AuthUseCase: AuthUseCaseInterface {
         return !token.isEmpty
     }
     
+    public var locationPermission: LocationPermission {
+        return locationUseCase.permission
+    }
+    
+    public var notificationPermission: NotificationPermission {
+        guard let settings = notificationUseCase.settings else {
+            return .none
+        }
+        
+        switch settings.authorizationStatus {
+        case .authorized:
+            return .authorized
+            
+        case .denied:
+            return .denied
+            
+        default:
+            return .none
+        }
+    }
+    
     private let repository: AuthRepositoryInterface
     private let signInUseCase: SignInUseCaseInterface
+    private let locationUseCase: LocationAuthorityUseCaseInterfaces
+    private let notificationUseCase: NotificationPermissionUseCaseInterface
     private var currentToken = CurrentValueSubject<String?, Never>(nil)
     private var cancellables = Set<AnyCancellable>()
     
     public init(
         repository: AuthRepositoryInterface,
-        signInUseCase: SignInUseCaseInterface
+        signInUseCase: SignInUseCaseInterface,
+        locationUseCase: LocationAuthorityUseCaseInterfaces,
+        notificationUseCase: NotificationPermissionUseCaseInterface
     ) {
         self.repository = repository
         self.signInUseCase = signInUseCase
+        self.locationUseCase = locationUseCase
+        self.notificationUseCase  = notificationUseCase
         receiveGithubToken()
         receiveNaverToken()
     }

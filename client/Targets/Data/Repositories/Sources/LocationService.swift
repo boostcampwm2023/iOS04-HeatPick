@@ -23,9 +23,13 @@ public final class LocationService: NSObject, LocationServiceInterface {
         return manager.location?.coordinate.toEntity()
     }
     
+    public var permissionPublisher: AnyPublisher<CLAuthorizationStatus, Never> {
+        return permissionSubject.eraseToAnyPublisher()
+    }
+    
     private let manager: CLLocationManager
     
-    private var permissionSubject = PassthroughSubject<CLAuthorizationStatus, Error>()
+    private var permissionSubject = PassthroughSubject<CLAuthorizationStatus, Never>()
     private var locationSubject = PassthroughSubject<LocationCoordinate, Error>()
     
     public override init() {

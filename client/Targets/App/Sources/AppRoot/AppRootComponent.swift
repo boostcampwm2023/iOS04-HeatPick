@@ -93,25 +93,30 @@ final class AppRootComponent: Component<AppRootDependency>,
     }()
     
     override init(dependency: AppRootDependency) {
-        let naverLoginRepository: NaverLoginRepositoryInterface = {
-            let repository = NaverLoginRepository()
-            repository.setup()
-            return repository
-        }()
-        self.naverLoginRepository = naverLoginRepository
-        let authNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [AuthURLProtocol.self])
-        self.authUseCase = AuthUseCase(
-            repository: AuthRepository(session: authNetworkProvider),
-            signInUseCase: SignInUseCase(githubLoginRepository: GithubLoginRepository.shared,
-                                         naverLoginRepository: naverLoginRepository)
-        )
-        
         let locationService = LocationService()
         locationService.startUpdatingLocation()
         
         let homeNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [HomeURLProtocol.self])
         self.homeUseCase = HomeUseCase(repository: HomeRepository(session: homeNetworkProvider), locationService: locationService)
         self.locationAuthorityUseCase = LocationAuthorityUseCase(service: locationService)
+        
+        let naverLoginRepository: NaverLoginRepositoryInterface = {
+            let repository = NaverLoginRepository()
+            repository.setup()
+            return repository
+        }()
+        
+        self.naverLoginRepository = naverLoginRepository
+        let authNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [AuthURLProtocol.self])
+        self.authUseCase = AuthUseCase(
+            repository: AuthRepository(session: authNetworkProvider),
+            signInUseCase: SignInUseCase(
+                githubLoginRepository: GithubLoginRepository.shared,
+                naverLoginRepository: naverLoginRepository
+            ),
+            locationUseCase: locationAuthorityUseCase,
+            notificationUseCase: notificationPermissionUseCase
+        )
         
         let storyNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [StoryURLProtocol.self])
         self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider), locationService: locationService)

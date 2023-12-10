@@ -7,9 +7,11 @@
 //
 
 import Foundation
+import UserNotifications
 
 public protocol NotificationServiceInterface: AnyObject {
     
+    var settings: UNNotificationSettings? { get }
     func requestAuthorization() async throws -> Bool
     func registerNotification()
     func registerNotification() async

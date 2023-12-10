@@ -14,6 +14,7 @@ import DomainEntities
 public protocol LocationServiceInterface: AnyObject {
     
     var permisson: CLAuthorizationStatus { get }
+    var permissionPublisher: AnyPublisher<CLAuthorizationStatus, Never> { get }
     var location: LocationCoordinate? { get }
     
     func startUpdatingLocation()

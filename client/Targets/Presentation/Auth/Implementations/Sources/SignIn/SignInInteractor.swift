@@ -86,11 +86,7 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
             await dependency.authUseCase
                 .requestSignIn(token: token, with: .naver)
                 .onSuccess(on: .main, with: self) { this, authToken in
-                    if authToken.token.isEmpty {
-                        this.router?.attachSignUp(with: .naver)
-                    } else {
-                        this.router?.attachLocationAuthority()
-                    }
+                    this.performAfterRequestSignIn(token: authToken, service: .naver)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)
@@ -104,15 +100,29 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
             await dependency.authUseCase
                 .requestSignIn(token: token, with: .github)
                 .onSuccess(on: .main, with: self) { this, authToken in
-                    if authToken.token.isEmpty {
-                        this.router?.attachSignUp(with: .github)
-                    } else {
-                        this.router?.attachLocationAuthority()
-                    }
+                    this.performAfterRequestSignIn(token: authToken, service: .github)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
+        }
+    }
+    
+    private func performAfterRequestSignIn(token: AuthToken, service: SignInService) {
+        if token.token.isEmpty {
+            router?.attachSignUp(with: service)
+            return
+        }
+        
+        let locationPermission = dependency.authUseCase.locationPermission
+        let notificationPermission = dependency.authUseCase.notificationPermission
+        
+        if locationPermission == .authorized && notificationPermission == .authorized {
+            listener?.signInDidComplete()
+        } else if locationPermission == .authorized {
+            router?.attachNotificationPermission()
+        } else {
+            router?.attachLocationAuthority()
         }
     }
     
@@ -135,11 +145,19 @@ final class SignInInteractor: PresentableInteractor<SignInPresentable>, SignInIn
     // MARK: - LocationAuthority
     
     func locationAuthorityDidComplete() {
-        router?.attachNotificationPermission()
+        if dependency.authUseCase.notificationPermission == .authorized {
+            listener?.signInDidComplete()
+        } else {
+            router?.attachNotificationPermission()
+        }
     }
     
     func locationAuthorityDidSkip() {
-        router?.attachNotificationPermission()
+        if dependency.authUseCase.notificationPermission == .authorized {
+            listener?.signInDidComplete()
+        } else {
+            router?.attachNotificationPermission()
+        }
     }
     
     // MARK: - NotificationPermission

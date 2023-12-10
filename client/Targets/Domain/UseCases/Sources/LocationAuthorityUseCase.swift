@@ -18,6 +18,12 @@ public final class LocationAuthorityUseCase: LocationAuthorityUseCaseInterfaces 
         return service.permisson.entity
     }
     
+    public var permissionPublisher: AnyPublisher<LocationPermission, Never> {
+        return service.permissionPublisher
+            .map(\.entity)
+            .eraseToAnyPublisher()
+    }
+    
     private let service: LocationServiceInterface
     
     public init(service: LocationServiceInterface) {
