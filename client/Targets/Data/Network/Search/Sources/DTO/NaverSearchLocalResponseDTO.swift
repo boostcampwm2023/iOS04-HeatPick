@@ -21,7 +21,7 @@ public struct NaverSearchLocalResponseDTO: Decodable {
 public extension NaverSearchLocalResponseDTO {
     
     func toDomain() -> [SearchLocal] {
-        items.map { .init(title: $0.title, roadAddress: $0.roadAddress) }
+        return items.compactMap { $0.toDomain() }
     }
     
 }

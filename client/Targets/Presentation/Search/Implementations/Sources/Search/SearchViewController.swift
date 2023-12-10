@@ -83,6 +83,15 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         naverMap.mapView.moveCamera(cameraUpdate)
     }
     
+    func selectMap(title: String, lat: Double, lng: Double) {
+        moveMap(lat: lat, lng: lng)
+        listener?.didTapSymbol(symbol: .init(
+            title: title,
+            lat: lat,
+            lng: lng
+        ))
+    }
+    
     func updateMarkers(places: [Place]) {
         let overlay = NMFOverlayImage(image: .marker)
         

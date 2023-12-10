@@ -13,7 +13,7 @@ import DesignKit
 
 
 protocol SearchAfterLocalViewDelegate: AnyObject {
-    
+    func searchAfterLocalViewDidTap(_ view: SearchAfterLocalView, model: SearchLocal)
 }
 
 final class SearchAfterLocalView: UIView {
@@ -23,6 +23,8 @@ final class SearchAfterLocalView: UIView {
     private enum Constant {
         static let spacing: CGFloat = 5
     }
+    
+    private var model: SearchLocal?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -59,6 +61,7 @@ final class SearchAfterLocalView: UIView {
     func setup(model: SearchLocal) {
         titleLabel.text = model.title
         roadAddressLabel.text = model.roadAddress
+        self.model = model
     }
        
 }
@@ -92,7 +95,8 @@ private extension SearchAfterLocalView {
 private extension SearchAfterLocalView {
     
     @objc func searchAfterLocalViewDidTap() {
-        
+        guard let model else { return }
+        delegate?.searchAfterLocalViewDidTap(self, model: model)
     }
     
 }

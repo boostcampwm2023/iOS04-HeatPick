@@ -37,6 +37,7 @@ protocol SearchPresentable: Presentable {
     func showStoryView(model: SearchMapStoryViewModel)
     func showClusterListView(models: [SearchMapClusterListCellModel])
     func moveMap(lat: Double, lng: Double)
+    func selectMap(title: String, lat: Double, lng: Double)
     func updateMarkers(places: [Place])
     func updateMarkers(clusters: [Cluster])
     func removeAllMarker()
@@ -118,6 +119,11 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     func searchCurrentLocationStoryListDidTapStory(_ storyId: Int) {
         router?.detachSearchCurrentLocation()
         router?.attachStoryDetail(storyId: storyId)
+    }
+    
+    func searchResultDidTapLocal(_ local: SearchLocal) {
+        router?.detachSearchResult()
+        presenter.selectMap(title: local.title, lat: local.lat, lng: local.lng)
     }
     
     private func bind() {
@@ -301,7 +307,6 @@ private extension SearchInteractor {
         let distance = abs(fetchedLocation.lat - location.lat) + abs(fetchedLocation.lng - location.lng)
         return distance >= 0.02
     }
-    
     
 }
 
