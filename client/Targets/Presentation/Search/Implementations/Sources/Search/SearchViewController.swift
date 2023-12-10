@@ -84,7 +84,8 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     }
     
     func selectMap(title: String, lat: Double, lng: Double) {
-        moveMap(lat: lat, lng: lng)
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng), zoomTo: 15.0)
+        naverMap.mapView.moveCamera(cameraUpdate)
         listener?.didTapSymbol(symbol: .init(
             title: title,
             lat: lat,
@@ -228,6 +229,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         
         selectedMarker.do {
             $0.iconImage = NMFOverlayImage(image: .markerBlue)
+            $0.zIndex = 1
         }
         
         selectedView.do {

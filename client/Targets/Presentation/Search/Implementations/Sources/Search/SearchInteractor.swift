@@ -124,6 +124,7 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     func searchResultDidTapLocal(_ local: SearchLocal) {
         router?.detachSearchResult()
         presenter.selectMap(title: local.title, lat: local.lat, lng: local.lng)
+        didTapReSearch()
     }
     
     private func bind() {
