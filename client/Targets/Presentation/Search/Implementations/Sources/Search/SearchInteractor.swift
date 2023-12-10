@@ -167,8 +167,7 @@ extension SearchInteractor: SearchPresentableListener {
     
     func didAppear() {
         if !isInitialCameraMoved {
-            // TODO: - Default Location 설정하기
-            let location = dependency.searchUseCase.location ?? .init(lat: 37, lng: 127)
+            let location = dependency.searchUseCase.location ?? .init(lat: 37.3588501438082, lng: 127.1052074432373)
             isInitialCameraMoved = true
             presenter.moveMap(lat: location.lat, lng: location.lng)
             fetchPlaces(lat: location.lat, lng: location.lng)
