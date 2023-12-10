@@ -119,9 +119,8 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         markerStorage.removeAll()
     }
     
-    func updateSelectedMarker(title: String, lat: Double, lng: Double) {
+    func updateSelectedMarker(lat: Double, lng: Double) {
         selectedMarker.position = .init(lat: lat, lng: lng)
-        selectedMarker.captionText = title
         selectedMarker.mapView = naverMap.mapView
     }
     

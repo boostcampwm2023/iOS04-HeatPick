@@ -41,7 +41,7 @@ protocol SearchPresentable: Presentable {
     func updateMarkers(places: [Place])
     func updateMarkers(clusters: [Cluster])
     func removeAllMarker()
-    func updateSelectedMarker(title: String, lat: Double, lng: Double)
+    func updateSelectedMarker(lat: Double, lng: Double)
     func showSelectedView(title: String)
     func showReSearchView()
     func hideReSearchView()
@@ -190,7 +190,6 @@ extension SearchInteractor: SearchPresentableListener {
     func didTapSymbol(symbol: SearchMapSymbol) {
         presenter.deselectAll()
         presenter.updateSelectedMarker(
-            title: symbol.title,
             lat: symbol.lat,
             lng: symbol.lng
         )
@@ -202,7 +201,6 @@ extension SearchInteractor: SearchPresentableListener {
         let title = "위치 정보가 없어요"
         presenter.deselectAll()
         presenter.updateSelectedMarker(
-            title: "",
             lat: location.lat,
             lng: location.lng
         )
@@ -261,7 +259,6 @@ extension SearchInteractor: SearchPresentableListener {
             ))
             
             presenter.updateSelectedMarker(
-                title: place.title,
                 lat: place.lat,
                 lng: place.lng
             )
@@ -276,7 +273,6 @@ extension SearchInteractor: SearchPresentableListener {
             )}
             presenter.showClusterListView(models: models)
             presenter.updateSelectedMarker(
-                title: "",
                 lat: cluster.center.lat,
                 lng: cluster.center.lng
             )
