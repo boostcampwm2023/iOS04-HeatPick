@@ -18,6 +18,8 @@ public protocol MyPageDependency: Dependency {
     var myPageUseCase: MyPageUseCaseInterface { get }
     var signOutRequestService: SignOutRequestServiceInterface { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
+    var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { get }
     
 }
 
@@ -36,6 +38,8 @@ final class MyPageComponent: Component<MyPageDependency>,
     var myProfileSettingUseCase: MyProfileSettingUseCaseInterface { dependency.myPageUseCase }
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
+    var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { dependency.notificationPermissionUseCase }
     
     override init(dependency: MyPageDependency) {
         super.init(dependency: dependency)

@@ -15,6 +15,7 @@ final class SettingContentView: UIView {
         static let imageWidth: CGFloat = 15
         static let imageHeight: CGFloat = imageWidth
         static let imageName = "chevron.right"
+        static let spacing: CGFloat = 20
     }
     
     private let titleLabel: UILabel = {
@@ -44,6 +45,13 @@ final class SettingContentView: UIView {
         return imageView
     }()
     
+    private let topSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = .hpGray4
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -61,14 +69,23 @@ final class SettingContentView: UIView {
         subtitleLabel.text = subtitle
     }
     
+    func hideSeparator() {
+        topSeparator.isHidden = true
+    }
+    
 }
 
 private extension SettingContentView {
     
     func setupViews() {
-        [arrowImageView,titleLabel, subtitleLabel].forEach(addSubview)
+        [topSeparator, arrowImageView,titleLabel, subtitleLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
+            topSeparator.topAnchor.constraint(equalTo: topAnchor),
+            topSeparator.leadingAnchor.constraint(equalTo: leadingAnchor),
+            topSeparator.trailingAnchor.constraint(equalTo: trailingAnchor),
+            topSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
             arrowImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
             arrowImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             arrowImageView.widthAnchor.constraint(equalToConstant: Constant.imageWidth),
@@ -77,9 +94,9 @@ private extension SettingContentView {
             subtitleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             
-            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.spacing),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constant.spacing)
         ])
     }
     

@@ -6,8 +6,9 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
-import ModernRIBs
 import UIKit
+import Combine
+import ModernRIBs
 import CoreKit
 import DesignKit
 import BasePresentation
@@ -15,6 +16,8 @@ import BasePresentation
 protocol SettingPresentableListener: AnyObject {
     func didTapClose()
     func didTapDiscussion()
+    func didTapLocation()
+    func didTapNotification()
     func didTapResign()
     func didTapSignOut()
 }
@@ -28,24 +31,33 @@ final class SettingViewController: BaseViewController, SettingPresentable, Setti
     
     weak var listener: SettingPresentableListener?
     
+    private let stackView = UIStackView()
+    
     private lazy var appVersionView = makeContentView(
-        selector: #selector(didTapAppVersion),
         title: "앱 버전",
-        subtitle: AppBundle.appVersion
+        subtitle: AppBundle.appVersion,
+        isTopContent: true
     )
     
     private lazy var discussionView = makeContentView(
-        selector: #selector(didTapDiscussion),
         title: "문의하기"
     )
     
+    private lazy var locationView = makeContentView(
+        title: "위치 권한",
+        subtitle: ""
+    )
+    
+    private lazy var notificationView = makeContentView(
+        title: "알림 권한",
+        subtitle: ""
+    )
+    
     private lazy var resignView = makeContentView(
-        selector: #selector(didTapResign),
         title: "탈퇴하기"
     )
     
     private lazy var signOutView = makeContentView(
-        selector: #selector(didTapSignOut),
         title: "로그아웃하기"
     )
     
@@ -54,21 +66,27 @@ final class SettingViewController: BaseViewController, SettingPresentable, Setti
             UIApplication.shared.open(url)
         }
     }
+    
+    func openSettingApp() {
+        guard let url = URL(string: UIApplication.openSettingsURLString),
+              UIApplication.shared.canOpenURL(url)
+        else {
+            return
+        }
+        UIApplication.shared.open(url, options: [:])
+    }
+    
+    func updateLocationSubtitle(_ subtitle: String) {
+        locationView.setup(title: "위치 권한", subtitle: subtitle)
+    }
+    
+    func updateNotificationSubtitle(_ subtitle: String) {
+        notificationView.setup(title: "알림 권한", subtitle: subtitle)
+    }
+    
     override func setupLayout() {
-        let appVersionViewSeparator = makeSeparator()
-        let discussionViewSeparator = makeSeparator()
-        let resignViewSeparator = makeSeparator()
-        
-        [
-            navigationView,
-            appVersionView,
-            appVersionViewSeparator,
-            discussionView,
-            discussionViewSeparator,
-            resignView,
-            resignViewSeparator,
-            signOutView
-        ].forEach(view.addSubview)
+        [navigationView, stackView].forEach(view.addSubview)
+        [appVersionView, discussionView, locationView, notificationView, resignView, signOutView].forEach(stackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -76,36 +94,9 @@ final class SettingViewController: BaseViewController, SettingPresentable, Setti
             navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navigationView.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
             
-            appVersionView.topAnchor.constraint(equalTo: navigationView.bottomAnchor, constant: Constant.topOffset),
-            appVersionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            appVersionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            
-            appVersionViewSeparator.topAnchor.constraint(equalTo: appVersionView.bottomAnchor, constant: Constant.spacing),
-            appVersionViewSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            appVersionViewSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            appVersionViewSeparator.heightAnchor.constraint(equalToConstant: 1),
-            
-            discussionView.topAnchor.constraint(equalTo: appVersionViewSeparator.bottomAnchor, constant: Constant.spacing),
-            discussionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            discussionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            
-            discussionViewSeparator.topAnchor.constraint(equalTo: discussionView.bottomAnchor, constant: Constant.spacing),
-            discussionViewSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            discussionViewSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            discussionViewSeparator.heightAnchor.constraint(equalToConstant: 1),
-            
-            resignView.topAnchor.constraint(equalTo: discussionViewSeparator.bottomAnchor, constant: Constant.spacing),
-            resignView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            resignView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            
-            resignViewSeparator.topAnchor.constraint(equalTo: resignView.bottomAnchor, constant: Constant.spacing),
-            resignViewSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            resignViewSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            resignViewSeparator.heightAnchor.constraint(equalToConstant: 1),
-            
-            signOutView.topAnchor.constraint(equalTo: resignViewSeparator.bottomAnchor, constant: Constant.spacing),
-            signOutView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            signOutView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset)
+            stackView.topAnchor.constraint(equalTo: navigationView.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor,  constant: Constants.leadingOffset),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset)
         ])
     }
     
@@ -117,10 +108,56 @@ final class SettingViewController: BaseViewController, SettingPresentable, Setti
             $0.delegate = self
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        
+        stackView.do {
+            $0.axis = .vertical
+            $0.spacing = 0
+            $0.alignment = .fill
+            $0.distribution = .fill
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     override func bind() {
+        discussionView.tapGesturePublisher
+            .receive(on: DispatchQueue.main)
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapDiscussion()
+            }
+            .store(in: &cancellables)
         
+        resignView.tapGesturePublisher
+            .receive(on: DispatchQueue.main)
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapResign()
+            }
+            .store(in: &cancellables)
+        
+        locationView.tapGesturePublisher
+            .receive(on: DispatchQueue.main)
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapLocation()
+            }
+            .store(in: &cancellables)
+        
+        notificationView.tapGesturePublisher
+            .receive(on: DispatchQueue.main)
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapNotification()
+            }
+            .store(in: &cancellables)
+        
+        signOutView.tapGesturePublisher
+            .receive(on: DispatchQueue.main)
+            .withOnly(self)
+            .sink { this in
+                this.listener?.didTapSignOut()
+            }
+            .store(in: &cancellables)
     }
     
 }
@@ -135,39 +172,16 @@ extension SettingViewController: NavigationViewDelegate {
 
 private extension SettingViewController {
     
-    @objc func didTapAppVersion() {
-        // 아무 일도 안함
-    }
-    
-    @objc func didTapDiscussion() {
-        listener?.didTapDiscussion()
-    }
-    
-    @objc func didTapResign() {
-        listener?.didTapResign()
-    }
-    
-    @objc func didTapSignOut() {
-        listener?.didTapSignOut()
-    }
-    
-}
-
-private extension SettingViewController {
-    
-    func makeContentView(selector: Selector, title: String, subtitle: String? = nil) -> SettingContentView {
+    func makeContentView(title: String, subtitle: String? = nil, isTopContent: Bool = false) -> SettingContentView {
         let contentView = SettingContentView()
         contentView.setup(title: title, subtitle: subtitle)
-        contentView.addTapGesture(target: self, action: selector)
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        if isTopContent {
+            contentView.hideSeparator()
+        }
+        
         return contentView
-    }
-    
-    func makeSeparator() -> UIView {
-        let separator = UIView()
-        separator.backgroundColor = .hpGray4
-        separator.translatesAutoresizingMaskIntoConstraints = false
-        return separator
     }
     
 }
