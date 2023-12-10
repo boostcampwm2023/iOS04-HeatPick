@@ -48,7 +48,12 @@ public extension NaverSearchLocalDTO {
         
         guard let lat, let lng else { return nil}
         
-        return .init(title: title, roadAddress: roadAddress, lat: lat, lng: lng)
+        return .init(
+            title: title.withoutHtml,
+            roadAddress: roadAddress.withoutHtml,
+            lat: lat,
+            lng: lng
+        )
     }
     
 }
