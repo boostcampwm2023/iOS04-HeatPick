@@ -106,6 +106,7 @@ export class UserService {
       maxExperience: 999,
       mainBadge: mainBadge,
       badgeExplain: strToExplain[mainBadge.badgeName],
+      nextBadge: nextBadge[mainBadge.badgeName] || null,
       storyList: (
         await Promise.all(
           stories.map(async (story: Story) => {

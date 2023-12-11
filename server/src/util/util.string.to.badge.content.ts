@@ -15,6 +15,7 @@ export const strToExplain = {
 };
 
 export const nextBadge = {
+  뉴비: '조금 고인물',
   뚜벅이: '러닝맨',
   카페인중독: '카페인의 신',
 };

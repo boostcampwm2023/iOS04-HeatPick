@@ -11,7 +11,7 @@ import { UserProfileDetailJsonDto } from './dto/response/user.profile.detail.dat
 import { userEntityToUserObj } from 'src/util/user.entity.to.obj';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { BadgeJsonDto, BadgeReturnDto } from './dto/response/badge.return.dto';
-import { strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
+import { nextBadge, strToEmoji, strToExplain } from 'src/util/util.string.to.badge.content';
 import { UserJsonResponseDto } from './dto/response/user.response.dto';
 import { ProfileUpdateMetaDataJsonDto } from './dto/response/profile.update.meta.dto';
 import { UserProfileDetailStoryJsonDto } from './dto/response/user.profile.detail.story.dto';
@@ -30,7 +30,7 @@ export class UserController {
   async getBadges(@Req() req: any): Promise<BadgeJsonDto> {
     const badges = await this.userService.getBadges(req.user.userRecordId);
     const transformedBadges: BadgeReturnDto[] = badges.map((badge) => {
-      return { badgeId: badge.badgeId, badgeName: badge.badgeName, emoji: strToEmoji[badge.badgeName], description: strToExplain[badge.badgeName] };
+      return { badgeId: badge.badgeId, badgeName: badge.badgeName, emoji: strToEmoji[badge.badgeName], description: strToExplain[badge.badgeName], nextBadge: nextBadge[badge.badgeName] || null };
     });
     return { badges: transformedBadges };
   }
