@@ -201,9 +201,12 @@ export class UserService {
 
     user.username = username;
     user.representativeBadge = Promise.resolve(selectedBadge);
-    const profileObj = new profileImage();
-    profileObj.imageUrl = image ? await saveImageToLocal('./images/profile', image.buffer, 'profile') : ``;
-    user.profileImage = Promise.resolve(profileObj);
+
+    if (image) {
+      const profileObj = new profileImage();
+      profileObj.imageUrl = image ? await saveImageToLocal('./images/profile', image.buffer, 'profile') : ``;
+      user.profileImage = Promise.resolve(profileObj);
+    }
 
     await this.userRepository.save(user);
 
