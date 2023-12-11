@@ -69,7 +69,7 @@ public final class StorySeeAllViewController: BaseViewController, StorySeeAllPre
         
         navigationView.do {
             $0.delegate = self
-            $0.setup(model: .init(title: "", leftButtonType: .back, rightButtonTypes: []))
+            $0.setup(model: .init(title: "스토리 목록", leftButtonType: .back, rightButtonTypes: []))
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
