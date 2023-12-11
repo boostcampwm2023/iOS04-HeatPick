@@ -14,12 +14,14 @@ final class ImageCountButton: UIButton {
         case like
         case liked
         case comment
+        case author
         
         var imageName: String {
             switch self {
             case .comment: "bubble"
             case .like: "heart"
             case .liked: "heart.fill"
+            case .author: "heart.fill"
             }
         }
         
@@ -28,6 +30,7 @@ final class ImageCountButton: UIButton {
             case .comment: return .hpBlack
             case .like: return .hpBlack
             case .liked: return .hpRed1
+            case .author: return .hpBlack
             }
         }
     }

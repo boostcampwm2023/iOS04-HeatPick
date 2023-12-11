@@ -135,7 +135,7 @@ private extension StoryHeaderView {
         switch author {
         case .me:
             likeButton.isUserInteractionEnabled = false
-            likeButton.setup(type: .liked)
+            likeButton.setup(type: .author)
         case .following, .nonFollowing:
             likeButton.setup(type: (likeStatus ? .liked : .like))
         }

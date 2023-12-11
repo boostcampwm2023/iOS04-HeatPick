@@ -65,6 +65,10 @@ final class StoryDetailInteractor: PresentableInteractor<StoryDetailPresentable>
         cancelBag.cancel()
     }
     
+    func didRefresh() {
+        requestStoryDetail()
+    }
+    
     func storyDetailDidTapClose() {
         listener?.storyDetailDidTapClose()
     }
