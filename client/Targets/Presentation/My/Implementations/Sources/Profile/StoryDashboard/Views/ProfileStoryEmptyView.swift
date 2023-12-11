@@ -9,7 +9,7 @@
 import UIKit
 import DesignKit
 
-final class MyPageStoryEmptyView: UIView {
+final class ProfileStoryEmptyView: UIView {
     
     private enum Constant {
         static let topOffset: CGFloat = 40
@@ -50,7 +50,7 @@ final class MyPageStoryEmptyView: UIView {
     
 }
 
-private extension MyPageStoryEmptyView {
+private extension ProfileStoryEmptyView {
     
     func setupViews() {
         [titleLabel, subtitleLabel].forEach(addSubview)

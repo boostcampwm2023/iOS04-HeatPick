@@ -11,22 +11,22 @@ import UIKit
 import DesignKit
 import BasePresentation
 
-protocol MyPageStoryDashboardPresentableListener: AnyObject {
+protocol ProfileStoryDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
     func didTapStory(id: Int)
 }
 
-struct MyPageStoryDashboardViewControllerModel {
+struct ProfileStoryDashboardViewControllerModel {
     let contentModels: [StorySmallViewModel]
 }
 
-final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDashboardPresentable, MyPageStoryDashboardViewControllable {
+final class ProfileStoryDashboardViewController: UIViewController, ProfileStoryDashboardPresentable, ProfileStoryDashboardViewControllable {
     
     private enum Constant {
         static let spacing: CGFloat = 20
     }
     
-    weak var listener: MyPageStoryDashboardPresentableListener?
+    weak var listener: ProfileStoryDashboardPresentableListener?
     
     private var models: [StorySmallViewModel] = []
     
@@ -41,7 +41,7 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
         return seeAllView
     }()
     
-    private let emptyView = MyPageStoryEmptyView()
+    private let emptyView = ProfileStoryEmptyView()
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -58,7 +58,7 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
         setupViews()
     }
     
-    func setup(model: MyPageStoryDashboardViewControllerModel) {
+    func setup(model: ProfileStoryDashboardViewControllerModel) {
         models = model.contentModels
         stackView.subviews.forEach { $0.removeFromSuperview() }
         
@@ -83,7 +83,7 @@ final class MyPageStoryDashboardViewController: UIViewController, MyPageStoryDas
     
 }
 
-extension MyPageStoryDashboardViewController: SeeAllViewDelegate {
+extension ProfileStoryDashboardViewController: SeeAllViewDelegate {
     
     func seeAllViewDidTapSeeAll() {
         listener?.didTapSeeAll()
@@ -91,7 +91,7 @@ extension MyPageStoryDashboardViewController: SeeAllViewDelegate {
     
 }
 
-extension MyPageStoryDashboardViewController: StorySmallViewDelegate {
+extension ProfileStoryDashboardViewController: StorySmallViewDelegate {
     
     func storySmallViewDidTap(_ view: StorySmallView, storyId: Int) {
         listener?.didTapStory(id: storyId)
@@ -99,7 +99,7 @@ extension MyPageStoryDashboardViewController: StorySmallViewDelegate {
     
 }
 
-private extension MyPageStoryDashboardViewController {
+private extension ProfileStoryDashboardViewController {
     
     func setupViews() {
         [seeAllView, stackView].forEach(view.addSubview)

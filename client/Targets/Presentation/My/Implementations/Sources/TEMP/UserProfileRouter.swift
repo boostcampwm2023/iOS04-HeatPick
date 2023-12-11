@@ -1,8 +1,8 @@
 //
-//  MyPageRouter.swift
+//  UserProfileRouter.swift
 //  MyImplementations
 //
-//  Created by 홍성준 on 11/22/23.
+//  Created by 이준복 on 12/6/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
@@ -10,46 +10,49 @@ import ModernRIBs
 import MyInterfaces
 import StoryInterfaces
 
-protocol MyPageInteractable: Interactable,
-                             MyPageUserDashboardListener,
-                             MyPageStoryDashboardListener,
-                             MyPageStorySeeAllListener,
-                             SettingListener,
-                             StoryDetailListener,
-                             MyPageUpdateUserDashboardListener { 
-    var router: MyPageRouting? { get set }
-    var listener: MyPageListener? { get set }
+protocol UserProfileInteractable: Interactable,
+                                  UserProfileUserDashboardListener,
+                                  ProfileStoryDashboardListener,
+                                  ProfileStoryDashboardSeeAllListener,
+                                  StoryDetailListener {
+    var router: UserProfileRouting? { get set }
+    var listener: UserProfileListener? { get set }
 }
 
-protocol ProfileViewControllable: ViewControllable {
+protocol UserProfileViewControllable: ViewControllable {
     func setDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
+    func setUserProfile(_ username: String)
 }
 
-protocol MyPageViewControllable: ProfileViewControllable {
-    func setMyProfile(_ username: String)
-}
-
-final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControllable>, MyPageRouting {
-
-    private var userDashboardRouting: MyPageUserDashboardRouting?
-    private var storyDashboardRouting: MyPageStoryDashboardRouting?
+final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfileViewControllable>, UserProfileRouting {
+        
+    private var userDashboardRouting: UserProfileUserDashboardRouting?
+    private var storyDashboardRouting: ProfileStoryDashboardRouting?
     private var storySeeAllRouting: ViewableRouting?
     private var settingRouting: ViewableRouting?
     private var storyDetailRouting: ViewableRouting?
     private var updateUserDashoardRouting: ViewableRouting?
+
     
-    private let dependency: MypageRouterDependency
+    private let dependency: UserProfileRouterDependency
     
     init(
-        interactor: MyPageInteractable,
-        viewController: MyPageViewControllable,
-        dependency: MypageRouterDependency
+        interactor: UserProfileInteractable,
+        viewController: UserProfileViewControllable,
+        dependency: UserProfileRouterDependency
     ) {
         self.dependency = dependency
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
+    
+    func setUserProfile(_ username: String) {
+        viewController.setUserProfile(username)
+        userDashboardRouting?.setUserProfile()
+        storyDashboardRouting?.setUserProfile(username)
+    }
+
     
     func attachUserDashboard() {
         guard userDashboardRouting == nil else { return }
@@ -65,13 +68,8 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         self.userDashboardRouting = nil
         detachChild(router)
     }
+
     
-    func setMyProfile(_ username: String) {
-        viewController.setMyProfile(username)
-        userDashboardRouting?.setMyProfile()
-    }
-    
-    // MARK: Story
     func attachStoryDashboard() {
         guard storyDashboardRouting == nil else { return }
         let router = dependency.storyDashboardBuilder.build(withListener: interactor)
@@ -111,34 +109,6 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         guard let router = storyDetailRouting else { return }
         popRouter(router, animated: true)
         self.storyDetailRouting = nil
-    }
-    
-    // MARK: Setting
-    func attachSetting() {
-        guard settingRouting == nil else { return }
-        let router = dependency.settingBuilder.build(withListener: interactor)
-        pushRouter(router, animated: true)
-        self.settingRouting = router
-    }
-    
-    func detachSetting() {
-        guard let router = settingRouting else { return }
-        popRouter(router, animated: true)
-        self.settingRouting = nil
-    }
-    
-    // MARK: UpdateProfile
-    func attachupdateUserDashboard() {
-        guard updateUserDashoardRouting == nil else { return }
-        let router = dependency.updateUserDashboardBuilder.build(withListener: interactor)
-        pushRouter(router, animated: true)
-        updateUserDashoardRouting = router
-    }
-    
-    func detachUpdateUserDashboard() {
-        guard let router = updateUserDashoardRouting else { return }
-        popRouter(router, animated: true)
-        updateUserDashoardRouting = nil
     }
     
 }

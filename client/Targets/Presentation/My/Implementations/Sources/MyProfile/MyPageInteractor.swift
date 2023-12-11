@@ -13,7 +13,7 @@ import MyInterfaces
 import DomainEntities
 import DomainInterfaces
 
-protocol ProfileRouting: ViewableRouting {
+protocol MyPageRouting: ViewableRouting {
     func attachUserDashboard()
     func detachUserDashboard()
     func attachStoryDashboard()
@@ -22,9 +22,6 @@ protocol ProfileRouting: ViewableRouting {
     func detachStorySeeAll()
     func attachStoryDetail(id: Int)
     func detachStoryDetail()
-}
-
-protocol MyPageRouting: ProfileRouting {
     func attachSetting()
     func detachSetting()
     func attachupdateUserDashboard()
@@ -33,17 +30,18 @@ protocol MyPageRouting: ProfileRouting {
 }
 
 protocol MyPagePresentable: Presentable {
-    var myPageListener: MyPagePresentableListener? { get set }
+    var listener: MyPagePresentableListener? { get set }
 }
 
 final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageInteractable, MyPagePresentableListener {
+    
     
     weak var router: MyPageRouting?
     weak var listener: MyPageListener?
     
     private let dependency: MyPageInteractorDependency
     private let cancelBag = CancelBag()
-    private var myPage: Profile?
+    private var profile: Profile?
     
     init(
         presenter: MyPagePresentable,
@@ -51,7 +49,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     ) {
         self.dependency = depedency
         super.init(presenter: presenter)
-        presenter.myPageListener = self
+        presenter.listener = self
     }
     
     override func didBecomeActive() {
@@ -84,26 +82,25 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     }
     
     // MARK: - StoryDashboard
-    
-    func storyDashboardDidTapSeeAll() {
-        guard let myPage else { return }
-        router?.attachStorySeeAll(userId: myPage.userId)
+    func profileStoryDashboardDidTapSeeAll() {
+        guard let profile else { return }
+        router?.attachStorySeeAll(userId: profile.userId)
     }
     
-    func storyDashboardDidTapStory(id: Int) {
-        router?.attachStoryDetail(id: id)
+    func profileStoryDashboardDidTapStory(storyId: Int) {
+        router?.attachStoryDetail(id: storyId)
     }
+
     
     // MARK: - StorySeeAll
-    
-    func myPageStorySeeAllDidTapClose() {
+    func profileStoryDashboardSeeAllDidTapClose() {
         router?.detachStorySeeAll()
     }
     
-    func myPageStorySeeAllDidTapStory(id: Int) {
-        router?.attachStoryDetail(id: id)
+    func profileStoryDashboardSeeAllDidTapStory(storyId: Int) {
+        router?.attachStoryDetail(id: storyId)
     }
-    
+
     // MARK: - Setting
     
     func settingDidTapClose() {
@@ -116,7 +113,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
             await dependency.myPageUseCase
                 .fetchMyProfile()
                 .onSuccess(on: .main, with: self) { this, myPage in
-                    this.myPage = myPage
+                    this.profile = myPage
                     this.router?.setMyProfile(myPage.userName)
                 }
                 .onFailure { error in

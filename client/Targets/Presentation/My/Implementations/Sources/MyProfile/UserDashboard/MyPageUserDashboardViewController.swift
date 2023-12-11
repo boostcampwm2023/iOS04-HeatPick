@@ -53,10 +53,10 @@ final class MyPageUserDashboardViewController: UIViewController {
         static let spacing: CGFloat = 20
     }
 
-    private let temperatureView = MyPageTemperatureView()
-    private let badgeView = MyPageBadgeView()
-    private lazy var userView: MyPageUserView = {
-        let userView = MyPageUserView()
+    private let temperatureView = ProfileTemperatureView()
+    private let badgeView = ProfileBadgeView()
+    private lazy var userView: MyProfileUserView = {
+        let userView = MyProfileUserView()
         userView.delegate = self
         return userView
     }()

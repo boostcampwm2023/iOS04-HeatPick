@@ -23,7 +23,7 @@ struct MyPageUserViewModel {
     let experience: String
 }
 
-final class MyPageUserView: UIView {
+final class MyProfileUserView: UIView {
     
     weak var delegate: MyPageUserViewDelegate?
     
@@ -114,20 +114,20 @@ final class MyPageUserView: UIView {
         return button
     }()
     
-    private let followerView: MyPageUserContnetView = {
-        let view = MyPageUserContnetView()
+    private let followerView: ProfileUserContnetView = {
+        let view = ProfileUserContnetView()
         view.updateTitle("😀 팔로워")
         return view
     }()
     
-    private let storyView: MyPageUserContnetView = {
-        let view = MyPageUserContnetView()
+    private let storyView: ProfileUserContnetView = {
+        let view = ProfileUserContnetView()
         view.updateTitle("📕 스토리")
         return view
     }()
     
-    private let experienceView: MyPageUserContnetView = {
-        let view = MyPageUserContnetView()
+    private let experienceView: ProfileUserContnetView = {
+        let view = ProfileUserContnetView()
         view.updateTitle("📈 경험치")
         return view
     }()
@@ -168,7 +168,7 @@ final class MyPageUserView: UIView {
     
 }
 
-private extension MyPageUserView {
+private extension MyProfileUserView {
     
     @objc func profileEditButtonDidTap() {
         delegate?.profileEditButtonDidTap()
@@ -179,7 +179,7 @@ private extension MyPageUserView {
     }
 }
 
-private extension MyPageUserView {
+private extension MyProfileUserView {
     
     func setupViews() {
         [profileStackView, containerContentStackView].forEach(addSubview)

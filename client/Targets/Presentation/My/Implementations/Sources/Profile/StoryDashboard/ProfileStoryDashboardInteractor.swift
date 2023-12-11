@@ -13,35 +13,35 @@ import BasePresentation
 import DomainEntities
 import DomainInterfaces
 
-protocol MyPageStoryDashboardRouting: ViewableRouting {
+protocol ProfileStoryDashboardRouting: ViewableRouting {
     func setUserProfile(_ username: String)
 }
 
-protocol MyPageStoryDashboardPresentable: Presentable {
-    var listener: MyPageStoryDashboardPresentableListener? { get set }
-    func setup(model: MyPageStoryDashboardViewControllerModel)
+protocol ProfileStoryDashboardPresentable: Presentable {
+    var listener: ProfileStoryDashboardPresentableListener? { get set }
+    func setup(model: ProfileStoryDashboardViewControllerModel)
 }
 
-protocol MyPageStoryDashboardListener: AnyObject {
-    func storyDashboardDidTapSeeAll()
-    func storyDashboardDidTapStory(id: Int)
+protocol ProfileStoryDashboardListener: AnyObject {
+    func profileStoryDashboardDidTapSeeAll()
+    func profileStoryDashboardDidTapStory(storyId: Int)
 }
 
-protocol MyPageStoryDashboardInteractorDependency: AnyObject {
-    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { get }
+protocol ProfileStoryDashboardInteractorDependency: AnyObject {
+    var profileStoryDashboardUseCase: ProfileStoryDashboardUseCaseInterface { get }
 }
 
-final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDashboardPresentable>, MyPageStoryDashboardInteractable, MyPageStoryDashboardPresentableListener {
+final class ProfileStoryDashboardInteractor: PresentableInteractor<ProfileStoryDashboardPresentable>, ProfileStoryDashboardInteractable, ProfileStoryDashboardPresentableListener {
     
-    weak var router: MyPageStoryDashboardRouting?
-    weak var listener: MyPageStoryDashboardListener?
+    weak var router: ProfileStoryDashboardRouting?
+    weak var listener: ProfileStoryDashboardListener?
     
-    private let dependency: MyPageStoryDashboardInteractorDependency
+    private let dependency: ProfileStoryDashboardInteractorDependency
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        presenter: MyPageStoryDashboardPresentable,
-        dependency: MyPageStoryDashboardInteractorDependency
+        presenter: ProfileStoryDashboardPresentable,
+        dependency: ProfileStoryDashboardInteractorDependency
     ) {
         self.dependency = dependency
         super.init(presenter: presenter)
@@ -50,7 +50,7 @@ final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDas
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        dependency.myPageStoryUseCase
+        dependency.profileStoryDashboardUseCase
             .storyListPubliser
             .receive(on: DispatchQueue.main)
             .sink { [weak self] stories in
@@ -64,19 +64,19 @@ final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDas
     }
     
     func didTapSeeAll() {
-        listener?.storyDashboardDidTapSeeAll()
+        listener?.profileStoryDashboardDidTapSeeAll()
     }
     
     func didTapStory(id: Int) {
-        listener?.storyDashboardDidTapStory(id: id)
+        listener?.profileStoryDashboardDidTapStory(storyId: id)
     }
     
 }
 
 private extension Array where Element == MyPageStory {
     
-    func toModel() -> MyPageStoryDashboardViewControllerModel {
-        return MyPageStoryDashboardViewControllerModel(
+    func toModel() -> ProfileStoryDashboardViewControllerModel {
+        return ProfileStoryDashboardViewControllerModel(
             contentModels: self.map { .init(
                 storyId: $0.storyId,
                 thumbnailImageURL: $0.thumbnailImageURL ?? "",
