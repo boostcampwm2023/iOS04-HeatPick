@@ -74,7 +74,7 @@ public final class StorySeeAllViewController: BaseViewController, StorySeeAllPre
         }
         
         tableView.do {
-            $0.backgroundColor = .white
+            $0.backgroundColor = .hpWhite
             $0.register(StorySmallTableViewCell.self)
             $0.delegate = self
             $0.dataSource = self

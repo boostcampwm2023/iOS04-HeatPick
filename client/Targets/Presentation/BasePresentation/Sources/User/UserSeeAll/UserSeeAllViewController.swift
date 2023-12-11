@@ -13,6 +13,7 @@ import DesignKit
 public protocol UserSeeAllPresentableListener: AnyObject {
     func didTapItem(model: UserSmallTableViewCellModel)
     func didTapClose()
+    func willDisplay(at indexPath: IndexPath)
 }
 
 public final class UserSeeAllViewController: BaseViewController, UserSeeAllPresentable, UserSeeAllViewControllable {
@@ -21,7 +22,8 @@ public final class UserSeeAllViewController: BaseViewController, UserSeeAllPrese
     
     private var models: [UserSmallTableViewCellModel] = []
     
-    private let tableView = UITableView()
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let indicator = UIActivityIndicatorView(style: .medium)
     
     public func updateTitle(_ title: String) {
         navigationView.updateTitle(title)
@@ -35,6 +37,14 @@ public final class UserSeeAllViewController: BaseViewController, UserSeeAllPrese
     public func append(models: [UserSmallTableViewCellModel]) {
         self.models.append(contentsOf: models)
         tableView.reloadData()
+    }
+    
+    public func startLoading() {
+        indicator.startAnimating()
+    }
+    
+    public func stopLoading() {
+        indicator.stopAnimating()
     }
     
     public override func setupLayout() {
@@ -63,10 +73,20 @@ public final class UserSeeAllViewController: BaseViewController, UserSeeAllPrese
         }
         
         tableView.do {
+            $0.backgroundColor = .hpWhite
             $0.register(UserSmallTableViewCell.self)
             $0.delegate = self
             $0.dataSource = self
+            $0.contentInset = .zero
+            $0.separatorStyle = .none
+            $0.tableFooterView = indicator
             $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        indicator.do {
+            $0.color = .hpGray2
+            $0.hidesWhenStopped = true
+            $0.stopAnimating()
         }
     }
     
@@ -91,12 +111,16 @@ extension UserSeeAllViewController: UITableViewDelegate {
         listener?.didTapItem(model: model)
     }
     
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        listener?.willDisplay(at: indexPath)
+    }
+    
 }
 
 extension UserSeeAllViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        models.count
+        return models.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

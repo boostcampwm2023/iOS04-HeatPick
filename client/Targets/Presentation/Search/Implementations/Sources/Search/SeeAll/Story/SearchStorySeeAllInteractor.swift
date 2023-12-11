@@ -36,7 +36,7 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
     weak var listener: SearchStorySeeAllListener?
     
     private let dependency: SearchStorySeeAllInteractorDependency
-    private var cancelBag = CancelBag()
+    private let cancelBag = CancelBag()
     private var models: [StorySmallTableViewCellModel] = []
     private var isLoading = false
     
@@ -57,7 +57,6 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
     
     override func willResignActive() {
         super.willResignActive()
-        print("# 리자인됨?")
         cancelBag.cancel()
     }
     
