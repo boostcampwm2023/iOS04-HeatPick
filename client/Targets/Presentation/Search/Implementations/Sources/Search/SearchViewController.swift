@@ -83,6 +83,16 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         naverMap.mapView.moveCamera(cameraUpdate)
     }
     
+    func selectMap(title: String, lat: Double, lng: Double) {
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng), zoomTo: 15.0)
+        naverMap.mapView.moveCamera(cameraUpdate)
+        listener?.didTapSymbol(symbol: .init(
+            title: title,
+            lat: lat,
+            lng: lng
+        ))
+    }
+    
     func updateMarkers(places: [Place]) {
         let overlay = NMFOverlayImage(image: .marker)
         
@@ -110,9 +120,8 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         markerStorage.removeAll()
     }
     
-    func updateSelectedMarker(title: String, lat: Double, lng: Double) {
+    func updateSelectedMarker(lat: Double, lng: Double) {
         selectedMarker.position = .init(lat: lat, lng: lng)
-        selectedMarker.captionText = title
         selectedMarker.mapView = naverMap.mapView
     }
     
@@ -220,6 +229,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         
         selectedMarker.do {
             $0.iconImage = NMFOverlayImage(image: .markerBlue)
+            $0.zIndex = 1
         }
         
         selectedView.do {

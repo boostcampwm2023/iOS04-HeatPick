@@ -12,10 +12,14 @@ public struct SearchLocal {
     
     public let title: String
     public let roadAddress: String
+    public let lat: Double
+    public let lng: Double
     
-    public init(title: String, roadAddress: String) {
+    public init(title: String, roadAddress: String, lat: Double, lng: Double) {
         self.title = title
         self.roadAddress = roadAddress
+        self.lat = lat
+        self.lng = lng
     }
     
 }

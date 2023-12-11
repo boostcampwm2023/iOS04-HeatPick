@@ -14,7 +14,7 @@ import DesignKit
 import DomainEntities
 
 protocol SearchAfterLocalDashboardPresentableListener: AnyObject {
-    
+    func didTap(local: SearchLocal)
 }
 
 final class SearchAfterLocalDashboardViewController: UIViewController, SearchAfterLocalDashboardPresentable, SearchAfterLocalDashboardViewControllable {
@@ -119,6 +119,10 @@ extension SearchAfterLocalDashboardViewController: SearchAfterHeaderViewDelegate
 }
 
 extension SearchAfterLocalDashboardViewController: SearchAfterLocalViewDelegate {
+    
+    func searchAfterLocalViewDidTap(_ view: SearchAfterLocalView, model: SearchLocal) {
+        listener?.didTap(local: model)
+    }
     
 }
 

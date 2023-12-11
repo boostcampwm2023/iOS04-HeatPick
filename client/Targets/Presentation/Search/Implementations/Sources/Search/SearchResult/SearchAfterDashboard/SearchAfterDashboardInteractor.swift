@@ -37,6 +37,8 @@ protocol SearchAfterDashboardListener: AnyObject {
     
     func searchUserSeeAllDidTap(searchText: String)
     func didTapUser(userId: Int)
+    
+    func searchAfterDashboardDidTapLocal(_ local: SearchLocal)
 }
 
 final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDashboardPresentable>, SearchAfterDashboardInteractable, SearchAfterDashboardPresentableListener {
@@ -110,6 +112,10 @@ final class SearchAfterDashboardInteractor: PresentableInteractor<SearchAfterDas
         router?.detachSearchAfterLocalDasboard()
         router?.detachSearchAfterStoryDashboard()
         router?.detachSearchAfterUserDashboard()
+    }
+    
+    func searchAfterLocalDashboardDidTapLocal(_ local: SearchLocal) {
+        listener?.searchAfterDashboardDidTapLocal(local)
     }
     
 }

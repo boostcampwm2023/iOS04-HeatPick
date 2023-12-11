@@ -46,6 +46,8 @@ protocol SearchResultListener: AnyObject {
     
     func searchUserSeeAllDidTap(searchText: String)
     func didTapUser(userId: Int)
+    
+    func searchResultDidTapLocal(_ local: SearchLocal)
 }
 
 final class SearchResultInteractor: PresentableInteractor<SearchResultPresentable>, SearchResultInteractable {
@@ -161,6 +163,10 @@ extension SearchResultInteractor {
     
     func didTapUser(userId: Int) {
         listener?.didTapUser(userId: userId)
+    }
+    
+    func searchAfterDashboardDidTapLocal(_ local: SearchLocal) {
+        listener?.searchResultDidTapLocal(local)
     }
     
 }

@@ -37,10 +37,11 @@ protocol SearchPresentable: Presentable {
     func showStoryView(model: SearchMapStoryViewModel)
     func showClusterListView(models: [SearchMapClusterListCellModel])
     func moveMap(lat: Double, lng: Double)
+    func selectMap(title: String, lat: Double, lng: Double)
     func updateMarkers(places: [Place])
     func updateMarkers(clusters: [Cluster])
     func removeAllMarker()
-    func updateSelectedMarker(title: String, lat: Double, lng: Double)
+    func updateSelectedMarker(lat: Double, lng: Double)
     func showSelectedView(title: String)
     func showReSearchView()
     func hideReSearchView()
@@ -120,6 +121,12 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
         router?.attachStoryDetail(storyId: storyId)
     }
     
+    func searchResultDidTapLocal(_ local: SearchLocal) {
+        router?.detachSearchResult()
+        presenter.selectMap(title: local.title, lat: local.lat, lng: local.lng)
+        didTapReSearch()
+    }
+    
     private func bind() {
         dependency
             .searchUseCase
@@ -160,8 +167,7 @@ extension SearchInteractor: SearchPresentableListener {
     
     func didAppear() {
         if !isInitialCameraMoved {
-            // TODO: - Default Location 설정하기
-            let location = dependency.searchUseCase.location ?? .init(lat: 37, lng: 127)
+            let location = dependency.searchUseCase.location ?? .init(lat: 37.3588501438082, lng: 127.1052074432373)
             isInitialCameraMoved = true
             presenter.moveMap(lat: location.lat, lng: location.lng)
             fetchPlaces(lat: location.lat, lng: location.lng)
@@ -184,7 +190,6 @@ extension SearchInteractor: SearchPresentableListener {
     func didTapSymbol(symbol: SearchMapSymbol) {
         presenter.deselectAll()
         presenter.updateSelectedMarker(
-            title: symbol.title,
             lat: symbol.lat,
             lng: symbol.lng
         )
@@ -196,7 +201,6 @@ extension SearchInteractor: SearchPresentableListener {
         let title = "위치 정보가 없어요"
         presenter.deselectAll()
         presenter.updateSelectedMarker(
-            title: "",
             lat: location.lat,
             lng: location.lng
         )
@@ -255,7 +259,6 @@ extension SearchInteractor: SearchPresentableListener {
             ))
             
             presenter.updateSelectedMarker(
-                title: place.title,
                 lat: place.lat,
                 lng: place.lng
             )
@@ -270,7 +273,6 @@ extension SearchInteractor: SearchPresentableListener {
             )}
             presenter.showClusterListView(models: models)
             presenter.updateSelectedMarker(
-                title: "",
                 lat: cluster.center.lat,
                 lng: cluster.center.lng
             )
@@ -301,7 +303,6 @@ private extension SearchInteractor {
         let distance = abs(fetchedLocation.lat - location.lat) + abs(fetchedLocation.lng - location.lng)
         return distance >= 0.02
     }
-    
     
 }
 

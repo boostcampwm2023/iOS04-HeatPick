@@ -15,7 +15,7 @@ import CoreKit
 import DomainEntities
 import DomainInterfaces
 
-protocol SearchAfterLocalDashboardRouting: ViewableRouting { }
+protocol SearchAfterLocalDashboardRouting: ViewableRouting {}
 
 protocol SearchAfterLocalDashboardPresentable: Presentable {
     var listener: SearchAfterLocalDashboardPresentableListener? { get set }
@@ -24,6 +24,7 @@ protocol SearchAfterLocalDashboardPresentable: Presentable {
 
 protocol SearchAfterLocalDashboardListener: AnyObject {
     var searchResultLocalsPublisher: AnyPublisher<[SearchLocal], Never> { get }
+    func searchAfterLocalDashboardDidTapLocal(_ local: SearchLocal)
 }
 
 final class SearchAfterLocalDashboardInteractor: PresentableInteractor<SearchAfterLocalDashboardPresentable>, SearchAfterLocalDashboardInteractable, SearchAfterLocalDashboardPresentableListener {
@@ -46,9 +47,13 @@ final class SearchAfterLocalDashboardInteractor: PresentableInteractor<SearchAft
                 self?.presenter.setup(models: users)
             }.store(in: &cancellables)
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
+    }
+    
+    func didTap(local: SearchLocal) {
+        listener?.searchAfterLocalDashboardDidTapLocal(local)
     }
     
 }
