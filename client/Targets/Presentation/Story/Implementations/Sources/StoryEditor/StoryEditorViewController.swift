@@ -179,7 +179,7 @@ extension StoryEditorViewController: StoryEditorPresentable {
     }
     
     func saveDidFail() {
-        saveButton.isUserInteractionEnabled = true
+        saveButton.stopLoading()
     }
     
 }
@@ -192,7 +192,7 @@ private extension StoryEditorViewController {
     }
     
     @objc func didTapSave() {
-        saveButton.isUserInteractionEnabled = false
+        saveButton.startLoading()
 
         guard let badge = attributeField.badge,
               let location = locationField.location,
