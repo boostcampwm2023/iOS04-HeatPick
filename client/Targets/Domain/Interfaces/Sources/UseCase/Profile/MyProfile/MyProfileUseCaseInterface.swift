@@ -12,10 +12,8 @@ import DomainEntities
 public protocol MyProfileUseCaseInterface: ProfileUserDashboardUseCaseInterface,
                                         ProfileStoryDashboardUseCaseInterface,
                                         MyProfileUpdateUserUseCaseInterface,
-                                        UserProfileUseCaseInterface,
                                         MyProfileSettingUseCaseInterface {
     
     func fetchMyProfile() async -> Result<Profile, Error>
-    func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error>
     
 }

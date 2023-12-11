@@ -13,4 +13,6 @@ public protocol MyProfileUpdateUserUseCaseInterface: AnyObject {
     
     func fetchUserMedtaData() async -> Result<ProfileUpdateMetaData, Error>
     
+    func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error>
+    
 }

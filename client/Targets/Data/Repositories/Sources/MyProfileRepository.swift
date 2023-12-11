@@ -13,7 +13,7 @@ import NetworkAPIKit
 import DomainEntities
 import DomainInterfaces
 
-public final class MyProfileRepository: ProfileRepositoryInterface {
+public final class MyProfileRepository: MyProfileRepositoryInterface {
     
     private let session: Network
     
@@ -23,12 +23,6 @@ public final class MyProfileRepository: ProfileRepositoryInterface {
     
     public func fetchMyProfile() async -> Result<Profile, Error> {
         let target = MyAPI.myProfile
-        let request: Result<MyProfileResponseDTO, Error> = await session.request(target)
-        return request.map { $0.toDomain() }
-    }
-    
-    public func fetchUserProfile(userId: Int) async -> Result<Profile, Error> {
-        let target = MyAPI.profile(id: userId)
         let request: Result<MyProfileResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
