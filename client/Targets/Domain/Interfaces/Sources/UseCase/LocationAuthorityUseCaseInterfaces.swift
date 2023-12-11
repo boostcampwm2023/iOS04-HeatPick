@@ -13,6 +13,7 @@ import DomainEntities
 public protocol LocationAuthorityUseCaseInterfaces: AnyObject {
     
     var permission: LocationPermission { get }
+    var permissionPublisher: AnyPublisher<LocationPermission, Never> { get }
     func requestPermission()
     
 }

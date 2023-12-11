@@ -12,8 +12,12 @@ import DomainInterfaces
 
 // MARK: Builder
 protocol SettingDependency: Dependency {
+    
     var signOutRequestService: SignOutRequestServiceInterface { get }
     var myProfileSettingUseCase: MyProfileSettingUseCaseInterface { get }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
+    var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { get }
+    
 }
 
 final class SettingComponent: Component<SettingDependency>,
@@ -23,6 +27,8 @@ final class SettingComponent: Component<SettingDependency>,
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService}
     var myProfileSettingUseCase: MyProfileSettingUseCaseInterface { dependency.myProfileSettingUseCase }
     var myProfileResignUseCase: MyProfileResignUseCaseInterface { dependency.myProfileSettingUseCase }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase}
+    var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { dependency.notificationPermissionUseCase }
     
 }
 
@@ -47,5 +53,9 @@ final class SettingRouterComponent: SettingRouterDependency {
 
 // MARK: Interactor
 protocol SettingInteractorDependency: AnyObject {
+    
     var signOutRequestService: SignOutRequestServiceInterface { get }
+    var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
+    var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { get }
+    
 }

@@ -6,6 +6,8 @@
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
+import Foundation
+import Combine
 import ModernRIBs
 import DomainInterfaces
 
@@ -31,6 +33,7 @@ final class LocationAuthorityInteractor: PresentableInteractor<LocationAuthority
     weak var listener: LocationAuthorityListener?
     
     private let dependency: LocationAuthorityInteractorDependency
+    private var cancellables = Set<AnyCancellable>()
     
     init(
         presenter: LocationAuthorityPresentable,
@@ -43,6 +46,7 @@ final class LocationAuthorityInteractor: PresentableInteractor<LocationAuthority
 
     override func didBecomeActive() {
         super.didBecomeActive()
+        sinkLocationPermission()
     }
 
     override func willResignActive() {
@@ -64,6 +68,23 @@ final class LocationAuthorityInteractor: PresentableInteractor<LocationAuthority
     
     func didTapSkip() {
         listener?.locationAuthorityDidSkip()
+    }
+    
+    private func sinkLocationPermission() {
+        dependency.locationAuthorityUseCase
+            .permissionPublisher
+            .receive(on: DispatchQueue.main)
+            .with(self)
+            .sink { this, permission in
+                switch permission {
+                case .authorized:
+                    this.listener?.locationAuthorityDidComplete()
+                    
+                default:
+                    this.listener?.locationAuthorityDidSkip()
+                }
+            }
+            .store(in: &cancellables)
     }
     
 }

@@ -15,6 +15,8 @@ public protocol AuthUseCaseInterface: AnyObject {
     var githubToken: AnyPublisher<String, Never> { get }
     var naverToken: AnyPublisher<String, Never> { get }
     var isAuthorized: Bool { get }
+    var locationPermission: LocationPermission { get }
+    var notificationPermission: NotificationPermission { get }
     func requestGithubSignIn()
     func requestNaverSignIn()
     func requestSignIn(token: String, with service: SignInService) async -> Result<AuthToken, Error>

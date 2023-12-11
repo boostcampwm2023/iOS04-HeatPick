@@ -51,7 +51,6 @@ final class ResignDashboardViewController: BaseViewController, ResignDashboardVi
     private let textView: UITextView = .init()
     private let resignButton: ActionButton = .init()
     
-    
     override func setupLayout() {
         view.backgroundColor = .hpWhite
         [navigationView, titleLabel, textView, resignButton].forEach(view.addSubview)
@@ -68,7 +67,7 @@ final class ResignDashboardViewController: BaseViewController, ResignDashboardVi
             
             resignButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             resignButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            resignButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constant.bottomOffset),
+            resignButton.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: Constant.bottomOffset),
             resignButton.heightAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
             
             textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.topOffset),
@@ -92,7 +91,7 @@ final class ResignDashboardViewController: BaseViewController, ResignDashboardVi
         titleLabel.do { label in
             label.text = Constant.Title.text
             label.textColor = .hpBlack
-            label.font = .captionBold
+            label.font = .bodySemibold
             label.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -103,7 +102,7 @@ final class ResignDashboardViewController: BaseViewController, ResignDashboardVi
             textView.layer.borderWidth = 1
             textView.layer.borderColor = UIColor.hpGray4.cgColor
             textView.layer.cornerRadius = Constants.cornerRadiusMedium
-            textView.font = .captionRegular
+            textView.font = .bodyRegular
             textView.delegate = self
             textView.textContainerInset = .init(top: Constant.TextView.inset, left: Constant.TextView.inset, bottom: Constant.TextView.inset, right: Constant.TextView.inset)
             textView.translatesAutoresizingMaskIntoConstraints = false

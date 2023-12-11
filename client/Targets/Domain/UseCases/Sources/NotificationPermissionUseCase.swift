@@ -9,8 +9,13 @@
 import Foundation
 import CoreKit
 import DomainInterfaces
+import UserNotifications
 
 public final class NotificationPermissionUseCase: NotificationPermissionUseCaseInterface {
+    
+    public var settings: UNNotificationSettings? {
+        return service.settings
+    }
     
     private let service: NotificationServiceInterface
     
