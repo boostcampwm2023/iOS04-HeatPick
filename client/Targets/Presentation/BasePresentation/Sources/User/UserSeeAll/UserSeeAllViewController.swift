@@ -90,10 +90,6 @@ public final class UserSeeAllViewController: BaseViewController, UserSeeAllPrese
         }
     }
     
-    public override func bind() {
-       
-    }
-    
 }
 
 extension UserSeeAllViewController: NavigationViewDelegate {
