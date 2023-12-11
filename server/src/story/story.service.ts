@@ -186,13 +186,17 @@ export class StoryService {
 
   async getRecommendedStory(offset: number, limit: number): Promise<any[]> {
     try {
-      const stories = await this.storyRepository.createQueryBuilder('story').where('story.likeCount + story.commentCount >= :likeCommentCount').setParameter('likeCommentCount', 10).cache(30000).orderBy('story.likeCount', 'DESC').limit(20).getMany();
-      const storyArr = await Promise.all(
-        stories.map(async (story) => {
-          return storyEntityToObjWithOneImg(story);
-        }),
-      );
-      const nonEmptyStoryArr = storyArr.filter((story) => story !== undefined && story !== null);
+      const likeWeight = 2;
+      const commentWeight = 2;
+      const timeWeight = 1 / (60 * 60 * 24);
+
+      const scoreFormula = `(
+      story.likeCount * ${likeWeight} +
+      story.commentCount * ${commentWeight} -
+      (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(story.createAt)) * ${timeWeight})`;
+
+      const topStories = await this.storyRepository.createQueryBuilder('story').addSelect(scoreFormula, 'score').orderBy('score', 'DESC').limit(20).cache(30000).getMany();
+      const nonEmptyStoryArr = topStories.filter((story) => story !== undefined && story !== null);
       return nonEmptyStoryArr.slice(offset * limit, offset * limit + limit);
     } catch (error) {
       throw error;
