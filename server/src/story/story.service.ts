@@ -149,7 +149,8 @@ export class StoryService {
       },
       relations: ['category', 'user'],
     });
-    const results = stories;
+    const nonEmptyStoryArr = stories.filter((story) => story !== undefined && story !== null);
+    const results = nonEmptyStoryArr;
     return results.slice(offset * limit, offset * limit + limit);
   }
 

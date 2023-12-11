@@ -33,9 +33,8 @@ export class SearchController {
   })
   async getStorySearchResult(@Query('searchText') searchText: string, @Query('offset') offset: number, @Query('limit') limit: number): Promise<SearchStoryResultDto> {
     const stories = await this.storyService.getStoriesFromTrie(searchText, offset, limit);
-    const nonEmptyStoryArr = stories.filter((story) => story !== undefined && story !== null);
     const transformedStories = await Promise.all(
-      nonEmptyStoryArr.map(async (story) => {
+      stories.map(async (story) => {
         return await storyEntityToObjWithOneImg(story);
       }),
     );
