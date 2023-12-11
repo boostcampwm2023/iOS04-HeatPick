@@ -107,7 +107,7 @@ final class UserProfileViewController: BaseViewController, UserProfilePresentabl
         }
     }
     
-    func setMyProfile(_ username: String) {
+    func setupNaviTitle(_ username: String) {
         navigationView.do {
             $0.setup(model: .init(
                 title: "\(username)",
@@ -116,17 +116,7 @@ final class UserProfileViewController: BaseViewController, UserProfilePresentabl
             )
         }
     }
-    
-    func setUserProfile(_ username: String) {
-        navigationView.do {
-            $0.setup(model: .init(
-                title: "\(username)",
-                leftButtonType: .back,
-                rightButtonTypes: [])
-            )
-        }
-    }
-    
+
 }
 
 extension UserProfileViewController: NavigationViewDelegate {

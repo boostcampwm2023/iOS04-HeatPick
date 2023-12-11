@@ -22,11 +22,12 @@ protocol UserProfileRouting: ViewableRouting {
     func detachStorySeeAll()
     func attachStoryDetail(id: Int)
     func detachStoryDetail()
-    func setUserProfile(_ username: String)
 }
 
 protocol UserProfilePresentable: Presentable {
     var listener: UserProfilePresentableListener? { get set }
+    
+    func setupNaviTitle(_ username: String)
 }
 
 protocol UserProfileInteractorDependency: AnyObject {
@@ -41,7 +42,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     
     private let dependency: UserProfileInteractorDependency
     private let cancelBag = CancelBag()
-    private var myPage: Profile?
+    private var profile: Profile?
     
     init(
         presenter: UserProfilePresentable,
@@ -72,8 +73,8 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     }
     
     func profileStoryDashboardDidTapSeeAll() {
-        guard let myPage else { return }
-        router?.attachStorySeeAll(userId: myPage.userId)
+        guard let profile else { return }
+        router?.attachStorySeeAll(userId: profile.userId)
     }
     
     func profileStoryDashboardDidTapStory(storyId: Int) {
@@ -93,9 +94,9 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
             guard let self else { return }
             await dependency.userProfileUseCase
                 .fetchUserProfile(userId: dependency.userId)
-                .onSuccess(on: .main, with: self) { this, myPage in
-                    this.myPage = myPage
-                    this.router?.setUserProfile(myPage.userName)
+                .onSuccess(on: .main, with: self) { this, profile in
+                    this.profile = profile
+                    this.presenter.setupNaviTitle(profile.userName)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)

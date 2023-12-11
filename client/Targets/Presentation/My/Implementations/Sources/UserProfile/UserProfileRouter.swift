@@ -22,7 +22,6 @@ protocol UserProfileInteractable: Interactable,
 protocol UserProfileViewControllable: ViewControllable {
     func setDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
-    func setUserProfile(_ username: String)
 }
 
 final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfileViewControllable>, UserProfileRouting {
@@ -33,7 +32,6 @@ final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfi
     private var settingRouting: ViewableRouting?
     private var storyDetailRouting: ViewableRouting?
     private var updateUserDashoardRouting: ViewableRouting?
-
     
     private let dependency: UserProfileRouterDependency
     
@@ -46,13 +44,6 @@ final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfi
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
-    
-    func setUserProfile(_ username: String) {
-        viewController.setUserProfile(username)
-        userDashboardRouting?.setUserProfile()
-        storyDashboardRouting?.setUserProfile(username)
-    }
-
     
     func attachUserDashboard() {
         guard userDashboardRouting == nil else { return }
