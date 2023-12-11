@@ -15,7 +15,7 @@ import DomainInterfaces
 // MARK: Builder
 public protocol MyPageDependency: Dependency {
     
-    var myPageUseCase: MyPageUseCaseInterface { get }
+    var myPageUseCase: MyProfileUseCaseInterface { get }
     var signOutRequestService: SignOutRequestServiceInterface { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
@@ -31,10 +31,10 @@ final class MyPageComponent: Component<MyPageDependency>,
                              SettingDependency,
                              MyPageUpdateUserDashboardDependency {
     
-    var myPageUseCase: MyPageUseCaseInterface { dependency.myPageUseCase }
-    var myPageProfileUseCase: MyPageProfileUseCaseInterface { dependency.myPageUseCase }
-    var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageUseCase }
-    var myPageUpdateUserUseCase: MyPageUpdateUserUseCaseInterface { dependency.myPageUseCase }
+    var myPageUseCase: MyProfileUseCaseInterface { dependency.myPageUseCase }
+    var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.myPageUseCase }
+    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { dependency.myPageUseCase }
+    var myPageUpdateUserUseCase: MyProfileUpdateUserUseCaseInterface { dependency.myPageUseCase }
     var myProfileSettingUseCase: MyProfileSettingUseCaseInterface { dependency.myPageUseCase }
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
@@ -83,5 +83,5 @@ final class MyPageRouterComponent: MypageRouterDependency {
 
 // MARK: Interactor
 protocol MyPageInteractorDependency: AnyObject {
-    var myPageUseCase: MyPageUseCaseInterface { get }
+    var myPageUseCase: MyProfileUseCaseInterface { get }
 }

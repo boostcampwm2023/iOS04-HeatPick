@@ -11,7 +11,7 @@ import Foundation
 import DomainEntities
 import DomainInterfaces
 
-public final class MyPageUseCase: MyPageUseCaseInterface {
+public final class MyPageUseCase: MyProfileUseCaseInterface {
 
     public var hasMore: Bool = false
     
@@ -23,13 +23,13 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         return storyListSubject.eraseToAnyPublisher()
     }
     
-    private let repository: MyPageRepositoryInterface
+    private let repository: ProfileRepositoryInterface
     private let storyListSubject = PassthroughSubject<[MyPageStory], Never>()
     private let profileSubject = PassthroughSubject<Profile, Never>()
     private var storyOffset = 0
     private let pageLimit = 10
     
-    public init(repository: MyPageRepositoryInterface) {
+    public init(repository: ProfileRepositoryInterface) {
         self.repository = repository
     }
     

@@ -26,8 +26,8 @@ public final class UserProfileComponent: Component<UserProfileDependency>,
     var userId: Int
 
     var userProfileUseCase: UserProfileUseCaseInterface { dependency.userProfileUseCase }
-    var userProfileUserUseCase: MyPageProfileUseCaseInterface { dependency.userProfileUseCase }
-    var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.userProfileUseCase }
+    var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.userProfileUseCase }
+    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { dependency.userProfileUseCase }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
     
     init(dependency: UserProfileDependency, userId: Int) {

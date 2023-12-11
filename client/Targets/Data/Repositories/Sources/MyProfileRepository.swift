@@ -13,7 +13,7 @@ import NetworkAPIKit
 import DomainEntities
 import DomainInterfaces
 
-public final class MyPageRepository: MyPageRepositoryInterface {
+public final class MyProfileRepository: ProfileRepositoryInterface {
     
     private let session: Network
     

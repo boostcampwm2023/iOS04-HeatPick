@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import DomainEntities
 
-public protocol MyPageStoryUseCaseInterface: AnyObject {
+public protocol ProfileStoryDashboardUseCaseInterface: AnyObject {
     
     var hasMore: Bool { get }
     var storyListPubliser: AnyPublisher<[MyPageStory], Never> { get }

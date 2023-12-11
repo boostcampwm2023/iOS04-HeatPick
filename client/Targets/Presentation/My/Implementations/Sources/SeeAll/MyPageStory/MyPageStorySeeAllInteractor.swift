@@ -25,7 +25,7 @@ protocol MyPageStorySeeAllListener: AnyObject {
 
 protocol MyPageStorySeeAllInteractorDependency: AnyObject {
     var userId: Int { get }
-    var myPageStoryUseCase: MyPageStoryUseCaseInterface { get }
+    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { get }
 }
 
 final class MyPageStorySeeAllInteractor: PresentableInteractor<MyPageStorySeeAllPresentable>, MyPageStorySeeAllInteractable, MyPageStorySeeAllPresentableListener {

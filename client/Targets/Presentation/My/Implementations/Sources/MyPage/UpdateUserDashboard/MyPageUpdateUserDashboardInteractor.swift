@@ -29,7 +29,7 @@ protocol MyPageUpdateUserDashboardListener: AnyObject {
 }
 
 protocol MyPageUpdateUserDashboardInteractorDependency: AnyObject {
-    var myPageUpdateUserUseCase: MyPageUpdateUserUseCaseInterface { get }
+    var myPageUpdateUserUseCase: MyProfileUpdateUserUseCaseInterface { get }
 }
 
 final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpdateUserDashboardPresentable>, MyPageUpdateUserDashboardInteractable, MyPageUpdateUserDashboardPresentableListener {

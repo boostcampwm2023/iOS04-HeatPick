@@ -11,12 +11,12 @@ import BasePresentation
 import DomainInterfaces
 
 protocol MyPageStorySeeAllDependency: Dependency {
-    var myPageStoryUseCase: MyPageStoryUseCaseInterface { get }
+    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { get }
 }
 
 final class MyPageStorySeeAllComponent: Component<MyPageStorySeeAllDependency>, MyPageStorySeeAllInteractorDependency {
     let userId: Int
-    var myPageStoryUseCase: MyPageStoryUseCaseInterface { dependency.myPageStoryUseCase }
+    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { dependency.myPageStoryUseCase }
     
     init(dependency: MyPageStorySeeAllDependency, userId: Int) {
         self.userId = userId

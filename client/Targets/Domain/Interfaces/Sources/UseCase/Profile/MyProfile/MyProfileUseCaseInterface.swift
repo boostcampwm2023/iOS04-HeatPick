@@ -9,9 +9,9 @@
 import Foundation
 import DomainEntities
 
-public protocol MyPageUseCaseInterface: MyPageProfileUseCaseInterface,
-                                        MyPageStoryUseCaseInterface,
-                                        MyPageUpdateUserUseCaseInterface,
+public protocol MyProfileUseCaseInterface: ProfileUserDashboardUseCaseInterface,
+                                        ProfileStoryDashboardUseCaseInterface,
+                                        MyProfileUpdateUserUseCaseInterface,
                                         UserProfileUseCaseInterface,
                                         MyProfileSettingUseCaseInterface {
     

@@ -9,7 +9,7 @@
 import Foundation
 import DomainEntities
 
-public protocol MyPageUpdateUserUseCaseInterface: AnyObject {
+public protocol MyProfileUpdateUserUseCaseInterface: AnyObject {
     
     func fetchUserMedtaData() async -> Result<ProfileUpdateMetaData, Error>
     

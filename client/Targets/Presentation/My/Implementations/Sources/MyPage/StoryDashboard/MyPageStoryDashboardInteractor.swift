@@ -28,7 +28,7 @@ protocol MyPageStoryDashboardListener: AnyObject {
 }
 
 protocol MyPageStoryDashboardInteractorDependency: AnyObject {
-    var myPageStoryUseCase: MyPageStoryUseCaseInterface { get }
+    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { get }
 }
 
 final class MyPageStoryDashboardInteractor: PresentableInteractor<MyPageStoryDashboardPresentable>, MyPageStoryDashboardInteractable, MyPageStoryDashboardPresentableListener {

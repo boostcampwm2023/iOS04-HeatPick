@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import DomainEntities
 
-public protocol MyPageProfileUseCaseInterface: AnyObject {
+public protocol ProfileUserDashboardUseCaseInterface: AnyObject {
     
     var profilePublisher: AnyPublisher<Profile, Never> { get }
     

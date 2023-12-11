@@ -26,7 +26,7 @@ protocol MyPageUserDashboardListener: AnyObject {
 }
 
 protocol MyPageUserDashboardInteractorDependency: AnyObject {
-    var myPageProfileUseCase: MyPageProfileUseCaseInterface { get }
+    var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { get }
 }
 
 final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashboardPresentable>, MyPageUserDashboardInteractable, MyPageUserDashboardPresentableListener {
@@ -48,7 +48,7 @@ final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashb
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        dependency.myPageProfileUseCase
+        dependency.profileUserDashboardUseCaseInterface
             .profilePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profile in
