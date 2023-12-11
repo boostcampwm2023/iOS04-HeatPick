@@ -114,8 +114,12 @@ final class MyProfileUpdateUserDashboardViewController: BaseViewController, MyPr
     }
     
     func updateAvailableUsernameLabel(_ available: Bool) {
-        editButton.isEnabled = available
+        updateButtonEnabled(available)
         headerView.updateAvailableUsernameLabel(available)
+    }
+    
+    func updateButtonEnabled(_ isEnabled: Bool) {
+        editButton.isEnabled = isEnabled
     }
     
 }
@@ -141,11 +145,6 @@ extension MyProfileUpdateUserDashboardViewController: NavigationViewDelegate {
 extension MyProfileUpdateUserDashboardViewController: MyPageupdateUserTableHeaderViewDelegate {
     
     func usernameValueChanged(_ username: String) {
-        guard !username.isEmpty else {
-            editButton.isEnabled = false
-            return
-        }
-        editButton.isEnabled = true
         listener?.usernameValueChanged(username)
     }
     

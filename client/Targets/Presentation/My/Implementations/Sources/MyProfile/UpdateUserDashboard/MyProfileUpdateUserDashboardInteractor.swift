@@ -22,6 +22,7 @@ protocol MyProfileUpdateUserDashboardPresentable: Presentable {
     
     func setup(model: ProfileUpdateMetaData)
     func stopLoading()
+    func updateButtonEnabled(_ isEnabled: Bool)
     func updateAvailableUsernameLabel(_ available: Bool)
 }
 
@@ -40,6 +41,7 @@ final class MyProfileUpdateUserDashboardInteractor: PresentableInteractor<MyProf
     
     private let dependency: MyProfileUpdateUserDashboardInteractorDependency
     private var cancelTaskBag: CancelBag = .init()
+    private var currentUsername: String?
     private var userUpdateModel: UserUpdateContent?
     
     init(
@@ -57,15 +59,10 @@ final class MyProfileUpdateUserDashboardInteractor: PresentableInteractor<MyProf
         Task { [weak self] in
             guard let self else { return }
             await self.dependency.myPageUpdateUserUseCase.fetchUserMedtaData()
-                .onSuccess(on: .main) { usermetaData in
-                    self.presenter.setup(model: usermetaData)
-                    self.userUpdateModel = .init(username: usermetaData.username, selectedBadgeId: usermetaData.nowBadge.badgeId)
-                    // TODO: 서버에서 이미지 없을 시 기존 이미지 사용하게 수정 요청
-//                    Task {
-//                        if let imageData = ImageCacheManager.shared.fetch(from: usermetaData.profileImageURL) {
-//                            self.userUpdateModel?.update(image: imageData)
-//                        }
-//                    }
+                .onSuccess(on: .main) { userMetaData in
+                    self.presenter.setup(model: userMetaData)
+                    self.currentUsername = userMetaData.username
+                    self.userUpdateModel = .init(username: userMetaData.username, selectedBadgeId: userMetaData.nowBadge.badgeId)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .network)
@@ -86,14 +83,25 @@ final class MyProfileUpdateUserDashboardInteractor: PresentableInteractor<MyProf
         userUpdateModel?.update(image: imageData)
     }
     
-    func usernameValueChanged(_ username: String) {
+    func usernameValueChanged(_ newUsername: String) {
+        guard newUsername.isEmpty == false else {
+            presenter.updateButtonEnabled(false)
+            return
+        }
+        
+        guard let currentUsername,
+              currentUsername != newUsername else {
+            presenter.updateButtonEnabled(true)
+            return
+        }
+        
         Task { [weak self] in
             guard let self else { return }
             await dependency.myPageUpdateUserUseCase
-                .checkUsername(username: username)
+                .checkUsername(username: newUsername)
                 .onSuccess(on: .main, with: self) { this, _ in
                     this.presenter.updateAvailableUsernameLabel(true)
-                    this.userUpdateModel?.update(username: username)
+                    this.userUpdateModel?.update(username: newUsername)
                 }
                 .onFailure(on: .main, with: self) { this, _ in
                     this.presenter.updateAvailableUsernameLabel(false)

@@ -11,6 +11,7 @@ import DesignKit
 
 protocol searchBeforeRecentSearchViewDelegate: AnyObject {
     func recentSearchViewDidTap(_ recentSearch: String)
+    func recentSearchViewDelete(_ recentSearch: String)
 }
 
 final class SearchBeforeRecentSearchView: UIView {
@@ -22,6 +23,13 @@ final class SearchBeforeRecentSearchView: UIView {
         static let bottomOffset: CGFloat = -topOffset
         static let leadingOffset: CGFloat = 15
         static let trailingOffset: CGFloat = -leadingOffset
+        
+        enum ImageView {
+            static let image = "xmark"
+            static let size: CGFloat = 20
+            static let leadingOffset: CGFloat = 5
+            static let trailingOffset: CGFloat = -leadingOffset
+        }
     }
     
     private var recentSearch: String?
@@ -36,6 +44,15 @@ final class SearchBeforeRecentSearchView: UIView {
         return label
     }()
     
+    private lazy var deleteImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = .hpGray2
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = .init(systemName: Constant.ImageView.image)
+        imageView.addTapGesture(target: self, action: #selector(recentSearchViewDelete))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -60,13 +77,18 @@ final class SearchBeforeRecentSearchView: UIView {
 private extension SearchBeforeRecentSearchView {
     
     func setupViews() {
-        addSubview(titleLabel)
+        [titleLabel, deleteImage].forEach(addSubview)
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constant.leadingOffset),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constant.trailingOffset),
+            titleLabel.trailingAnchor.constraint(equalTo: deleteImage.leadingAnchor, constant: Constant.ImageView.trailingOffset),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomOffset),
+            
+            deleteImage.widthAnchor.constraint(equalToConstant: Constant.ImageView.size),
+            deleteImage.heightAnchor.constraint(equalToConstant: Constant.ImageView.size),
+            deleteImage.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            deleteImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constant.ImageView.trailingOffset),
         ])
     }
     
@@ -79,7 +101,7 @@ private extension SearchBeforeRecentSearchView {
         
         let tapGesture = UITapGestureRecognizer(
             target: self,
-            action: #selector(didTapSearchBeforeRecentSearchesView)
+            action: #selector(recentSearchViewDidTap)
         )
         addGestureRecognizer(tapGesture)
     }
@@ -88,9 +110,14 @@ private extension SearchBeforeRecentSearchView {
 
 private extension SearchBeforeRecentSearchView {
     
-    @objc func didTapSearchBeforeRecentSearchesView() {
+    @objc func recentSearchViewDidTap() {
         guard let recentSearch else { return }
         delegate?.recentSearchViewDidTap(recentSearch)
+    }
+    
+    @objc func recentSearchViewDelete() {
+        guard let recentSearch else { return }
+        delegate?.recentSearchViewDelete(recentSearch)
     }
     
 }

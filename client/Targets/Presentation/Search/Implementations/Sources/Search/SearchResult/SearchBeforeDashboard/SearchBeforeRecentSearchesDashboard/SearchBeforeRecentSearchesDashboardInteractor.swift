@@ -20,7 +20,6 @@ protocol SearchBeforeRecentSearchesDashboardPresentable: Presentable {
     var listener: SearchBeforeRecentSearchesDashboardPresentableListener? { get set }
     
     func setup(models: [String])
-    func append(model: String)
 }
 
 protocol SearchBeforeRecentSearchesDashboardListener: AnyObject {
@@ -37,6 +36,7 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
     weak var router: SearchBeforeRecentSearchesDashboardRouting?
     weak var listener: SearchBeforeRecentSearchesDashboardListener?
     
+    private var cancelBag = CancelBag()
     private var cancellables: Set<AnyCancellable> = []
     private let dependecy: SearchBeforeRecentSearchesDashboardInteractorDependency
     
@@ -58,19 +58,35 @@ final class SearchBeforeRecentSearchesDashboardInteractor: PresentableInteractor
             .sink { [weak self] searchText in
                 guard let self,
                       let searchText = searchText,
-                      !searchText.isEmpty,
-                      let text = self.dependecy.searchBeforeRecentSearchesUsecase.appendRecentSearch(searchText: searchText) else { return }
-                self.presenter.append(model: text)
+                      !searchText.isEmpty else { return }
+                Task {
+                    await self.dependecy.searchBeforeRecentSearchesUsecase
+                        .saveRecentSearch(recentSearch: searchText)
+                        .onSuccess(on: .main, with: self) { this, models in
+                            this.presenter.setup(models: models)
+                        }
+                }.store(in: cancelBag)
             }.store(in: &cancellables)
     }
     
     override func willResignActive() {
         super.willResignActive()
+        cancelBag.cancel()
     }
-    
     
     func recentSearchViewDidTap(_ recentSearch: String) {
         listener?.recentSearchViewDidTap(recentSearch)
+    }
+    
+    func recentSearchViewDelete(_ recentSearch: String) {
+        Task { [weak self] in
+            guard let self else { return }
+            await self.dependecy.searchBeforeRecentSearchesUsecase
+                .deleteRecentSearch(recentSearch: recentSearch)
+                .onSuccess(on: .main, with: self) { this, models in
+                    this.presenter.setup(models: models)
+                }
+        }.store(in: cancelBag)
     }
     
 }

@@ -11,7 +11,7 @@ import Foundation
 public protocol SearchBeforeRecentSearchesUseCaseInterface {
     
     func fetchRecentSearches() -> [String]
-    func appendRecentSearch(searchText: String) -> String?
-    func saveRecentSearches()
+    func saveRecentSearch(recentSearch: String) async -> Result<[String], Never>
+    func deleteRecentSearch(recentSearch: String) async -> Result<[String], Never>
     
 }
