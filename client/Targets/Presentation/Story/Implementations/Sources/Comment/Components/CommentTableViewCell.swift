@@ -136,7 +136,9 @@ final class CommentTableViewCell: UITableViewCell {
             mentioneeLabel.text = "@\(mentionee)"
         }
         
-        mentionImageView.isHidden = (model.userStatus == .me)
+        // user id가 -1인 경우는 댓글 작성자가 탈퇴한 경우입니다.
+        // 일단은 -1로 처리했는데 시간이 있으면 서버와 함께 userStatus를 바꾸는 식으로 리팩토링할 수 있으면 좋겠네요
+        mentionImageView.isHidden = (model.userStatus == .me || model.userId == -1)
     
     }
     
