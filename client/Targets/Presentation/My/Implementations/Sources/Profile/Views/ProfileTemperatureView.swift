@@ -9,7 +9,7 @@
 import UIKit
 import DesignKit
 
-final class MyPageTemperatureView: UIView {
+final class ProfileTemperatureView: UIView {
     
     private enum Constant {
         static let margin: CGFloat = 20
@@ -51,7 +51,7 @@ final class MyPageTemperatureView: UIView {
     
 }
 
-private extension MyPageTemperatureView {
+private extension ProfileTemperatureView {
     
     func setupViews() {
         layer.cornerRadius = Constants.cornerRadiusMedium

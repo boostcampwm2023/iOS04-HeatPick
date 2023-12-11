@@ -1,5 +1,5 @@
 //
-//  MyPageUserContnetView.swift
+//  MyPageBadgeView.swift
 //  MyImplementations
 //
 //  Created by 홍성준 on 11/22/23.
@@ -9,26 +9,25 @@
 import UIKit
 import DesignKit
 
-final class MyPageUserContnetView: UIView {
+final class ProfileBadgeView: UIView {
     
     private enum Constant {
+        static let margin: CGFloat = 20
         static let spacing: CGFloat = 5
     }
     
     private let titleLabel: UILabel = {
         let label = UILabel()
+        label.font = .bodySemibold
         label.textColor = .hpBlack
-        label.font = .captionSemibold
-        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .hpRed3
-        label.font = .captionBold
-        label.textAlignment = .center
+        label.font = .captionRegular
+        label.textColor = .hpGray1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -43,30 +42,31 @@ final class MyPageUserContnetView: UIView {
         setupViews()
     }
     
-    func updateTitle(_ title: String) {
+    func setup(title: String, content: String) {
         titleLabel.text = title
-    }
-    
-    func updateContent(_ content: String) {
         contentLabel.text = content
     }
     
 }
 
-private extension MyPageUserContnetView {
+
+private extension ProfileBadgeView {
     
     func setupViews() {
+        layer.cornerRadius = Constants.cornerRadiusMedium
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.hpGray4.cgColor
         [titleLabel, contentLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.margin),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             
             contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
-            contentLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+            contentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            contentLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
+            contentLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constant.margin)
         ])
     }
     

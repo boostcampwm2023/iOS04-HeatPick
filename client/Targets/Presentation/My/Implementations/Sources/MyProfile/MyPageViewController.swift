@@ -12,22 +12,14 @@ import CoreKit
 import DesignKit
 import BasePresentation
 
-protocol ProfilePresentableListener: AnyObject {
+protocol MyPagePresentableListener: AnyObject {
     func viewWillAppear()
-}
-
-protocol MyPagePresentableListener: ProfilePresentableListener {
     func didTapSetting()
 }
 
-protocol UserProfilePresentableListener: ProfilePresentableListener {
-    func didTapBack()
-}
-
-public final class MyPageViewController: BaseViewController, MyPagePresentable, MyPageViewControllable, UserProfilePresentable, UserProfileViewControllable  {
+public final class MyPageViewController: BaseViewController, MyPagePresentable, MyPageViewControllable {
     
-    weak var myPageListener: MyPagePresentableListener?
-    weak var userProfileListener: UserProfilePresentableListener?
+    weak var listener: MyPagePresentableListener?
 
     private enum Constant {
         static let tabBarTitle = "마이"
@@ -51,8 +43,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        myPageListener?.viewWillAppear()
-        userProfileListener?.viewWillAppear()
+        listener?.viewWillAppear()
     }
     
     func setDashboard(_ viewControllable: ViewControllable) {
@@ -116,7 +107,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
         }
     }
     
-    func setMyProfile(_ username: String) {
+    func setupNavigation(_ username: String) {
         navigationView.do {
             $0.setup(model: .init(
                 title: "\(username)",
@@ -126,23 +117,12 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
         }
     }
     
-    func setUserProfile(_ username: String) {
-        navigationView.do {
-            $0.setup(model: .init(
-                title: "\(username)",
-                leftButtonType: .back,
-                rightButtonTypes: [])
-            )
-        }
-    }
-    
 }
 
 extension MyPageViewController: NavigationViewDelegate {
     
     public func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
-        if case .setting = type { myPageListener?.didTapSetting() }
-        if case .back = type { userProfileListener?.didTapBack() }
+        if case .setting = type { listener?.didTapSetting() }
     }
     
 }

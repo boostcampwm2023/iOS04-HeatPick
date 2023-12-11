@@ -59,6 +59,10 @@ open class SeeAllView: UIView {
         seeAllView.isHidden = !model.isButtonEnabled
     }
     
+    public func seeAllButtonIsHiiden(_ isHidden: Bool) {
+        seeAllView.isHidden = isHidden
+    }
+    
 }
 
 private extension SeeAllView {

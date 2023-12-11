@@ -20,14 +20,14 @@ public protocol UserProfileDependency: Dependency {
 public final class UserProfileComponent: Component<UserProfileDependency>,
                                   UserProfileInteractorDependency,
                                   UserProfileUserDashboardDependency,
-                                  MyPageStoryDashboardDependency,
-                                  MyPageStorySeeAllDependency {
+                                  ProfileStoryDashboardDependency,
+                                  ProfileStoryDashboardSeeAllDependency {
     
     var userId: Int
 
     var userProfileUseCase: UserProfileUseCaseInterface { dependency.userProfileUseCase }
     var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.userProfileUseCase }
-    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { dependency.userProfileUseCase }
+    var profileStoryDashboardUseCase: ProfileStoryDashboardUseCaseInterface { dependency.userProfileUseCase }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
     
     init(dependency: UserProfileDependency, userId: Int) {
@@ -40,8 +40,8 @@ public final class UserProfileComponent: Component<UserProfileDependency>,
 protocol UserProfileRouterDependency: AnyObject {
     
     var userDashboardBuilder: UserProfileUserDashboardBuildable { get }
-    var storyDashboardBuilder: MyPageStoryDashboardBuildable { get }
-    var storySeeAllBuilder: MyPageStorySeeAllBuildable { get }
+    var storyDashboardBuilder: ProfileStoryDashboardBuildable { get }
+    var storySeeAllBuilder: ProfileStoryDashboardSeeAllBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
     
 }
@@ -49,14 +49,14 @@ protocol UserProfileRouterDependency: AnyObject {
 final class UserProfileRouterComponent: UserProfileRouterDependency {
     
     let userDashboardBuilder: UserProfileUserDashboardBuildable
-    let storyDashboardBuilder: MyPageStoryDashboardBuildable
-    let storySeeAllBuilder: MyPageStorySeeAllBuildable
+    let storyDashboardBuilder: ProfileStoryDashboardBuildable
+    let storySeeAllBuilder: ProfileStoryDashboardSeeAllBuildable
     let storyDetailBuilder: StoryDetailBuildable
     
     init(component: UserProfileComponent) {
         self.userDashboardBuilder = UserProfileUserDashboardBuilder(dependency: component)
-        self.storyDashboardBuilder = MyPageStoryDashboardBuilder(dependency: component)
-        self.storySeeAllBuilder = MyPageStorySeeAllBuilder(dependency: component)
+        self.storyDashboardBuilder = ProfileStoryDashboardBuilder(dependency: component)
+        self.storySeeAllBuilder = ProfileStoryDashboardSeeAllBuilder(dependency: component)
         self.storyDetailBuilder = component.storyDetailBuilder
     }
     

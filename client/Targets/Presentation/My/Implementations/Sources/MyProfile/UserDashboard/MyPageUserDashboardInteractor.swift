@@ -12,12 +12,10 @@ import ModernRIBs
 import DomainEntities
 import DomainInterfaces
 
-protocol MyPageUserDashboardRouting: ViewableRouting {
-    func setMyProfile()
-}
+protocol MyPageUserDashboardRouting: ViewableRouting { }
 
 protocol MyPageUserDashboardPresentable: Presentable {
-    var myProfileListener: MyPageUserDashboardPresentableListener? { get set }
+    var listener: MyPageUserDashboardPresentableListener? { get set }
     func setup(model: MyProfileViewControllerModel)
 }
 
@@ -43,7 +41,7 @@ final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashb
     ) {
         self.dependency = dependency
         super.init(presenter: presenter)
-        presenter.myProfileListener = self
+        presenter.listener = self
     }
 
     override func didBecomeActive() {
