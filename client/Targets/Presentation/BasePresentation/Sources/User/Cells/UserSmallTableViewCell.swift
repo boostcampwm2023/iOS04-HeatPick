@@ -7,9 +7,7 @@
 //
 
 import UIKit
-
 import DesignKit
-
 
 public struct UserSmallTableViewCellModel {
     
@@ -28,8 +26,7 @@ public struct UserSmallTableViewCellModel {
 public final class UserSmallTableViewCell: UITableViewCell {
     
     private enum Constant {
-        static let leadingOffset: CGFloat = 10
-        static let trailingOffset: CGFloat = -leadingOffset
+        static let spacing: CGFloat = 10
         
         enum ProfileImageView {
             static let width: CGFloat = 40
@@ -50,28 +47,10 @@ public final class UserSmallTableViewCell: UITableViewCell {
     
     private let nicknameLabel: UILabel = {
         let label = UILabel()
-        label.font = .captionBold
+        label.font = .bodySemibold
         label.textColor = .hpBlack
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
-    
-    private let badgeLabel: UILabel = {
-        let label = UILabel()
-        label.font = .smallRegular
-        label.textColor = .hpGray1
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 3
-        stackView.alignment = .center
-        stackView.distribution = .equalSpacing
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
     }()
     
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -92,7 +71,6 @@ public final class UserSmallTableViewCell: UITableViewCell {
     public func setup(model: UserSmallTableViewCellModel) {
         profileImageView.load(from: model.profileUrl)
         nicknameLabel.text = model.username
-        badgeLabel.text = model.username
     }
     
 }
@@ -102,19 +80,18 @@ private extension UserSmallTableViewCell {
     func setupViews() {
         selectionStyle = .none
         backgroundColor = .hpWhite
-        [nicknameLabel, badgeLabel].forEach(stackView.addArrangedSubview)
-        [profileImageView, stackView].forEach(contentView.addSubview)
+        [profileImageView, nicknameLabel].forEach(contentView.addSubview)
         
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.leadingOffset),
             profileImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             profileImageView.heightAnchor.constraint(equalToConstant: Constant.ProfileImageView.height),
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.ProfileImageView.width),
             
-            stackView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: Constant.leadingOffset),
-            stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            stackView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: Constant.trailingOffset)
+            nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: Constant.spacing),
+            nicknameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            nicknameLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: Constants.traillingOffset)
         ])
     }
     
@@ -122,7 +99,6 @@ private extension UserSmallTableViewCell {
         profileImageView.cancel()
         profileImageView.image = nil
         nicknameLabel.text = nil
-        badgeLabel.text = nil
     }
     
 }

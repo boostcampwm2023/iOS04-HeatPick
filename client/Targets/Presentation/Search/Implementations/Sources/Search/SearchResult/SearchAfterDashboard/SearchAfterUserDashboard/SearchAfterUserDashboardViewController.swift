@@ -80,7 +80,7 @@ final class SearchAfterUserDashboardViewController: UIViewController, SearchAfte
             let contentView = SearchAfterUserView()
             contentView.setup(model: model)
             contentView.delegate = self
-            self.stackView.addArrangedSubview(contentView)
+            stackView.addArrangedSubview(contentView)
         }
         emptyView.isHidden = !isEmpty
     }
@@ -92,19 +92,18 @@ private extension SearchAfterUserDashboardViewController {
         [headerView, emptyView, stackView].forEach { view.addSubview($0) }
         
         NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.topAnchor.constraint(equalTo: view.topAnchor),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             
             emptyView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.offset),
             emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             stackView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: Constant.offset),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     

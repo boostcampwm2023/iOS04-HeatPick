@@ -13,6 +13,8 @@ import DomainEntities
 
 public protocol SearchStorySeeAllUseCaseInterface {
     
+    var hasMoreStory: Bool { get }
     func fetchStory(searchText: String) async -> Result<[SearchStory], Error>
+    func loadMoreStory(searchText: String) async -> Result<[SearchStory], Error> 
     
 }

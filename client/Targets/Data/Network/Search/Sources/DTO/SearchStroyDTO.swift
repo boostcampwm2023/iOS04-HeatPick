@@ -22,7 +22,6 @@ public struct SearchStroyDTO: Decodable {
     
 }
 
-
 public extension SearchStroyDTO {
     
     func toDomain() -> SearchStory {

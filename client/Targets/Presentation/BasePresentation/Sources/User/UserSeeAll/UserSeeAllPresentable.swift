@@ -14,4 +14,6 @@ public protocol UserSeeAllPresentable: Presentable {
     func updateTitle(_ title: String)
     func setup(models: [UserSmallTableViewCellModel])
     func append(models: [UserSmallTableViewCellModel])
+    func startLoading()
+    func stopLoading()
 }

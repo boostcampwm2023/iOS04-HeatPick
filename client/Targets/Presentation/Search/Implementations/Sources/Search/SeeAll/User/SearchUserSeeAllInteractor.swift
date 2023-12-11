@@ -7,13 +7,11 @@
 //
 
 import Foundation
-
 import ModernRIBs
-
 import CoreKit
 import BasePresentation
+import DomainEntities
 import DomainInterfaces
-
 
 protocol SearchUserSeeAllRouting: ViewableRouting { }
 
@@ -31,15 +29,20 @@ protocol SearchUserSeeAllInteractorDependency: AnyObject {
 }
 
 final class SearchUserSeeAllInteractor: PresentableInteractor<SearchUserSeeAllPresentable>,
-                                            SearchUserSeeAllInteractable,
+                                        SearchUserSeeAllInteractable,
                                         SearchUserSeeAllPresentableListener{
-
+    func willDisplay(at indexPath: IndexPath) {
+        
+    }
+    
+    
     weak var router: SearchUserSeeAllRouting?
     weak var listener: SearchUserSeeAllListener?
-
-    private let dependency: SearchUserSeeAllInteractorDependency
     
-    private var cancelTaskBag: CancelBag = .init()
+    private let dependency: SearchUserSeeAllInteractorDependency
+    private let cancelBag = CancelBag()
+    private var models: [UserSmallTableViewCellModel] = []
+    private var isLoading = false
     
     init(
         presenter: SearchUserSeeAllPresentable,
@@ -49,32 +52,16 @@ final class SearchUserSeeAllInteractor: PresentableInteractor<SearchUserSeeAllPr
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
         presenter.updateTitle("사용자 검색")
-        Task { [weak self] in
-            guard let self else { return }
-            await self.dependency.searchUserSeeAllUseCase
-                .fetchUser(searchText: self.dependency.searchText)
-                .onSuccess(on: .main, with: self) { _, models in
-                    self.presenter.setup(models: models.map {
-                        UserSmallTableViewCellModel(
-                            userId: $0.userId,
-                            username: $0.username,
-                            profileUrl: $0.profileUrl
-                        )
-                    })
-                }
-                .onFailure { error in
-                    Log.make(message:"\(String(describing: self)) \(error.localizedDescription)", log: .network)
-                }
-        }.store(in: cancelTaskBag)
+        fetchUser()
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
-        cancelTaskBag.cancel()
+        cancelBag.cancel()
     }
     
     func didTapClose() {
@@ -83,6 +70,71 @@ final class SearchUserSeeAllInteractor: PresentableInteractor<SearchUserSeeAllPr
     
     func didTapItem(model: UserSmallTableViewCellModel) {
         listener?.didTapUser(userId: model.userId)
+    }
+    
+    private func fetchUser() {
+        startLoading()
+        
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.searchUserSeeAllUseCase
+                .fetchUser(searchText: dependency.searchText)
+                .onSuccess(on: .main, with: self) { this, users in
+                    let models = users.toModels()
+                    this.models = models
+                    this.presenter.setup(models: models)
+                    this.stopLoading()
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                    this.stopLoading()
+                }
+        }.store(in: cancelBag)
+    }
+    
+    private func loadMoreIfNeeded() {
+        guard dependency.searchUserSeeAllUseCase.hasMoreUser, isLoading == false else { return }
+        startLoading()
+        
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.searchUserSeeAllUseCase
+                .loadMoreUser(searchText: dependency.searchText)
+                .onSuccess(on: .main, with: self) { this, users in
+                    let models = users.toModels()
+                    this.models.append(contentsOf: models)
+                    this.presenter.append(models: models)
+                    this.stopLoading()
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                    this.stopLoading()
+                }
+        }.store(in: cancelBag)
+    }
+    
+    private func startLoading() {
+        isLoading = true
+        presenter.startLoading()
+    }
+    
+    private func stopLoading() {
+        isLoading = false
+        presenter.stopLoading()
+    }
+    
+}
+
+private extension Array where Element == SearchUser {
+    
+    func toModels() -> [UserSmallTableViewCellModel] {
+        return map {
+            return .init(
+                userId: $0.userId,
+                username: $0.username,
+                profileUrl: $0.profileUrl
+            )
+        }
     }
     
 }

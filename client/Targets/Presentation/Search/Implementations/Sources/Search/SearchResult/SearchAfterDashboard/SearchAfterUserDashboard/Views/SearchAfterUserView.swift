@@ -36,33 +36,24 @@ final class SearchAfterUserView: UIView {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constant.ProfileImageView.height / 2
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .hpGray3
+        imageView.backgroundColor = .hpGray4
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
     private let nicknameLabel: UILabel = {
         let label = UILabel()
-        label.font = .captionBold
+        label.font = .bodySemibold
         label.textColor = .hpBlack
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let badgeLabel: UILabel = {
-        let label = UILabel()
-        label.font = .smallRegular
-        label.textColor = .hpGray1
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var stackView: UIStackView = {
-       let stackView = UIStackView(arrangedSubviews: [nicknameLabel, badgeLabel])
+        let stackView = UIStackView(arrangedSubviews: [nicknameLabel])
         stackView.axis = .vertical
         stackView.spacing = 3
-        stackView.alignment = .center
-        stackView.distribution = .equalSpacing
+        stackView.alignment = .fill
+        stackView.distribution = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -80,9 +71,9 @@ final class SearchAfterUserView: UIView {
     }
     
     func setup(model: SearchUser) {
+        userId = model.userId
         profileImageView.load(from: model.profileUrl)
         nicknameLabel.text = model.username
-        badgeLabel.text = model.username
     }
     
 }

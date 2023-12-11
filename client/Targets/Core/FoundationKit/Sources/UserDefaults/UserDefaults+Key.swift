@@ -14,6 +14,7 @@ public extension UserDefaults {
         
         case remoteNotification
         case initialSignInDate
+        case recentSearch
         
     }
     

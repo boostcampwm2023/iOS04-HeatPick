@@ -11,6 +11,8 @@ import DomainEntities
 
 public protocol SearchUserSeeAllUseCaseInterface {
     
+    var hasMoreUser: Bool { get }
     func fetchUser(searchText: String) async -> Result<[SearchUser], Error>
+    func loadMoreUser(searchText: String) async -> Result<[SearchUser], Error>
     
 }

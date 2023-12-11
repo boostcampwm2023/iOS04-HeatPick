@@ -11,7 +11,7 @@ import DomainEntities
 
 public struct SearchStroyResponseDTO: Decodable {
     
-    public let stories: [SearchStroyDTO]
+    public let stories: [SearchStroyDTO?]
     public let isLastPage: Bool
     
 }
@@ -19,7 +19,7 @@ public struct SearchStroyResponseDTO: Decodable {
 public extension SearchStroyResponseDTO {
     
     func toDomain() -> [SearchStory] {
-        stories.map { $0.toDomain() }
+        stories.compactMap { $0?.toDomain() }
     }
 
 }

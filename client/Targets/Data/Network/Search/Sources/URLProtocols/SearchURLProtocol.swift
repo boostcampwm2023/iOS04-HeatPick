@@ -13,8 +13,8 @@ public final class SearchURLProtocol: URLProtocol {
     
     private lazy var mocks: [String: Data?] = [
         SearchAPI.recommend(searchText: "text").path: loadMockData(fileName: "SearchRecommendResponseMock"),
-        SearchAPI.story(searchText: "text").path: loadMockData(fileName: "SearchStoryResponseMock"),
-        SearchAPI.user(searchText: "text").path: loadMockData(fileName: "SearchUserResponseMock")
+        SearchAPI.story(searchText: "text", offset: 0, limit: 5).path: loadMockData(fileName: "SearchStoryResponseMock"),
+        SearchAPI.user(searchText: "text", offset: 0, limit: 5).path: loadMockData(fileName: "SearchUserResponseMock")
     ]
     
     public override class func canInit(with request: URLRequest) -> Bool { true }
