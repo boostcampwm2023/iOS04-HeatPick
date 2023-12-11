@@ -198,6 +198,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
             $0.showLocationButton = true
             $0.mapView.addCameraDelegate(delegate: self)
             $0.mapView.touchDelegate = self
+            $0.showCompass = false
             $0.mapView.translatesAutoresizingMaskIntoConstraints = false
         }
         
