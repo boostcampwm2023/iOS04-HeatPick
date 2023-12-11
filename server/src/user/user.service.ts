@@ -216,7 +216,11 @@ export class UserService {
 
   @Transactional()
   async resign(userId: number, message: string) {
-    const user: User = await this.userRepository.findOne({ where: { userId: userId }, relations: ['badges', 'stories', 'representativeBadge', 'comments', 'following', 'followers', 'following.followers', 'followers.following', 'likedStories'] });
+    const user: User = await this.userRepository.findOne({
+      where: { userId: userId },
+      relations: ['badges', 'stories', 'representativeBadge', 'comments', 'following', 'followers', 'following.followers', 'followers.following', 'likedStories'],
+      withDeleted: true,
+    });
 
     user.likedStories = Promise.resolve([]);
     user.badges = Promise.resolve([]);
