@@ -71,6 +71,7 @@ final class SearchAfterUserView: UIView {
     }
     
     func setup(model: SearchUser) {
+        userId = model.userId
         profileImageView.load(from: model.profileUrl)
         nicknameLabel.text = model.username
     }

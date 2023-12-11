@@ -141,11 +141,9 @@ extension SearchRouter {
     }
     
     func detachUserDetail() {
-        Log.make(message: "\(String(describing: self)) \(#function) start", log: .default)
         guard let router = userProfileRouter else { return }
         popRouter(router, animated: true)
         userProfileRouter = nil
-        Log.make(message: "\(String(describing: self)) \(#function) finish", log: .default)
     }
     
     func attachSearchUserSeeAll(searchText: String) {
