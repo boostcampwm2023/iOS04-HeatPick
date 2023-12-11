@@ -108,7 +108,7 @@ export class AuthService {
     }
   }
 
-  async checkDuplicated(OAuthToken: string, nickname: string, loginOption: number = 0) {
+  async checkDuplicated(OAuthToken: string, nickname: string, loginOption: number) {
     let OAuthId: string;
     if (loginOption === 0) {
       OAuthId = await this.getGithubId(OAuthToken);
