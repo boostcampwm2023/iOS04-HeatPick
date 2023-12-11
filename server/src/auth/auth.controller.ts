@@ -81,19 +81,9 @@ export class AuthController {
     return { accessToken: token };
   }
 
-  @ApiOperation({ summary: '깃허브 로그인 시 OAuthId, Nickname 중복을 체크합니다.' })
-  @Get('check/github')
-  async checkDuplicatedGithub(@Body() registerDto: RegisterDto) {
-    const token = registerDto.OAuthToken;
-    const nickname = registerDto.username;
-    await this.authService.checkDuplicated(token, nickname, 0);
-  }
-
-  @ApiOperation({ summary: '네이버 로그인 시OAuthId, Nickname 중복을 체크합니다.' })
-  @Get('check/naver')
-  async checkDuplicatedNaver(@Body() registerDto: RegisterDto) {
-    const token = registerDto.OAuthToken;
-    const nickname = registerDto.username;
-    await this.authService.checkDuplicated(token, nickname, 1);
+  @ApiOperation({ summary: ' Nickname 중복을 체크합니다.' })
+  @Get('check')
+  async checkDuplicatedGithub(@Body('nickname') nickname: string) {
+    await this.authService.checkDuplicated(nickname);
   }
 }
