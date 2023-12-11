@@ -39,6 +39,9 @@ export class UserProfileDetailDataDto {
   @ApiProperty()
   badgeExplain: string;
 
+  @ApiProperty()
+  nextBadge: string;
+
   @ApiProperty({ type: () => UserProfileDetailStoryDto })
   storyList: UserProfileDetailStoryDto[];
 }
