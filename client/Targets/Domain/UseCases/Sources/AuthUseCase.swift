@@ -27,7 +27,8 @@ public final class AuthUseCase: AuthUseCaseInterface {
     
     public var isAuthorized: Bool {
         guard let data = SecretManager.read(type: .accessToken),
-              let token = String(data: data, encoding: .utf8) else {
+              let token = String(data: data, encoding: .utf8),
+              UserDefaults.standard.object(forKey: .initialSignInDate) != nil else {
             return false
         }
         return !token.isEmpty
@@ -138,6 +139,7 @@ public final class AuthUseCase: AuthUseCaseInterface {
             return
         }
         SecretManager.write(type: .accessToken, data: data)
+        UserDefaults.standard.setValue(Date(), forKey: .initialSignInDate)
     }
     
     
