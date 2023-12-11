@@ -31,7 +31,7 @@ protocol MyPageRouting: ViewableRouting {
 protocol MyPagePresentable: Presentable {
     var listener: MyPagePresentableListener? { get set }
     
-    func setupNavi(_ username: String)
+    func setupNavigation(_ username: String)
 }
 
 final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageInteractable, MyPagePresentableListener {
@@ -115,7 +115,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
                 .fetchMyProfile()
                 .onSuccess(on: .main, with: self) { this, profile in
                     this.profile = profile
-                    this.presenter.setupNavi(profile.userName)
+                    this.presenter.setupNavigation(profile.userName)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)

@@ -107,7 +107,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
         }
     }
     
-    func setupNavi(_ username: String) {
+    func setupNavigation(_ username: String) {
         navigationView.do {
             $0.setup(model: .init(
                 title: "\(username)",
