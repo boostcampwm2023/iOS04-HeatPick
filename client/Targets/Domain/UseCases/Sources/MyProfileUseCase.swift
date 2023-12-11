@@ -111,4 +111,8 @@ public final class MyProfileUseCase: MyProfileUseCaseInterface {
         await repository.requestUnfollow(userId: userId)
     }
     
+    public func checkUsername(username: String) async -> Result<Void, Error> {
+        await repository.checkUsername(username: username)
+    }
+    
 }

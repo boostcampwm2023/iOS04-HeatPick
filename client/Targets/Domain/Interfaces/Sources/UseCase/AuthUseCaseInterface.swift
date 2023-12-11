@@ -21,5 +21,6 @@ public protocol AuthUseCaseInterface: AnyObject {
     func requestNaverSignIn()
     func requestSignIn(token: String, with service: SignInService) async -> Result<AuthToken, Error>
     func requestSignUp(userName: String, profileImage: Data?, with service: SignInService) async -> Result<AuthToken, Error>
+    func checkUsername(username: String) async -> Result<Void, Error>
     
 }
