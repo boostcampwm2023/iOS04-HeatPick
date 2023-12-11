@@ -14,5 +14,5 @@ public protocol UserProfileUseCaseInterface: ProfileUserDashboardUseCaseInterfac
                                               ProfileStoryDashboardUseCaseInterface,
                                               ProfileStoryDashboardUseCaseInterface {
     
-    func fetchProfile(userId: Int) async -> Result<Profile, Error>
+    func fetchUserProfile(userId: Int) async -> Result<Profile, Error>
 }
