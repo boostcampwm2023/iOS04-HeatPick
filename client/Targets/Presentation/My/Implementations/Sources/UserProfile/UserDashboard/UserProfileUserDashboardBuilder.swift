@@ -10,11 +10,11 @@ import ModernRIBs
 import DomainInterfaces
 
 protocol UserProfileUserDashboardDependency: Dependency { 
-    var userProfileUserUseCase: MyPageProfileUseCaseInterface { get }
+    var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { get }
 }
 
 final class UserProfileUserDashboardComponent: Component<UserProfileUserDashboardDependency>, UserProfileUserDashboardInteractorDependency {
-    var userProfileUserUseCase: MyPageProfileUseCaseInterface { dependency.userProfileUserUseCase }
+    var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.profileUserDashboardUseCaseInterface }
 }
 
 // MARK: - Builder

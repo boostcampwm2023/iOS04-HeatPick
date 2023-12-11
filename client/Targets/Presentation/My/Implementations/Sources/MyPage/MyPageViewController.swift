@@ -12,11 +12,15 @@ import CoreKit
 import DesignKit
 import BasePresentation
 
-protocol MyPagePresentableListener: AnyObject {
+protocol ProfilePresentableListener: AnyObject {
+    func viewWillAppear()
+}
+
+protocol MyPagePresentableListener: ProfilePresentableListener {
     func didTapSetting()
 }
 
-protocol UserProfilePresentableListener: AnyObject {
+protocol UserProfilePresentableListener: ProfilePresentableListener {
     func didTapBack()
 }
 
@@ -43,7 +47,12 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         setupTabBar()
- 
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        myPageListener?.viewWillAppear()
+        userProfileListener?.viewWillAppear()
     }
     
     func setDashboard(_ viewControllable: ViewControllable) {

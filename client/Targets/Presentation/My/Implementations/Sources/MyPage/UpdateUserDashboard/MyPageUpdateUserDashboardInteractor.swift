@@ -21,15 +21,15 @@ protocol MyPageUpdateUserDashboardPresentable: Presentable {
     var listener: MyPageUpdateUserDashboardPresentableListener? { get set }
     
     func setup(model: ProfileUpdateMetaData)
+    func stopLoading()
 }
 
 protocol MyPageUpdateUserDashboardListener: AnyObject {
-    func updateUser(model: UserUpdateContent)
     func detachMyPageUpdateUserDasbaord()
 }
 
 protocol MyPageUpdateUserDashboardInteractorDependency: AnyObject {
-    var myPageUpdateUserUseCase: MyPageUpdateUserUseCaseInterface { get }
+    var myPageUpdateUserUseCase: MyProfileUpdateUserUseCaseInterface { get }
 }
 
 final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpdateUserDashboardPresentable>, MyPageUpdateUserDashboardInteractable, MyPageUpdateUserDashboardPresentableListener {
@@ -94,8 +94,18 @@ final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpd
     }
     
     func didTapEditButton() {
-        if let userUpdateModel { listener?.updateUser(model: userUpdateModel) }
-        listener?.detachMyPageUpdateUserDasbaord()
+        Task { [weak self] in
+            guard let self,
+                  let userUpdateModel else { return }
+            await dependency.myPageUpdateUserUseCase
+                .patchUserUpdate(userUpdate: userUpdateModel)
+                .onSuccess(on: .main, with: self) { this, userId in
+                    this.listener?.detachMyPageUpdateUserDasbaord()
+                }.onFailure { error in
+                    self.presenter.stopLoading()
+                    Log.make(message: error.localizedDescription, log: .network)
+                }
+        }.store(in: cancelTaskBag)
     }
     
 }

@@ -61,6 +61,7 @@ final class SearchBeforeCategoryView: UIView {
     func setup(_ model: SearchCategory) {
         self.category = model
         categoryNameLabel.text = model.categoryName
+        descriptionLabel.text = model.categoryContent
     }
     
 }

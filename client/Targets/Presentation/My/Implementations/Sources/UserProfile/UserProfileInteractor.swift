@@ -48,12 +48,15 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
         super.didBecomeActive()
         router?.attachUserDashboard()
         router?.attachStoryDashboard()
-        fetchProfile()
     }
     
     override func willResignActive() {
         super.willResignActive()
         cancelBag.cancel()
+    }
+    
+    func viewWillAppear() {
+        fetchProfile()
     }
     
     func didTapBack() {
@@ -81,7 +84,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
         Task { [weak self] in
             guard let self else { return }
             await dependency.userProfileUseCase
-                .fetchProfile(userId: dependency.userId)
+                .fetchUserProfile(userId: dependency.userId)
                 .onSuccess(on: .main, with: self) { this, myPage in
                     this.myPage = myPage
                     this.router?.setUserProfile(myPage.userName)

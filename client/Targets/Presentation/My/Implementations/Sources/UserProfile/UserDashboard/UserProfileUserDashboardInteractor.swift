@@ -31,7 +31,7 @@ protocol UserProfileUserDashboardListener: AnyObject  {
 }
 
 protocol UserProfileUserDashboardInteractorDependency: AnyObject {
-    var userProfileUserUseCase: MyPageProfileUseCaseInterface { get }
+    var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { get }
 }
 
 final class UserProfileUserDashboardInteractor: PresentableInteractor<UserProfileUserDashboardPresentable>, UserProfileUserDashboardInteractable, UserProfileUserDashboardPresentableListener {
@@ -57,7 +57,7 @@ final class UserProfileUserDashboardInteractor: PresentableInteractor<UserProfil
     
     override func didBecomeActive() {
         super.didBecomeActive()
-        dependency.userProfileUserUseCase
+        dependency.profileUserDashboardUseCaseInterface
             .profilePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profile in
@@ -86,7 +86,7 @@ private extension UserProfileUserDashboardInteractor {
         Task { [weak self] in
             guard let self,
                   let userId else { return }
-            await dependency.userProfileUserUseCase
+            await dependency.profileUserDashboardUseCaseInterface
                 .requestFollow(userId: userId)
                 .onSuccess(on: .main, with: self) { this, _ in
                     this.isFollow = true
@@ -103,7 +103,7 @@ private extension UserProfileUserDashboardInteractor {
         Task { [weak self] in
             guard let self,
                   let userId else { return }
-            await dependency.userProfileUserUseCase
+            await dependency.profileUserDashboardUseCaseInterface
                 .requestUnfollow(userId: userId)
                 .onSuccess(on: .main, with: self) { this, _ in
                     this.isFollow = false

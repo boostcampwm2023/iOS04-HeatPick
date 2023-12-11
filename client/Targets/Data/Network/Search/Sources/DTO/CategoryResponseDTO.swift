@@ -22,24 +22,3 @@ public extension CategoryResponseDTO {
     }
     
 }
-
-
-public struct CategoryDTO: Decodable {
-    
-    public let categoryId: Int
-    public let categoryName: String
-    
-    public init(categoryId: Int, categoryName: String) {
-        self.categoryId = categoryId
-        self.categoryName = categoryName
-    }
-    
-}
-
-public extension CategoryDTO {
-    
-    func toDomain() -> SearchCategory {
-        .init(categoryId: categoryId, categoryName: categoryName)
-    }
-    
-}

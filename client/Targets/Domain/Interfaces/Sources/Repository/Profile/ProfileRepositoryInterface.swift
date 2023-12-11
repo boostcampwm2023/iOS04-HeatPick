@@ -9,14 +9,9 @@
 import Foundation
 import DomainEntities
 
-public protocol MyPageRepositoryInterface: AnyObject {
+public protocol ProfileRepositoryInterface: AnyObject {
     
-    func fetchMyProfile() async -> Result<Profile, Error>
-    func fetchUserProfile(userId: Int) async -> Result<Profile, Error>
     func fetchUserStory(id: Int, offset: Int, limit: Int) async -> Result<[MyPageStory], Error>
-    func fetchUserMedtaData() async -> Result<ProfileUpdateMetaData, Error>
-    func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error>
-    func requestResign(message: String) async -> Result<Void, Error>
     func requestFollow(userId: Int) async -> Result<Void, Error>
     func requestUnfollow(userId: Int) async -> Result<Void, Error>
     

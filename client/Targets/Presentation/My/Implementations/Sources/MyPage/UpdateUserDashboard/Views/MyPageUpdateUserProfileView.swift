@@ -30,6 +30,8 @@ final class MyPageUpdateUserProfileView: UIView {
         let imageView = UIImageView()
         imageView.image = .profileDefault
         imageView.clipsToBounds = true
+        imageView.layer.borderColor = UIColor.hpGray4.cgColor
+        imageView.layer.borderWidth = 1
         imageView.layer.cornerRadius = Constant.ProfileImage.length / 2
         imageView.addTapGesture(target: self, action: #selector(profileImageViewDidTap))
         imageView.translatesAutoresizingMaskIntoConstraints = false

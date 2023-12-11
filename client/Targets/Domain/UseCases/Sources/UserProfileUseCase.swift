@@ -1,8 +1,8 @@
 //
-//  MyPageUseCase.swift
+//  UserProfileUseCase.swift
 //  DomainUseCases
 //
-//  Created by 홍성준 on 11/23/23.
+//  Created by 이준복 on 12/11/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import Foundation
 import DomainEntities
 import DomainInterfaces
 
-public final class MyPageUseCase: MyPageUseCaseInterface {
+public final class UserProfileUseCase: UserProfileUseCaseInterface {
 
     public var hasMore: Bool = false
     
@@ -23,36 +23,29 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         return storyListSubject.eraseToAnyPublisher()
     }
     
-    private let repository: MyPageRepositoryInterface
+    private let repository: UserProfileRepositoryInterface
     private let storyListSubject = PassthroughSubject<[MyPageStory], Never>()
     private let profileSubject = PassthroughSubject<Profile, Never>()
     private var storyOffset = 0
     private let pageLimit = 10
     
-    public init(repository: MyPageRepositoryInterface) {
+    public init(repository: UserProfileRepositoryInterface) {
         self.repository = repository
     }
     
-    public func fetchMyProfile() async -> Result<Profile, Error> {
-        let result = await repository.fetchMyProfile()
-        updateProfile(result)
-        updateStoryList(result)
-        return result
-    }
-    
-    public func fetchProfile(userId: Int) async -> Result<Profile, Error> {
+    public func fetchUserProfile(userId: Int) async -> Result<Profile, Error> {
         let result = await repository.fetchUserProfile(userId: userId)
         updateProfile(result)
         updateStoryList(result)
         return result
     }
     
-    public func fetchMyPageStory(id: Int) async -> Result<[MyPageStory], Error> {
+    public func fetchProfileStory(id: Int) async -> Result<[MyPageStory], Error> {
         storyOffset = 0
         return await fetchMyPageStory(id: id, offset: storyOffset)
     }
     
-    public func loadMoreMyPageStory(id: Int) async -> Result<[MyPageStory], Error> {
+    public func loadMoreProfileStory(id: Int) async -> Result<[MyPageStory], Error> {
         storyOffset += 1
         return await fetchMyPageStory(id: id, offset: storyOffset)
     }
@@ -83,7 +76,7 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         case .success(let page):
             let storyList: [MyPageStory] = page.stories.map { story in
                 return MyPageStory(
-                    storyId: story.storyId, 
+                    storyId: story.storyId,
                     title: story.title,
                     content: story.content,
                     thumbnailImageURL: story.thumbnailImageURL,
@@ -98,19 +91,6 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
         }
     }
     
-    public func fetchUserMedtaData() async -> Result<ProfileUpdateMetaData, Error> {
-        await repository.fetchUserMedtaData()
-    }
-    
-    
-    public func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error> {
-        await repository.patchUserUpdate(userUpdate: userUpdate)
-    }
-    
-    public func requestResign(message: String) async -> Result<Void, Error> {
-        await repository.requestResign(message: message)
-    }
-    
     public func requestFollow(userId: Int) async -> Result<Void, Error> {
         await repository.requestFollow(userId: userId)
     }
@@ -120,3 +100,4 @@ public final class MyPageUseCase: MyPageUseCaseInterface {
     }
     
 }
+
