@@ -7,11 +7,10 @@
 //
 
 import Foundation
-
 import ModernRIBs
-
 import CoreKit
 import BasePresentation
+import DomainEntities
 import DomainInterfaces
 
 protocol SearchStorySeeAllRouting: ViewableRouting { }
@@ -37,8 +36,9 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
     weak var listener: SearchStorySeeAllListener?
     
     private let dependency: SearchStorySeeAllInteractorDependency
-    
-    private var cancelTaskBag: CancelBag = .init()
+    private var cancelBag = CancelBag()
+    private var models: [StorySmallTableViewCellModel] = []
+    private var isLoading = false
     
     init(
         presenter: SearchStorySeeAllPresentable,
@@ -52,31 +52,13 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
     override func didBecomeActive() {
         super.didBecomeActive()
         presenter.updateTitle("스토리 검색")
-        Task { [weak self] in
-            guard let self else { return }
-            await self.dependency.searchStorySeeAllUseCase
-                .fetchStory(searchText: self.dependency.searchText)
-                .onSuccess(on: .main, with: self) { this, models in 
-                    self.presenter.setup(models: models.map {
-                        StorySmallTableViewCellModel.init(
-                            storyId: $0.storyId,
-                            thumbnailImageURL: $0.storyImage,
-                            title: $0.title,
-                            subtitle: $0.content,
-                            likes: $0.likeCount,
-                            comments: $0.commentCount
-                        )
-                    })
-                }
-                .onFailure { error in
-                    Log.make(message:"\(String(describing: self)) \(error.localizedDescription)", log: .network)
-                }
-        }.store(in: cancelTaskBag)
+        fetchStory()
     }
     
     override func willResignActive() {
         super.willResignActive()
-        cancelTaskBag.cancel()
+        print("# 리자인됨?")
+        cancelBag.cancel()
     }
     
     func didTapClose() {
@@ -88,7 +70,76 @@ final class SearchStorySeeAllInteractor: PresentableInteractor<SearchStorySeeAll
     }
     
     func willDisplay(at indexPath: IndexPath) {
+        guard indexPath.row == models.count - 1 else { return }
+        loadMoreIfNeeded()
+    }
+    
+    private func fetchStory() {
+        startLoading()
         
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.searchStorySeeAllUseCase
+                .fetchStory(searchText: dependency.searchText)
+                .onSuccess(on: .main, with: self) { this, stories in
+                    let models = stories.toModels()
+                    this.models = models
+                    this.presenter.setup(models: models)
+                    this.stopLoading()
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                    this.stopLoading()
+                }
+        }.store(in: cancelBag)
+    }
+    
+    private func loadMoreIfNeeded() {
+        guard dependency.searchStorySeeAllUseCase.hasMoreStory, isLoading == false else { return }
+        startLoading()
+        
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.searchStorySeeAllUseCase
+                .loadMoreStory(searchText: dependency.searchText)
+                .onSuccess(on: .main, with: self) { this, stories in
+                    let models = stories.toModels()
+                    this.models.append(contentsOf: models)
+                    this.presenter.append(models: models)
+                    this.stopLoading()
+                }
+                .onFailure(on: .main, with: self) { this, error in
+                    Log.make(message: error.localizedDescription, log: .interactor)
+                    this.stopLoading()
+                }
+        }.store(in: cancelBag)
+    }
+    
+    private func startLoading() {
+        isLoading = true
+        presenter.startLoading()
+    }
+    
+    private func stopLoading() {
+        isLoading = false
+        presenter.stopLoading()
     }
 
+}
+
+private extension Array where Element == SearchStory {
+    
+    func toModels() -> [StorySmallTableViewCellModel] {
+        return map {
+            .init(
+                storyId: $0.storyId,
+                thumbnailImageURL: $0.storyImage,
+                title: $0.title,
+                subtitle: $0.content,
+                likes: $0.likeCount,
+                comments: $0.commentCount
+            )
+        }
+    }
+    
 }

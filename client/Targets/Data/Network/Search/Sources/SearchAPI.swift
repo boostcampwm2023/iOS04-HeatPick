@@ -13,8 +13,8 @@ import DomainEntities
 
 public enum SearchAPI {
     case searchResult(search: SearchRequest)
-    case story(searchText: String)
-    case user(searchText: String)
+    case story(searchText: String, offset: Int, limit: Int)
+    case user(searchText: String, offset: Int, limit: Int)
     case recommend(searchText: String)
     case category
 }
@@ -45,15 +45,19 @@ extension SearchAPI: Target {
     public var task: Task {
         switch self {
         case let .searchResult(search):
-            .url(parameters: SearchResultRequestDTO(search).parameters())
-        case let .story(searchText):
-            makeSearchRequestDTO(searchText: searchText)
-        case let .user(searchText):
-            makeSearchRequestDTO(searchText: searchText)
+            return .url(parameters: SearchResultRequestDTO(search).parameters())
+            
+        case let .story(searchText, offset, limit):
+            return makeSearchRequestDTO(searchText: searchText, offset: offset, limit: limit)
+            
+        case let .user(searchText, offset, limit):
+            return makeSearchRequestDTO(searchText: searchText, offset: offset, limit: limit)
+            
         case let .recommend(searchText):
-            makeSearchRequestDTO(searchText: searchText)
+            return .url(parameters: ["searchText": searchText])
+            
         case .category:
-            .plain
+            return .plain
         }
     }
     
@@ -61,8 +65,8 @@ extension SearchAPI: Target {
 
 private extension SearchAPI {
     
-    func makeSearchRequestDTO(searchText: String) -> Task {
-        let request = SearchRequestDTO(searchText: searchText)
+    func makeSearchRequestDTO(searchText: String, offset: Int, limit: Int) -> Task {
+        let request = SearchRequestDTO(searchText: searchText, offset: offset, limit: limit)
         return .url(parameters: request.parameters())
     }
     

@@ -57,8 +57,8 @@ final class SearchUserSeeAllInteractor: PresentableInteractor<SearchUserSeeAllPr
             guard let self else { return }
             await self.dependency.searchUserSeeAllUseCase
                 .fetchUser(searchText: self.dependency.searchText)
-                .onSuccess(on: .main, with: self) { _, models in
-                    self.presenter.setup(models: models.map {
+                .onSuccess(on: .main, with: self) { this, models in
+                    this.presenter.setup(models: models.map {
                         UserSmallTableViewCellModel(
                             userId: $0.userId,
                             username: $0.username,

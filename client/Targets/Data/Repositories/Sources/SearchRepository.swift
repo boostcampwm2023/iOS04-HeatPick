@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import FoundationKit
 import HomeAPI
 import SearchAPI
 import NetworkAPIKit
@@ -17,7 +18,6 @@ import DomainInterfaces
 public final class SearchRepository: SearchRepositoryInterface {
     
     private let session: Network
-    private let userDefaultsKey = "RecentSearches"
     private var recentSearches: [String] = []
     
     public init (session: Network) {
@@ -32,13 +32,25 @@ public final class SearchRepository: SearchRepositoryInterface {
     }
     
     public func fetchStory(searchText: String) async -> Result<[SearchStory], Error> {
-        let target = SearchAPI.story(searchText: searchText)
+        let target = SearchAPI.story(searchText: searchText, offset: 0, limit: 5)
+        let request: Result<SearchStroyResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
+    public func fetchStory(searchText: String, offset: Int, limit: Int) async -> Result<[SearchStory], Error> {
+        let target = SearchAPI.story(searchText: searchText, offset: offset, limit: limit)
         let request: Result<SearchStroyResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
     
     public func fetchUser(searchText: String) async -> Result<[SearchUser], Error> {
-        let target = SearchAPI.user(searchText: searchText)
+        let target = SearchAPI.user(searchText: searchText, offset: 0, limit: 5)
+        let request: Result<SearchUserResponseDTO, Error> = await session.request(target)
+        return request.map { $0.toDomain() }
+    }
+    
+    public func fetchUser(searchText: String, offset: Int, limit: Int) async -> Result<[SearchUser], Error> {
+        let target = SearchAPI.user(searchText: searchText, offset: offset, limit: limit)
         let request: Result<SearchUserResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
@@ -49,15 +61,14 @@ public final class SearchRepository: SearchRepositoryInterface {
         return request.map { $0.toDomain() }
     }
     
-    // TODO: Combine으로 ??
     public func fetchRecommendText(searchText: String) async -> Result<[String], Error> {
         let target = SearchAPI.recommend(searchText: searchText)
         let request: Result<SearchRecommendResponseDTO, Error> = await session.request(target)
-        return request.map { $0.toDmain() }
+        return request.map { $0.toDomain() }
     }
     
     public func fetchRecentSearches() -> [String] {
-        recentSearches
+        return recentSearches
     }
     
     public func appendRecentSearch(searchText: String) -> String? {
@@ -69,11 +80,11 @@ public final class SearchRepository: SearchRepositoryInterface {
     }
     
     public func saveRecentSearches() {
-        UserDefaults.standard.setValue(recentSearches, forKey: userDefaultsKey)
+        UserDefaults.standard.setValue(recentSearches, forKey: .recentSearch)
     }
     
     public func loadRecentSearches() {
-        self.recentSearches = UserDefaults.standard.array(forKey: userDefaultsKey) as? [String] ?? []
+        self.recentSearches = UserDefaults.standard.array(forKey: .recentSearch) as? [String] ?? []
     }
     
     public func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<RecommendStoryWithPaging, Error> {
@@ -86,10 +97,6 @@ public final class SearchRepository: SearchRepositoryInterface {
         let target = NaverSearchAPI.local(query: searchText)
         let request: Result<NaverSearchLocalResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
-    }
-    
-    deinit {
-        saveRecentSearches()
     }
     
 }
