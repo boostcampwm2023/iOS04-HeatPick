@@ -76,6 +76,10 @@ final class SearchResultViewController: BaseViewController, SearchResultViewCont
     override func setupAttributes() {
         view.backgroundColor = .hpWhite
         
+        navigationView.do {
+            $0.delegate = self
+        }
+        
         searchNavigationView.do {
             $0.delegate = self
             $0.translatesAutoresizingMaskIntoConstraints = false
