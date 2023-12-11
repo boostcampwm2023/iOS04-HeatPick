@@ -32,6 +32,7 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
     private let nicknameLabel = UILabel()
     private let nicknameTextField = UITextField()
     private let signUpButton = ActionButton()
+    private let availableUsernameLabel = UILabel()
     
     func updateButtonEnabled(_ isEnabled: Bool) {
         signUpButton.isEnabled = isEnabled
@@ -118,9 +119,7 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
         }
     }
     
-    override func bind() {
-        
-    }
+    override func bind() { }
     
 }
 

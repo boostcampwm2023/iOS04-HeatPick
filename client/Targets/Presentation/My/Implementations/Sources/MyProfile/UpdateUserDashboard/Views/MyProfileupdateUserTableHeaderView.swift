@@ -42,8 +42,8 @@ final class MyProfileupdateUserTableHeaderView: UITableViewHeaderFooterView {
         return contentView
     }()
     
-    private lazy var myPageUpdateUserBasicInformationView: MyPageUpdateUserBasicInformationView = {
-        let contentView = MyPageUpdateUserBasicInformationView()
+    private lazy var myPageUpdateUserBasicInformationView: MyProfileUpdateUserBasicInformationView = {
+        let contentView = MyProfileUpdateUserBasicInformationView()
         contentView.delegate = self
         contentView.translatesAutoresizingMaskIntoConstraints = false
         return contentView
@@ -108,7 +108,7 @@ extension MyProfileupdateUserTableHeaderView: MyPageUpdateUserProfileViewDelegat
     
 }
 
-extension MyProfileupdateUserTableHeaderView: MyPageUpdateUserBasicInformationViewDelegate {
+extension MyProfileupdateUserTableHeaderView: MyProfileUpdateUserBasicInformationViewDelegate {
     
     func usernameValueChanged(_ username: String) {
         delegate?.usernameValueChanged(username)

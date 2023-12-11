@@ -12,7 +12,6 @@ import CoreKit
 import DesignKit
 import DomainEntities
 
-
 final class MyProfileUpdateUserBadgeCell: UITableViewCell {
     
     private enum Constant {
@@ -116,7 +115,6 @@ final class MyProfileUpdateUserBadgeCell: UITableViewCell {
     }
     
 }
-
 
 private extension MyProfileUpdateUserBadgeCell {
     

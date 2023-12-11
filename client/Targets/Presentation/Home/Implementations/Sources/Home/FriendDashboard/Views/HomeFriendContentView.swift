@@ -69,9 +69,12 @@ final class HomeFriendContentView: UIView {
     }
     
     func setup(model: HomeFriendContentViewModel) {
+        if let profileImageURL = model.profileImageURL,
+           !profileImageURL.isEmpty {
+            profileImageView.load(from: model.profileImageURL)
+        } else { profileImageView.image = .profileDefault }
         userId = model.userId
         nicknameLabel.text = model.nickname
-        profileImageView.load(from: model.profileImageURL)
     }
     
 }

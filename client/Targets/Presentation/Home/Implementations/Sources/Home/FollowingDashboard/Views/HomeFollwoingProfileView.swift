@@ -52,6 +52,11 @@ final class HomeFollwoingProfileView: UIView {
     }
     
     func setup(model: HomeFollwoingProfileViewModel) {
+        if let profileImageURL = model.profileImageURL,
+           !profileImageURL.isEmpty {
+            profileImageView.load(from: model.profileImageURL)
+        } else { profileImageView.image = .profileDefault }
+        
         profileImageView.load(from: model.profileImageURL)
         nicknameLabel.text = model.nickname
     }

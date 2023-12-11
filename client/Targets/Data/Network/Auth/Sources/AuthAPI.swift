@@ -57,7 +57,7 @@ extension AuthAPI: Target {
         case let .signUpWithGithub(content):
             return makeSingUpRequest(content: content)
         case let .checkUserName(username):
-            return .json(CheckUserNameReqeustDTO(username: username))
+            return .url(parameters: CheckUserNameReqeustDTO(username: username).parameters())
         }
     }
     

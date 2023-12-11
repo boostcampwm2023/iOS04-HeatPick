@@ -23,7 +23,7 @@ protocol MyProfileUpdateUserDashboardPresentableListener: AnyObject {
     func didSelectBadge(_ badgeId: Int)
 }
 
-final class MyProfileUpdateUserDashboardViewController: BaseViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
+final class MyProfileUpdateUserDashboardViewController: BaseViewController, MyProfileUpdateUserDashboardPresentable, MyProfileUpdateUserDashboardViewControllable {
     
     weak var listener: MyProfileUpdateUserDashboardPresentableListener?
     
@@ -37,7 +37,7 @@ final class MyProfileUpdateUserDashboardViewController: BaseViewController, MyPa
     
     private var models: [ProfileUpdateMetaDataBadge] = []
         
-    private let headerView: MyPageupdateUserTableHeaderView = .init()
+    private let headerView: MyProfileupdateUserTableHeaderView = .init()
     private let tableView: UITableView = .init()
     private let editButton: ActionButton = .init()
     
@@ -84,8 +84,8 @@ final class MyProfileUpdateUserDashboardViewController: BaseViewController, MyPa
         }
         
         tableView.do { tableView in
-            tableView.register(MyPageUpdateUserBadgeCell.self)
-            tableView.register(MyPageupdateUserTableHeaderView.self)
+            tableView.register(MyProfileUpdateUserBadgeCell.self)
+            tableView.register(MyProfileupdateUserTableHeaderView.self)
             tableView.delegate = self
             tableView.dataSource = self
             tableView.separatorStyle = .none
@@ -168,7 +168,7 @@ extension MyProfileUpdateUserDashboardViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let model = models[safe: indexPath.row] else { return .init() }
-        let cell = tableView.dequeue(MyPageUpdateUserBadgeCell.self, for: indexPath)
+        let cell = tableView.dequeue(MyProfileUpdateUserBadgeCell.self, for: indexPath)
         cell.setup(model: model)
         return cell
     }

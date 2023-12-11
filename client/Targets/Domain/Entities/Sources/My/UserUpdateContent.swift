@@ -12,9 +12,9 @@ public struct UserUpdateContent {
     
     public var username: String
     public var selectedBadgeId: Int
-    public var image: Data
+    public var image: Data?
     
-    public init(username: String, selectedBadgeId: Int, image: Data = Data()) {
+    public init(username: String, selectedBadgeId: Int, image: Data? = nil) {
         self.username = username
         self.selectedBadgeId = selectedBadgeId
         self.image = image
