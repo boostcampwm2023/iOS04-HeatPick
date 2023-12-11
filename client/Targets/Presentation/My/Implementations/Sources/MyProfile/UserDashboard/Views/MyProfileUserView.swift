@@ -12,7 +12,6 @@ import DesignKit
 
 protocol MyPageUserViewDelegate: AnyObject {
     func profileEditButtonDidTap()
-    func followButtonDidTap()
 }
 
 struct MyPageUserViewModel {
@@ -61,16 +60,6 @@ final class MyProfileUserView: UIView {
         return stackView
     }()
     
-    private let profileStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = Constant.Stack.spacing
-        stackView.distribution = .equalSpacing
-        stackView.alignment = .fill
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .profileDefault
@@ -79,25 +68,6 @@ final class MyProfileUserView: UIView {
         imageView.layer.cornerRadius = Constant.profileImageViewWidth / 2
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
-    }()
-    
-    private lazy var followButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.configuration?.title = Constant.FollowButton.unFollow
-        button.configuration?.baseBackgroundColor = .hpRed3
-        button.configuration?.baseForegroundColor = .hpWhite
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
-            var transform = transform
-            transform.font = .captionBold
-            return transform
-        }
-        button.clipsToBounds = true
-        button.layer.borderColor = UIColor.hpRed3.cgColor
-        button.layer.borderWidth = 1
-        button.layer.cornerRadius = Constants.cornerRadiusMedium
-        button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
     }()
     
     private lazy var profileEditButton: UIButton = {
@@ -148,22 +118,9 @@ final class MyProfileUserView: UIView {
             profileImageView.load(from: model.profileImageURL)
         } else { profileImageView.image = .profileDefault }
         
-        updateFollowButton(model.isFollow)
         followerView.updateContent(model.follower)
         storyView.updateContent(model.story)
         experienceView.updateContent(model.experience)
-    }
-    
-    func updateFollowButton(_ isFollow: Bool) {
-        isFollow ? updateFollowing() : updateUnFollow()
-    }
-    
-    func setMyProfile() {
-        followButton.isHidden = true
-    }
-    
-    func setUserProfile() {
-        profileEditButton.isHidden = true
     }
     
 }
@@ -174,41 +131,25 @@ private extension MyProfileUserView {
         delegate?.profileEditButtonDidTap()
     }
     
-    @objc func followButtonDidTap() {
-        delegate?.followButtonDidTap()
-    }
 }
 
 private extension MyProfileUserView {
     
     func setupViews() {
-        [profileStackView, containerContentStackView].forEach(addSubview)
-        [profileImageView, followButton].forEach(profileStackView.addArrangedSubview)
+        [profileImageView, containerContentStackView].forEach(addSubview)
         [followerView, storyView, experienceView].forEach(contentStackView.addArrangedSubview)
         [contentStackView, profileEditButton].forEach(containerContentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageViewWidth),
             profileImageView.heightAnchor.constraint(equalToConstant: Constant.profileImageViewHeight),
-            profileStackView.topAnchor.constraint(equalTo: topAnchor),
-            profileStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            profileStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            profileImageView.topAnchor.constraint(equalTo: topAnchor),
+            profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            profileImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            containerContentStackView.centerYAnchor.constraint(equalTo: profileStackView.centerYAnchor),
+            containerContentStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
             containerContentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
-    }
-    
-    private func updateUnFollow() {
-        followButton.configuration?.title = Constant.FollowButton.unFollow
-        followButton.configuration?.baseBackgroundColor = .hpRed3
-        followButton.configuration?.baseForegroundColor = .hpWhite
-    }
-    
-    private func updateFollowing() {
-        followButton.configuration?.title = Constant.FollowButton.following
-        followButton.configuration?.baseBackgroundColor = .hpWhite
-        followButton.configuration?.baseForegroundColor = .hpRed3
     }
     
 }

@@ -107,22 +107,13 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
         }
     }
     
-    func setMyProfile(_ username: String) {
+    
+    func setupNaviTitle(_ username: String) {
         navigationView.do {
             $0.setup(model: .init(
                 title: "\(username)",
                 leftButtonType: .none,
                 rightButtonTypes: [.setting])
-            )
-        }
-    }
-    
-    func setUserProfile(_ username: String) {
-        navigationView.do {
-            $0.setup(model: .init(
-                title: "\(username)",
-                leftButtonType: .back,
-                rightButtonTypes: [])
             )
         }
     }

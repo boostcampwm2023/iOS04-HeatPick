@@ -24,7 +24,6 @@ protocol MyPageInteractable: Interactable,
 protocol MyPageViewControllable: ViewControllable {
     func setDashboard(_ viewControllable: ViewControllable)
     func removeDashboard(_ viewControllable: ViewControllable)
-    func setMyProfile(_ username: String)
 }
 
 final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControllable>, MyPageRouting {
@@ -61,11 +60,6 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         viewController.removeDashboard(router.viewControllable)
         self.userDashboardRouting = nil
         detachChild(router)
-    }
-    
-    func setMyProfile(_ username: String) {
-        viewController.setMyProfile(username)
-        userDashboardRouting?.setMyProfile()
     }
     
     // MARK: Story

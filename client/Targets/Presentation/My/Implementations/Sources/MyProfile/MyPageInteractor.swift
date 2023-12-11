@@ -25,12 +25,13 @@ protocol MyPageRouting: ViewableRouting {
     func attachSetting()
     func detachSetting()
     func attachupdateUserDashboard()
-    func detachUpdateUserDashboard() 
-    func setMyProfile(_ username: String)
+    func detachUpdateUserDashboard()
 }
 
 protocol MyPagePresentable: Presentable {
     var listener: MyPagePresentableListener? { get set }
+    
+    func setupNaviTitle(_ username: String)
 }
 
 final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageInteractable, MyPagePresentableListener {
@@ -112,9 +113,9 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
             guard let self else { return }
             await dependency.myPageUseCase
                 .fetchMyProfile()
-                .onSuccess(on: .main, with: self) { this, myPage in
-                    this.profile = myPage
-                    this.router?.setMyProfile(myPage.userName)
+                .onSuccess(on: .main, with: self) { this, profile in
+                    this.profile = profile
+                    this.presenter.setupNaviTitle(profile.userName)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)
