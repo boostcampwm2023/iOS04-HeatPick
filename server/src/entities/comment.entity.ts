@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Story } from './story.entity';
 import { User } from './user.entity';
 
@@ -32,4 +32,7 @@ export class Comment {
 
   @Column()
   createdAt: Date;
+
+  @DeleteDateColumn({ nullable: true, default: null })
+  deletedAt: Date;
 }
