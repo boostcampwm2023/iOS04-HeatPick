@@ -15,35 +15,36 @@ import CoreKit
 import DomainEntities
 import DomainInterfaces
 
-protocol MyPageUpdateUserDashboardRouting: ViewableRouting { }
+protocol MyProfileUpdateUserDashboardRouting: ViewableRouting { }
 
-protocol MyPageUpdateUserDashboardPresentable: Presentable {
-    var listener: MyPageUpdateUserDashboardPresentableListener? { get set }
+protocol MyProfileUpdateUserDashboardPresentable: Presentable {
+    var listener: MyProfileUpdateUserDashboardPresentableListener? { get set }
     
     func setup(model: ProfileUpdateMetaData)
     func stopLoading()
+    func updateAvailableUsernameLabel(_ available: Bool)
 }
 
-protocol MyPageUpdateUserDashboardListener: AnyObject {
+protocol MyProfileUpdateUserDashboardListener: AnyObject {
     func detachMyPageUpdateUserDasbaord()
 }
 
-protocol MyPageUpdateUserDashboardInteractorDependency: AnyObject {
+protocol MyProfileUpdateUserDashboardInteractorDependency: AnyObject {
     var myPageUpdateUserUseCase: MyProfileUpdateUserUseCaseInterface { get }
 }
 
-final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpdateUserDashboardPresentable>, MyPageUpdateUserDashboardInteractable, MyPageUpdateUserDashboardPresentableListener {
+final class MyProfileUpdateUserDashboardInteractor: PresentableInteractor<MyProfileUpdateUserDashboardPresentable>, MyProfileUpdateUserDashboardInteractable, MyProfileUpdateUserDashboardPresentableListener {
     
-    weak var router: MyPageUpdateUserDashboardRouting?
-    weak var listener: MyPageUpdateUserDashboardListener?
+    weak var router: MyProfileUpdateUserDashboardRouting?
+    weak var listener: MyProfileUpdateUserDashboardListener?
     
-    private let dependency: MyPageUpdateUserDashboardInteractorDependency
+    private let dependency: MyProfileUpdateUserDashboardInteractorDependency
     private var cancelTaskBag: CancelBag = .init()
     private var userUpdateModel: UserUpdateContent?
     
     init(
-        presenter: MyPageUpdateUserDashboardPresentable,
-        dependency: MyPageUpdateUserDashboardInteractorDependency
+        presenter: MyProfileUpdateUserDashboardPresentable,
+        dependency: MyProfileUpdateUserDashboardInteractorDependency
     ) {
         self.dependency = dependency
         super.init(presenter: presenter)
@@ -60,11 +61,11 @@ final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpd
                     self.presenter.setup(model: usermetaData)
                     self.userUpdateModel = .init(username: usermetaData.username, selectedBadgeId: usermetaData.nowBadge.badgeId)
                     // TODO: 서버에서 이미지 없을 시 기존 이미지 사용하게 수정 요청
-                    Task {
-                        if let imageData = ImageCacheManager.shared.fetch(from: usermetaData.profileImageURL) {
-                            self.userUpdateModel?.update(image: imageData)
-                        }
-                    }
+//                    Task {
+//                        if let imageData = ImageCacheManager.shared.fetch(from: usermetaData.profileImageURL) {
+//                            self.userUpdateModel?.update(image: imageData)
+//                        }
+//                    }
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .network)
@@ -86,7 +87,18 @@ final class MyPageUpdateUserDashboardInteractor: PresentableInteractor<MyPageUpd
     }
     
     func usernameValueChanged(_ username: String) {
-        userUpdateModel?.update(username: username)
+        Task { [weak self] in
+            guard let self else { return }
+            await dependency.myPageUpdateUserUseCase
+                .checkUsername(username: username)
+                .onSuccess(on: .main, with: self) { this, _ in
+                    this.presenter.updateAvailableUsernameLabel(true)
+                    this.userUpdateModel?.update(username: username)
+                }
+                .onFailure(on: .main, with: self) { this, _ in
+                    this.presenter.updateAvailableUsernameLabel(false)
+                }
+        }.store(in: cancelTaskBag)
     }
     
     func didSelectBadge(_ badgeId: Int) {

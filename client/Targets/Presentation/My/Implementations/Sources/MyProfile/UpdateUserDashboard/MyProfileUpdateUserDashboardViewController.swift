@@ -15,7 +15,7 @@ import BasePresentation
 import DesignKit
 import DomainEntities
 
-protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
+protocol MyProfileUpdateUserDashboardPresentableListener: AnyObject {
     func didTapBack()
     func didTapEditButton()
     func profileImageViewDidChange(_ imageData: Data)
@@ -23,9 +23,9 @@ protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
     func didSelectBadge(_ badgeId: Int)
 }
 
-final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
+final class MyProfileUpdateUserDashboardViewController: BaseViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
     
-    weak var listener: MyPageUpdateUserDashboardPresentableListener?
+    weak var listener: MyProfileUpdateUserDashboardPresentableListener?
     
     private enum Constant {
         static let topOffset: CGFloat = 10
@@ -113,9 +113,14 @@ final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageU
         editButton.stopLoading()
     }
     
+    func updateAvailableUsernameLabel(_ available: Bool) {
+        editButton.isEnabled = available
+        headerView.updateAvailableUsernameLabel(available)
+    }
+    
 }
 
-private extension MyPageUpdateUserDashboardViewController {
+private extension MyProfileUpdateUserDashboardViewController {
     
     @objc func didTapEditButton() {
         listener?.didTapEditButton()
@@ -124,7 +129,7 @@ private extension MyPageUpdateUserDashboardViewController {
     
 }
 
-extension MyPageUpdateUserDashboardViewController: NavigationViewDelegate {
+extension MyProfileUpdateUserDashboardViewController: NavigationViewDelegate {
     
     func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         guard case .back = type else { return }
@@ -133,7 +138,7 @@ extension MyPageUpdateUserDashboardViewController: NavigationViewDelegate {
     
 }
 
-extension MyPageUpdateUserDashboardViewController: MyPageupdateUserTableHeaderViewDelegate {
+extension MyProfileUpdateUserDashboardViewController: MyPageupdateUserTableHeaderViewDelegate {
     
     func usernameValueChanged(_ username: String) {
         guard !username.isEmpty else {
@@ -155,7 +160,7 @@ extension MyPageUpdateUserDashboardViewController: MyPageupdateUserTableHeaderVi
     
 }
 
-extension MyPageUpdateUserDashboardViewController: UITableViewDataSource {
+extension MyProfileUpdateUserDashboardViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         models.count
@@ -171,7 +176,7 @@ extension MyPageUpdateUserDashboardViewController: UITableViewDataSource {
 }
 
 
-extension MyPageUpdateUserDashboardViewController: UITableViewDelegate  {
+extension MyProfileUpdateUserDashboardViewController: UITableViewDelegate  {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let model = models[safe: indexPath.row] else { return }
@@ -180,7 +185,7 @@ extension MyPageUpdateUserDashboardViewController: UITableViewDelegate  {
     
 }
 
-extension MyPageUpdateUserDashboardViewController: PHPickerViewControllerDelegate {
+extension MyProfileUpdateUserDashboardViewController: PHPickerViewControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
