@@ -39,6 +39,8 @@ final class StoryHeaderView: UIView {
         let label = UILabel()
         label.font = .largeBold
         label.textColor = .hpBlack
+        label.lineBreakMode = .byCharWrapping
+        label.numberOfLines = 0
         label.textAlignment = .natural
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -113,6 +115,7 @@ private extension StoryHeaderView {
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.traillingOffset),
             
             userBadgeView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
             userBadgeView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.leadingOffset),
