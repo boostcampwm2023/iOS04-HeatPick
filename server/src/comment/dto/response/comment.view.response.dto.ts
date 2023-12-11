@@ -15,15 +15,15 @@ export const getCommentViewResponse = async (story: Story, userId: number): Prom
         (await story.comments).map(async (comment) => {
           return {
             commentId: comment.commentId,
-            userId: comment.user.userId,
-            userProfileImageURL: (await comment.user.profileImage).imageUrl,
-            username: comment.user.username,
+            userId: comment.user?.userId ? comment.user.userId : -1,
+            userProfileImageURL: (await comment.user?.profileImage)?.imageUrl ? (await comment.user.profileImage).imageUrl : '',
+            username: comment.user?.username ? comment.user.username : '탈퇴한 유저',
             createdAt: removeMillisecondsFromISOString(comment.createdAt.toISOString()),
             mentions: comment.mentions.map((user) => {
               return { userId: user.userId, username: user.username };
             }),
             content: comment.content,
-            status: comment.user.userId === userId ? 0 : 1,
+            status: comment.user?.userId ? (comment.user.userId === userId ? 0 : 1) : -1,
           };
         }),
       )
