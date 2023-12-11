@@ -2,7 +2,7 @@ import { Body, Controller, Get, Inject, Post, Query, UploadedFile, UploadedFiles
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.credential.dto';
 import { RegisterDto } from './dto/auth.resgister.dto';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth()
@@ -82,7 +82,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: ' Nickname 중복을 체크합니다.' })
-  @ApiBody({ description: 'username', required: true, type: String })
+  @ApiQuery({ description: 'username', required: true, type: String })
   @Get('check')
   async checkDuplicated(@Query('username') username: string) {
     await this.authService.checkDuplicated(username);
