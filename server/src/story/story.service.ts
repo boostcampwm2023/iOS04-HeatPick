@@ -27,6 +27,7 @@ import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { ImageUnhealthyException } from 'src/exception/custom.exception/image.unhealty.exception';
 import { strToEmoji } from '../util/util.string.to.badge.content';
+import { SearchStoryResultDto } from 'src/search/dto/response/search.story.result.dto';
 
 dotenv.config();
 
@@ -139,7 +140,7 @@ export class StoryService {
     await this.storyRepository.softDelete(storyId);
   }
 
-  async getStoriesFromTrie(searchText: string, offset: number, limit: number): Promise<Story[]> {
+  async getStoriesFromTrie(searchText: string, offset: number, limit: number): Promise<StoryResultDto[]> {
     const seperatedStatement = graphemeSeperation(searchText);
     const ids = this.storyTitleJasoTrie.search(seperatedStatement, 100);
     const stories = await this.storyRepository.find({
@@ -149,9 +150,14 @@ export class StoryService {
       },
       relations: ['category', 'user'],
     });
-    const nonEmptyStoryArr = stories.filter((story) => story !== undefined && story !== null);
-    const results = nonEmptyStoryArr;
-    return results.slice(offset * limit, offset * limit + limit);
+    const nonEmptyStoryArr_1 = stories.filter((story) => story !== undefined && story !== null);
+    const transformedStories = await Promise.all(
+      nonEmptyStoryArr_1.map(async (story) => {
+        return await storyEntityToObjWithOneImg(story);
+      }),
+    );
+    const nonEmptyStoryArr_2 = transformedStories.filter((story) => story !== undefined && story !== null);
+    return nonEmptyStoryArr_2.slice(offset * limit, offset * limit + limit);
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number): Promise<StoryResultDto[]> {
