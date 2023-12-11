@@ -77,7 +77,7 @@ final class MyPageStorySeeAllInteractor: PresentableInteractor<MyPageStorySeeAll
         Task { [weak self] in
             guard let self else { return }
             await dependency.myPageStoryUseCase
-                .fetchMyPageStory(id: dependency.userId)
+                .fetchProfileStory(id: dependency.userId)
                 .onSuccess(on: .main, with: self) { this, stories in
                     let models = stories.map { $0.toModel() }
                     this.presenter.setup(models: models)
@@ -99,7 +99,7 @@ final class MyPageStorySeeAllInteractor: PresentableInteractor<MyPageStorySeeAll
         Task { [weak self] in
             guard let self else { return }
             await dependency.myPageStoryUseCase
-                .loadMoreMyPageStory(id: dependency.userId)
+                .loadMoreProfileStory(id: dependency.userId)
                 .onSuccess(on: .main, with: self) { this, stories in
                     let models = stories.map { $0.toModel() }
                     this.models.append(contentsOf: models)

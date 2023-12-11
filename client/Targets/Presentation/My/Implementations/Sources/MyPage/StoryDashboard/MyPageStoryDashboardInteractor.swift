@@ -83,7 +83,7 @@ private extension Array where Element == MyPageStory {
                 title: $0.title,
                 subtitle: $0.content,
                 likes: $0.likeCount,
-                comments: 0
+                comments: $0.commentCount
             )}
         )
     }

@@ -135,18 +135,4 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.detachStoryDetail()
     }
     
-    // MARK: UpdateUser
-    func updateUser(model: UserUpdateContent) {
-        Task { [weak self] in
-            guard let self else { return }
-            await dependency.myPageUseCase.patchUserUpdate(userUpdate: model)
-                .onSuccess { _ in
-                    self.fetchProfile()
-                }
-                .onFailure { error in
-                    Log.make(message: error.localizedDescription, log: .network)
-                }
-        }.store(in: cancelBag)
-    }
-
 }

@@ -109,12 +109,17 @@ final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageU
         tableView.reloadData()
     }
     
+    func stopLoading() {
+        editButton.stopLoading()
+    }
+    
 }
 
 private extension MyPageUpdateUserDashboardViewController {
     
     @objc func didTapEditButton() {
         listener?.didTapEditButton()
+        editButton.startLoading()
     }
     
 }

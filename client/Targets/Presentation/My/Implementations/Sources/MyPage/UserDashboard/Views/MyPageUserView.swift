@@ -75,6 +75,7 @@ final class MyPageUserView: UIView {
         let imageView = UIImageView()
         imageView.image = .profileDefault
         imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = Constant.profileImageViewWidth / 2
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView

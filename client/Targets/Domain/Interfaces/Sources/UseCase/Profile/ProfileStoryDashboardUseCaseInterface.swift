@@ -14,7 +14,7 @@ public protocol ProfileStoryDashboardUseCaseInterface: AnyObject {
     
     var hasMore: Bool { get }
     var storyListPubliser: AnyPublisher<[MyPageStory], Never> { get }
-    func fetchMyPageStory(id: Int) async -> Result<[MyPageStory], Error>
-    func loadMoreMyPageStory(id: Int) async -> Result<[MyPageStory], Error>
+    func fetchProfileStory(id: Int) async -> Result<[MyPageStory], Error>
+    func loadMoreProfileStory(id: Int) async -> Result<[MyPageStory], Error>
     
 }

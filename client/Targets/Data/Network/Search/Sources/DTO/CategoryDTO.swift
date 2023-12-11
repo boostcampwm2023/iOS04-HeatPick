@@ -1,14 +1,15 @@
 //
-//  SearchCategory.swift
-//  DomainEntities
+//  CategoryDTO.swift
+//  SearchAPI
 //
-//  Created by 이준복 on 12/7/23.
+//  Created by 이준복 on 12/11/23.
 //  Copyright © 2023 codesquad. All rights reserved.
 //
 
 import Foundation
+import DomainEntities
 
-public struct SearchCategory {
+public struct CategoryDTO: Decodable {
     
     public let categoryId: Int
     public let categoryName: String
@@ -22,6 +23,18 @@ public struct SearchCategory {
         self.categoryId = categoryId
         self.categoryName = categoryName
         self.categoryContent = categoryContent
+    }
+    
+}
+
+public extension CategoryDTO {
+    
+    func toDomain() -> SearchCategory {
+        .init(
+            categoryId: categoryId,
+            categoryName: categoryName,
+            categoryContent: categoryContent
+        )
     }
     
 }
