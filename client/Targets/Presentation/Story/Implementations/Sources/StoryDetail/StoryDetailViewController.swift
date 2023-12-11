@@ -172,7 +172,7 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
             $0.textContainerInset = .init(top: Constant.bodyViewTopBottomInset,
                                                 left: Constants.leadingOffset,
                                                 bottom: Constant.bodyViewTopBottomInset,
-                                                right: Constants.traillingOffset)
+                                                right: -Constants.traillingOffset)
             
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
