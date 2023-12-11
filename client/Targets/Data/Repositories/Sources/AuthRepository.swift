@@ -44,4 +44,9 @@ public final class AuthRepository: AuthRepositoryInterface {
         let request: Result<SignUpResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
+    
+    public func checkUsername(username: String) async -> Result<Void, Error> {
+        await session.request(AuthAPI.checkUserName(username: username))
+    }
+    
 }

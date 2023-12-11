@@ -15,5 +15,6 @@ public protocol MyProfileRepositoryInterface: ProfileRepositoryInterface {
     func fetchUserMedtaData() async -> Result<ProfileUpdateMetaData, Error>
     func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error>
     func requestResign(message: String) async -> Result<Void, Error>
+    func checkUsername(username: String) async -> Result<Void, Error>
     
 }

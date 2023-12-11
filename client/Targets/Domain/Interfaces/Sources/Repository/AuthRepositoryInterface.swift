@@ -15,4 +15,5 @@ public protocol AuthRepositoryInterface: AnyObject {
     func requestSignInWithGithub(token: String) async -> Result<AuthToken, Error>
     func requestSignUpnWithNaver(content: AuthContent) async -> Result<AuthToken, Error>
     func requestSignUpWithGithub(content: AuthContent) async -> Result<AuthToken, Error>
+    func checkUsername(username: String) async -> Result<Void, Error>
 }
