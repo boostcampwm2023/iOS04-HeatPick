@@ -107,4 +107,19 @@ export class AuthService {
       throw new invalidTokenException();
     }
   }
+
+  async checkDuplicated(OAuthToken: string, nickname: string, loginOption: number = 0) {
+    let OAuthId: string;
+    if (loginOption === 0) {
+      OAuthId = await this.getGithubId(OAuthToken);
+    } else if (loginOption === 1) {
+      OAuthId = await this.getNaverId(OAuthToken);
+    } else {
+      throw new Error('Unsupported login option');
+    }
+    const userByOAuth = await this.userRepository.findOne({ where: { oauthId: OAuthId } });
+    const userByNickname = await this.userRepository.findOne({ where: { username: nickname } });
+    if (userByOAuth || userByNickname) throw new idDuplicatedException();
+    return;
+  }
 }

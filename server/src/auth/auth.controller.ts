@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post, UploadedFile, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Query, UploadedFile, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.credential.dto';
 import { RegisterDto } from './dto/auth.resgister.dto';
@@ -79,5 +79,21 @@ export class AuthController {
   async naverSignIn(@Body() authCredentialDto: AuthCredentialDto) {
     const token = await this.authService.signIn(authCredentialDto.OAuthToken, 1);
     return { accessToken: token };
+  }
+
+  @ApiOperation({ summary: '깃허브 로그인 시 OAuthId, Nickname 중복을 체크합니다.' })
+  @Get('check/naver')
+  async checkDuplicatedGithub(@Body() registerDto: RegisterDto) {
+    const token = registerDto.OAuthToken;
+    const nickname = registerDto.username;
+    this.authService.checkDuplicated(token, nickname, 0);
+  }
+
+  @ApiOperation({ summary: '네이버 로그인 시OAuthId, Nickname 중복을 체크합니다.' })
+  @Get('check/naver')
+  async checkDuplicatedNaver(@Body() registerDto: RegisterDto) {
+    const token = registerDto.OAuthToken;
+    const nickname = registerDto.username;
+    this.authService.checkDuplicated(token, nickname, 1);
   }
 }
