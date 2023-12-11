@@ -111,7 +111,6 @@ export class AuthService {
   async checkDuplicated(nickname: string) {
     const userByNickname = await this.userRepository.findOne({ where: { username: nickname } });
     if (userByNickname) throw new idDuplicatedException();
-
     return;
   }
 }
