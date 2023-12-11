@@ -2,7 +2,7 @@ import { Body, Controller, Get, Inject, Post, Query, UploadedFile, UploadedFiles
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.credential.dto';
 import { RegisterDto } from './dto/auth.resgister.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth()
@@ -81,19 +81,10 @@ export class AuthController {
     return { accessToken: token };
   }
 
-  @ApiOperation({ summary: '깃허브 로그인 시 OAuthId, Nickname 중복을 체크합니다.' })
-  @Get('check/github')
-  async checkDuplicatedGithub(@Body() registerDto: RegisterDto) {
-    const token = registerDto.OAuthToken;
-    const nickname = registerDto.username;
-    await this.authService.checkDuplicated(token, nickname, 0);
-  }
-
-  @ApiOperation({ summary: '네이버 로그인 시OAuthId, Nickname 중복을 체크합니다.' })
-  @Get('check/naver')
-  async checkDuplicatedNaver(@Body() registerDto: RegisterDto) {
-    const token = registerDto.OAuthToken;
-    const nickname = registerDto.username;
-    await this.authService.checkDuplicated(token, nickname, 1);
+  @ApiOperation({ summary: ' Nickname 중복을 체크합니다.' })
+  @ApiBody({ description: 'username', required: true, type: String })
+  @Get('check')
+  async checkDuplicated(@Body('username') username: string) {
+    await this.authService.checkDuplicated(username);
   }
 }
