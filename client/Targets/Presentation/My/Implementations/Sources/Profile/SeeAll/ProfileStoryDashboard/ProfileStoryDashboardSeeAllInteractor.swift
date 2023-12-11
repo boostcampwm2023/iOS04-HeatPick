@@ -1,5 +1,5 @@
 //
-//  MyPageStorySeeAllInteractor.swift
+//  ProfileStoryDashboardSeeAllInteractor.swift
 //  MyImplementations
 //
 //  Created by 홍성준 on 11/22/23.
@@ -13,34 +13,34 @@ import BasePresentation
 import DomainEntities
 import DomainInterfaces
 
-protocol MyPageStorySeeAllRouting: ViewableRouting {}
+protocol ProfileStoryDashboardSeeAllRouting: ViewableRouting {}
 
-typealias MyPageStorySeeAllPresentable = StorySeeAllPresentable
-typealias MyPageStorySeeAllPresentableListener = StorySeeAllPresentableListener
+typealias ProfileStoryDashboardSeeAllPresentable = StorySeeAllPresentable
+typealias ProfileStoryDashboardSeeAllPresentableListener = StorySeeAllPresentableListener
 
-protocol MyPageStorySeeAllListener: AnyObject {
-    func myPageStorySeeAllDidTapClose()
-    func myPageStorySeeAllDidTapStory(id: Int)
+protocol ProfileStoryDashboardSeeAllListener: AnyObject {
+    func profileStoryDashboardSeeAllDidTapClose()
+    func profileStoryDashboardSeeAllDidTapStory(storyId: Int)
 }
 
-protocol MyPageStorySeeAllInteractorDependency: AnyObject {
+protocol ProfileStoryDashboardSeeAllInteractorDependency: AnyObject {
     var userId: Int { get }
-    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { get }
+    var profileStoryDashboardUseCase: ProfileStoryDashboardUseCaseInterface { get }
 }
 
-final class MyPageStorySeeAllInteractor: PresentableInteractor<MyPageStorySeeAllPresentable>, MyPageStorySeeAllInteractable, MyPageStorySeeAllPresentableListener {
+final class ProfileStoryDashboardSeeAllInteractor: PresentableInteractor<ProfileStoryDashboardSeeAllPresentable>, ProfileStoryDashboardSeeAllInteractable, ProfileStoryDashboardSeeAllPresentableListener {
     
-    weak var router: MyPageStorySeeAllRouting?
-    weak var listener: MyPageStorySeeAllListener?
+    weak var router: ProfileStoryDashboardSeeAllRouting?
+    weak var listener: ProfileStoryDashboardSeeAllListener?
     
-    private let dependency: MyPageStorySeeAllInteractorDependency
+    private let dependency: ProfileStoryDashboardSeeAllInteractorDependency
     private let cancelBag = CancelBag()
     private var isLoading = false
     private var models: [StorySmallTableViewCellModel] = []
     
     init(
-        presenter: MyPageStorySeeAllPresentable,
-        dependency: MyPageStorySeeAllInteractorDependency
+        presenter: ProfileStoryDashboardSeeAllPresentable,
+        dependency: ProfileStoryDashboardSeeAllInteractorDependency
     ) {
         self.dependency = dependency
         super.init(presenter: presenter)
@@ -59,11 +59,11 @@ final class MyPageStorySeeAllInteractor: PresentableInteractor<MyPageStorySeeAll
     }
     
     func didTapClose() {
-        listener?.myPageStorySeeAllDidTapClose()
+        listener?.profileStoryDashboardSeeAllDidTapClose()
     }
     
     func didTapItem(model: StorySmallTableViewCellModel) {
-        listener?.myPageStorySeeAllDidTapStory(id: model.storyId)
+        listener?.profileStoryDashboardSeeAllDidTapStory(storyId: model.storyId)
     }
     
     func willDisplay(at indexPath: IndexPath) {
@@ -76,7 +76,7 @@ final class MyPageStorySeeAllInteractor: PresentableInteractor<MyPageStorySeeAll
         
         Task { [weak self] in
             guard let self else { return }
-            await dependency.myPageStoryUseCase
+            await dependency.profileStoryDashboardUseCase
                 .fetchProfileStory(id: dependency.userId)
                 .onSuccess(on: .main, with: self) { this, stories in
                     let models = stories.map { $0.toModel() }
@@ -92,13 +92,13 @@ final class MyPageStorySeeAllInteractor: PresentableInteractor<MyPageStorySeeAll
     }
     
     private func loadMoreIfNeeded() {
-        guard dependency.myPageStoryUseCase.hasMore, isLoading == false else {
+        guard dependency.profileStoryDashboardUseCase.hasMore, isLoading == false else {
             return
         }
         
         Task { [weak self] in
             guard let self else { return }
-            await dependency.myPageStoryUseCase
+            await dependency.profileStoryDashboardUseCase
                 .loadMoreProfileStory(id: dependency.userId)
                 .onSuccess(on: .main, with: self) { this, stories in
                     let models = stories.map { $0.toModel() }

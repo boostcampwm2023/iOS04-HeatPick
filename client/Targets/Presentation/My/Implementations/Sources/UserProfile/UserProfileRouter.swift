@@ -12,26 +12,24 @@ import StoryInterfaces
 
 protocol UserProfileInteractable: Interactable,
                                   UserProfileUserDashboardListener,
-                                  MyPageStoryDashboardListener,
-                                  MyPageStorySeeAllListener,
+                                  ProfileStoryDashboardListener,
+                                  ProfileStoryDashboardSeeAllListener,
                                   StoryDetailListener {
     var router: UserProfileRouting? { get set }
     var listener: UserProfileListener? { get set }
 }
 
-protocol UserProfileViewControllable: ProfileViewControllable {
-    func setUserProfile(_ username: String)
+protocol UserProfileViewControllable: ViewControllable {
+    func setDashboard(_ viewControllable: ViewControllable)
+    func removeDashboard(_ viewControllable: ViewControllable)
 }
 
 final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfileViewControllable>, UserProfileRouting {
         
     private var userDashboardRouting: UserProfileUserDashboardRouting?
-    private var storyDashboardRouting: MyPageStoryDashboardRouting?
+    private var storyDashboardRouting: ProfileStoryDashboardRouting?
     private var storySeeAllRouting: ViewableRouting?
-    private var settingRouting: ViewableRouting?
     private var storyDetailRouting: ViewableRouting?
-    private var updateUserDashoardRouting: ViewableRouting?
-
     
     private let dependency: UserProfileRouterDependency
     
@@ -44,13 +42,6 @@ final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfi
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
-    
-    func setUserProfile(_ username: String) {
-        viewController.setUserProfile(username)
-        userDashboardRouting?.setUserProfile()
-        storyDashboardRouting?.setUserProfile(username)
-    }
-
     
     func attachUserDashboard() {
         guard userDashboardRouting == nil else { return }
@@ -96,9 +87,9 @@ final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfi
         self.storySeeAllRouting = nil
     }
     
-    func attachStoryDetail(id: Int) {
+    func attachStoryDetail(storyId: Int) {
         guard storyDetailRouting == nil else { return }
-        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: id)
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyId)
         pushRouter(router, animated: true)
         self.storyDetailRouting = router
     }

@@ -25,15 +25,15 @@ public protocol MyPageDependency: Dependency {
 
 final class MyPageComponent: Component<MyPageDependency>,
                              MyPageUserDashboardDependency,
-                             MyPageStoryDashboardDependency,
-                             MyPageStorySeeAllDependency,
+                             ProfileStoryDashboardDependency,
+                             ProfileStoryDashboardSeeAllDependency,
                              MyPageInteractorDependency,
                              SettingDependency,
                              MyPageUpdateUserDashboardDependency {
     
     var myPageUseCase: MyProfileUseCaseInterface { dependency.myPageUseCase }
     var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.myPageUseCase }
-    var myPageStoryUseCase: ProfileStoryDashboardUseCaseInterface { dependency.myPageUseCase }
+    var profileStoryDashboardUseCase: ProfileStoryDashboardUseCaseInterface { dependency.myPageUseCase }
     var myPageUpdateUserUseCase: MyProfileUpdateUserUseCaseInterface { dependency.myPageUseCase }
     var myProfileSettingUseCase: MyProfileSettingUseCaseInterface { dependency.myPageUseCase }
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
@@ -52,8 +52,8 @@ final class MyPageComponent: Component<MyPageDependency>,
 protocol MypageRouterDependency: AnyObject {
     
     var userDashboardBuilder: MyPageUserDashboardBuildable { get }
-    var storyDashboardBuilder: MyPageStoryDashboardBuildable { get }
-    var storySeeAllBuilder: MyPageStorySeeAllBuildable { get }
+    var storyDashboardBuilder: ProfileStoryDashboardBuildable { get }
+    var storySeeAllBuilder: ProfileStoryDashboardSeeAllBuildable { get }
     var settingBuilder: SettingBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
     var updateUserDashboardBuilder: MyPageUpdateUserDashboardBuildable { get }
@@ -63,16 +63,16 @@ protocol MypageRouterDependency: AnyObject {
 final class MyPageRouterComponent: MypageRouterDependency {
     
     let userDashboardBuilder: MyPageUserDashboardBuildable
-    let storyDashboardBuilder: MyPageStoryDashboardBuildable
-    let storySeeAllBuilder: MyPageStorySeeAllBuildable
+    let storyDashboardBuilder: ProfileStoryDashboardBuildable
+    let storySeeAllBuilder: ProfileStoryDashboardSeeAllBuildable
     let settingBuilder: SettingBuildable
     let storyDetailBuilder: StoryDetailBuildable
     let updateUserDashboardBuilder: MyPageUpdateUserDashboardBuildable
     
     init(component: MyPageComponent) {
         self.userDashboardBuilder = MyPageUserDashboardBuilder(dependency: component)
-        self.storyDashboardBuilder = MyPageStoryDashboardBuilder(dependency: component)
-        self.storySeeAllBuilder = MyPageStorySeeAllBuilder(dependency: component)
+        self.storyDashboardBuilder = ProfileStoryDashboardBuilder(dependency: component)
+        self.storySeeAllBuilder = ProfileStoryDashboardSeeAllBuilder(dependency: component)
         self.settingBuilder = SettingBuilder(dependency: component)
         self.storyDetailBuilder = component.storyDetailBuilder
         self.updateUserDashboardBuilder = MyPageUpdateUserDashboardBuilder(dependency: component)

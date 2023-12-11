@@ -17,7 +17,7 @@ public final class UserProfileBuilder: Builder<UserProfileDependency>, UserProfi
 
     public func build(withListener listener: UserProfileListener, userId: Int) -> ViewableRouting {
         let component = UserProfileComponent(dependency: dependency, userId: userId)
-        let viewController = MyPageViewController()
+        let viewController = UserProfileViewController()
         let interactor = UserProfileInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         

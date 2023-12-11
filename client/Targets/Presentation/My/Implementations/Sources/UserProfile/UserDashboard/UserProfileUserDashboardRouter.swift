@@ -13,18 +13,12 @@ protocol UserProfileUserDashboardInteractable: Interactable {
     var listener: UserProfileUserDashboardListener? { get set }
 }
 
-protocol UserProfileUserDashboardViewControllable: ViewControllable {
-    func setUserProfile()
-}
+protocol UserProfileUserDashboardViewControllable: ViewControllable { }
 
 final class UserProfileUserDashboardRouter: ViewableRouter<UserProfileUserDashboardInteractable, UserProfileUserDashboardViewControllable>, UserProfileUserDashboardRouting {
 
     override init(interactor: UserProfileUserDashboardInteractable, viewController: UserProfileUserDashboardViewControllable) {
         super.init(interactor: interactor, viewController: viewController)
-    }
-    
-    func setUserProfile() {
-        viewController.setUserProfile()
     }
     
 }

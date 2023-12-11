@@ -31,7 +31,7 @@ final class UserProfileUserDashboardBuilder: Builder<UserProfileUserDashboardDep
 
     func build(withListener listener: UserProfileUserDashboardListener) -> UserProfileUserDashboardRouting {
         let component = UserProfileUserDashboardComponent(dependency: dependency)
-        let viewController = MyPageUserDashboardViewController()
+        let viewController = UserProfileUserDashboardViewController()
         let interactor = UserProfileUserDashboardInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
         return UserProfileUserDashboardRouter(interactor: interactor, viewController: viewController)

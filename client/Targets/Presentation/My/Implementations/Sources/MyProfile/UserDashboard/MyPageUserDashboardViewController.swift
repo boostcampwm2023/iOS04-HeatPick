@@ -14,10 +14,6 @@ protocol MyPageUserDashboardPresentableListener: AnyObject {
     func profileEditButtonDidTap()
 }
 
-protocol UserProfileUserDashboardPresentableListener: AnyObject {
-    func followButtonDidTap()
-}
-
 struct MyProfileViewControllerModel {
     let userName: String
     let profileImageURL: String?
@@ -30,33 +26,18 @@ struct MyProfileViewControllerModel {
     let badgeContent: String
 }
 
-struct UserProfileViewControllerModel {
-    let userName: String
-    let profileImageURL: String?
-    let isFollow: Bool
-    let follower: String
-    let storyCount: String
-    let experience: String
-    let temperatureTitle: String
-    let temperature: String
-    let badgeTitle: String
-    let badgeContent: String
-
-}
-
-final class MyPageUserDashboardViewController: UIViewController {
+final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashboardPresentable, MyPageUserDashboardViewControllable {
     
-    weak var myProfileListener: MyPageUserDashboardPresentableListener?
-    weak var userProfileListener: UserProfileUserDashboardPresentableListener?
+    weak var listener: MyPageUserDashboardPresentableListener?
     
     private enum Constant {
         static let spacing: CGFloat = 20
     }
 
-    private let temperatureView = MyPageTemperatureView()
-    private let badgeView = MyPageBadgeView()
-    private lazy var userView: MyPageUserView = {
-        let userView = MyPageUserView()
+    private let temperatureView = ProfileTemperatureView()
+    private let badgeView = ProfileBadgeView()
+    private lazy var userView: MyProfileUserView = {
+        let userView = MyProfileUserView()
         userView.delegate = self
         return userView
     }()
@@ -76,10 +57,6 @@ final class MyPageUserDashboardViewController: UIViewController {
         setupViews()
     }
     
-}
-
-extension MyPageUserDashboardViewController: MyPageUserDashboardPresentable, MyPageUserDashboardViewControllable {
-    
     func setup(model: MyProfileViewControllerModel) {
         userView.setup(model: .init(
             profileImageURL: model.profileImageURL,
@@ -92,44 +69,13 @@ extension MyPageUserDashboardViewController: MyPageUserDashboardPresentable, MyP
         badgeView.setup(title: model.badgeTitle, content: model.badgeContent)
     }
     
-    func setMyProfile() {
-        userView.setMyProfile()
-    }
-    
 }
 
-extension MyPageUserDashboardViewController: UserProfileUserDashboardViewControllable, UserProfileUserDashboardPresentable {
-    
-    func setup(model: UserProfileViewControllerModel) {
-        userView.setup(model: .init(
-            profileImageURL: model.profileImageURL,
-            follower: model.follower,
-            isFollow: model.isFollow,
-            story: model.storyCount,
-            experience: model.experience
-        ))
-        temperatureView.setup(title: model.temperatureTitle, temperature: model.temperature)
-        badgeView.setup(title: model.badgeTitle, content: model.badgeContent)
-    }
-    
-    func setUserProfile() {
-        userView.setUserProfile()
-    }
-    
-    func updateFollow(_ isFollow: Bool) {
-        userView.updateFollowButton(isFollow)
-    }
-    
-}
 
 extension MyPageUserDashboardViewController: MyPageUserViewDelegate {
     
     func profileEditButtonDidTap() {
-        myProfileListener?.profileEditButtonDidTap()
-    }
-    
-    func followButtonDidTap() {
-        userProfileListener?.followButtonDidTap()
+        listener?.profileEditButtonDidTap()
     }
     
 }

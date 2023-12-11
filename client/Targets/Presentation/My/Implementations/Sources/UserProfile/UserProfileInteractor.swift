@@ -13,12 +13,21 @@ import MyInterfaces
 import DomainEntities
 import DomainInterfaces
 
-protocol UserProfileRouting: ProfileRouting {
-    func setUserProfile(_ username: String)
+protocol UserProfileRouting: ViewableRouting {
+    func attachUserDashboard()
+    func detachUserDashboard()
+    func attachStoryDashboard()
+    func detachStoryDashboard()
+    func attachStorySeeAll(userId: Int)
+    func detachStorySeeAll()
+    func attachStoryDetail(storyId: Int)
+    func detachStoryDetail()
 }
 
 protocol UserProfilePresentable: Presentable {
-    var userProfileListener: UserProfilePresentableListener? { get set }
+    var listener: UserProfilePresentableListener? { get set }
+    
+    func setupNavi(_ username: String)
 }
 
 protocol UserProfileInteractorDependency: AnyObject {
@@ -33,7 +42,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     
     private let dependency: UserProfileInteractorDependency
     private let cancelBag = CancelBag()
-    private var myPage: Profile?
+    private var profile: Profile?
     
     init(
         presenter: UserProfilePresentable,
@@ -41,7 +50,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     ) {
         self.dependency = dependency
         super.init(presenter: presenter)
-        presenter.userProfileListener = self
+        presenter.listener = self
     }
     
     override func didBecomeActive() {
@@ -63,21 +72,21 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
         listener?.detachUserProfile()
     }
     
-    func storyDashboardDidTapSeeAll() {
-        guard let myPage else { return }
-        router?.attachStorySeeAll(userId: myPage.userId)
+    func profileStoryDashboardDidTapSeeAll() {
+        guard let profile else { return }
+        router?.attachStorySeeAll(userId: profile.userId)
     }
     
-    func storyDashboardDidTapStory(id: Int) {
-        router?.attachStoryDetail(id: id)
+    func profileStoryDashboardDidTapStory(storyId: Int) {
+        router?.attachStoryDetail(storyId: storyId)
     }
     
-    func myPageStorySeeAllDidTapClose() {
+    func profileStoryDashboardSeeAllDidTapClose() {
         router?.detachStorySeeAll()
     }
-    
-    func myPageStorySeeAllDidTapStory(id: Int) {
-        router?.attachStoryDetail(id: id)
+
+    func profileStoryDashboardSeeAllDidTapStory(storyId: Int) {
+        router?.attachStoryDetail(storyId: storyId)
     }
     
     func fetchProfile() {
@@ -85,9 +94,9 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
             guard let self else { return }
             await dependency.userProfileUseCase
                 .fetchUserProfile(userId: dependency.userId)
-                .onSuccess(on: .main, with: self) { this, myPage in
-                    this.myPage = myPage
-                    this.router?.setUserProfile(myPage.userName)
+                .onSuccess(on: .main, with: self) { this, profile in
+                    this.profile = profile
+                    this.presenter.setupNavi(profile.userName)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)

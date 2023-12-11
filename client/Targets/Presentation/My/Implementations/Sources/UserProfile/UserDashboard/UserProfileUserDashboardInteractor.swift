@@ -15,12 +15,10 @@ import CoreKit
 import DomainEntities
 import DomainInterfaces
 
-protocol UserProfileUserDashboardRouting: ViewableRouting {
-    func setUserProfile()
-}
+protocol UserProfileUserDashboardRouting: ViewableRouting { }
 
 protocol UserProfileUserDashboardPresentable: Presentable {
-    var userProfileListener: UserProfileUserDashboardPresentableListener? { get set }
+    var listener: UserProfileUserDashboardPresentableListener? { get set }
     
     func setup(model: UserProfileViewControllerModel)
     func updateFollow(_ isFollow: Bool)
@@ -52,7 +50,7 @@ final class UserProfileUserDashboardInteractor: PresentableInteractor<UserProfil
     ) {
         self.dependency = dependency
         super.init(presenter: presenter)
-        presenter.userProfileListener = self
+        presenter.listener = self
     }
     
     override func didBecomeActive() {
