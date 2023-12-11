@@ -84,7 +84,7 @@ export class AuthController {
   @ApiOperation({ summary: ' Nickname 중복을 체크합니다.' })
   @ApiBody({ description: 'username', required: true, type: String })
   @Get('check')
-  async checkDuplicated(@Body('username') username: string) {
+  async checkDuplicated(@Query('username') username: string) {
     await this.authService.checkDuplicated(username);
   }
 }
