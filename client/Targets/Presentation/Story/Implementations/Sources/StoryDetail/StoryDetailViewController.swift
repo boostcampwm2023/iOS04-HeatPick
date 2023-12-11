@@ -18,6 +18,7 @@ import DomainEntities
 import BasePresentation
 
 protocol StoryDetailPresentableListener: AnyObject {
+    func didRefresh()
     func storyDetailDidTapClose()
     func profileDidTap(userId: Int)
     func followButtonDidTap(userId: Int, userStatus: UserStatus)
@@ -62,6 +63,7 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
     
     weak var listener: StoryDetailPresentableListener?
     
+    private let refreshControl = UIRefreshControl()
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
     private let simpleUserProfileView = SimpleUserProfileView()
@@ -77,6 +79,7 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
         storyImagesView.updateImages(model.images)
         bodyView.text = model.content
         mapView.setup(model: model.mapViewModel)
+        refreshControl.endRefreshing()
     }
     
     func didFollow() {
@@ -129,6 +132,11 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
     override func setupAttributes() {
         view.backgroundColor = .hpWhite
         
+        refreshControl.do {
+            $0.backgroundColor = .hpWhite
+            $0.addTarget(self, action: #selector(refreshControlValueChanged), for: .valueChanged)
+        }
+        
         navigationView.do {
             $0.setup(model: .init(title: Constant.navBarTitle, leftButtonType: .back, rightButtonTypes: [.none]))
             $0.delegate = self
@@ -136,6 +144,7 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
         }
         
         scrollView.do {
+            $0.refreshControl = refreshControl
             $0.showsVerticalScrollIndicator = true
             $0.showsHorizontalScrollIndicator = false
             $0.contentInset = .init(top: Constant.scrollViewTopBottomInset, left: 0,
@@ -190,6 +199,9 @@ final class StoryDetailViewController: BaseViewController, StoryDetailPresentabl
         
     }
     
+    @objc private func refreshControlValueChanged() {
+        listener?.didRefresh()
+    }
 }
 
 // MARK: - NavigationView delegate
