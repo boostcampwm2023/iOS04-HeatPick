@@ -13,6 +13,7 @@ public extension UserDefaults {
     enum Key: String {
         
         case remoteNotification
+        case initialSignInDate
         
     }
     
