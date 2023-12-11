@@ -26,6 +26,7 @@ protocol StoryEditorPresentable: Presentable {
     func setupLocation(_ location: Location)
     func setupMetadata(badges: [Badge], categories: [StoryCategory])
     func setSaveButton(_ enabled: Bool)
+    func saveDidFail()
     func present(type: AlertType, okAction: @escaping (() -> Void))
 }
 
@@ -182,6 +183,7 @@ private extension StoryEditorInteractor {
                     this.presenter.present(type: .didFailToSaveStory) { [weak self] in
                         self?.saveStory(content: content)
                     }
+                    this.presenter.saveDidFail()
                 })
         }.store(in: cancelBag)
     }
