@@ -29,9 +29,7 @@ final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfi
     private var userDashboardRouting: UserProfileUserDashboardRouting?
     private var storyDashboardRouting: ProfileStoryDashboardRouting?
     private var storySeeAllRouting: ViewableRouting?
-    private var settingRouting: ViewableRouting?
     private var storyDetailRouting: ViewableRouting?
-    private var updateUserDashoardRouting: ViewableRouting?
     
     private let dependency: UserProfileRouterDependency
     
@@ -89,9 +87,9 @@ final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfi
         self.storySeeAllRouting = nil
     }
     
-    func attachStoryDetail(id: Int) {
+    func attachStoryDetail(storyId: Int) {
         guard storyDetailRouting == nil else { return }
-        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: id)
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyId)
         pushRouter(router, animated: true)
         self.storyDetailRouting = router
     }

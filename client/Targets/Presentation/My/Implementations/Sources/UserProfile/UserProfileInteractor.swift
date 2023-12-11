@@ -20,14 +20,14 @@ protocol UserProfileRouting: ViewableRouting {
     func detachStoryDashboard()
     func attachStorySeeAll(userId: Int)
     func detachStorySeeAll()
-    func attachStoryDetail(id: Int)
+    func attachStoryDetail(storyId: Int)
     func detachStoryDetail()
 }
 
 protocol UserProfilePresentable: Presentable {
     var listener: UserProfilePresentableListener? { get set }
     
-    func setupNaviTitle(_ username: String)
+    func setupNavi(_ username: String)
 }
 
 protocol UserProfileInteractorDependency: AnyObject {
@@ -78,7 +78,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     }
     
     func profileStoryDashboardDidTapStory(storyId: Int) {
-        router?.attachStoryDetail(id: storyId)
+        router?.attachStoryDetail(storyId: storyId)
     }
     
     func profileStoryDashboardSeeAllDidTapClose() {
@@ -86,7 +86,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     }
 
     func profileStoryDashboardSeeAllDidTapStory(storyId: Int) {
-        router?.attachStoryDetail(id: storyId)
+        router?.attachStoryDetail(storyId: storyId)
     }
     
     func fetchProfile() {
@@ -96,7 +96,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
                 .fetchUserProfile(userId: dependency.userId)
                 .onSuccess(on: .main, with: self) { this, profile in
                     this.profile = profile
-                    this.presenter.setupNaviTitle(profile.userName)
+                    this.presenter.setupNavi(profile.userName)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)

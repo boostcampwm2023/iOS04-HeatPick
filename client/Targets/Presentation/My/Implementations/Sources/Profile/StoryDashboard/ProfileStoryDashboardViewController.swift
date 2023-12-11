@@ -24,6 +24,7 @@ final class ProfileStoryDashboardViewController: UIViewController, ProfileStoryD
     
     private enum Constant {
         static let spacing: CGFloat = 20
+        static let minimumModelCount = 5
     }
     
     weak var listener: ProfileStoryDashboardPresentableListener?
@@ -33,7 +34,7 @@ final class ProfileStoryDashboardViewController: UIViewController, ProfileStoryD
     private lazy var seeAllView: SeeAllView = {
         let seeAllView = SeeAllView()
         seeAllView.setup(model: .init(
-            title: "내가 쓴 스토리",
+            title: "스토리",
             isButtonEnabled: true
         ))
         seeAllView.delegate = self
@@ -61,7 +62,6 @@ final class ProfileStoryDashboardViewController: UIViewController, ProfileStoryD
     func setup(model: ProfileStoryDashboardViewControllerModel) {
         models = model.contentModels
         stackView.subviews.forEach { $0.removeFromSuperview() }
-        
         if model.contentModels.isEmpty {
             stackView.addArrangedSubview(emptyView)
         } else {
@@ -74,13 +74,10 @@ final class ProfileStoryDashboardViewController: UIViewController, ProfileStoryD
         }
     }
     
-    func setUserProfile(_ username: String) {
-        seeAllView.setup(model: .init(
-            title: "\(username)의 스토리",
-            isButtonEnabled: true
-        ))
+    func setupSeeAllViewButton(_ isHidden: Bool) {
+        seeAllView.seeAllButtonIsHiiden(isHidden)
     }
-    
+
 }
 
 extension ProfileStoryDashboardViewController: SeeAllViewDelegate {

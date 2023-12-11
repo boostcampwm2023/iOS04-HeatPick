@@ -20,7 +20,7 @@ protocol MyPageRouting: ViewableRouting {
     func detachStoryDashboard()
     func attachStorySeeAll(userId: Int)
     func detachStorySeeAll()
-    func attachStoryDetail(id: Int)
+    func attachStoryDetail(storyId: Int)
     func detachStoryDetail()
     func attachSetting()
     func detachSetting()
@@ -31,7 +31,7 @@ protocol MyPageRouting: ViewableRouting {
 protocol MyPagePresentable: Presentable {
     var listener: MyPagePresentableListener? { get set }
     
-    func setupNaviTitle(_ username: String)
+    func setupNavi(_ username: String)
 }
 
 final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageInteractable, MyPagePresentableListener {
@@ -89,7 +89,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     }
     
     func profileStoryDashboardDidTapStory(storyId: Int) {
-        router?.attachStoryDetail(id: storyId)
+        router?.attachStoryDetail(storyId: storyId)
     }
 
     
@@ -99,7 +99,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     }
     
     func profileStoryDashboardSeeAllDidTapStory(storyId: Int) {
-        router?.attachStoryDetail(id: storyId)
+        router?.attachStoryDetail(storyId: storyId)
     }
 
     // MARK: - Setting
@@ -115,7 +115,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
                 .fetchMyProfile()
                 .onSuccess(on: .main, with: self) { this, profile in
                     this.profile = profile
-                    this.presenter.setupNaviTitle(profile.userName)
+                    this.presenter.setupNavi(profile.userName)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)

@@ -13,13 +13,12 @@ import BasePresentation
 import DomainEntities
 import DomainInterfaces
 
-protocol ProfileStoryDashboardRouting: ViewableRouting {
-    func setUserProfile(_ username: String)
-}
+protocol ProfileStoryDashboardRouting: ViewableRouting { }
 
 protocol ProfileStoryDashboardPresentable: Presentable {
     var listener: ProfileStoryDashboardPresentableListener? { get set }
     func setup(model: ProfileStoryDashboardViewControllerModel)
+    func setupSeeAllViewButton(_ isHidden: Bool)
 }
 
 protocol ProfileStoryDashboardListener: AnyObject {
@@ -55,6 +54,7 @@ final class ProfileStoryDashboardInteractor: PresentableInteractor<ProfileStoryD
             .receive(on: DispatchQueue.main)
             .sink { [weak self] stories in
                 self?.presenter.setup(model: stories.toModel())
+                self?.presenter.setupSeeAllViewButton(5 > stories.count)
             }
             .store(in: &cancellables)
     }

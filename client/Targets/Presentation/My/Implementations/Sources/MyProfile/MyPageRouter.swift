@@ -91,9 +91,9 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         self.storySeeAllRouting = nil
     }
     
-    func attachStoryDetail(id: Int) {
+    func attachStoryDetail(storyId: Int) {
         guard storyDetailRouting == nil else { return }
-        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: id)
+        let router = dependency.storyDetailBuilder.build(withListener: interactor, storyId: storyId)
         pushRouter(router, animated: true)
         self.storyDetailRouting = router
     }
