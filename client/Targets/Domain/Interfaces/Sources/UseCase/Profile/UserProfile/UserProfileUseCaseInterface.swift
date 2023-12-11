@@ -15,5 +15,4 @@ public protocol UserProfileUseCaseInterface: MyPageProfileUseCaseInterface,
                                               MyPageStoryUseCaseInterface {
     
     func fetchProfile(userId: Int) async -> Result<Profile, Error>
-    
 }

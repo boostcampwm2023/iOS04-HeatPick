@@ -48,12 +48,15 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
         super.didBecomeActive()
         router?.attachUserDashboard()
         router?.attachStoryDashboard()
-        fetchProfile()
     }
     
     override func willResignActive() {
         super.willResignActive()
         cancelBag.cancel()
+    }
+    
+    func viewWillAppear() {
+        fetchProfile()
     }
     
     func didTapBack() {
