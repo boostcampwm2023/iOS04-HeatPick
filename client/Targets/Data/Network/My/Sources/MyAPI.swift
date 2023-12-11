@@ -73,9 +73,9 @@ extension MyAPI: Target {
             
         case let .userUpdate(content):
             let request = UserUpdateRequestDTO(content: content)
-            let media = Media(data: content.image, type: .jpeg, key: "image")
+            guard let data = content.image else { return .json(request) }
+            let media = Media(data: data, type: .jpeg, key: "image")
             return .multipart(.init(data: request, mediaList: [media]))
-            
         case let .resign(message):
             return .json(MyProfileResignRequestDTO(message: message))
             
@@ -83,7 +83,7 @@ extension MyAPI: Target {
             return .json(FollowRequestDTO(followId: userId))
             
         case let .checkUserName(username):
-            return .json(CheckUserNameReqeustDTO(username: username))
+            return .url(parameters: CheckUserNameReqeustDTO(username: username).parameters())
         }
     }
     
