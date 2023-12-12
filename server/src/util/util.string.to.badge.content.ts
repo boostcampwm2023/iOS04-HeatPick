@@ -4,6 +4,7 @@ export const strToEmoji = {
   러닝맨: '🏃',
   '카페인의 신': '☕',
   뉴비: '🍼',
+  '조금 고인물': '🏄‍♀️',
 };
 
 export const strToExplain = {
@@ -12,6 +13,7 @@ export const strToExplain = {
   러닝맨: '하루 종일 뛰어다녔어요',
   '카페인의 신': '카페인은 저 없으면 살 수 없어요',
   뉴비: '저는 아무 것도 모르는 뉴비에요',
+  '조금 고인물': '힛픽에 조금 고였어요',
 };
 
 export const nextBadge = {
