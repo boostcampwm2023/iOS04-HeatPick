@@ -26,9 +26,8 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
         static let imageHeight: CGFloat = 100
         
         enum AvailableUsernameLabel {
-            static let title = "변경할 유저이름을 입력해주세요"
-            static let overlap = "중복된 유저이름입니다."
-            static let possible = "사용가능한 유저이름입니다."
+            static let overlap = "중복된 닉네임입니다."
+            static let possible = "사용가능한 닉네임입니다."
         }
     }
     
@@ -42,7 +41,7 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
     
     func updateButtonEnabled(_ isEnabled: Bool) {
         signUpButton.isEnabled = isEnabled
-        availableUsernameLabel.text = Constant.AvailableUsernameLabel.title
+        availableUsernameLabel.text = nil
     }
     
     func updateAvailableUsernameLabel(_ available: Bool) {
@@ -107,14 +106,14 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
         }
         
         usernameLabel.do {
-            $0.text = "유저이름"
+            $0.text = "닉네임"
             $0.font = .largeSemibold
             $0.textColor = .hpBlack
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
         usernameTextField.do {
-            $0.placeholder = "유저이름을 입력하세요"
+            $0.placeholder = "닉네임을 입력하세요"
             $0.font = .bodyRegular
             $0.textColor = .hpBlack
             $0.borderStyle = .roundedRect
@@ -136,7 +135,6 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
         }
         
         availableUsernameLabel.do {
-            $0.text = Constant.AvailableUsernameLabel.title
             $0.textColor = .hpGray1
             $0.font = .smallRegular
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -176,18 +174,24 @@ extension SignUpViewController: PHPickerViewControllerDelegate {
         guard let itemProvider = results.first?.itemProvider,
               itemProvider.canLoadObject(ofClass: UIImage.self)
         else {
-            // TODO: Handle empty results or item provider not being able load UIImage
+            showUnsupportedImageType()
             return
         }
         
         itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
             DispatchQueue.main.async { [weak self] in
-                guard let image = image as? UIImage,
-                      let imageData = image.pngData() else { return }
+                guard let image = image as? UIImage, let imageData = image.pngData() else {
+                    self?.showUnsupportedImageType()
+                    return
+                }
                 self?.profileImageView.image = image
                 self?.listener?.profileImageViewDidChange(imageData)
             }
         }
+    }
+    
+    private func showUnsupportedImageType() {
+        present(type: .didFailToImageLoad) {}
     }
     
 }

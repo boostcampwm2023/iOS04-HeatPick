@@ -52,7 +52,7 @@ final class SearchMapReSearchView: UIView {
 private extension SearchMapReSearchView {
     
     func setupViews() {
-        backgroundColor = .white
+        backgroundColor = .hpWhite
         layer.cornerRadius = Constants.cornerRadiusMedium
         layer.borderWidth = 1
         layer.borderColor = UIColor.hpBlue2.cgColor

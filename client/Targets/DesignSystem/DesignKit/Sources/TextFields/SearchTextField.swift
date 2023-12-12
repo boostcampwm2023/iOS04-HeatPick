@@ -40,7 +40,7 @@ private extension SearchTextField {
     
     func setupViews() {
         font = .captionRegular
-        backgroundColor = .white
+        backgroundColor = .hpWhite
         layer.borderWidth = 1
         layer.borderColor = UIColor.hpGray3.cgColor
         setupSearchLeftView()

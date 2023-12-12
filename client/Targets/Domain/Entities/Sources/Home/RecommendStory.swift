@@ -40,3 +40,11 @@ public struct RecommendStory {
     }
     
 }
+
+extension RecommendStory: Equatable {
+    
+    public static func == (lhs: RecommendStory, rhs: RecommendStory) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+}

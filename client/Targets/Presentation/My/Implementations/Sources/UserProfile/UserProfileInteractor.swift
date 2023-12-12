@@ -27,7 +27,7 @@ protocol UserProfileRouting: ViewableRouting {
 protocol UserProfilePresentable: Presentable {
     var listener: UserProfilePresentableListener? { get set }
     
-    func setupNavi(_ username: String)
+    func setupTitle(_ username: String)
 }
 
 protocol UserProfileInteractorDependency: AnyObject {
@@ -96,7 +96,7 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
                 .fetchUserProfile(userId: dependency.userId)
                 .onSuccess(on: .main, with: self) { this, profile in
                     this.profile = profile
-                    this.presenter.setupNavi(profile.userName)
+                    this.presenter.setupTitle(profile.userName)
                 }
                 .onFailure { error in
                     Log.make(message: error.localizedDescription, log: .interactor)

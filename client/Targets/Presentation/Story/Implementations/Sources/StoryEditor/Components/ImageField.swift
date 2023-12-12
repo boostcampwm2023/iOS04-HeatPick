@@ -13,6 +13,7 @@ import DesignKit
 
 protocol ImageFieldDelegate: AnyObject {
     func imageDidAdd()
+    func imageDidFailToLoad()
     func imageDidRemove()
 }
 
@@ -120,12 +121,16 @@ extension ImageField: ImageSelectorDelegate {
         delegate?.imageDidAdd()
     }
     
+    func imageDidFailToLoad() {
+        delegate?.imageDidFailToLoad()
+    }
+    
     func imageDidRemove(from selector: ImageSelector) {
         selector.removeFromSuperview()
         delegate?.imageDidRemove()
         
         if let selector = stackView.arrangedSubviews.last as? ImageSelector,
-                selector.isSelected {
+           selector.isSelected {
             addImageSelector()
         }
     }

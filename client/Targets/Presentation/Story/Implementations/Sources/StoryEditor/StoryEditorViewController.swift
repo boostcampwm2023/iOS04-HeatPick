@@ -8,14 +8,12 @@
 
 import UIKit
 import PhotosUI
-
 import ModernRIBs
-
 import CoreKit
+import FoundationKit
 import DesignKit
 import DomainEntities
 import BasePresentation
-import FoundationKit
 
 protocol StoryEditorPresentableListener: AnyObject {
     func didTapClose()
@@ -232,6 +230,10 @@ extension StoryEditorViewController: ImageFieldDelegate {
     
     func imageDidAdd() {
         listener?.imageDidAdd()
+    }
+    
+    func imageDidFailToLoad() {
+        present(type: .didFailToImageLoad) {}
     }
     
     func imageDidRemove() {

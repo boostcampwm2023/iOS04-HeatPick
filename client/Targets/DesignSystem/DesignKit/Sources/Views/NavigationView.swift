@@ -102,7 +102,7 @@ public final class NavigationView: UIView {
 private extension NavigationView {
     
     func setupViews() {
-        backgroundColor = .white
+        backgroundColor = .hpWhite
         [titleLabel, leftButton, rightButtonStackView, separator].forEach(addSubview)
         
         NSLayoutConstraint.activate([

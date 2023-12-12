@@ -97,7 +97,8 @@ extension LocationService: CLLocationManagerDelegate {
     
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
-        locationSubject.send(location.coordinate.toEntity())
+        let coordinate = location.coordinate.toEntity()
+        locationSubject.send(coordinate)
         stopUpdatingLocation()
     }
     

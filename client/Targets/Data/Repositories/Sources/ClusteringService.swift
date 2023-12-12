@@ -31,8 +31,7 @@ public final class ClusteringService: ClusteringServiceInterface {
         clusteringQueue.addOperation(operation)
         
         operation.completionBlock = { [weak self] in
-            guard let clusters = operation.clusters
-            else {
+            guard let clusters = operation.clusters else {
                 return
             }
             self?.clusteringCompletionBlock?(clusters)

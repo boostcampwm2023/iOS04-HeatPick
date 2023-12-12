@@ -47,6 +47,7 @@ public final class HomeUseCase: HomeUseCaseInterface {
     private var followingSortOption: HomeFollowingSortOption = .recent
     private var cancellables = Set<AnyCancellable>()
     private let cancelBag = CancelBag()
+    private var isLoading = false
     
     public init(repository: HomeRepositoryInterface, locationService: LocationServiceInterface) {
         self.repository = repository
@@ -161,7 +162,8 @@ public final class HomeUseCase: HomeUseCaseInterface {
     }
     
     private func updateCurrentRecommendPlace(location: LocationCoordinate) {
-        cancelBag.cancel()
+        guard isLoading == false else { return }
+        isLoading = true
         
         Task { [weak self] in
             guard let self else { return }
@@ -170,9 +172,11 @@ public final class HomeUseCase: HomeUseCaseInterface {
             switch result {
             case .success(let recommendPlace):
                 currentRecommendPlaceSubject.send(.init(title: locality, stories: recommendPlace.stories))
+                isLoading = false
                 
             case .failure:
                 currentRecommendPlaceSubject.send(.init(title: locality, stories: []))
+                isLoading = false
             }
         }.store(in: cancelBag)
     }

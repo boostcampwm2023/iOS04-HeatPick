@@ -83,7 +83,7 @@ public final class SearchNavigationView: UIView {
 private extension SearchNavigationView {
     
     func setupViews() {
-        backgroundColor = .white
+        backgroundColor = .hpWhite
         [backButton, searchTextField].forEach(addSubview)
         
         NSLayoutConstraint.activate([

@@ -11,6 +11,7 @@ import PhotosUI
 
 protocol ImageSelectorDelegate: AnyObject {
     func imageDidAdd()
+    func imageDidFailToLoad()
     func imageDidRemove(from selector: ImageSelector)
 }
 
@@ -19,13 +20,15 @@ protocol ImageSelectorPickerPresenterDelegate: AnyObject {
 }
 
 final class ImageSelector: UIView {
-
+    
     enum Constant {
         static let transparentBlack: UIColor = .init(red: 0, green: 0, blue: 0, alpha: 0.5)
         static let buttonWidthHeight: CGFloat = 44
     }
     weak var delegate: ImageSelectorDelegate?
     weak var presenterDelegate: ImageSelectorPickerPresenterDelegate?
+    
+    private var isLoading = false
     
     var isSelected: Bool {
         imageView.image != nil
@@ -41,8 +44,6 @@ final class ImageSelector: UIView {
         imageView.contentMode = .scaleAspectFill
         imageView.tintColor = .hpBlack
         imageView.addTapGesture(target: self, action: #selector(addImageDidTap))
-        imageView.isUserInteractionEnabled = true
-        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -119,7 +120,7 @@ private extension ImageSelector {
 private extension ImageSelector {
     
     @objc func addImageDidTap() {
-        plusImageView.isUserInteractionEnabled = false
+        guard !isLoading else { return }
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
         configuration.selectionLimit = 1
         configuration.filter = .images
@@ -146,40 +147,67 @@ extension ImageSelector: PHPickerViewControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
+        isLoading = true
         
-        if let itemProvider = results.first?.itemProvider,
-              itemProvider.canLoadObject(ofClass: UIImage.self) {
-            
-            itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
-                DispatchQueue.main.async { [weak self] in
-                    guard let image = image as? UIImage, let self else { return }
-                    imageView.image = image
-                    changeToRemoveButton()
-                }
-            }
+        guard let itemProvider = results.first?.itemProvider else {
+            isLoading = false
             return
         }
         
-        if let livePhotoProgress = results.first?.itemProvider, livePhotoProgress.canLoadObject(ofClass: PHLivePhoto.self) {
-            livePhotoProgress.loadObject(ofClass: PHLivePhoto.self) { livePhoto, _ in
-                guard let livePhoto = livePhoto as? PHLivePhoto,
-                      let photo = PHAssetResource.assetResources(for: livePhoto).first(where: { $0.type == .photo }) else { return }
-                
-                let imageData = NSMutableData()
-                PHAssetResourceManager.default().requestData(for: photo, options: nil, dataReceivedHandler: { data in
-                    imageData.append(data)
-                }, completionHandler: { error in
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self else { return }
-                        imageView.image = UIImage(data: imageData as Data)
-                        changeToRemoveButton()
-                    }
-                })
+        if itemProvider.canLoadObject(ofClass: UIImage.self) {
+            loadUIImage(itemProvider)
+        } else if itemProvider.canLoadObject(ofClass: PHLivePhoto.self) {
+            loadLivePhoto(itemProvider)
+        } else {
+            delegate?.imageDidFailToLoad()
+            isLoading = false
+        }
+    }
+    
+    private func loadUIImage(_ itemProvider: NSItemProvider) {
+        itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
+            DispatchQueue.main.async { [weak self] in
+                guard let image = image as? UIImage, let self else {
+                    self?.delegate?.imageDidFailToLoad()
+                    self?.isLoading = false
+                    return
+                }
+                imageView.image = image
+                isLoading = false
+                changeToRemoveButton()
             }
         }
-        
-        plusImageView.isUserInteractionEnabled = true
-        
+    }
+    
+    private func loadLivePhoto(_ itemProvider: NSItemProvider) {
+        itemProvider.loadObject(ofClass: PHLivePhoto.self) { [weak self] livePhoto, _ in
+            guard let livePhoto = livePhoto as? PHLivePhoto,
+                  let photo = PHAssetResource.assetResources(for: livePhoto).first(where: { $0.type == .photo })
+            else {
+                self?.delegate?.imageDidFailToLoad()
+                self?.isLoading = false
+                return
+            }
+            
+            let imageData = NSMutableData()
+            PHAssetResourceManager.default().requestData(
+                for: photo,
+                options: nil,
+                dataReceivedHandler: { _ in },
+                completionHandler: { _ in
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self else {
+                            self?.delegate?.imageDidFailToLoad()
+                            self?.isLoading = false
+                            return
+                        }
+                        imageView.image = UIImage(data: imageData as Data)
+                        isLoading = false
+                        changeToRemoveButton()
+                    }
+                }
+            )
+        }
     }
     
 }

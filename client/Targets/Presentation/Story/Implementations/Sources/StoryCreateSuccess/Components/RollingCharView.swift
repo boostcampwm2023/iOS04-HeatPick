@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DesignKit
 
 final class RollingCharView: UIView {
     private var items: [Character] = []
@@ -15,7 +16,7 @@ final class RollingCharView: UIView {
         let gradientLayer = CAGradientLayer()
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.25)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 0.0)
-        let baseColor = UIColor.white
+        let baseColor = UIColor.hpWhite
         gradientLayer.colors = [
             baseColor.withAlphaComponent(0),
             baseColor.withAlphaComponent(1),
@@ -28,7 +29,7 @@ final class RollingCharView: UIView {
         let gradientLayer = CAGradientLayer()
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.75)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-        let baseColor = UIColor.white
+        let baseColor = UIColor.hpWhite
         gradientLayer.colors = [
             baseColor.withAlphaComponent(0),
             baseColor.withAlphaComponent(1),

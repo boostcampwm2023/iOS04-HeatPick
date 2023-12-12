@@ -102,6 +102,8 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     }
     
     func storyDidCreate(_ storyId: Int) {
+        presenter.deselectAll()
+        didTapReSearch()
         router?.detachStoryEditor { [weak self] in
             self?.router?.attachStoryDetail(storyId: storyId)
         }
@@ -170,6 +172,8 @@ extension SearchInteractor: SearchPresentableListener {
             isInitialCameraMoved = true
             presenter.moveMap(lat: location.lat, lng: location.lng)
             fetchPlaces(lat: location.lat, lng: location.lng)
+        } else {
+            presenter.showReSearchView()
         }
     }
     
