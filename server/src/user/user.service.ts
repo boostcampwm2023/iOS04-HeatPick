@@ -22,6 +22,7 @@ import { StoryService } from '../story/story.service';
 import { Comment } from '../entities/comment.entity';
 import { NotificationService } from '../notification/notification.service';
 import { dateFormatToISO8601 } from '../util/util.date.format.to.ISO8601';
+import { calculateTemperature } from 'src/util/calculate.temper';
 
 @Injectable()
 export class UserService {
@@ -94,13 +95,14 @@ export class UserService {
     const mainBadge = await user?.representativeBadge;
     const stories = await user.stories;
     const userImage = await user.profileImage;
+    const temperature = await calculateTemperature(user);
     return {
       userId: user.userId,
       username: user.username,
       profileURL: userImage ? userImage.imageUrl : '',
       isFollow: user.followers.some((user) => user.userId === requestUserId) || requestUserId === targetUserId,
-      temperature: user.temperature,
-      temperatureFeeling: getTemperatureFeeling(user.temperature),
+      temperature: temperature,
+      temperatureFeeling: getTemperatureFeeling(temperature),
       followerCount: user.followers.length,
       storyCount: (await user.stories).length,
       experience: 0,
