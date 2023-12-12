@@ -44,7 +44,7 @@ export class StoryService {
     this.loadSearchHistoryTrie();
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async loadSearchHistoryTrie() {
     this.storyRepository.find({ select: ['storyId', 'title'], relations: ['user'] }).then((everyStory) => {
       everyStory.forEach((story) => this.storyTitleJasoTrie.insert(graphemeSeperation(story.title), story.storyId));
@@ -191,7 +191,7 @@ export class StoryService {
     return nonEmptyStoryArr.slice(offset * limit, offset * limit + limit);
   }
 
-  async getRecommendedStory(offset: number, limit: number): Promise<any[]> {
+  async getRecommendedStory(offset: number, limit: number): Promise<StoryResultDto[]> {
     try {
       const likeWeight = 2;
       const commentWeight = 2;
@@ -204,7 +204,12 @@ export class StoryService {
 
       const topStories = await this.storyRepository.createQueryBuilder('story').addSelect(scoreFormula, 'score').orderBy('score', 'DESC').limit(20).cache(30000).getMany();
       const nonEmptyStoryArr = topStories.filter((story) => story !== undefined && story !== null);
-      return nonEmptyStoryArr.slice(offset * limit, offset * limit + limit);
+      const storyArr = await Promise.all(
+        nonEmptyStoryArr.map(async (story) => {
+          return storyEntityToObjWithOneImg(story);
+        }),
+      );
+      return storyArr.slice(offset * limit, offset * limit + limit);
     } catch (error) {
       throw error;
     }

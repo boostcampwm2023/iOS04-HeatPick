@@ -23,6 +23,7 @@ import { Comment } from '../entities/comment.entity';
 import { NotificationService } from '../notification/notification.service';
 import { dateFormatToISO8601 } from '../util/util.date.format.to.ISO8601';
 import { calculateTemperature } from 'src/util/calculate.temper';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class UserService {
@@ -36,6 +37,12 @@ export class UserService {
     private userJasoTrie: UserJasoTrie,
     private notificationService: NotificationService,
   ) {
+    this.loadUserTrie();
+  }
+
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async loadUserTrie() {
+    this.userJasoTrie = new UserJasoTrie();
     this.userRepository.find().then((everyUser) => {
       everyUser.forEach((user) => this.userJasoTrie.insert(graphemeSeperation(user.username), user.userId));
     });
