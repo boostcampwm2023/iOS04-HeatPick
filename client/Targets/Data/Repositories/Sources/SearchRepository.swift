@@ -106,7 +106,7 @@ public final class SearchRepository: SearchRepositoryInterface {
     }
 
     private func loadRecentSearches() {
-        self.recentSearches = UserDefaults.standard.array(forKey: userDefaultsKey) as? [String] ?? []
+        self.recentSearches = UserDefaults.standard.array(forKey: .recentSearch) as? [String] ?? []
     }
     
 }
