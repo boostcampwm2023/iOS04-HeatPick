@@ -29,10 +29,6 @@ export class User {
   @JoinColumn()
   profileImage: Promise<profileImage>;
 
-  @Column()
-  @ApiProperty({ description: 'User의 온도(레벨)' })
-  temperature: number;
-
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   @ApiProperty({ description: 'User의 회원 가입 시간' })
   createAt: Date;
