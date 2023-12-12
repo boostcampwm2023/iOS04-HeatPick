@@ -27,7 +27,7 @@ final class ImageSelector: UIView {
     }
     weak var delegate: ImageSelectorDelegate?
     weak var presenterDelegate: ImageSelectorPickerPresenterDelegate?
-    private weak var picker: PHPickerViewController?
+    
     private var isLoading = false
     
     var isSelected: Bool {
@@ -120,14 +120,13 @@ private extension ImageSelector {
 private extension ImageSelector {
     
     @objc func addImageDidTap() {
-        guard picker == nil && !isLoading else { return }
+        guard !isLoading else { return }
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
         configuration.selectionLimit = 1
         configuration.filter = .images
         
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = self
-        self.picker = picker
         presenterDelegate?.addImageDidTap(with: picker)
     }
     
@@ -161,8 +160,8 @@ extension ImageSelector: PHPickerViewControllerDelegate {
             loadLivePhoto(itemProvider)
         } else {
             delegate?.imageDidFailToLoad()
+            isLoading = false
         }
-        isLoading = false
     }
     
     private func loadUIImage(_ itemProvider: NSItemProvider) {
@@ -170,9 +169,11 @@ extension ImageSelector: PHPickerViewControllerDelegate {
             DispatchQueue.main.async { [weak self] in
                 guard let image = image as? UIImage, let self else {
                     self?.delegate?.imageDidFailToLoad()
+                    self?.isLoading = false
                     return
                 }
                 imageView.image = image
+                isLoading = false
                 changeToRemoveButton()
             }
         }
@@ -184,6 +185,7 @@ extension ImageSelector: PHPickerViewControllerDelegate {
                   let photo = PHAssetResource.assetResources(for: livePhoto).first(where: { $0.type == .photo })
             else {
                 self?.delegate?.imageDidFailToLoad()
+                self?.isLoading = false
                 return
             }
             
@@ -196,9 +198,11 @@ extension ImageSelector: PHPickerViewControllerDelegate {
                     DispatchQueue.main.async { [weak self] in
                         guard let self else {
                             self?.delegate?.imageDidFailToLoad()
+                            self?.isLoading = false
                             return
                         }
                         imageView.image = UIImage(data: imageData as Data)
+                        isLoading = false
                         changeToRemoveButton()
                     }
                 }
