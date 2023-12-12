@@ -13,7 +13,7 @@ public struct MyProfile {
     public let userId: Int
     public let userName: String
     public let profileImageURL: String?
-    public let temperature: Int
+    public let temperature: Double
     public let temperatureFeeling: String
     public let followerCount: Int
     public let storyCount: Int

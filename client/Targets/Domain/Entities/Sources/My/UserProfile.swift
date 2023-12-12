@@ -14,7 +14,7 @@ public struct UserProfile {
     public let userName: String
     public let profileImageURL: String?
     public let isFollow: Bool
-    public let temperature: Int
+    public let temperature: Double
     public let temperatureFeeling: String
     public let followerCount: Int
     public let storyCount: Int
