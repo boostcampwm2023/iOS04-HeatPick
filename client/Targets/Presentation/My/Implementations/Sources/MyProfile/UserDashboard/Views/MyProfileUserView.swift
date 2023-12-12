@@ -54,8 +54,8 @@ final class MyProfileUserView: UIView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = Constant.Stack.spacing
-        stackView.distribution = .equalSpacing
-        stackView.alignment = .trailing
+        stackView.distribution = .fillEqually
+        stackView.alignment = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -96,12 +96,6 @@ final class MyProfileUserView: UIView {
         return view
     }()
     
-    private let experienceView: ProfileUserContnetView = {
-        let view = ProfileUserContnetView()
-        view.updateTitle("📈 경험치")
-        return view
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -120,7 +114,6 @@ final class MyProfileUserView: UIView {
         
         followerView.updateContent(model.follower)
         storyView.updateContent(model.story)
-        experienceView.updateContent(model.experience)
     }
     
 }
@@ -137,7 +130,7 @@ private extension MyProfileUserView {
     
     func setupViews() {
         [profileImageView, containerContentStackView].forEach(addSubview)
-        [followerView, storyView, experienceView].forEach(contentStackView.addArrangedSubview)
+        [followerView, storyView].forEach(contentStackView.addArrangedSubview)
         [contentStackView, profileEditButton].forEach(containerContentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
@@ -147,6 +140,7 @@ private extension MyProfileUserView {
             profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             profileImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
+            containerContentStackView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: Constants.leadingOffset),
             containerContentStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
             containerContentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])

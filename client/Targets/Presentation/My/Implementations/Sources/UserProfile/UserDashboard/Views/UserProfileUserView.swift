@@ -44,8 +44,8 @@ final class UserProfileUserView: UIView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = Constant.Stack.spacing
-        stackView.distribution = .equalSpacing
-        stackView.alignment = .trailing
+        stackView.distribution = .fillEqually
+        stackView.alignment = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -101,12 +101,6 @@ final class UserProfileUserView: UIView {
         return view
     }()
     
-    private let experienceView: ProfileUserContnetView = {
-        let view = ProfileUserContnetView()
-        view.updateTitle("📈 경험치")
-        return view
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -126,7 +120,6 @@ final class UserProfileUserView: UIView {
         updateFollowButton(model.isFollow)
         followerView.updateContent(model.follower)
         storyView.updateContent(model.story)
-        experienceView.updateContent(model.experience)
     }
     
     func updateFollowButton(_ isFollow: Bool) {
@@ -147,7 +140,7 @@ private extension UserProfileUserView {
     func setupViews() {
         [profileStackView, contentStackView].forEach(addSubview)
         [profileImageView, followButton].forEach(profileStackView.addArrangedSubview)
-        [followerView, storyView, experienceView].forEach(contentStackView.addArrangedSubview)
+        [followerView, storyView].forEach(contentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageViewWidth),
@@ -156,6 +149,7 @@ private extension UserProfileUserView {
             profileStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             profileStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
+            contentStackView.leadingAnchor.constraint(equalTo: profileStackView.trailingAnchor, constant: Constants.leadingOffset),
             contentStackView.centerYAnchor.constraint(equalTo: profileStackView.centerYAnchor),
             contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
