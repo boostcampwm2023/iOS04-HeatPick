@@ -26,9 +26,9 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
         static let imageHeight: CGFloat = 100
         
         enum AvailableUsernameLabel {
-            static let title = "변경할 유저이름을 입력해주세요"
-            static let overlap = "중복된 유저이름입니다."
-            static let possible = "사용가능한 유저이름입니다."
+            static let title = "변경할 닉네임을 입력해주세요"
+            static let overlap = "중복된 닉네임입니다."
+            static let possible = "사용가능한 닉네임입니다."
         }
     }
     
@@ -107,14 +107,14 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
         }
         
         usernameLabel.do {
-            $0.text = "유저이름"
+            $0.text = "닉네임"
             $0.font = .largeSemibold
             $0.textColor = .hpBlack
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
         usernameTextField.do {
-            $0.placeholder = "유저이름을 입력하세요"
+            $0.placeholder = "닉네임을 입력하세요"
             $0.font = .bodyRegular
             $0.textColor = .hpBlack
             $0.borderStyle = .roundedRect

@@ -32,9 +32,9 @@ final class MyProfileUpdateUserBasicInformationView: UIView {
         }
         
         enum AvailableUsernameLabel {
-            static let title = "변경할 유저이름을 입력해주세요"
-            static let overlap = "중복된 유저이름입니다."
-            static let possible = "사용가능한 유저이름입니다."
+            static let title = "변경할 닉네임을 입력해주세요"
+            static let overlap = "중복된 닉네임입니다."
+            static let possible = "사용가능한 닉네임입니다."
         }
     }
     
