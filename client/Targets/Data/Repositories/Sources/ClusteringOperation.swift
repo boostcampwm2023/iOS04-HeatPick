@@ -47,8 +47,6 @@ final class ClusteringOperation: Operation {
         )
     }
     
-    // TODO: - FullBound 영점 조절
-    
     private func makeCluster(
         bound: LocationBound,
         placeBound: LocationBound,
@@ -56,10 +54,10 @@ final class ClusteringOperation: Operation {
     ) -> [Cluster] {
         let latScope = (bound.northEast.lat - bound.southWest.lat) / Double(sliceLat)
         let lngScope = (bound.northEast.lng - bound.southWest.lng) / Double(sliceLng)
-//        let fullBound = makeFullBound(bound: bound, placeBound: placeBound)
+        let adjustPlaceBound = adjustPlaceBound(placeBound)
         
         var clusters = makeInitialClusters(
-            fullBound: placeBound,
+            fullBound: adjustPlaceBound,
             latScope: latScope,
             lngScope: lngScope
         )
@@ -102,6 +100,43 @@ final class ClusteringOperation: Operation {
         let minLng = min(bound.southWest.lng, placeBound.southWest.lng)
         let maxLat = max(bound.northEast.lat, placeBound.northEast.lat)
         let maxLng = max(bound.northEast.lng, placeBound.northEast.lng)
+        
+        return LocationBound.init(
+            southWest: .init(lat: minLat, lng: minLng),
+            northEast: .init(lat: maxLat, lng: maxLng)
+        )
+    }
+    
+    private func adjustPlaceBound(_ placeBound: LocationBound) -> LocationBound {
+        let adjustment = 0.00000000000010 // 총 자리수 XXX.XXXXXXXXXXXXXX
+        
+        let minLat: Double = {
+            guard placeBound.southWest.lat == placeBound.northEast.lat else {
+                return placeBound.southWest.lat
+            }
+            return placeBound.southWest.lat - adjustment
+        }()
+        
+        let minLng: Double = {
+            guard placeBound.southWest.lng == placeBound.northEast.lng else {
+                return placeBound.southWest.lng
+            }
+            return placeBound.southWest.lng - adjustment
+        }()
+        
+        let maxLat: Double = {
+            guard placeBound.southWest.lat == placeBound.northEast.lat else {
+                return placeBound.northEast.lat
+            }
+            return placeBound.northEast.lat + adjustment
+        }()
+        
+        let maxLng: Double = {
+            guard placeBound.southWest.lng == placeBound.northEast.lng else {
+                return placeBound.northEast.lng
+            }
+            return placeBound.northEast.lng + adjustment
+        }()
         
         return LocationBound.init(
             southWest: .init(lat: minLat, lng: minLng),
