@@ -26,7 +26,6 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
         static let imageHeight: CGFloat = 100
         
         enum AvailableUsernameLabel {
-            static let title = "변경할 닉네임을 입력해주세요"
             static let overlap = "중복된 닉네임입니다."
             static let possible = "사용가능한 닉네임입니다."
         }
@@ -42,7 +41,7 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
     
     func updateButtonEnabled(_ isEnabled: Bool) {
         signUpButton.isEnabled = isEnabled
-        availableUsernameLabel.text = Constant.AvailableUsernameLabel.title
+        availableUsernameLabel.text = nil
     }
     
     func updateAvailableUsernameLabel(_ available: Bool) {
@@ -136,7 +135,6 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
         }
         
         availableUsernameLabel.do {
-            $0.text = Constant.AvailableUsernameLabel.title
             $0.textColor = .hpGray1
             $0.font = .smallRegular
             $0.translatesAutoresizingMaskIntoConstraints = false
