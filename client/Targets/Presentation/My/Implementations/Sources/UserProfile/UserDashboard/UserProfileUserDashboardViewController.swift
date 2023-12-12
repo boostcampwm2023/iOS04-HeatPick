@@ -74,7 +74,6 @@ final class UserProfileUserDashboardViewController: UIViewController, UserProfil
     func updateFollow(_ isFollow: Bool) {
         userView.updateFollowButton(isFollow)
     }
-
     
 }
 
