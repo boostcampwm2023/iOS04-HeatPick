@@ -65,7 +65,6 @@ export class AuthService {
     const profileObj = new profileImage();
     profileObj.imageUrl = imagePath;
     userObj.profileImage = Promise.resolve(profileObj);
-    userObj.temperature = 0;
 
     const user = await this.userRepository.findOne({ where: { oauthId: userId } });
 
