@@ -151,7 +151,6 @@ private extension HomeFollowingDashboardViewController {
             scrollView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.contentSpacing),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),

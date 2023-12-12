@@ -37,7 +37,8 @@ final class HomeRecommendDashboardInteractor: PresentableInteractor<HomeRecommen
     private let dependency: HomeRecommendDashboardInteractorDependency
     private let cancelBag = CancelBag()
     private var cancellables = Set<AnyCancellable>()
-
+    private var place: RecommendPlace?
+    
     init(
         presenter: HomeRecommendDashboardPresentable,
         dependency: HomeRecommendDashboardInteractorDependency
@@ -77,6 +78,10 @@ final class HomeRecommendDashboardInteractor: PresentableInteractor<HomeRecommen
     }
     
     private func performAfterFecthingRecommendPlace(place: RecommendPlace) {
+        if self.place == place {
+            return
+        }
+        self.place = place
         let model = makeModel(place: place)
         presenter.setup(model: model)
     }

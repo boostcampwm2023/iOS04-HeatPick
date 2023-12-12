@@ -31,7 +31,11 @@ final class HomeRecommendDashboardViewController: UIViewController, HomeRecommen
         static let emptySubtitle = "스토리를 작성하시면 추천 장소가 될 수 있어요"
         static let spacing: CGFloat = 20
         static let contentSpacing: CGFloat = 10
+        static let emptyViewHeight: CGFloat = 80
     }
+    
+    private var scrollViewBottomConstraint: NSLayoutConstraint?
+    private var emptyViewBottomConstraint: NSLayoutConstraint?
     
     private lazy var titleView: SeeAllView = {
         let titleView = SeeAllView()
@@ -88,8 +92,13 @@ final class HomeRecommendDashboardViewController: UIViewController, HomeRecommen
         let isEmpty = model.contentList.isEmpty
         titleView.setup(model: .init(title: model.title, isButtonEnabled: !isEmpty))
         stackView.subviews.forEach { $0.removeFromSuperview() }
+        
         emptyView.isHidden = !isEmpty
+        emptyViewBottomConstraint?.isActive = isEmpty
+        
         scrollView.isHidden = isEmpty
+        scrollViewBottomConstraint?.isActive = !isEmpty
+        
         model.contentList.forEach { contentModel in
             let contentView = HomeRecommendContentView()
             contentView.addTapGesture(target: self, action: #selector(contentViewDidTap))
@@ -130,6 +139,12 @@ private extension HomeRecommendDashboardViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
         
+        scrollViewBottomConstraint = scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        scrollViewBottomConstraint?.isActive = true
+        
+        emptyViewBottomConstraint = emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        emptyViewBottomConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
             titleView.topAnchor.constraint(equalTo: view.topAnchor),
             titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
@@ -138,12 +153,11 @@ private extension HomeRecommendDashboardViewController {
             emptyView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.spacing),
             emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            emptyView.heightAnchor.constraint(equalToConstant: Constant.emptyViewHeight),
             
             scrollView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.spacing),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
