@@ -102,6 +102,8 @@ final class SearchInteractor: PresentableInteractor<SearchPresentable>,
     }
     
     func storyDidCreate(_ storyId: Int) {
+        presenter.deselectAll()
+        didTapReSearch()
         router?.detachStoryEditor { [weak self] in
             self?.router?.attachStoryDetail(storyId: storyId)
         }
