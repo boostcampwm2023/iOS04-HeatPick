@@ -34,6 +34,8 @@ final class HomeFollowingDashboardInteractor: PresentableInteractor<HomeFollowin
     
     private let dependency: HomeFollowingDashboardInteractorDependency
     private let cancelBag = CancelBag()
+    private var isInitialAppear = true
+    private var stories: [HomeFollowingStory] = []
     
     init(presenter: HomeFollowingDashboardPresentable, dependency: HomeFollowingDashboardInteractorDependency) {
         self.dependency = dependency
@@ -59,6 +61,14 @@ final class HomeFollowingDashboardInteractor: PresentableInteractor<HomeFollowin
         listener?.followingDashboardDidTapStory(id: storyId)
     }
     
+    func didAppear() {
+        if isInitialAppear {
+            isInitialAppear = false
+            return
+        }
+        fetchFollowing()
+    }
+    
     private func fetchFollowing() {
         Task { [weak self] in
             guard let self else { return }
@@ -66,11 +76,14 @@ final class HomeFollowingDashboardInteractor: PresentableInteractor<HomeFollowin
                 .onSuccess(on: .main, with: self) { this, storeis in
                     this.performAfterFetchingFollowing(stories: storeis)
                 }
-            
         }.store(in: cancelBag)
     }
     
     private func performAfterFetchingFollowing(stories: [HomeFollowingStory]) {
+        guard self.stories != stories else {
+            return
+        }
+        self.stories = stories
         let model = makeModels(stories: stories)
         presenter.setup(model: model)
     }

@@ -18,6 +18,7 @@ struct HomeFollowingDashboardViewModel {
 protocol HomeFollowingDashboardPresentableListener: AnyObject {
     func didTapSeeAll()
     func didTap(storyId: Int)
+    func didAppear()
 }
 
 final class HomeFollowingDashboardViewController: UIViewController, HomeFollowingDashboardPresentable, HomeFollowingDashboardViewControllable {
@@ -27,7 +28,11 @@ final class HomeFollowingDashboardViewController: UIViewController, HomeFollowin
     private enum Constant {
         static let title = "팔로잉"
         static let contentSpacing: CGFloat = 20
+        static let emptyViewHeight: CGFloat = 80
     }
+    
+    private var scrollViewBottomConstraint: NSLayoutConstraint?
+    private var emptyViewBottomConstraint: NSLayoutConstraint?
     
     private lazy var titleView: SeeAllView = {
         let titleView = SeeAllView()
@@ -75,14 +80,24 @@ final class HomeFollowingDashboardViewController: UIViewController, HomeFollowin
         setupViews()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        listener?.didAppear()
+    }
+    
     func setup(model: HomeFollowingDashboardViewModel) {
         let isEmpty = model.contentList.isEmpty
         titleView.setup(model: .init(
             title: Constant.title,
             isButtonEnabled: !isEmpty
         ))
+        
         emptyView.isHidden = !isEmpty
+        emptyViewBottomConstraint?.isActive = isEmpty
+        
         scrollView.isHidden = isEmpty
+        scrollViewBottomConstraint?.isActive = !isEmpty
+        
         model.contentList.forEach { contentModel in
             let contentView = HomeFollowingContentView()
             contentView.delegate = self
@@ -117,6 +132,12 @@ private extension HomeFollowingDashboardViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
         
+        scrollViewBottomConstraint = scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        scrollViewBottomConstraint?.isActive = true
+        
+        emptyViewBottomConstraint = emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        emptyViewBottomConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
             titleView.topAnchor.constraint(equalTo: view.topAnchor),
             titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
@@ -125,7 +146,7 @@ private extension HomeFollowingDashboardViewController {
             emptyView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.contentSpacing),
             emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
             emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            emptyView.heightAnchor.constraint(equalToConstant: Constant.emptyViewHeight),
             
             scrollView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: Constant.contentSpacing),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
