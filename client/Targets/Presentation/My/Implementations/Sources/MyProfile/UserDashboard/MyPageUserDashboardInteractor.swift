@@ -75,7 +75,7 @@ private extension MyProfile {
             storyCount: "\(storyCount)",
             experience: "\((experience * 100) / maxExperience)%",
             temperatureTitle: temperatureFeeling,
-            temperature: String(format: "%g℃", temperature),
+            temperature: "\(temperature)℃",
             badgeTitle: mainBadge.emoji + " " + mainBadge.name,
             badgeContent: mainBadge.description
         )

@@ -26,7 +26,7 @@ public struct MyProfileProfileResponseDTO: Decodable {
     public let storyCount: Int
     public let experience: Int
     public let maxExperience: Int
-    public let temperature: Double
+    public let temperature: Int
     public let temperatureFeeling: String
     public let mainBadge: MyProfileBadgeResponseDTO
     public let badgeExplain: String
