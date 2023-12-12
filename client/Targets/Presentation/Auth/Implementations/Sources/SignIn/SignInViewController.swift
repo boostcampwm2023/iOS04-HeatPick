@@ -69,7 +69,7 @@ private extension SignInViewController {
     }
     
     func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = .hpWhite
         [logoImageView, githubLoginButton, naverLoginButton].forEach { view.addSubview($0) }
         
         let padding: CGFloat = 20
