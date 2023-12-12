@@ -174,18 +174,24 @@ extension SignUpViewController: PHPickerViewControllerDelegate {
         guard let itemProvider = results.first?.itemProvider,
               itemProvider.canLoadObject(ofClass: UIImage.self)
         else {
-            // TODO: Handle empty results or item provider not being able load UIImage
+            showUnsupportedImageType()
             return
         }
         
         itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
             DispatchQueue.main.async { [weak self] in
-                guard let image = image as? UIImage,
-                      let imageData = image.pngData() else { return }
+                guard let image = image as? UIImage, let imageData = image.pngData() else {
+                    self?.showUnsupportedImageType()
+                    return
+                }
                 self?.profileImageView.image = image
                 self?.listener?.profileImageViewDidChange(imageData)
             }
         }
+    }
+    
+    private func showUnsupportedImageType() {
+        present(type: .didFailToImageLoad) {}
     }
     
 }

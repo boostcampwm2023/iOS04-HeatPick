@@ -8,12 +8,11 @@
 
 import UIKit
 import PhotosUI
-
 import ModernRIBs
-
-import BasePresentation
+import CoreKit
 import DesignKit
 import DomainEntities
+import BasePresentation
 
 protocol MyProfileUpdateUserDashboardPresentableListener: AnyObject {
     func didTapBack()
@@ -190,16 +189,26 @@ extension MyProfileUpdateUserDashboardViewController: PHPickerViewControllerDele
         picker.dismiss(animated: true)
         
         guard let itemProvider = results.first?.itemProvider,
-              itemProvider.canLoadObject(ofClass: UIImage.self) else { return }
+                itemProvider.canLoadObject(ofClass: UIImage.self)
+        else {
+            showUnsupportedImageType()
+            return
+        }
         
         itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
             DispatchQueue.main.async { [weak self] in
-                guard let image = image as? UIImage,
-                      let imageData = image.pngData() else { return }
+                guard let image = image as? UIImage, let imageData = image.pngData() else {
+                    self?.showUnsupportedImageType()
+                    return
+                }
                 self?.headerView.myPageUpdateUserProfileViewSetup(image: image)
                 self?.listener?.profileImageViewDidChange(imageData)
             }
         }
+    }
+    
+    private func showUnsupportedImageType() {
+        present(type: .didFailToImageLoad) {}
     }
     
 }
