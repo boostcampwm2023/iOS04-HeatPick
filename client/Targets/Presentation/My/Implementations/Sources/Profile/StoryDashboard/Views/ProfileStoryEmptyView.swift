@@ -29,16 +29,6 @@ final class ProfileStoryEmptyView: UIView {
         return label
     }()
     
-    private let subtitleLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .hpBlack
-        label.font = .captionRegular
-        label.textAlignment = .center
-        label.text = Constant.subtitle
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
