@@ -26,7 +26,7 @@ final class ProfileUserContnetView: UIView {
     
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .hpRed3
+        label.textColor = .hpBlack
         label.font = .captionBold
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false

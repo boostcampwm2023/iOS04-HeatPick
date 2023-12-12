@@ -70,15 +70,10 @@ final class MyProfileUserView: UIView {
         return imageView
     }()
     
-    private lazy var profileEditButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.tintColor = .hpRed3
-        button.configuration?.title = "프로필 수정"
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
-            var transform = transform
-            transform.font = .captionBold
-            return transform
-        }
+    private lazy var profileEditButton: ActionButton = {
+        let button = ActionButton()
+        button.setTitle("프로필 수정", for: .normal)
+        button.layer.cornerRadius = Constants.cornerRadiusMedium
         button.addTarget(self, action: #selector(profileEditButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

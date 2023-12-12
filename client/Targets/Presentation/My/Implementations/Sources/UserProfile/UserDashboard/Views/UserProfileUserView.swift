@@ -70,18 +70,10 @@ final class UserProfileUserView: UIView {
         return imageView
     }()
     
-    private lazy var followButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.configuration?.title = Constant.FollowButton.unFollow
-        button.configuration?.baseBackgroundColor = .hpRed3
-        button.configuration?.baseForegroundColor = .hpWhite
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
-            var transform = transform
-            transform.font = .captionBold
-            return transform
-        }
-        button.clipsToBounds = true
-        button.layer.borderColor = UIColor.hpRed3.cgColor
+    private lazy var followButton: ActionButton = {
+        let button = ActionButton()
+        button.setTitle(Constant.FollowButton.unFollow, for: .normal)
+        button.layer.borderColor = UIColor.hpBlack.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = Constants.cornerRadiusMedium
         button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
@@ -124,6 +116,7 @@ final class UserProfileUserView: UIView {
     
     func updateFollowButton(_ isFollow: Bool) {
         isFollow ? updateFollowing() : updateUnFollow()
+        followButton.stopLoading()
     }
     
 }
@@ -132,6 +125,7 @@ private extension UserProfileUserView {
     
     @objc func followButtonDidTap() {
         delegate?.followButtonDidTap()
+        followButton.startLoading()
     }
 }
 
@@ -156,15 +150,13 @@ private extension UserProfileUserView {
     }
     
     private func updateUnFollow() {
-        followButton.configuration?.title = Constant.FollowButton.unFollow
-        followButton.configuration?.baseBackgroundColor = .hpRed3
-        followButton.configuration?.baseForegroundColor = .hpWhite
+        followButton.setTitle(Constant.FollowButton.unFollow, for: .normal)
+        followButton.style = .normal
     }
     
     private func updateFollowing() {
-        followButton.configuration?.title = Constant.FollowButton.following
-        followButton.configuration?.baseBackgroundColor = .hpWhite
-        followButton.configuration?.baseForegroundColor = .hpRed3
+        followButton.setTitle(Constant.FollowButton.following, for: .normal)
+        followButton.style = .secondary
     }
     
 }

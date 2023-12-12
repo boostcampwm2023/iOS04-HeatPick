@@ -13,14 +13,15 @@ final class ProfileStoryEmptyView: UIView {
     
     private enum Constant {
         static let topOffset: CGFloat = 40
+        static let bottomOffset: CGFloat = -topOffset
         static let spacing: CGFloat = 5
-        static let title = "작성한 스토리가 없어요"
-        static let subtitle = "나만의 스토리를 작성해보세요"
+        static let title = "작성된 스토리가 없어요"
+        static let subtitle = "스토리를 작성해보세요"
     }
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .hpBlack
+        label.textColor = .hpGray1
         label.font = .bodySemibold
         label.textAlignment = .center
         label.text = Constant.title
@@ -53,17 +54,13 @@ final class ProfileStoryEmptyView: UIView {
 private extension ProfileStoryEmptyView {
     
     func setupViews() {
-        [titleLabel, subtitleLabel].forEach(addSubview)
+        [titleLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
-            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            subtitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomOffset)
         ])
     }
     
