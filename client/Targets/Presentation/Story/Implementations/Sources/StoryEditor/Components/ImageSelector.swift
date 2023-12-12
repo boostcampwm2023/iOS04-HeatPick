@@ -27,6 +27,8 @@ final class ImageSelector: UIView {
     }
     weak var delegate: ImageSelectorDelegate?
     weak var presenterDelegate: ImageSelectorPickerPresenterDelegate?
+    private weak var picker: PHPickerViewController?
+    private var isLoading = false
     
     var isSelected: Bool {
         imageView.image != nil
@@ -42,8 +44,6 @@ final class ImageSelector: UIView {
         imageView.contentMode = .scaleAspectFill
         imageView.tintColor = .hpBlack
         imageView.addTapGesture(target: self, action: #selector(addImageDidTap))
-        imageView.isUserInteractionEnabled = true
-        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -120,12 +120,14 @@ private extension ImageSelector {
 private extension ImageSelector {
     
     @objc func addImageDidTap() {
+        guard picker == nil && !isLoading else { return }
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
         configuration.selectionLimit = 1
         configuration.filter = .images
         
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = self
+        self.picker = picker
         presenterDelegate?.addImageDidTap(with: picker)
     }
     
@@ -146,10 +148,10 @@ extension ImageSelector: PHPickerViewControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
-        plusImageView.isUserInteractionEnabled = false
+        isLoading = true
         
         guard let itemProvider = results.first?.itemProvider else {
-            plusImageView.isUserInteractionEnabled = true
+            isLoading = false
             return
         }
         
@@ -160,8 +162,7 @@ extension ImageSelector: PHPickerViewControllerDelegate {
         } else {
             delegate?.imageDidFailToLoad()
         }
-        
-        plusImageView.isUserInteractionEnabled = true
+        isLoading = false
     }
     
     private func loadUIImage(_ itemProvider: NSItemProvider) {
