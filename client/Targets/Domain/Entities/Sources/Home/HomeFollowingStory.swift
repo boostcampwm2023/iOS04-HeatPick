@@ -43,3 +43,11 @@ public struct HomeFollowingStory {
     }
     
 }
+
+extension HomeFollowingStory: Equatable {
+    
+    public static func == (lhs: HomeFollowingStory, rhs: HomeFollowingStory) -> Bool {
+        return lhs.storyId == rhs.storyId
+    }
+    
+}
