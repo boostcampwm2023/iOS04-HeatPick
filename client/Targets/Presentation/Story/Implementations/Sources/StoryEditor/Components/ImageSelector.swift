@@ -61,7 +61,7 @@ final class ImageSelector: UIView {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -105,6 +105,7 @@ private extension ImageSelector {
     }
     
     private func setupXImageView() {
+        xImageView.isUserInteractionEnabled = true
         NSLayoutConstraint.activate([
             xImageView.widthAnchor.constraint(equalToConstant: Constant.buttonWidthHeight),
             xImageView.heightAnchor.constraint(equalToConstant: Constant.buttonWidthHeight),
@@ -118,6 +119,7 @@ private extension ImageSelector {
 private extension ImageSelector {
     
     @objc func addImageDidTap() {
+        plusImageView.isUserInteractionEnabled = false
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
         configuration.selectionLimit = 1
         configuration.filter = .images
@@ -128,6 +130,7 @@ private extension ImageSelector {
     }
     
     @objc func removeImageDidTap() {
+        xImageView.isUserInteractionEnabled = false
         delegate?.imageDidRemove(from: self)
     }
     
@@ -174,6 +177,8 @@ extension ImageSelector: PHPickerViewControllerDelegate {
                 })
             }
         }
+        
+        plusImageView.isUserInteractionEnabled = true
         
     }
     
