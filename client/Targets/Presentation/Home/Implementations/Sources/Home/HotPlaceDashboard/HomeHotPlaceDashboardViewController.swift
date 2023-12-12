@@ -81,7 +81,7 @@ final class HomeHotPlaceDashboardViewController: UIViewController, HomeHotPlaceD
     func setup(model: HomeHotPlaceDashboardViewModel) {
         let isEmpty = model.contentList.isEmpty
         titleView.setup(model: .init(
-            title: isEmpty ? Constant.emptyTitle : Constant.title,
+            title: Constant.title,
             isButtonEnabled: !isEmpty
         ))
         emptyView.isHidden = !isEmpty
