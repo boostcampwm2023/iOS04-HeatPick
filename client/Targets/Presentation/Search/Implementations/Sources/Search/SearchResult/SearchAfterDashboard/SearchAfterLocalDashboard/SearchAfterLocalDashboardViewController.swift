@@ -75,7 +75,7 @@ final class SearchAfterLocalDashboardViewController: UIViewController, SearchAft
     func setup(models: [SearchLocal]) {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let isEmpty = models.isEmpty
-        headerView.isHiddenSeeAllView(isEmpty)
+        headerView.isHiddenSeeAllView(true) // 일단 모두 보기 보여주지 않음
         models.forEach { model in
             let contentView = SearchAfterLocalView()
             contentView.setup(model: model)

@@ -30,6 +30,10 @@ public extension UserDefaults {
         object(forKey: key.rawValue)
     }
     
+    func array(forKey key: UserDefaults.Key) -> [Any]? {
+        array(forKey: key.rawValue)
+    }
+    
     func removeObject(forKey key: UserDefaults.Key) {
         removeObject(forKey: key.rawValue)
     }

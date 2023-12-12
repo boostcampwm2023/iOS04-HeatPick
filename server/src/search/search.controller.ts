@@ -33,13 +33,8 @@ export class SearchController {
   })
   async getStorySearchResult(@Query('searchText') searchText: string, @Query('offset') offset: number, @Query('limit') limit: number): Promise<SearchStoryResultDto> {
     const stories = await this.storyService.getStoriesFromTrie(searchText, offset, limit);
-    const transformedStories = await Promise.all(
-      stories.map(async (story) => {
-        return await storyEntityToObjWithOneImg(story);
-      }),
-    );
-    const isLastPage = transformedStories.length < limit ? true : false;
-    return { stories: transformedStories, isLastPage: isLastPage };
+    const isLastPage = stories.length < limit ? true : false;
+    return { stories: stories, isLastPage: isLastPage };
   }
 
   @Get('user')
@@ -78,13 +73,7 @@ export class SearchController {
 
     const searchStatement = searchText ? searchText : '';
     let stories = await this.storyService.getStoriesFromTrie(searchStatement, 0, 100);
-    if (categoryId) stories = stories.filter((story) => story.category && story.category.categoryId === numericCategoryId);
-
-    const storyArr = await Promise.all(
-      stories.map(async (story) => {
-        return storyEntityToObjWithOneImg(story);
-      }),
-    );
+    if (categoryId) stories = stories.filter((story) => story.categoryId === numericCategoryId);
 
     const users = await this.userService.getUsersFromTrie(searchStatement, 0, 5);
 
@@ -96,7 +85,7 @@ export class SearchController {
         }),
       );
     }
-    const nonEmptyStoryArr = storyArr.filter((story) => story !== undefined && story !== null);
+    const nonEmptyStoryArr = stories.filter((story) => story !== undefined && story !== null);
 
     const truncatedStoryArr = nonEmptyStoryArr.splice(0, 5);
     const truncatedUserArr = userArr.splice(0, 5);

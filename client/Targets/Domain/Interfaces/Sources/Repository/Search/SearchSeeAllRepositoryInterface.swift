@@ -11,7 +11,7 @@ import DomainEntities
 
 public protocol SearchSeeAllRepositoryInterface {
     
-    func fetchStory(searchText: String) async -> Result<[SearchStory], Error>
-    func fetchUser(searchText: String) async -> Result<[SearchUser], Error>
+    func fetchStory(searchText: String, offset: Int, limit: Int) async -> Result<[SearchStory], Error>
+    func fetchUser(searchText: String, offset: Int, limit: Int) async -> Result<[SearchUser], Error>
     
 }

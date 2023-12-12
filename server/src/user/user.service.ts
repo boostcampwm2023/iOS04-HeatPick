@@ -21,6 +21,7 @@ import { Transactional } from 'typeorm-transactional';
 import { StoryService } from '../story/story.service';
 import { Comment } from '../entities/comment.entity';
 import { NotificationService } from '../notification/notification.service';
+import { dateFormatToISO8601 } from '../util/util.date.format.to.ISO8601';
 
 @Injectable()
 export class UserService {
@@ -222,11 +223,17 @@ export class UserService {
       withDeleted: true,
     });
 
-    user.likedStories = Promise.resolve([]);
-    user.badges = Promise.resolve([]);
-    user.representativeBadge = Promise.resolve(null);
-    user.comments = Promise.resolve([]);
-    user.stories = Promise.resolve([]);
+    (await user.stories).map((story) => {
+      story.user = null;
+      story.deletedAt = dateFormatToISO8601(new Date().toISOString());
+      return;
+    });
+
+    (await user.comments).map((comment) => {
+      comment.user = null;
+      comment.deletedAt = dateFormatToISO8601(new Date().toISOString());
+      return;
+    });
 
     await Promise.all(
       user.following.map(async (user) => {
@@ -246,6 +253,10 @@ export class UserService {
         await this.storyService.subLikeCount(story.storyId);
       }),
     );
+
+    user.likedStories = Promise.resolve([]);
+    user.badges = Promise.resolve([]);
+    user.representativeBadge = Promise.resolve(null);
 
     await this.userRepository.save(user);
 

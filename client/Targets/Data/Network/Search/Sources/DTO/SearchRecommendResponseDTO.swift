@@ -16,7 +16,7 @@ public struct SearchRecommendResponseDTO: Decodable {
 
 public extension SearchRecommendResponseDTO {
     
-    func toDmain() -> [String] {
+    func toDomain() -> [String] {
         recommends
     }
     

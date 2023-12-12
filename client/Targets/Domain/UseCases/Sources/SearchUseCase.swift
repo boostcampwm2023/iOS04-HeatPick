@@ -23,12 +23,26 @@ public final class SearchUseCase: SearchUseCaseInterface {
         return recommendPlaceClusterSubject.eraseToAnyPublisher()
     }
     
+    public var hasMoreStory: Bool {
+        return !isStoryLastPage
+    }
+    
+    public var hasMoreUser: Bool {
+        return !isUserLastPage
+    }
+    
     private let repository: SearchRepositoryInterface
     private let locationService: LocationServiceInterface
     private let clusteringService: ClusteringServiceInterface
     
     private let recommendPlacesCurrentValue = CurrentValueSubject<[Place], Never>([])
     private let recommendPlaceClusterSubject = CurrentValueSubject<[Cluster], Never>([])
+    
+    private var searchStoryOffset = 0
+    private var searchUserOffset = 0
+    private let pageLimit = 10
+    private var isStoryLastPage = true
+    private var isUserLastPage = true
     
     private var boundary: LocationBound?
     private var zoomLevel: Double?
@@ -57,11 +71,23 @@ public final class SearchUseCase: SearchUseCaseInterface {
     }
     
     public func fetchStory(searchText: String) async -> Result<[SearchStory], Error> {
-        await repository.fetchStory(searchText: searchText)
+        searchStoryOffset = 0
+        return await fetchStoryWithPaging(text: searchText, offset: searchStoryOffset, limit: pageLimit)
+    }
+    
+    public func loadMoreStory(searchText: String) async -> Result<[SearchStory], Error> {
+        searchStoryOffset += 1
+        return await fetchStoryWithPaging(text: searchText, offset: searchStoryOffset, limit: pageLimit)
     }
     
     public func fetchUser(searchText: String) async -> Result<[SearchUser], Error> {
-        await repository.fetchUser(searchText: searchText)
+        searchUserOffset = 0
+        return await fetchUserWithPaging(text: searchText, offset: searchUserOffset, limit: pageLimit)
+    }
+    
+    public func loadMoreUser(searchText: String) async -> Result<[SearchUser], Error> {
+        searchUserOffset += 1
+        return await fetchUserWithPaging(text: searchText, offset: searchUserOffset, limit: pageLimit)
     }
     
     public func fetchRecommendTexts(searchText: String) async -> Result<[String], Error> {
@@ -149,6 +175,30 @@ public final class SearchUseCase: SearchUseCaseInterface {
                 recommendPlaceClusterSubject.send(clusters)
             }
         }
+    }
+    
+    private func fetchStoryWithPaging(text: String, offset: Int, limit: Int) async -> Result<[SearchStory], Error> {
+        let result = await repository.fetchStory(searchText: text, offset: offset, limit: limit)
+        switch result {
+        case .success(let stories):
+            isStoryLastPage = stories.count != limit
+            
+        case .failure:
+            isStoryLastPage = true
+        }
+        return result
+    }
+    
+    private func fetchUserWithPaging(text: String, offset: Int, limit: Int) async -> Result<[SearchUser], Error> {
+        let result = await repository.fetchUser(searchText: text, offset: offset, limit: limit)
+        switch result {
+        case .success(let users):
+            isUserLastPage = users.count != limit
+            
+        case .failure:
+            isUserLastPage = true
+        }
+        return result
     }
     
 }

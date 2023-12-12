@@ -55,7 +55,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     private var markerStorage: [MarkerAdaptable] = []
     
     private lazy var naverMap = NMFNaverMapView(frame: view.frame)
-    private let searchTextField = SearchTextField()
+    private let searchView = SearchMapSearchView()
     private let showSearchHomeListButton = UIButton(configuration: .filled())
     private let storyView = SearchMapStoryView()
     private let selectedMarker = NMFMarker()
@@ -162,15 +162,14 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     override func setupLayout() {
         view = naverMap
         
-        [searchTextField, reSearchView, showSearchHomeListButton, storyView, selectedView, selectedClusterView].forEach(view.addSubview)
+        [searchView, reSearchView, showSearchHomeListButton, storyView, selectedView, selectedClusterView].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
-            searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
-            searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
-            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
-            searchTextField.heightAnchor.constraint(equalToConstant: Constants.navigationViewHeight),
+            searchView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
+            searchView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.leadingOffset),
+            searchView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             
-            reSearchView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
+            reSearchView.topAnchor.constraint(equalTo: searchView.bottomAnchor, constant: 10),
             reSearchView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             showSearchHomeListButton.widthAnchor.constraint(equalToConstant: Constant.ShowSearchHomeListButton.length),
@@ -199,11 +198,11 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
             $0.showLocationButton = true
             $0.mapView.addCameraDelegate(delegate: self)
             $0.mapView.touchDelegate = self
+            $0.showCompass = false
             $0.mapView.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        searchTextField.do {
-            $0.placeholder = Constant.SearchTextField.placeholder
+        searchView.do {
             $0.clipsToBounds = true
             $0.layer.cornerRadius = Constants.cornerRadiusMedium
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -250,7 +249,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     }
     
     override func bind() {
-        searchTextField
+        searchView
             .tapGesturePublisher
             .withOnly(self)
             .sink { this in

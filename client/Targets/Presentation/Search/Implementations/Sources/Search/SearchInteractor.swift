@@ -300,7 +300,7 @@ private extension SearchInteractor {
     func isReSearchEnabled(location: SearchMapLocation) -> Bool {
         guard let fetchedLocation else { return false }
         let distance = abs(fetchedLocation.lat - location.lat) + abs(fetchedLocation.lng - location.lng)
-        return distance >= 0.02
+        return distance >= 0.005
     }
     
 }
