@@ -172,6 +172,8 @@ extension SearchInteractor: SearchPresentableListener {
             isInitialCameraMoved = true
             presenter.moveMap(lat: location.lat, lng: location.lng)
             fetchPlaces(lat: location.lat, lng: location.lng)
+        } else {
+            presenter.showReSearchView()
         }
     }
     
