@@ -15,7 +15,7 @@ import BasePresentation
 import DesignKit
 import DomainEntities
 
-protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
+protocol MyProfileUpdateUserDashboardPresentableListener: AnyObject {
     func didTapBack()
     func didTapEditButton()
     func profileImageViewDidChange(_ imageData: Data)
@@ -23,9 +23,9 @@ protocol MyPageUpdateUserDashboardPresentableListener: AnyObject {
     func didSelectBadge(_ badgeId: Int)
 }
 
-final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageUpdateUserDashboardPresentable, MyPageUpdateUserDashboardViewControllable {
+final class MyProfileUpdateUserDashboardViewController: BaseViewController, MyProfileUpdateUserDashboardPresentable, MyProfileUpdateUserDashboardViewControllable {
     
-    weak var listener: MyPageUpdateUserDashboardPresentableListener?
+    weak var listener: MyProfileUpdateUserDashboardPresentableListener?
     
     private enum Constant {
         static let topOffset: CGFloat = 10
@@ -37,7 +37,7 @@ final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageU
     
     private var models: [ProfileUpdateMetaDataBadge] = []
         
-    private let headerView: MyPageupdateUserTableHeaderView = .init()
+    private let headerView: MyProfileupdateUserTableHeaderView = .init()
     private let tableView: UITableView = .init()
     private let editButton: ActionButton = .init()
     
@@ -84,8 +84,8 @@ final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageU
         }
         
         tableView.do { tableView in
-            tableView.register(MyPageUpdateUserBadgeCell.self)
-            tableView.register(MyPageupdateUserTableHeaderView.self)
+            tableView.register(MyProfileUpdateUserBadgeCell.self)
+            tableView.register(MyProfileupdateUserTableHeaderView.self)
             tableView.delegate = self
             tableView.dataSource = self
             tableView.separatorStyle = .none
@@ -113,9 +113,18 @@ final class MyPageUpdateUserDashboardViewController: BaseViewController, MyPageU
         editButton.stopLoading()
     }
     
+    func updateAvailableUsernameLabel(_ available: Bool) {
+        updateButtonEnabled(available)
+        headerView.updateAvailableUsernameLabel(available)
+    }
+    
+    func updateButtonEnabled(_ isEnabled: Bool) {
+        editButton.isEnabled = isEnabled
+    }
+    
 }
 
-private extension MyPageUpdateUserDashboardViewController {
+private extension MyProfileUpdateUserDashboardViewController {
     
     @objc func didTapEditButton() {
         listener?.didTapEditButton()
@@ -124,7 +133,7 @@ private extension MyPageUpdateUserDashboardViewController {
     
 }
 
-extension MyPageUpdateUserDashboardViewController: NavigationViewDelegate {
+extension MyProfileUpdateUserDashboardViewController: NavigationViewDelegate {
     
     func navigationViewButtonDidTap(_ view: NavigationView, type: NavigationViewButtonType) {
         guard case .back = type else { return }
@@ -133,14 +142,9 @@ extension MyPageUpdateUserDashboardViewController: NavigationViewDelegate {
     
 }
 
-extension MyPageUpdateUserDashboardViewController: MyPageupdateUserTableHeaderViewDelegate {
+extension MyProfileUpdateUserDashboardViewController: MyPageupdateUserTableHeaderViewDelegate {
     
     func usernameValueChanged(_ username: String) {
-        guard !username.isEmpty else {
-            editButton.isEnabled = false
-            return
-        }
-        editButton.isEnabled = true
         listener?.usernameValueChanged(username)
     }
     
@@ -155,7 +159,7 @@ extension MyPageUpdateUserDashboardViewController: MyPageupdateUserTableHeaderVi
     
 }
 
-extension MyPageUpdateUserDashboardViewController: UITableViewDataSource {
+extension MyProfileUpdateUserDashboardViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         models.count
@@ -163,7 +167,7 @@ extension MyPageUpdateUserDashboardViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let model = models[safe: indexPath.row] else { return .init() }
-        let cell = tableView.dequeue(MyPageUpdateUserBadgeCell.self, for: indexPath)
+        let cell = tableView.dequeue(MyProfileUpdateUserBadgeCell.self, for: indexPath)
         cell.setup(model: model)
         return cell
     }
@@ -171,7 +175,7 @@ extension MyPageUpdateUserDashboardViewController: UITableViewDataSource {
 }
 
 
-extension MyPageUpdateUserDashboardViewController: UITableViewDelegate  {
+extension MyProfileUpdateUserDashboardViewController: UITableViewDelegate  {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let model = models[safe: indexPath.row] else { return }
@@ -180,7 +184,7 @@ extension MyPageUpdateUserDashboardViewController: UITableViewDelegate  {
     
 }
 
-extension MyPageUpdateUserDashboardViewController: PHPickerViewControllerDelegate {
+extension MyProfileUpdateUserDashboardViewController: PHPickerViewControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)

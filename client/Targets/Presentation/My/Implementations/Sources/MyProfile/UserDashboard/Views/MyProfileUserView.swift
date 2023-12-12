@@ -54,8 +54,8 @@ final class MyProfileUserView: UIView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = Constant.Stack.spacing
-        stackView.distribution = .equalSpacing
-        stackView.alignment = .trailing
+        stackView.distribution = .fillEqually
+        stackView.alignment = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -70,15 +70,10 @@ final class MyProfileUserView: UIView {
         return imageView
     }()
     
-    private lazy var profileEditButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.tintColor = .hpRed3
-        button.configuration?.title = "프로필 수정"
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
-            var transform = transform
-            transform.font = .captionBold
-            return transform
-        }
+    private lazy var profileEditButton: ActionButton = {
+        let button = ActionButton()
+        button.setTitle("프로필 수정", for: .normal)
+        button.layer.cornerRadius = Constants.cornerRadiusMedium
         button.addTarget(self, action: #selector(profileEditButtonDidTap), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -93,12 +88,6 @@ final class MyProfileUserView: UIView {
     private let storyView: ProfileUserContnetView = {
         let view = ProfileUserContnetView()
         view.updateTitle("📕 스토리")
-        return view
-    }()
-    
-    private let experienceView: ProfileUserContnetView = {
-        let view = ProfileUserContnetView()
-        view.updateTitle("📈 경험치")
         return view
     }()
     
@@ -120,7 +109,6 @@ final class MyProfileUserView: UIView {
         
         followerView.updateContent(model.follower)
         storyView.updateContent(model.story)
-        experienceView.updateContent(model.experience)
     }
     
 }
@@ -137,7 +125,7 @@ private extension MyProfileUserView {
     
     func setupViews() {
         [profileImageView, containerContentStackView].forEach(addSubview)
-        [followerView, storyView, experienceView].forEach(contentStackView.addArrangedSubview)
+        [followerView, storyView].forEach(contentStackView.addArrangedSubview)
         [contentStackView, profileEditButton].forEach(containerContentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
@@ -147,6 +135,7 @@ private extension MyProfileUserView {
             profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             profileImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
+            containerContentStackView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: Constants.leadingOffset),
             containerContentStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
             containerContentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])

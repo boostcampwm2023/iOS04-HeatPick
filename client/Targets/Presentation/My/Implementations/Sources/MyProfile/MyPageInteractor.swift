@@ -57,6 +57,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         super.didBecomeActive()
         router?.attachUserDashboard()
         router?.attachStoryDashboard()
+        fetchProfile()
     }
     
     override func willResignActive() {

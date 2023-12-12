@@ -44,8 +44,8 @@ final class UserProfileUserView: UIView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = Constant.Stack.spacing
-        stackView.distribution = .equalSpacing
-        stackView.alignment = .trailing
+        stackView.distribution = .fillEqually
+        stackView.alignment = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -70,18 +70,10 @@ final class UserProfileUserView: UIView {
         return imageView
     }()
     
-    private lazy var followButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.configuration?.title = Constant.FollowButton.unFollow
-        button.configuration?.baseBackgroundColor = .hpRed3
-        button.configuration?.baseForegroundColor = .hpWhite
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { transform in
-            var transform = transform
-            transform.font = .captionBold
-            return transform
-        }
-        button.clipsToBounds = true
-        button.layer.borderColor = UIColor.hpRed3.cgColor
+    private lazy var followButton: ActionButton = {
+        let button = ActionButton()
+        button.setTitle(Constant.FollowButton.unFollow, for: .normal)
+        button.layer.borderColor = UIColor.hpBlack.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = Constants.cornerRadiusMedium
         button.addTarget(self, action: #selector(followButtonDidTap), for: .touchUpInside)
@@ -98,12 +90,6 @@ final class UserProfileUserView: UIView {
     private let storyView: ProfileUserContnetView = {
         let view = ProfileUserContnetView()
         view.updateTitle("📕 스토리")
-        return view
-    }()
-    
-    private let experienceView: ProfileUserContnetView = {
-        let view = ProfileUserContnetView()
-        view.updateTitle("📈 경험치")
         return view
     }()
     
@@ -126,11 +112,11 @@ final class UserProfileUserView: UIView {
         updateFollowButton(model.isFollow)
         followerView.updateContent(model.follower)
         storyView.updateContent(model.story)
-        experienceView.updateContent(model.experience)
     }
     
     func updateFollowButton(_ isFollow: Bool) {
         isFollow ? updateFollowing() : updateUnFollow()
+        followButton.stopLoading()
     }
     
 }
@@ -139,6 +125,7 @@ private extension UserProfileUserView {
     
     @objc func followButtonDidTap() {
         delegate?.followButtonDidTap()
+        followButton.startLoading()
     }
 }
 
@@ -147,7 +134,7 @@ private extension UserProfileUserView {
     func setupViews() {
         [profileStackView, contentStackView].forEach(addSubview)
         [profileImageView, followButton].forEach(profileStackView.addArrangedSubview)
-        [followerView, storyView, experienceView].forEach(contentStackView.addArrangedSubview)
+        [followerView, storyView].forEach(contentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageViewWidth),
@@ -156,21 +143,20 @@ private extension UserProfileUserView {
             profileStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             profileStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
+            contentStackView.leadingAnchor.constraint(equalTo: profileStackView.trailingAnchor, constant: Constants.leadingOffset),
             contentStackView.centerYAnchor.constraint(equalTo: profileStackView.centerYAnchor),
             contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
     
     private func updateUnFollow() {
-        followButton.configuration?.title = Constant.FollowButton.unFollow
-        followButton.configuration?.baseBackgroundColor = .hpRed3
-        followButton.configuration?.baseForegroundColor = .hpWhite
+        followButton.setTitle(Constant.FollowButton.unFollow, for: .normal)
+        followButton.style = .normal
     }
     
     private func updateFollowing() {
-        followButton.configuration?.title = Constant.FollowButton.following
-        followButton.configuration?.baseBackgroundColor = .hpWhite
-        followButton.configuration?.baseForegroundColor = .hpRed3
+        followButton.setTitle(Constant.FollowButton.following, for: .normal)
+        followButton.style = .secondary
     }
     
 }

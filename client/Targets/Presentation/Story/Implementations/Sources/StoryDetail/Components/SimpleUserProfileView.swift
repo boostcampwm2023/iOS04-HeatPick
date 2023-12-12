@@ -167,9 +167,12 @@ final class SimpleUserProfileView: UIView {
     }
     
     func setup(model: SimpleUserProfileViewModel) {
+        if let profileImageURL = model.profileImageUrl,
+           !profileImageURL.isEmpty {
+            profileImage.load(from: model.profileImageUrl)
+        } else { profileImage.image = .profileDefault }
         nicknameLabel.text = model.nickname
         subtitleLabel.text = model.subtitle
-        profileImage.load(from: model.profileImageUrl)
         userId = model.id
         userStatus = model.userStatus
         setupFollowButton()

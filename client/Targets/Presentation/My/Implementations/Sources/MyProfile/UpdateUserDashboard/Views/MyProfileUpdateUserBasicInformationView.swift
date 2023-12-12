@@ -9,13 +9,13 @@
 import UIKit
 import DesignKit
 
-protocol MyPageUpdateUserBasicInformationViewDelegate: AnyObject {
+protocol MyProfileUpdateUserBasicInformationViewDelegate: AnyObject {
     func usernameValueChanged(_ username: String)
 }
 
-final class MyPageUpdateUserBasicInformationView: UIView {
+final class MyProfileUpdateUserBasicInformationView: UIView {
     
-    weak var delegate: MyPageUpdateUserBasicInformationViewDelegate?
+    weak var delegate: MyProfileUpdateUserBasicInformationViewDelegate?
     
     private enum Constant {
         static let topOffset: CGFloat = 15
@@ -29,6 +29,12 @@ final class MyPageUpdateUserBasicInformationView: UIView {
         enum UsernameTextField {
             static let placeholder = "닉네임을 입력하세요"
             static let height: CGFloat = 50
+        }
+        
+        enum AvailableUsernameLabel {
+            static let title = "변경할 유저이름을 입력해주세요"
+            static let overlap = "중복된 유저이름입니다."
+            static let possible = "사용가능한 유저이름입니다."
         }
     }
     
@@ -60,6 +66,15 @@ final class MyPageUpdateUserBasicInformationView: UIView {
         return textField
     }()
     
+    private let availableUsernameLabel: UILabel = {
+        let label = UILabel()
+        label.text = Constant.AvailableUsernameLabel.title
+        label.textColor = .hpGray1
+        label.font = .smallRegular
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -74,13 +89,18 @@ final class MyPageUpdateUserBasicInformationView: UIView {
         usernameTextField.text = username
     }
     
+    func updateAvailableUsernameLabel(_ available: Bool) {
+        availableUsernameLabel.text = available ? Constant.AvailableUsernameLabel.possible : Constant.AvailableUsernameLabel.overlap
+        availableUsernameLabel.textColor = available ? .hpBlack : .hpRed1
+    }
+    
 }
 
 
-private extension MyPageUpdateUserBasicInformationView {
+private extension MyProfileUpdateUserBasicInformationView {
     
     func setupViews() {
-        [titleLabel, usernameTextField].forEach(addSubview)
+        [titleLabel, usernameTextField, availableUsernameLabel].forEach(addSubview)
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constant.topOffset),
@@ -90,15 +110,19 @@ private extension MyPageUpdateUserBasicInformationView {
             usernameTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.spacing),
             usernameTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
             usernameTextField.trailingAnchor.constraint(equalTo: trailingAnchor),
-            usernameTextField.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomOffset),
-            usernameTextField.heightAnchor.constraint(equalToConstant: Constant.UsernameTextField.height)
+            usernameTextField.heightAnchor.constraint(equalToConstant: Constant.UsernameTextField.height),
+            
+            availableUsernameLabel.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 10),
+            availableUsernameLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            availableUsernameLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            availableUsernameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constant.bottomOffset),
         ])
     }
     
 }
 
 
-private extension MyPageUpdateUserBasicInformationView {
+private extension MyProfileUpdateUserBasicInformationView {
     
     @objc func usernameTextFieldValueChanged(_ sender: UITextField) {
         guard let username = sender.text else { return }
@@ -107,7 +131,7 @@ private extension MyPageUpdateUserBasicInformationView {
     
 }
 
-extension MyPageUpdateUserBasicInformationView: UITextFieldDelegate {
+extension MyProfileUpdateUserBasicInformationView: UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()

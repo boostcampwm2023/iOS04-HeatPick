@@ -16,7 +16,7 @@ protocol MyPageInteractable: Interactable,
                              ProfileStoryDashboardSeeAllListener,
                              SettingListener,
                              StoryDetailListener,
-                             MyPageUpdateUserDashboardListener { 
+                             MyProfileUpdateUserDashboardListener { 
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }

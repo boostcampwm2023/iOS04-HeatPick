@@ -114,6 +114,10 @@ public final class AuthUseCase: AuthUseCaseInterface {
         return result
     }
     
+    public func checkUsername(username: String) async -> Result<Void, Error> {
+        await repository.checkUsername(username: username)
+    }
+    
     private func receiveGithubToken() {
         signInUseCase
             .githubAccessToken
@@ -141,6 +145,5 @@ public final class AuthUseCase: AuthUseCaseInterface {
         SecretManager.write(type: .accessToken, data: data)
         UserDefaults.standard.setValue(Date(), forKey: .initialSignInDate)
     }
-    
     
 }

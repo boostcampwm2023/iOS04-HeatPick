@@ -13,6 +13,7 @@ import DesignKit
 
 protocol SearchBeforeRecentSearchesDashboardPresentableListener: AnyObject {
     func recentSearchViewDidTap(_ recentSearch: String)
+    func recentSearchViewDelete(_ recentSearch: String)
 }
 
 final class SearchBeforeRecentSearchesDashboardViewController: UIViewController, SearchBeforeRecentSearchesDashboardPresentable, SearchBeforeRecentSearchesDashboardViewControllable {
@@ -78,22 +79,13 @@ final class SearchBeforeRecentSearchesDashboardViewController: UIViewController,
         let isEmpty = models.isEmpty
         emptyView.isHidden = !isEmpty
         scrollView.isHidden = isEmpty
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         models.forEach { model in
             let contentView = SearchBeforeRecentSearchView()
             contentView.setup(model)
             contentView.delegate = self
             stackView.insertArrangedSubview(contentView, at: 0)
         }
-    }
-    
-    // TODO: 조금 더 좋은 로직을 생각 중 ...
-    func append(model: String) {
-        emptyView.isHidden = true
-        scrollView.isHidden = false
-        let contentView = SearchBeforeRecentSearchView()
-        contentView.setup(model)
-        contentView.delegate = self
-        stackView.insertArrangedSubview(contentView, at: 0)
     }
     
 }
@@ -134,6 +126,10 @@ extension SearchBeforeRecentSearchesDashboardViewController: searchBeforeRecentS
     
     func recentSearchViewDidTap(_ recentSearch: String) {
         listener?.recentSearchViewDidTap(recentSearch)
+    }
+    
+    func recentSearchViewDelete(_ recentSearch: String) {
+        listener?.recentSearchViewDelete(recentSearch)
     }
     
 }

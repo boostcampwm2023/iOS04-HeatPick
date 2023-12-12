@@ -59,5 +59,9 @@ public final class MyProfileRepository: MyProfileRepositoryInterface {
         let target = MyAPI.unfollow(id: userId)
         return await session.request(target)
     }
+    
+    public func checkUsername(username: String) async -> Result<Void, Error> {
+        await session.request(MyAPI.checkUserName(username: username))
+    }
 
 }

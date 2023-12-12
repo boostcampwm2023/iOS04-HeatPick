@@ -12,8 +12,7 @@ import CoreKit
 import DesignKit
 import DomainEntities
 
-
-final class MyPageUpdateUserBadgeCell: UITableViewCell {
+final class MyProfileUpdateUserBadgeCell: UITableViewCell {
     
     private enum Constant {
         static let spacing: CGFloat = 5
@@ -117,8 +116,7 @@ final class MyPageUpdateUserBadgeCell: UITableViewCell {
     
 }
 
-
-private extension MyPageUpdateUserBadgeCell {
+private extension MyProfileUpdateUserBadgeCell {
     
     func setupViews() {
         contentView.addSubview(containerView)

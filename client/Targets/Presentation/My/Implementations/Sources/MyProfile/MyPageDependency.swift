@@ -29,7 +29,7 @@ final class MyPageComponent: Component<MyPageDependency>,
                              ProfileStoryDashboardSeeAllDependency,
                              MyPageInteractorDependency,
                              SettingDependency,
-                             MyPageUpdateUserDashboardDependency {
+                             MyProfileUpdateUserDashboardDependency {
     
     var myPageUseCase: MyProfileUseCaseInterface { dependency.myPageUseCase }
     var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.myPageUseCase }
@@ -56,7 +56,7 @@ protocol MypageRouterDependency: AnyObject {
     var storySeeAllBuilder: ProfileStoryDashboardSeeAllBuildable { get }
     var settingBuilder: SettingBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
-    var updateUserDashboardBuilder: MyPageUpdateUserDashboardBuildable { get }
+    var updateUserDashboardBuilder: MyProfileUpdateUserDashboardBuildable { get }
     
 }
 
@@ -67,7 +67,7 @@ final class MyPageRouterComponent: MypageRouterDependency {
     let storySeeAllBuilder: ProfileStoryDashboardSeeAllBuildable
     let settingBuilder: SettingBuildable
     let storyDetailBuilder: StoryDetailBuildable
-    let updateUserDashboardBuilder: MyPageUpdateUserDashboardBuildable
+    let updateUserDashboardBuilder: MyProfileUpdateUserDashboardBuildable
     
     init(component: MyPageComponent) {
         self.userDashboardBuilder = MyPageUserDashboardBuilder(dependency: component)
@@ -75,7 +75,7 @@ final class MyPageRouterComponent: MypageRouterDependency {
         self.storySeeAllBuilder = ProfileStoryDashboardSeeAllBuilder(dependency: component)
         self.settingBuilder = SettingBuilder(dependency: component)
         self.storyDetailBuilder = component.storyDetailBuilder
-        self.updateUserDashboardBuilder = MyPageUpdateUserDashboardBuilder(dependency: component)
+        self.updateUserDashboardBuilder = MyProfileUpdateUserDashboardBuilder(dependency: component)
     }
     
 }

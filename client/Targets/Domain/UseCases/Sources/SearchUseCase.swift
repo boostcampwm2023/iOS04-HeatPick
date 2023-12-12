@@ -148,16 +148,15 @@ public final class SearchUseCase: SearchUseCaseInterface {
     }
     
     public func fetchRecentSearches() -> [String] {
-        repository.loadRecentSearches()
-        return repository.fetchRecentSearches()
+        repository.fetchRecentSearches()
     }
     
-    public func appendRecentSearch(searchText: String) -> String? {
-        repository.appendRecentSearch(searchText: searchText)
+    public func saveRecentSearch(recentSearch: String) async -> Result<[String], Never> {
+        await repository.saveRecentSearch(recentSearch: recentSearch)
     }
     
-    public func saveRecentSearches() {
-        repository.saveRecentSearches()
+    public func deleteRecentSearch(recentSearch: String) async -> Result<[String], Never> {
+        await repository.deleteRecentSearch(recentSearch: recentSearch)
     }
     
     public func fetchNaverLocal(query: String) async -> Result<[SearchLocal], Error> {

@@ -16,7 +16,7 @@ import DomainEntities
 import DomainInterfaces
 
 public final class SearchRepository: SearchRepositoryInterface {
-    
+
     private let session: Network
     private var recentSearches: [String] = []
     
@@ -66,25 +66,31 @@ public final class SearchRepository: SearchRepositoryInterface {
         let request: Result<SearchRecommendResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
     }
-    
+
     public func fetchRecentSearches() -> [String] {
-        return recentSearches
-    }
-    
-    public func appendRecentSearch(searchText: String) -> String? {
-        var temp = Set(recentSearches)
-        temp.insert(searchText)
-        guard temp.count != recentSearches.count else { return nil }
-        recentSearches.append(searchText)
-        return searchText
+        recentSearches
     }
     
     public func saveRecentSearches() {
         UserDefaults.standard.setValue(recentSearches, forKey: .recentSearch)
     }
     
-    public func loadRecentSearches() {
-        self.recentSearches = UserDefaults.standard.array(forKey: .recentSearch) as? [String] ?? []
+    public func saveRecentSearch(recentSearch: String) async -> Result<[String], Never> {
+        let filterRecentSearches = recentSearches.filter { $0 != recentSearch }
+        if filterRecentSearches.count < 20 {
+            recentSearches = filterRecentSearches + [recentSearch]
+        } else {
+            let removeOldRecentSearches = filterRecentSearches.dropFirst()
+            recentSearches = removeOldRecentSearches + [recentSearch]
+        }
+        saveRecentSearches()
+        return .success(recentSearches)
+    }
+    
+    public func deleteRecentSearch(recentSearch: String) async -> Result<[String], Never> {
+        recentSearches = recentSearches.filter { $0 != recentSearch }
+        saveRecentSearches()
+        return .success(recentSearches)
     }
     
     public func fetchRecommendPlace(lat: Double, lng: Double) async -> Result<RecommendStoryWithPaging, Error> {
@@ -97,6 +103,10 @@ public final class SearchRepository: SearchRepositoryInterface {
         let target = NaverSearchAPI.local(query: searchText)
         let request: Result<NaverSearchLocalResponseDTO, Error> = await session.request(target)
         return request.map { $0.toDomain() }
+    }
+
+    private func loadRecentSearches() {
+        self.recentSearches = UserDefaults.standard.array(forKey: .recentSearch) as? [String] ?? []
     }
     
 }

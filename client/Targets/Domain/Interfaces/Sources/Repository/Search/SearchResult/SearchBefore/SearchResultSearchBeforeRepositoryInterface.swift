@@ -12,9 +12,8 @@ import DomainEntities
 public protocol SearchResultSearchBeforeRepositoryInterface {
     
     func fetchRecentSearches() -> [String]
-    func appendRecentSearch(searchText: String) -> String?
-    func loadRecentSearches()
-    func saveRecentSearches()
+    func saveRecentSearch(recentSearch: String) async -> Result<[String], Never>
+    func deleteRecentSearch(recentSearch: String) async -> Result<[String], Never>
     func fetchCategory() async -> Result<[SearchCategory], Error>
     
 }

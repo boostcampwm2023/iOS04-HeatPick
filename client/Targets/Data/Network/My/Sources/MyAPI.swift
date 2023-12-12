@@ -20,6 +20,7 @@ public enum MyAPI {
     case resign(message: String)
     case follow(id: Int)
     case unfollow(id: Int)
+    case checkUserName(username: String)
 }
 
 extension MyAPI: Target {
@@ -37,6 +38,7 @@ extension MyAPI: Target {
         case .userUpdate: return "/user/update"
         case .resign: return "/user/resign"
         case .follow, .unfollow: return "/user/follow"
+        case .checkUserName: return "/auth/check"
         }
     }
     
@@ -71,14 +73,17 @@ extension MyAPI: Target {
             
         case let .userUpdate(content):
             let request = UserUpdateRequestDTO(content: content)
-            let media = Media(data: content.image, type: .jpeg, key: "image")
+            guard let data = content.image else { return .json(request) }
+            let media = Media(data: data, type: .jpeg, key: "image")
             return .multipart(.init(data: request, mediaList: [media]))
-            
         case let .resign(message):
             return .json(MyProfileResignRequestDTO(message: message))
             
         case .follow(let userId), .unfollow(let userId):
             return .json(FollowRequestDTO(followId: userId))
+            
+        case let .checkUserName(username):
+            return .url(parameters: CheckUserNameReqeustDTO(username: username).parameters())
         }
     }
     

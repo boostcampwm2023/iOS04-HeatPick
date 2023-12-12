@@ -15,7 +15,7 @@ protocol MyPageupdateUserTableHeaderViewDelegate: AnyObject {
     func profileImageViewDidTap()
 }
 
-final class MyPageupdateUserTableHeaderView: UITableViewHeaderFooterView {
+final class MyProfileupdateUserTableHeaderView: UITableViewHeaderFooterView {
     weak var delegate: MyPageupdateUserTableHeaderViewDelegate?
     
     private enum Constant {
@@ -42,13 +42,13 @@ final class MyPageupdateUserTableHeaderView: UITableViewHeaderFooterView {
         return contentView
     }()
     
-    private lazy var myPageUpdateUserBasicInformationView: MyPageUpdateUserBasicInformationView = {
-        let contentView = MyPageUpdateUserBasicInformationView()
+    private lazy var myPageUpdateUserBasicInformationView: MyProfileUpdateUserBasicInformationView = {
+        let contentView = MyProfileUpdateUserBasicInformationView()
         contentView.delegate = self
         contentView.translatesAutoresizingMaskIntoConstraints = false
         return contentView
     }()
-
+    
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -61,17 +61,21 @@ final class MyPageupdateUserTableHeaderView: UITableViewHeaderFooterView {
     }
     
     func setup(model: ProfileUpdateMetaData) {
-         myPageUpdateUserProfileView.setup(profileImageURL: model.profileImageURL)
+        myPageUpdateUserProfileView.setup(profileImageURL: model.profileImageURL)
         myPageUpdateUserBasicInformationView.setup(username: model.username)
     }
     
     func myPageUpdateUserProfileViewSetup(image: UIImage) {
         myPageUpdateUserProfileView.setup(image: image)
     }
-
+    
+    func updateAvailableUsernameLabel(_ available: Bool) {
+        myPageUpdateUserBasicInformationView.updateAvailableUsernameLabel(available)
+    }
+    
 }
 
-private extension MyPageupdateUserTableHeaderView {
+private extension MyProfileupdateUserTableHeaderView {
     
     func setupViews() {
         
@@ -96,7 +100,7 @@ private extension MyPageupdateUserTableHeaderView {
     
 }
 
-extension MyPageupdateUserTableHeaderView: MyPageUpdateUserProfileViewDelegate {
+extension MyProfileupdateUserTableHeaderView: MyPageUpdateUserProfileViewDelegate {
     
     func profileImageViewDidTap() {
         delegate?.profileImageViewDidTap()
@@ -104,7 +108,7 @@ extension MyPageupdateUserTableHeaderView: MyPageUpdateUserProfileViewDelegate {
     
 }
 
-extension MyPageupdateUserTableHeaderView: MyPageUpdateUserBasicInformationViewDelegate {
+extension MyProfileupdateUserTableHeaderView: MyProfileUpdateUserBasicInformationViewDelegate {
     
     func usernameValueChanged(_ username: String) {
         delegate?.usernameValueChanged(username)

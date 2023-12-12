@@ -16,7 +16,7 @@ import BasePresentation
 protocol SignUpPresentableListener: AnyObject {
     func profileImageViewDidChange(_ imageData: Data)
     func signUpButtonDidTap()
-    func nicknameDidChange(_ nickname: String)
+    func usernameDidChange(_ username: String)
     func didTapClose()
 }
 
@@ -24,23 +24,37 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
     
     private enum Constant {
         static let imageHeight: CGFloat = 100
+        
+        enum AvailableUsernameLabel {
+            static let title = "변경할 유저이름을 입력해주세요"
+            static let overlap = "중복된 유저이름입니다."
+            static let possible = "사용가능한 유저이름입니다."
+        }
     }
     
     weak var listener: SignUpPresentableListener?
     
     private let profileImageView = UIImageView(image: .profileDefault)
-    private let nicknameLabel = UILabel()
-    private let nicknameTextField = UITextField()
+    private let usernameLabel = UILabel()
+    private let usernameTextField = UITextField()
     private let signUpButton = ActionButton()
+    private let availableUsernameLabel = UILabel()
     
     func updateButtonEnabled(_ isEnabled: Bool) {
         signUpButton.isEnabled = isEnabled
+        availableUsernameLabel.text = Constant.AvailableUsernameLabel.title
+    }
+    
+    func updateAvailableUsernameLabel(_ available: Bool) {
+        updateButtonEnabled(available)
+        availableUsernameLabel.text = available ? Constant.AvailableUsernameLabel.possible : Constant.AvailableUsernameLabel.overlap
+        availableUsernameLabel.textColor = available ? .hpBlack : .hpRed1
     }
     
     override func setupLayout() {
         let padding: CGFloat = 30
         
-        [navigationView, profileImageView, nicknameLabel, nicknameTextField, signUpButton].forEach { view.addSubview($0) }
+        [navigationView, profileImageView, usernameLabel, usernameTextField, availableUsernameLabel, signUpButton].forEach { view.addSubview($0) }
         
         NSLayoutConstraint.activate([
             navigationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -53,13 +67,17 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.imageHeight),
             profileImageView.heightAnchor.constraint(equalToConstant: Constant.imageHeight),
             
-            nicknameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
-            nicknameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: padding),
+            usernameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            usernameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: padding),
             
-            nicknameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
-            nicknameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
-            nicknameTextField.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: padding),
-            nicknameTextField.heightAnchor.constraint(equalToConstant: 46),
+            usernameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            usernameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
+            usernameTextField.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: padding),
+            usernameTextField.heightAnchor.constraint(equalToConstant: 46),
+            
+            availableUsernameLabel.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 10),
+            availableUsernameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
+            availableUsernameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
             
             signUpButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.leadingOffset),
             signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: Constants.traillingOffset),
@@ -88,15 +106,15 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        nicknameLabel.do {
-            $0.text = "닉네임"
+        usernameLabel.do {
+            $0.text = "유저이름"
             $0.font = .largeSemibold
             $0.textColor = .hpBlack
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        nicknameTextField.do {
-            $0.placeholder = "닉네임을 입력하세요"
+        usernameTextField.do {
+            $0.placeholder = "유저이름을 입력하세요"
             $0.font = .bodyRegular
             $0.textColor = .hpBlack
             $0.borderStyle = .roundedRect
@@ -104,7 +122,7 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
             $0.leftViewMode = .always
             $0.rightView = .init(frame: .init(origin: .zero, size: .init(width: 5, height: 0)))
             $0.rightViewMode = .always
-            $0.addTarget(self, action: #selector(nicknameTextFieldDidChange), for: .editingChanged)
+            $0.addTarget(self, action: #selector(usernameTextFieldDidChange), for: .editingChanged)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -116,11 +134,16 @@ final class SignUpViewController: BaseViewController, SignUpPresentable, SignUpV
             $0.layer.cornerRadius = Constants.cornerRadiusMedium
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        
+        availableUsernameLabel.do {
+            $0.text = Constant.AvailableUsernameLabel.title
+            $0.textColor = .hpGray1
+            $0.font = .smallRegular
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
-    override func bind() {
-        
-    }
+    override func bind() { }
     
 }
 
@@ -139,8 +162,8 @@ private extension SignUpViewController {
         listener?.signUpButtonDidTap()
     }
     
-    @objc func nicknameTextFieldDidChange() {
-        listener?.nicknameDidChange(nicknameTextField.text ?? "")
+    @objc func usernameTextFieldDidChange() {
+        listener?.usernameDidChange(usernameTextField.text ?? "")
     }
     
 }

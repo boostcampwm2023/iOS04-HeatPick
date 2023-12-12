@@ -9,15 +9,15 @@
 import UIKit
 
 public protocol AdaptivePresentationControllerDelegate: AnyObject {
-  func controllerDidDismiss()
+    func controllerDidDismiss()
 }
 
 public final class AdaptivePresentationControllerDelegateAdapter: NSObject, UIAdaptivePresentationControllerDelegate {
-  
-  public weak var delegate: AdaptivePresentationControllerDelegate?
-  
-  public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-    delegate?.controllerDidDismiss()
-  }
-  
+    
+    public weak var delegate: AdaptivePresentationControllerDelegate?
+    
+    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        delegate?.controllerDidDismiss()
+    }
+    
 }

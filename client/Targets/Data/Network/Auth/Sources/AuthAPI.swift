@@ -16,6 +16,7 @@ public enum AuthAPI {
     case signInWithGithub(token: String)
     case signUpWithNaver(content: AuthContent)
     case signUpWithGithub(content: AuthContent)
+    case checkUserName(username: String)
 }
 
 extension AuthAPI: Target {
@@ -30,11 +31,15 @@ extension AuthAPI: Target {
         case .signInWithGithub: return "/auth/signin/github"
         case .signUpWithNaver: return "/auth/signup/naver"
         case .signUpWithGithub: return "/auth/signup/github"
+        case .checkUserName: return "/auth/check"
         }
     }
     
     public var method: HTTPMethod {
-        return .post
+        switch self {
+        case .checkUserName: .get
+        default: .post
+        }
     }
     
     public var header: NetworkHeader {
@@ -51,6 +56,8 @@ extension AuthAPI: Target {
             return makeSingUpRequest(content: content)
         case let .signUpWithGithub(content):
             return makeSingUpRequest(content: content)
+        case let .checkUserName(username):
+            return .url(parameters: CheckUserNameReqeustDTO(username: username).parameters())
         }
     }
     
