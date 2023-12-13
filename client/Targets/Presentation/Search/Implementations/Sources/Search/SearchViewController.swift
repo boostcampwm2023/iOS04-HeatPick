@@ -62,6 +62,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     private let selectedView = SearchMapSelectedView()
     private let reSearchView = SearchMapReSearchView()
     private let selectedClusterView = SearchMapClusterListView()
+    private let guideView = SearchStoryGuideView()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -152,6 +153,10 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         reSearchView.isHidden = true
     }
     
+    func showStoryGuideView() {
+        guideView.showWithAnimation()
+    }
+    
     func deselectAll() {
         hideSelectedMarker()
         selectedView.isHidden = true
@@ -162,7 +167,7 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
     override func setupLayout() {
         view = naverMap
         
-        [searchView, reSearchView, showSearchHomeListButton, storyView, selectedView, selectedClusterView].forEach(view.addSubview)
+        [searchView, reSearchView, showSearchHomeListButton, storyView, selectedView, selectedClusterView, guideView].forEach(view.addSubview)
         
         NSLayoutConstraint.activate([
             searchView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.SearchTextField.topSpacing),
@@ -189,6 +194,11 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
             selectedClusterView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.traillingOffset),
             selectedClusterView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             selectedClusterView.heightAnchor.constraint(equalToConstant: 250),
+            
+            guideView.topAnchor.constraint(equalTo: view.topAnchor),
+            guideView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            guideView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            guideView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
@@ -244,6 +254,10 @@ final class SearchViewController: BaseViewController, SearchPresentable, SearchV
         
         selectedClusterView.do {
             $0.isHidden = true
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        guideView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }

@@ -46,8 +46,8 @@ protocol SearchPresentable: Presentable {
     func showReSearchView()
     func hideReSearchView()
     func deselectAll()
+    func showStoryGuideView()
 }
-
 
 final class SearchInteractor: PresentableInteractor<SearchPresentable>,
                               AdaptivePresentationControllerDelegate,
@@ -167,6 +167,8 @@ extension SearchInteractor: SearchPresentableListener {
     }
     
     func didAppear() {
+        showStoryGuideIfNeeded()
+        
         if !isInitialCameraMoved {
             let location = dependency.searchUseCase.location ?? .init(lat: 37.3588501438082, lng: 127.1052074432373)
             isInitialCameraMoved = true
@@ -283,11 +285,6 @@ extension SearchInteractor: SearchPresentableListener {
         }
     }
     
-    private func receiveAfterRecommendClusters(_ clusters: [Cluster]) {
-        presenter.removeAllMarker()
-        presenter.updateMarkers(clusters: clusters)
-    }
-    
 }
 
 private extension SearchInteractor {
@@ -305,6 +302,19 @@ private extension SearchInteractor {
         guard let fetchedLocation else { return false }
         let distance = abs(fetchedLocation.lat - location.lat) + abs(fetchedLocation.lng - location.lng)
         return distance >= 0.005
+    }
+    
+    func receiveAfterRecommendClusters(_ clusters: [Cluster]) {
+        presenter.removeAllMarker()
+        presenter.updateMarkers(clusters: clusters)
+    }
+    
+    func showStoryGuideIfNeeded() {
+        guard dependency.searchUseCase.storyGuideDidShow == false else {
+            return
+        }
+        presenter.showStoryGuideView()
+        dependency.searchUseCase.storyGuideComplete()
     }
     
 }
