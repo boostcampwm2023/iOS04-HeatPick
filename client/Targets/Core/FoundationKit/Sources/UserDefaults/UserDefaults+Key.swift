@@ -15,6 +15,7 @@ public extension UserDefaults {
         case remoteNotification
         case initialSignInDate
         case recentSearch
+        case firstStoryGuideDidShow // 지도 화면 스토리 가이드 보여짐 여부
         
     }
     

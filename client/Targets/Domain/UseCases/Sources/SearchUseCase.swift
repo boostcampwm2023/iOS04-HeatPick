@@ -31,6 +31,10 @@ public final class SearchUseCase: SearchUseCaseInterface {
         return !isUserLastPage
     }
     
+    public var storyGuideDidShow: Bool {
+        return UserDefaults.standard.bool(forKey: .firstStoryGuideDidShow)
+    }
+    
     private let repository: SearchRepositoryInterface
     private let locationService: LocationServiceInterface
     private let clusteringService: ClusteringServiceInterface
@@ -165,6 +169,10 @@ public final class SearchUseCase: SearchUseCaseInterface {
     
     public func requestLocality(lat: Double, lng: Double) async -> String? {
         await locationService.requestLocality(lat: lat, lng: lng)
+    }
+    
+    public func storyGuideComplete() {
+        UserDefaults.standard.setValue(true, forKey: .firstStoryGuideDidShow)
     }
     
     private func registerClusteringCompletionBlock() {
