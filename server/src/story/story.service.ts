@@ -161,26 +161,42 @@ export class StoryService {
   }
 
   async getRecommendByLocationStory(locationDto: LocationDTO, offset: number, limit: number): Promise<StoryResultDto[]> {
-    const stories = await this.storyRepository.find({ relations: ['user', 'category'] });
-
     const userLatitude = locationDto.latitude;
     const userLongitude = locationDto.longitude;
 
-    const radius = 2;
+    const radius = 3;
 
-    const results = await Promise.all(
-      stories.map(async (story) => {
-        const place = await story.place;
+    const RadiusOfEarth = 6371;
 
-        if (place) {
-          const placeDistance = calculateDistance(userLatitude, userLongitude, place.latitude, place.longitude);
-          return placeDistance <= radius ? story : null;
-        }
-        return null;
-      }),
-    );
-
-    const transformedStoryArr = results.filter((result) => result !== null);
+    const stories = await this.storyRepository
+      .createQueryBuilder('story')
+      .innerJoinAndSelect('story.place', 'place')
+      .addSelect(
+        `
+        (${RadiusOfEarth} * 2 * ATAN2(
+          SQRT(
+            SIN(RADIANS(place.latitude - ${userLatitude}) / 2) *
+            SIN(RADIANS(place.latitude - ${userLatitude}) / 2) +
+            COS(RADIANS(${userLatitude})) * COS(RADIANS(place.latitude)) *
+            SIN(RADIANS(place.longitude - ${userLongitude}) / 2) *
+            SIN(RADIANS(place.longitude - ${userLongitude}) / 2)
+          ),
+          SQRT(1 - (
+            SIN(RADIANS(place.latitude - ${userLatitude}) / 2) *
+            SIN(RADIANS(place.latitude - ${userLatitude}) / 2) +
+            COS(RADIANS(${userLatitude})) * COS(RADIANS(place.latitude)) *
+            SIN(RADIANS(place.longitude - ${userLongitude}) / 2) *
+            SIN(RADIANS(place.longitude - ${userLongitude}) / 2)
+          ))
+        ))`,
+        'distance',
+      )
+      .having('distance <= :radius', { radius })
+      .orderBy('distance', 'ASC')
+      .offset(offset)
+      .limit(limit)
+      .getMany();
+    const transformedStoryArr = stories.filter((result) => result !== null);
 
     const storyArr = await Promise.all(
       transformedStoryArr.map(async (story) => {
