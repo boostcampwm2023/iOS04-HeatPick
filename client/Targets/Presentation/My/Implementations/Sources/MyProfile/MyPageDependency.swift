@@ -21,6 +21,7 @@ public protocol MyPageDependency: Dependency {
     var storyDetailBuilder: StoryDetailBuildable { get }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
     var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { get }
+    var userProfileBuilder: UserProfileBuildable { get }
     
 }
 
@@ -33,6 +34,7 @@ final class MyPageComponent: Component<MyPageDependency>,
                              MyProfileUpdateUserDashboardDependency,
                              FollowListDependency {
     
+    
     var myProfileUseCase: MyProfileUseCaseInterface { dependency.myProfileUseCase }
     var userProfileUseCase: UserProfileUseCaseInterface { dependency.userProfileUseCase }
     var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.myProfileUseCase }
@@ -43,6 +45,7 @@ final class MyPageComponent: Component<MyPageDependency>,
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
     var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { dependency.notificationPermissionUseCase }
+    var userProfileBuilder: UserProfileBuildable { dependency.userProfileBuilder }
     
     override init(dependency: MyPageDependency) {
         super.init(dependency: dependency)

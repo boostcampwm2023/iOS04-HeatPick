@@ -16,6 +16,7 @@ public protocol UserProfileDependency: Dependency {
     var userProfileUseCase: UserProfileUseCaseInterface { get }
     var myProfileUseCase: MyProfileUseCaseInterface { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
+    var userProfileBuilder: UserProfileBuildable { get }
 }
 
 public final class UserProfileComponent: Component<UserProfileDependency>,
@@ -23,7 +24,7 @@ public final class UserProfileComponent: Component<UserProfileDependency>,
                                          UserProfileUserDashboardDependency,
                                          ProfileStoryDashboardDependency,
                                          ProfileStoryDashboardSeeAllDependency, 
-                                         FollowListDependency {
+                                            FollowListDependency {
     
     var userId: Int
 
@@ -32,6 +33,7 @@ public final class UserProfileComponent: Component<UserProfileDependency>,
     var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.userProfileUseCase }
     var profileStoryDashboardUseCase: ProfileStoryDashboardUseCaseInterface { dependency.userProfileUseCase }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
+    var userProfileBuilder: UserProfileBuildable { dependency.userProfileBuilder }
 
     init(dependency: UserProfileDependency, userId: Int) {
         self.userId = userId

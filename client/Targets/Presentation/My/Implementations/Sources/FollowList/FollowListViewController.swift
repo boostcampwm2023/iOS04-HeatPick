@@ -15,6 +15,7 @@ import BasePresentation
 protocol FollowListPresentableListener: AnyObject {
     var title: String { get }
     func backButtonDidTap()
+    func didTapUser(userId: Int)
 }
 
 final class FollowListViewController: BaseViewController,
@@ -76,7 +77,9 @@ extension FollowListViewController: NavigationViewDelegate {
 }
 
 extension FollowListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let model = users[safe: indexPath.row] else { return }
+        listener?.didTapUser(userId: model.userId)
     }
 }
 

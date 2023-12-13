@@ -14,7 +14,10 @@ import BasePresentation
 import DomainEntities
 import DomainInterfaces
 
-protocol FollowListRouting: ViewableRouting { }
+protocol FollowListRouting: ViewableRouting {
+    func attachProfile(userId: Int)
+    func detachProfile()
+}
 
 protocol FollowListPresentable: Presentable {
     var listener: FollowListPresentableListener? { get set }
@@ -67,6 +70,14 @@ final class FollowListInteractor: PresentableInteractor<FollowListPresentable>,
     
     func backButtonDidTap() {
         listener?.followListBackButtonDidTap()
+    }
+    
+    func didTapUser(userId: Int) {
+        router?.attachProfile(userId: userId)
+    }
+    
+    func detachUserProfile() {
+        router?.detachProfile()
     }
 }
 

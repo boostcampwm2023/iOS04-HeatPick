@@ -8,6 +8,7 @@
 
 import ModernRIBs
 import DomainInterfaces
+import MyInterfaces
 
 enum FollowType: String {
     case follower = "팔로워"
@@ -17,10 +18,14 @@ enum FollowType: String {
 protocol FollowListDependency: Dependency {
     var myProfileUseCase: MyProfileUseCaseInterface { get }
     var userProfileUseCase: UserProfileUseCaseInterface { get }
+    var userProfileBuilder: UserProfileBuildable { get}
 }
 
 final class FollowListComponent: Component<FollowListDependency>,
-                                 FollowListInteractorDependency {
+                                 FollowListInteractorDependency,
+                                 FollowListRouterDependency {
+    
+    
     var userId: Int?
     let type: FollowType
     var myProfileUseCase: MyProfileUseCaseInterface {
@@ -28,6 +33,10 @@ final class FollowListComponent: Component<FollowListDependency>,
     }
     var userProfileUseCase: UserProfileUseCaseInterface {
         dependency.userProfileUseCase
+    }
+    
+    var userProfileBuildable: UserProfileBuildable {
+        dependency.userProfileBuilder
     }
     
     init(dependency: FollowListDependency, type: FollowType, userId: Int?) {
@@ -54,6 +63,6 @@ final class FollowListBuilder: Builder<FollowListDependency>, FollowListBuildabl
         let viewController = FollowListViewController()
         let interactor = FollowListInteractor(presenter: viewController, dependency: component)
         interactor.listener = listener
-        return FollowListRouter(interactor: interactor, viewController: viewController)
+        return FollowListRouter(interactor: interactor, viewController: viewController, dependency: component)
     }
 }
