@@ -287,7 +287,7 @@ export class UserService {
 
     targetbadge.badgeExp += exp;
 
-    if (targetbadge.badgeExp >= 100 && nextBadge[targetbadge.badgeName]) {
+    if (targetbadge.badgeExp >= 1000 && nextBadge[targetbadge.badgeName]) {
       targetbadge.badgeName = nextBadge[targetbadge.badgeName];
       targetbadge.emoji = strToEmoji[targetbadge.badgeName];
       targetbadge.badgeExp = 0;
