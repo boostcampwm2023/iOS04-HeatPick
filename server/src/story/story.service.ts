@@ -51,7 +51,6 @@ export class StoryService {
     });
   }
 
-  @Transactional()
   public async getStory(storyId: number, relations?: object): Promise<Story> {
     return await this.storyRepository.findOne({ where: { storyId: storyId }, relations: relations });
   }
@@ -106,7 +105,6 @@ export class StoryService {
     return { storyId: story.storyId, badge: { badgeEmoji: `${strToEmoji[story.badge.badgeName]}`, badgeName: story.badge.badgeName, prevExp: badge.badgeExp - 10, nowExp: badge.badgeExp } };
   }
 
-  @Transactional()
   public async read(userId: number, storyId: number): Promise<StoryDetailViewDataResponseJSONDto> {
     const story: Story = await this.storyRepository.findOne({ where: { storyId: storyId }, relations: ['category', 'user', 'storyImages', 'user.profileImage', 'badge', 'usersWhoLiked', 'user.followers'] });
     const place: Place = await story.place;
