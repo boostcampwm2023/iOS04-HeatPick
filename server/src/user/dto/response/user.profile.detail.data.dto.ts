@@ -19,6 +19,9 @@ export class UserProfileDetailDataDto {
   followerCount: number;
 
   @ApiProperty()
+  followingCount: number;
+
+  @ApiProperty()
   storyCount: number;
 
   @ApiProperty()
