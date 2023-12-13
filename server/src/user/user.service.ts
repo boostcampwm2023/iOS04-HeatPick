@@ -111,6 +111,7 @@ export class UserService {
       temperature: temperature,
       temperatureFeeling: getTemperatureFeeling(temperature),
       followerCount: user.followers.length,
+      followingCount: user.following.length,
       storyCount: (await user.stories).length,
       experience: 0,
       maxExperience: 999,
