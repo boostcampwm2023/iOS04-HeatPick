@@ -100,4 +100,20 @@ final class UserProfileRouter: ViewableRouter<UserProfileInteractable, UserProfi
         self.storyDetailRouting = nil
     }
     
+    func attachFollowerList(userId: Int) {
+        
+    }
+    
+    func detachFollowerList() {
+        
+    }
+    
+    func attachFollowingList(userId: Int) {
+        
+    }
+    
+    func detachFollowingList() {
+        
+    }
+    
 }

@@ -26,6 +26,10 @@ protocol MyPageRouting: ViewableRouting {
     func detachSetting()
     func attachupdateUserDashboard()
     func detachUpdateUserDashboard()
+    func attachFollowerList()
+    func detachFollowerList()
+    func attachFollowingList()
+    func detachFollowingList()
 }
 
 protocol MyPagePresentable: Presentable {
@@ -81,6 +85,14 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     
     func detachMyPageUpdateUserDasbaord() {
         router?.detachUpdateUserDashboard()
+    }
+    
+    func followerDidTap() {
+        router?.attachFollowerList()
+    }
+    
+    func followingDidTap() {
+        router?.attachFollowingList()
     }
     
     // MARK: - StoryDashboard

@@ -132,4 +132,20 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
         updateUserDashoardRouting = nil
     }
     
+    func attachFollowerList() {
+        
+    }
+    
+    func detachFollowerList() {
+        
+    }
+    
+    func attachFollowingList() {
+        
+    }
+    
+    func detachFollowingList() {
+        
+    }
+    
 }

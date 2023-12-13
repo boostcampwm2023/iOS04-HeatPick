@@ -22,6 +22,10 @@ protocol UserProfileRouting: ViewableRouting {
     func detachStorySeeAll()
     func attachStoryDetail(storyId: Int)
     func detachStoryDetail()
+    func attachFollowerList(userId: Int)
+    func detachFollowerList()
+    func attachFollowingList(userId: Int)
+    func detachFollowingList()
 }
 
 protocol UserProfilePresentable: Presentable {
@@ -102,6 +106,14 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
                     Log.make(message: error.localizedDescription, log: .interactor)
                 }
         }.store(in: cancelBag)
+    }
+    
+    func followerDidTap() {
+        router?.attachFollowerList(userId: dependency.userId)
+    }
+    
+    func followingDidTap() {
+        router?.attachFollowingList(userId: dependency.userId)
     }
 
     func storyDetailDidTapClose() {
