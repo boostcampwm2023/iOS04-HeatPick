@@ -112,7 +112,10 @@ public final class NetworkProvider: Network {
     private func makeRequest(_ target: Target, isMultipartFormData: Bool = false) throws -> NetworkRequest {
         let boundary = UUID().uuidString
         let components: URLComponents? = {
-            let endpoint = target.baseURL.appendingPathComponent(target.path)
+            var endpoint = target.baseURL.appendingPathComponent(target.path)
+            if case let .path(path) = target.task {
+                endpoint.append(path: path)
+            }
             var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: true)
             if case let .url(parameters) = target.task {
                 components?.queryItems = parameters.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
@@ -158,7 +161,7 @@ public final class NetworkProvider: Network {
             return data
         case .json(let encodable):
             return try? encodable.jsonData()
-        case .url:
+        case .url, .path:
             return nil
         case .multipart(let formData):
             return formData.makeData(boundary: boundary)

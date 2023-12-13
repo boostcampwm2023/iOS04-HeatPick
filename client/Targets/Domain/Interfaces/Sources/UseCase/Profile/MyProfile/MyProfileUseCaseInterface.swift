@@ -15,5 +15,6 @@ public protocol MyProfileUseCaseInterface: ProfileUserDashboardUseCaseInterface,
                                         MyProfileSettingUseCaseInterface {
     
     func fetchMyProfile() async -> Result<Profile, Error>
-    
+    func fetchFollowers() async -> Result<[SearchUser], Error>
+    func fetchFollowings() async -> Result<[SearchUser], Error>
 }

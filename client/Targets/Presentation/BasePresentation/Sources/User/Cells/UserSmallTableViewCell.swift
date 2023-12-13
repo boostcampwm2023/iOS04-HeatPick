@@ -83,9 +83,9 @@ private extension UserSmallTableViewCell {
         [profileImageView, nicknameLabel].forEach(contentView.addSubview)
         
         NSLayoutConstraint.activate([
-            profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.spacing),
             profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.leadingOffset),
-            profileImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            profileImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constant.spacing),
             profileImageView.heightAnchor.constraint(equalToConstant: Constant.ProfileImageView.height),
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.ProfileImageView.width),
             

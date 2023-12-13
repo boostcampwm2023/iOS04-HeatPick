@@ -12,5 +12,6 @@ import DomainEntities
 public protocol UserProfileRepositoryInterface: ProfileRepositoryInterface {
  
     func fetchUserProfile(userId: Int) async -> Result<Profile, Error>
-    
+    func requestFollowers(userId: Int) async -> Result<[SearchUser], Error>
+    func requestFollowings(userId: Int) async -> Result<[SearchUser], Error>
 }

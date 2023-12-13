@@ -43,6 +43,19 @@ public final class UserProfileRepository: UserProfileRepositoryInterface {
         let target = MyAPI.unfollow(id: userId)
         return await session.request(target)
     }
+    
+    public func requestFollowers(userId: Int) async -> Result<[SearchUser], Error> {
+        let target = MyAPI.followers(userId)
+        let request: Result<FollowListResponseDTO, Error> = await session.request(target)
+        
+        return request.map { $0.toDomain() }
+    }
 
+    public func requestFollowings(userId: Int) async -> Result<[SearchUser], Error> {
+        let target = MyAPI.followings(userId)
+        let request: Result<FollowListResponseDTO, Error> = await session.request(target)
+        
+        return request.map { $0.toDomain() }
+    }
 }
 

@@ -16,7 +16,8 @@ protocol MyPageInteractable: Interactable,
                              ProfileStoryDashboardSeeAllListener,
                              SettingListener,
                              StoryDetailListener,
-                             MyProfileUpdateUserDashboardListener { 
+                             MyProfileUpdateUserDashboardListener,
+                             FollowListListener {
     var router: MyPageRouting? { get set }
     var listener: MyPageListener? { get set }
 }
@@ -34,6 +35,7 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     private var settingRouting: ViewableRouting?
     private var storyDetailRouting: ViewableRouting?
     private var updateUserDashoardRouting: ViewableRouting?
+    private var followListRouting: ViewableRouting?
     
     private let dependency: MypageRouterDependency
     
@@ -133,19 +135,23 @@ final class MyPageRouter: ViewableRouter<MyPageInteractable, MyPageViewControlla
     }
     
     func attachFollowerList() {
-        
-    }
-    
-    func detachFollowerList() {
-        
+        guard followListRouting == nil else { return }
+        let router = dependency.followListBuilder.build(withListener: interactor, type: .follower, userId: nil)
+        pushRouter(router, animated: true)
+        self.followListRouting = router
     }
     
     func attachFollowingList() {
-        
+        guard followListRouting == nil else { return }
+        let router = dependency.followListBuilder.build(withListener: interactor, type: .following, userId: nil)
+        pushRouter(router, animated: true)
+        self.followListRouting = router
     }
     
-    func detachFollowingList() {
-        
+    func detachFollowList() {
+        guard let router = followListRouting else { return }
+        popRouter(router, animated: true)
+        self.followListRouting = nil
     }
     
 }

@@ -21,6 +21,10 @@ public enum MyAPI {
     case follow(id: Int)
     case unfollow(id: Int)
     case checkUserName(username: String)
+    case myFollowers
+    case myFollowings
+    case followers(Int)
+    case followings(Int)
 }
 
 extension MyAPI: Target {
@@ -39,6 +43,8 @@ extension MyAPI: Target {
         case .resign: return "/user/resign"
         case .follow, .unfollow: return "/user/follow"
         case .checkUserName: return "/auth/check"
+        case .myFollowers, .followers: return "/user/follower"
+        case .myFollowings, .followings: return "/user/follow"
         }
     }
     
@@ -84,6 +90,11 @@ extension MyAPI: Target {
             
         case let .checkUserName(username):
             return .url(parameters: CheckUserNameReqeustDTO(username: username).parameters())
+            
+        case .myFollowers, .myFollowings:
+            return .plain
+        case .followers(let userId), .followings(let userId):
+            return .path("/\(userId)")
         }
     }
     

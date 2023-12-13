@@ -23,9 +23,8 @@ protocol UserProfileRouting: ViewableRouting {
     func attachStoryDetail(storyId: Int)
     func detachStoryDetail()
     func attachFollowerList(userId: Int)
-    func detachFollowerList()
     func attachFollowingList(userId: Int)
-    func detachFollowingList()
+    func detachFollowList()
 }
 
 protocol UserProfilePresentable: Presentable {
@@ -114,6 +113,10 @@ final class UserProfileInteractor: PresentableInteractor<UserProfilePresentable>
     
     func followingDidTap() {
         router?.attachFollowingList(userId: dependency.userId)
+    }
+    
+    func followListBackButtonDidTap() {
+        router?.detachFollowList()
     }
 
     func storyDetailDidTapClose() {

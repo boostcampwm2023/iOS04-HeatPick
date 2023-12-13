@@ -27,9 +27,8 @@ protocol MyPageRouting: ViewableRouting {
     func attachupdateUserDashboard()
     func detachUpdateUserDashboard()
     func attachFollowerList()
-    func detachFollowerList()
     func attachFollowingList()
-    func detachFollowingList()
+    func detachFollowList()
 }
 
 protocol MyPagePresentable: Presentable {
@@ -95,6 +94,10 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
         router?.attachFollowingList()
     }
     
+    func followListBackButtonDidTap() {
+        router?.detachFollowList()
+    }
+    
     // MARK: - StoryDashboard
     func profileStoryDashboardDidTapSeeAll() {
         guard let profile else { return }
@@ -124,7 +127,7 @@ final class MyPageInteractor: PresentableInteractor<MyPagePresentable>, MyPageIn
     private func fetchProfile() {
         Task { [weak self] in
             guard let self else { return }
-            await dependency.myPageUseCase
+            await dependency.myProfileUseCase
                 .fetchMyProfile()
                 .onSuccess(on: .main, with: self) { this, profile in
                     this.profile = profile
