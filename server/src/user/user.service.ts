@@ -341,7 +341,7 @@ export class UserService {
 
   @Transactional()
   async getFollowers(userId: number) {
-    const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['follower'] });
+    const userObj = await this.userRepository.findOne({ where: { userId: userId }, relations: ['followers'] });
     const followers = userObj.followers;
     //const userIdArray = follows.map((user) => user.userId);
     return followers;
