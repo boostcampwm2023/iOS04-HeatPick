@@ -14,8 +14,14 @@
     2023.11.06 ~ 2023.12.15</i>
 </p>
  
- ### MVP
- ![MVP](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/b70d0619-1218-4233-ad26-933447e238de)
+## 📔 문서
+
+HeatPick의 상세한 개발 일지를 확인하고 싶다면 ?? <br>
+HeatPick Wiki를 확인해보세요 !!
+| 📑 [HeatPick Wiki](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki) | 🎨 [앱 디자인](https://www.figma.com/file/sKuM4zMuSVKnHoZzEppqOV/%EB%B6%80%EC%8A%A4%ED%8A%B8%EC%BA%A0%ED%94%84-%EA%B7%B8%EB%A3%B9-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&node-id=0%3A1&mode=design&t=SIloOfX3kCUMJh6u-1) | 📝 [API](https://junbok97.notion.site/junbok97/HeatPick-API-5773319977624e3f898bc3952ed6080e) |
+| :--: | :--: | :--: | 
+
+
 
 
 ## 🧑🏻‍💻 HeatPick 팀원 소개
@@ -25,7 +31,13 @@
 | <a href="https://github.com/junbok97"><img src="https://avatars.githubusercontent.com/u/71696675?v=4" width="100"></a> | <a href="https://github.com/jungmin-lim"><img src="https://avatars.githubusercontent.com/u/32038936?v=4" width="100"></a> | <a href="https://github.com/hogumachu"><img src="https://avatars.githubusercontent.com/u/74225754?v=4" width="100"></a>| <a href="https://github.com/JeongSH1"><img src="https://avatars.githubusercontent.com/u/125888614?v=4" width="100"></a> | <a href="https://github.com/cgg7777"><img src="https://avatars.githubusercontent.com/u/51906365?v=4" width="100"></a> |
 | [junbok97](https://github.com/junbok97) | [jungmin-lim](https://github.com/jungmin-lim) | [hogumachu](https://github.com/hogumachu) | [JeongSH1](https://github.com/JeongSH1) | [cgg7777](https://github.com/cgg7777) |
 
-## 주요 기능 소개
+
+
+ ## ⭐️ 프로젝트 소개
+ ![MVP](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/b70d0619-1218-4233-ad26-933447e238de)
+
+
+## 💡 주요 기능 소개
 
 ### 위치 기반 추천
 > 현재 위치를 기반으로 사용자와 스토리를 추천해줍니다.
@@ -55,13 +67,6 @@
 ![clustering](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/32038936/30547f63-76fd-4dd3-a674-3f98ed7cbcd8)
 
 
-## 📔 문서
-
-HeatPick의 상세한 개발 일지를 확인하고 싶다면 ?? <br>
-HeatPick Wiki를 확인해보세요 !!
-| 📑 [HeatPick Wiki](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki) | 🎨 [앱 디자인](https://www.figma.com/file/sKuM4zMuSVKnHoZzEppqOV/%EB%B6%80%EC%8A%A4%ED%8A%B8%EC%BA%A0%ED%94%84-%EA%B7%B8%EB%A3%B9-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&node-id=0%3A1&mode=design&t=SIloOfX3kCUMJh6u-1) | 📝 [API](https://junbok97.notion.site/junbok97/HeatPick-API-5773319977624e3f898bc3952ed6080e) |
-| :--: | :--: | :--: | 
-
 
 
 ## 🛠️ 기술 스택
@@ -69,7 +74,7 @@ HeatPick Wiki를 확인해보세요 !!
 
 <img src = https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/4b500dfe-0558-477f-abef-4272e7d1acdd>
 
-## 아키텍쳐
+## 🏗️ 아키텍쳐
 ### 🍎 iOS
 <img src = "https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/3ddb9978-776b-4e8f-968e-5eebaeff9c5b">
 
