@@ -13,6 +13,8 @@
     2023.11.06 ~ 2023.12.15</i>
 </p>
 
+- [HeatPick🔥 설치하기](https://hogumachu.github.io/articles/heatpick/)
+ 
 
 
 ## 🧑🏻‍💻 HeatPick 팀원 소개
@@ -34,19 +36,30 @@ HeatPick Wiki를 확인해보세요 !!
 
 
 
-## ⚒️🛠️기술 스택
+## 🛠️ 기술 스택
 - [🔗 Wiki 기술 스택 소개](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%83%9D-%EC%86%8C%EA%B0%9C)
 
 <img src = https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/4b500dfe-0558-477f-abef-4272e7d1acdd>
 
-## 기술 선택 과정
-
+## 🤔 기술 선택 과정
 ### 🍎 iOS
 - [Architecture 선택 과정](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%EB%A1%9D%5D-iOS-Architecture-%EC%84%A0%ED%83%9D-%EA%B3%BC%EC%A0%95)
 - [Tuist 선택 과정](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%EB%A1%9D%5D-Tuist)
+- [빠르게 빠르게 vs 깊게](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B의사결정록%5D-iOS-개발-빠르게-빠르게-vs-깊게)
+- [모듈화](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B의사결정록%5D-모듈화)
 
 ### 🌐 Backend 
 - [DB 선택 과정](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/DB-%EC%84%A0%ED%83%9D-%EA%B3%BC%EC%A0%95)
 - [TypeORM 선택 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/ORM%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
 - [Docker 선택 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/Docker%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
 - [Github Action 선택 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/Github-Action%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
+- [DB서버와 서비스 서버를 분리한 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%84%9C%EB%B2%84%EC%99%80-DB-%EC%84%9C%EB%B2%84%EB%A5%BC-%EB%B6%84%EB%A6%AC%ED%95%9C-%EC%9D%B4%EC%9C%A0)
+- [자동완성을 위한 Trie 구조를 제거하고, naver cloud search로 대체한 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EC%9E%90%EB%8F%99%EC%99%84%EC%84%B1%EC%9D%84-%EC%9C%84%ED%95%9C-Trie-%EA%B5%AC%EC%A1%B0%EB%A5%BC-%EC%A0%9C%EA%B1%B0%ED%95%98%EA%B3%A0,-naver-cloud-search%EB%A1%9C-%EB%8C%80%EC%B2%B4%ED%95%9C-%EC%9D%B4%EC%9C%A0)
+
+## 아키텍쳐
+### 🍎 iOS
+<img src = "https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/3ddb9978-776b-4e8f-968e-5eebaeff9c5b">
+
+
+### 🌐 Backend 
+<img src = "https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/ce35b3c8-6855-4c56-94a8-d537b919db36">
