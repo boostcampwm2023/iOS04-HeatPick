@@ -9,7 +9,15 @@
 | [junbok97](https://github.com/junbok97) | [jungmin-lim](https://github.com/jungmin-lim) | [hogumachu](https://github.com/hogumachu) | [JeongSH1](https://github.com/JeongSH1) | [cgg7777](https://github.com/cgg7777) |
 
 
-# 🔨 프로젝트 소개
+# 🔥 프로젝트 소개
+
+<p align="center">
+    <img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/724d9780-54f2-4632-83bb-05ebe1a1088e" width=20% />
+</p>
+<p align="center">
+    HeatPick은 위치기반으로 여러분의 일상을 <br>
+    기록하고 공유하는 플랫폼입니다. 
+</p>
 
 ![image](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/74225754/0362fbd9-e89f-4900-9d31-bef8f353c59e)
 
@@ -32,8 +40,15 @@
 
 
 # 📔 문서
-- 🏝️ [그라운드 룰](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%F0%9F%8F%9D%EF%B8%8F-%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)
-- 🎨 [앱 디자인](https://www.figma.com/file/sKuM4zMuSVKnHoZzEppqOV/%EB%B6%80%EC%8A%A4%ED%8A%B8%EC%BA%A0%ED%94%84-%EA%B7%B8%EB%A3%B9-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&node-id=0%3A1&mode=design&t=SIloOfX3kCUMJh6u-1)
-- 📇 [템플릿](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%F0%9F%93%87-%ED%85%9C%ED%94%8C%EB%A6%BF)
-- 📝 [API](https://junbok97.notion.site/junbok97/HeatPick-API-5773319977624e3f898bc3952ed6080e)
+| 📑 [WIKI](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki) | 🎨 [앱 디자인](https://www.figma.com/file/sKuM4zMuSVKnHoZzEppqOV/%EB%B6%80%EC%8A%A4%ED%8A%B8%EC%BA%A0%ED%94%84-%EA%B7%B8%EB%A3%B9-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&node-id=0%3A1&mode=design&t=SIloOfX3kCUMJh6u-1) | 📝 [API](https://junbok97.notion.site/junbok97/HeatPick-API-5773319977624e3f898bc3952ed6080e) |
+| :--: | :--: | :--: | 
 
+
+
+
+# 기술 스택
+- [🔗 Wiki 기술 스택 소개](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%83%9D-%EC%86%8C%EA%B0%9C)
+
+<img src = https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/4b500dfe-0558-477f-abef-4272e7d1acdd>
+
+## 기술 선택 과정
