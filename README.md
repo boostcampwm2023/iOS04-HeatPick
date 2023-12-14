@@ -1,6 +1,7 @@
 # iOS04 - HeatPick🔥
 
-
+- [HeatPick🔥 설치하기](https://hogumachu.github.io/articles/heatpick/)
+  
 ## ⭐️ 프로젝트 소개
 <p align="center">
     <img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/724d9780-54f2-4632-83bb-05ebe1a1088e" width=20% />
@@ -12,9 +13,9 @@
     <i>네이버 부스트캠프 웹・모바일 8기 그룹 프로젝트<br>
     2023.11.06 ~ 2023.12.15</i>
 </p>
-
-- [HeatPick🔥 설치하기](https://hogumachu.github.io/articles/heatpick/)
  
+ 
+ ![MVP](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/b70d0619-1218-4233-ad26-933447e238de)
 
 
 ## 🧑🏻‍💻 HeatPick 팀원 소개
