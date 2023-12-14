@@ -21,6 +21,8 @@ protocol MyPageUserDashboardPresentable: Presentable {
 
 protocol MyPageUserDashboardListener: AnyObject {
     func profileEditButtonDidTap()
+    func followerDidTap()
+    func followingDidTap()
 }
 
 protocol MyPageUserDashboardInteractorDependency: AnyObject {
@@ -63,6 +65,14 @@ final class MyPageUserDashboardInteractor: PresentableInteractor<MyPageUserDashb
         listener?.profileEditButtonDidTap()
     }
     
+    func followerDidTap() {
+        listener?.followerDidTap()
+    }
+    
+    func followingDidTap() {
+        listener?.followingDidTap()
+    }
+    
 }
 
 private extension MyProfile {
@@ -72,6 +82,7 @@ private extension MyProfile {
             userName: userName,
             profileImageURL: profileImageURL,
             follower: "\(followerCount)", // 팔로잉 변환 로직 추가
+            following: "\(followingCount)",
             storyCount: "\(storyCount)",
             experience: "\((experience * 100) / maxExperience)%",
             temperatureTitle: temperatureFeeling,

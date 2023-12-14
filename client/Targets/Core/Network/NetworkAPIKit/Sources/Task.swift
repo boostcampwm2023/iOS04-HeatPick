@@ -14,6 +14,7 @@ public enum Task {
     case data(Data)
     case json(Encodable)
     case url(parameters: [String: Any])
+    case path(String)
     case multipart(MultipartFormData)
     
 }

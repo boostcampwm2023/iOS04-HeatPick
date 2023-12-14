@@ -25,6 +25,7 @@ public enum AlertType {
     case didFailToLoadComments
     case didFailToSaveComment
     case didFailToImageLoad
+    case didFailToLoadFollowList
     
 }
 
@@ -47,6 +48,7 @@ extension AlertType {
         case .didFailToLoadComments: return "댓글 정보 획득 실패"
         case .didFailToSaveComment: return "댓글 작성 실패"
         case .didFailToImageLoad: return "이미지 로드 실패"
+        case .didFailToLoadFollowList: return "팔로워/팔로잉 유저 정보 획득 실패"
         }
     }
     
@@ -67,6 +69,7 @@ extension AlertType {
         case .didFailToLoadComments: return "댓글을 불러오는데 실패했어요.\n 확인 버튼을 누르면 이전화면으로 이동해요."
         case .didFailToSaveComment: return "댓글 작성에 실패했어요.\n 다시 시도하시겠어요?"
         case .didFailToImageLoad: return "지원하지 않는 이미지 타입이에요."
+        case .didFailToLoadFollowList: return "팔로워/팔로잉 유저 정보를 가져오는데 실패했어요\n 확인 버튼을 누르면 이전화면으로 이동해요."
         }
     }
     
@@ -87,6 +90,7 @@ extension AlertType {
         case .didFailToLoadComments: return false
         case .didFailToSaveComment: return true
         case .didFailToImageLoad: return false
+        case .didFailToLoadFollowList: return false
         }
     }
     

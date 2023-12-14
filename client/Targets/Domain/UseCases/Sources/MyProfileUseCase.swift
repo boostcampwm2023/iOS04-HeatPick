@@ -115,4 +115,11 @@ public final class MyProfileUseCase: MyProfileUseCaseInterface {
         await repository.checkUsername(username: username)
     }
     
+    public func fetchFollowers() async -> Result<[SearchUser], Error> {
+        await repository.requestFollowers()
+    }
+    
+    public func fetchFollowings() async -> Result<[SearchUser], Error> {
+        await repository.requestFollowings()
+    }
 }

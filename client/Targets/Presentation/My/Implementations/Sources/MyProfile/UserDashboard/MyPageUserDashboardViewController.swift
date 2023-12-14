@@ -12,12 +12,15 @@ import DesignKit
 
 protocol MyPageUserDashboardPresentableListener: AnyObject {
     func profileEditButtonDidTap()
+    func followerDidTap()
+    func followingDidTap()
 }
 
 struct MyProfileViewControllerModel {
     let userName: String
     let profileImageURL: String?
     let follower: String
+    let following: String
     let storyCount: String
     let experience: String
     let temperatureTitle: String
@@ -61,6 +64,7 @@ final class MyPageUserDashboardViewController: UIViewController, MyPageUserDashb
         userView.setup(model: .init(
             profileImageURL: model.profileImageURL,
             follower: model.follower,
+            following: model.following,
             isFollow: false,
             story: model.storyCount,
             experience: model.experience
@@ -76,6 +80,14 @@ extension MyPageUserDashboardViewController: MyPageUserViewDelegate {
     
     func profileEditButtonDidTap() {
         listener?.profileEditButtonDidTap()
+    }
+    
+    func followerDidTap() {
+        listener?.followerDidTap()
+    }
+    
+    func followingDidTap() {
+        listener?.followingDidTap()
     }
     
 }

@@ -12,11 +12,14 @@ import DesignKit
 
 protocol UserProfileUserViewDelegate: AnyObject {
     func followButtonDidTap()
+    func followerDidTap()
+    func followingDidTap()
 }
 
 struct UserProfileUserViewModel {
     let profileImageURL: String?
     let follower: String
+    let following: String
     let isFollow: Bool
     let story: String
     let experience: String
@@ -81,9 +84,17 @@ final class UserProfileUserView: UIView {
         return button
     }()
     
-    private let followerView: ProfileUserContnetView = {
+    private lazy var followerView: ProfileUserContnetView = {
         let view = ProfileUserContnetView()
         view.updateTitle("😀 팔로워")
+        view.addTapGesture(target: self, action: #selector(followerDidTap))
+        return view
+    }()
+    
+    private lazy var followingView: ProfileUserContnetView = {
+        let view = ProfileUserContnetView()
+        view.updateTitle("😀 팔로잉")
+        view.addTapGesture(target: self, action: #selector(followingDidTap))
         return view
     }()
     
@@ -103,7 +114,7 @@ final class UserProfileUserView: UIView {
         setupViews()
     }
     
-    func setup(model: MyPageUserViewModel) {
+    func setup(model: UserProfileUserViewModel) {
         if let profileImageURL = model.profileImageURL,
            !profileImageURL.isEmpty {
             profileImageView.load(from: model.profileImageURL)
@@ -111,6 +122,7 @@ final class UserProfileUserView: UIView {
         
         updateFollowButton(model.isFollow)
         followerView.updateContent(model.follower)
+        followingView.updateContent(model.following)
         storyView.updateContent(model.story)
     }
     
@@ -127,6 +139,15 @@ private extension UserProfileUserView {
         delegate?.followButtonDidTap()
         followButton.startLoading()
     }
+    
+    @objc func followerDidTap(){
+        delegate?.followerDidTap()
+    }
+    
+    @objc func followingDidTap() {
+        delegate?.followingDidTap()
+    }
+
 }
 
 private extension UserProfileUserView {
@@ -134,7 +155,7 @@ private extension UserProfileUserView {
     func setupViews() {
         [profileStackView, contentStackView].forEach(addSubview)
         [profileImageView, followButton].forEach(profileStackView.addArrangedSubview)
-        [followerView, storyView].forEach(contentStackView.addArrangedSubview)
+        [followerView, followingView, storyView].forEach(contentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([
             profileImageView.widthAnchor.constraint(equalToConstant: Constant.profileImageViewWidth),
