@@ -26,7 +26,21 @@
 
 ## 주요 기능 소개
 
-![image](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/74225754/0362fbd9-e89f-4900-9d31-bef8f353c59e)
+### 위치 기반 추천
+> 현재 위치를 기반으로 사용자와 스토리를 추천해줍니다.
+
+![1](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/212c6e4e-5704-4316-af74-bcb01a155bb0)
+
+
+## 위치 기반 글 작성
+> 원하는 위치에서 스토리를 작성합니다
+
+![2](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/8164513e-77c4-4fb0-81db-0acfa9af4bca)
+
+## 댓글 작성
+> 스토리에 댓글을 작성합니다.
+
+![3](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/87d71769-1055-4634-b75b-b6cb94863601)
 
 ## 📔 문서
 HeatPick의 상세한 개발 일지를 확인하고 싶다면 ?? <br>
