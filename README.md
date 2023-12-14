@@ -68,6 +68,14 @@ HeatPick Wiki를 확인해보세요 !!
 
 <img src = https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/4b500dfe-0558-477f-abef-4272e7d1acdd>
 
+## 아키텍쳐
+### 🍎 iOS
+<img src = "https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/3ddb9978-776b-4e8f-968e-5eebaeff9c5b">
+
+
+### 🌐 Backend 
+<img src = "https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/ce35b3c8-6855-4c56-94a8-d537b919db36">
+
 ## 🤔 기술 선택 과정
 ### 🍎 iOS
 - [Architecture 선택 과정](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%EB%A1%9D%5D-iOS-Architecture-%EC%84%A0%ED%83%9D-%EA%B3%BC%EC%A0%95)
@@ -83,10 +91,28 @@ HeatPick Wiki를 확인해보세요 !!
 - [DB서버와 서비스 서버를 분리한 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%84%9C%EB%B2%84%EC%99%80-DB-%EC%84%9C%EB%B2%84%EB%A5%BC-%EB%B6%84%EB%A6%AC%ED%95%9C-%EC%9D%B4%EC%9C%A0)
 - [자동완성을 위한 Trie 구조를 제거하고, naver cloud search로 대체한 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EC%9E%90%EB%8F%99%EC%99%84%EC%84%B1%EC%9D%84-%EC%9C%84%ED%95%9C-Trie-%EA%B5%AC%EC%A1%B0%EB%A5%BC-%EC%A0%9C%EA%B1%B0%ED%95%98%EA%B3%A0,-naver-cloud-search%EB%A1%9C-%EB%8C%80%EC%B2%B4%ED%95%9C-%EC%9D%B4%EC%9C%A0)
 
-## 아키텍쳐
-### 🍎 iOS
-<img src = "https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/3ddb9978-776b-4e8f-968e-5eebaeff9c5b">
 
 
-### 🌐 Backend 
-<img src = "https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/ce35b3c8-6855-4c56-94a8-d537b919db36">
+## 기술적 도전
+
+### 배포 및 자동화
+개발을 진행하는 과정에서 iOS-server 간 개발속도의 차이로 인한 불편함을 체감하였습니다.
+따라서 서버의 개발이 완료되는 즉시 iOS측에서 테스트할 수 있는 환경을 마련하는 것이 필요하다고 생각하였고
+배포 및 자동화를 최우선 순위로 설정하여 진행하였습니다.
+* [SSH Tunneling](https://jolly-restaurant-d2f.notion.site/SSH-f87fdf38092845b7a0c6b9741ff8f1f9?pvs=4)
+* [Docker, Github Action](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/Docker%EC%99%80-Github-Action%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%B4%EC%84%9C-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0)
+* [Nginx Https](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/Nginx%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EC%84%9C-HTTPS-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0)
+
+### ORM
+ORM은 쿼리를 직접 작성할 필요가 없어서 분명 편리하지만 동작 방식에 대해 분명히 이해하고 있어야 효과적으로 사용할 수 있었습니다. 
+프로젝트를 진행하면서, ORM 내에서 Transaction을 직접 제어할 필요가 있었고, Cascade 속성을 통해 부모의 상태 변화에 따른 자식의 영향, lazy-loading을 이용해 발생한 N+1문제와 성능 개선, 복잡한 쿼리를 제어하기 위해 사용한 Query Builder도 수행해 보았습니다.
+  * [Transaction](https://jolly-restaurant-d2f.notion.site/TypeORM-Transaction-bc4813ae5f28419e9a19cbb548165d39?pvs=4)
+  * [Cascade](https://jolly-restaurant-d2f.notion.site/TypeORM-Cascade-bd8f872c4d054c58b3ade31adb12183a?pvs=4)
+  * [lazy-loading](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/TypeORM-%E2%80%90-Lazy-Loading)
+  * [Query-Builder](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/TypeORM-%E2%80%90-Query-Builder)
+
+
+### 푸시 서비스
+저희 프로젝트에서 알림 서비스를 도입을 위해 Firebase Cloud Messaging을 사용했고 푸시 요청을 책임지는 푸시 서버를 만들어 서비스 했습니다. 푸시 서버를 만들면서 푸시 요청의 흐름에 대해 학습할 수 있었고, 별도로 Message Queue 패턴을 학습하고 실제 적용해보며, 비동기적으로 작업하고, 시스템 장애에 따른 메세지 소실이 없도록 하기 위해서 해당 프로젝트에 적용하여 수행하였습니다.
+* [푸시서버 - 1](https://jolly-restaurant-d2f.notion.site/1-aa4d006da0e743ed91fb417dd868e5f6?pvs=4)
+* [푸시서버 - 2](https://jolly-restaurant-d2f.notion.site/2-4face9d0445743c1abe45caee63f3a7d?pvs=4)
