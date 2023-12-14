@@ -101,7 +101,7 @@ export class StoryService {
     story.user = Promise.resolve(user);
     await this.storyRepository.save(story);
 
-    if (badge) await this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: userId, exp: 10 });
+    if (badge) await this.userService.addBadgeExp({ badgeName: badge.badgeName, userId: userId, exp: 100 });
     return { storyId: story.storyId, badge: { badgeEmoji: `${strToEmoji[story.badge.badgeName]}`, badgeName: story.badge.badgeName, prevExp: badge.badgeExp - 10, nowExp: badge.badgeExp } };
   }
 
