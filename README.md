@@ -1,7 +1,7 @@
-# iOS04-HeatPick
+# iOS04 - HeatPick🔥
 
 
-## 🔥 프로젝트 소개
+## ⭐️ 프로젝트 소개
 <p align="center">
     <img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/724d9780-54f2-4632-83bb-05ebe1a1088e" width=20% />
 </p>
@@ -16,15 +16,11 @@
 
 
 ## 🧑🏻‍💻 HeatPick 팀원 소개
-<p align="center">
-
 | 🍎 iOS | 🍎 iOS | 🍎 iOS | 🌐 Backend | 🌐 Backend |
 | :--: | :--: | :--: | :--: | :--: |
 | S029_이준복 | S031_임정민 | S042_홍성준 | J138_정세호 | J154_최검기 |
 | <a href="https://github.com/junbok97"><img src="https://avatars.githubusercontent.com/u/71696675?v=4" width="100"></a> | <a href="https://github.com/jungmin-lim"><img src="https://avatars.githubusercontent.com/u/32038936?v=4" width="100"></a> | <a href="https://github.com/hogumachu"><img src="https://avatars.githubusercontent.com/u/74225754?v=4" width="100"></a>| <a href="https://github.com/JeongSH1"><img src="https://avatars.githubusercontent.com/u/125888614?v=4" width="100"></a> | <a href="https://github.com/cgg7777"><img src="https://avatars.githubusercontent.com/u/51906365?v=4" width="100"></a> |
 | [junbok97](https://github.com/junbok97) | [jungmin-lim](https://github.com/jungmin-lim) | [hogumachu](https://github.com/hogumachu) | [JeongSH1](https://github.com/JeongSH1) | [cgg7777](https://github.com/cgg7777) |
-
-</p>
 
 ## 주요 기능 소개
 
@@ -38,7 +34,7 @@ HeatPick Wiki를 확인해보세요 !!
 
 
 
-## 기술 스택
+## ⚒️🛠️기술 스택
 - [🔗 Wiki 기술 스택 소개](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%83%9D-%EC%86%8C%EA%B0%9C)
 
 <img src = https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/4b500dfe-0558-477f-abef-4272e7d1acdd>
@@ -50,3 +46,7 @@ HeatPick Wiki를 확인해보세요 !!
 - [Tuist 선택 과정](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%EB%A1%9D%5D-Tuist)
 
 ### 🌐 Backend 
+- [DB 선택 과정](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/DB-%EC%84%A0%ED%83%9D-%EA%B3%BC%EC%A0%95)
+- [TypeORM 선택 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/ORM%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
+- [Docker 선택 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/Docker%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
+- [Github Action 선택 이유](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/Github-Action%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
