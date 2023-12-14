@@ -1,6 +1,6 @@
-# iOS04 - HeatPick🔥
+# iOS04 - HeatPick
 
-- [HeatPick🔥 설치하기](https://hogumachu.github.io/articles/heatpick/)
+- [HeatPick 설치하기](https://hogumachu.github.io/articles/heatpick/)
   
 ## 🔥 HeatPick 소개  
 <p align="center">
