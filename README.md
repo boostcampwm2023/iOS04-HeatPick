@@ -14,7 +14,7 @@
     2023.11.06 ~ 2023.12.15</i>
 </p>
  
- 
+ ### MVP
  ![MVP](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/b70d0619-1218-4233-ad26-933447e238de)
 
 
