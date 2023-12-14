@@ -2,7 +2,7 @@
 
 - [HeatPick🔥 설치하기](https://hogumachu.github.io/articles/heatpick/)
   
-## ⭐️ 프로젝트 소개
+## 🔥 HeatPick 소개  
 <p align="center">
     <img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/724d9780-54f2-4632-83bb-05ebe1a1088e" width=20% />
 </p>
