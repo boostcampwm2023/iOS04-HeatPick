@@ -51,7 +51,7 @@ final class AppRootComponent: Component<AppRootDependency>,
     let homeUseCase: HomeUseCaseInterface
     let locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces
     let storyUseCase: StoryUseCaseInterface
-    let myPageUseCase: MyProfileUseCaseInterface
+    let myProfileUseCase: MyProfileUseCaseInterface
     let userProfileUseCase: UserProfileUseCaseInterface
     let searchUseCase: SearchUseCaseInterface
     let followingUseCase: FollowingUseCaseInterface
@@ -122,7 +122,7 @@ final class AppRootComponent: Component<AppRootDependency>,
         self.storyUseCase = StoryUseCase(repository: StoryRepository(session: storyNetworkProvider), locationService: locationService)
         
         let myPageNetworkProvider = AppRootComponent.generateNetworkProvider(isDebug: false, protocols: [MyURLProtocol.self])
-        self.myPageUseCase = MyProfileUseCase(repository: MyProfileRepository(session: myPageNetworkProvider))
+        self.myProfileUseCase = MyProfileUseCase(repository: MyProfileRepository(session: myPageNetworkProvider))
         self.signOutRequestService = SignoutService.shared
         
         self.userProfileUseCase = UserProfileUseCase(repository: UserProfileRepository(session: myPageNetworkProvider))

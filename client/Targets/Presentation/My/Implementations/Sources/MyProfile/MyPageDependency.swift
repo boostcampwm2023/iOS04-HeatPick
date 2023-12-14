@@ -15,11 +15,13 @@ import DomainInterfaces
 // MARK: Builder
 public protocol MyPageDependency: Dependency {
     
-    var myPageUseCase: MyProfileUseCaseInterface { get }
+    var myProfileUseCase: MyProfileUseCaseInterface { get }
+    var userProfileUseCase: UserProfileUseCaseInterface { get }
     var signOutRequestService: SignOutRequestServiceInterface { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { get }
     var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { get }
+    var userProfileBuilder: UserProfileBuildable { get }
     
 }
 
@@ -29,17 +31,21 @@ final class MyPageComponent: Component<MyPageDependency>,
                              ProfileStoryDashboardSeeAllDependency,
                              MyPageInteractorDependency,
                              SettingDependency,
-                             MyProfileUpdateUserDashboardDependency {
+                             MyProfileUpdateUserDashboardDependency,
+                             FollowListDependency {
     
-    var myPageUseCase: MyProfileUseCaseInterface { dependency.myPageUseCase }
-    var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.myPageUseCase }
-    var profileStoryDashboardUseCase: ProfileStoryDashboardUseCaseInterface { dependency.myPageUseCase }
-    var myPageUpdateUserUseCase: MyProfileUpdateUserUseCaseInterface { dependency.myPageUseCase }
-    var myProfileSettingUseCase: MyProfileSettingUseCaseInterface { dependency.myPageUseCase }
+    
+    var myProfileUseCase: MyProfileUseCaseInterface { dependency.myProfileUseCase }
+    var userProfileUseCase: UserProfileUseCaseInterface { dependency.userProfileUseCase }
+    var profileUserDashboardUseCaseInterface: ProfileUserDashboardUseCaseInterface { dependency.myProfileUseCase }
+    var profileStoryDashboardUseCase: ProfileStoryDashboardUseCaseInterface { dependency.myProfileUseCase }
+    var myPageUpdateUserUseCase: MyProfileUpdateUserUseCaseInterface { dependency.myProfileUseCase }
+    var myProfileSettingUseCase: MyProfileSettingUseCaseInterface { dependency.myProfileUseCase }
     var signOutRequestService: SignOutRequestServiceInterface { dependency.signOutRequestService }
     var storyDetailBuilder: StoryDetailBuildable { dependency.storyDetailBuilder }
     var locationAuthorityUseCase: LocationAuthorityUseCaseInterfaces { dependency.locationAuthorityUseCase }
     var notificationPermissionUseCase: NotificationPermissionUseCaseInterface { dependency.notificationPermissionUseCase }
+    var userProfileBuilder: UserProfileBuildable { dependency.userProfileBuilder }
     
     override init(dependency: MyPageDependency) {
         super.init(dependency: dependency)
@@ -57,6 +63,7 @@ protocol MypageRouterDependency: AnyObject {
     var settingBuilder: SettingBuildable { get }
     var storyDetailBuilder: StoryDetailBuildable { get }
     var updateUserDashboardBuilder: MyProfileUpdateUserDashboardBuildable { get }
+    var followListBuilder: FollowListBuildable { get }
     
 }
 
@@ -68,6 +75,7 @@ final class MyPageRouterComponent: MypageRouterDependency {
     let settingBuilder: SettingBuildable
     let storyDetailBuilder: StoryDetailBuildable
     let updateUserDashboardBuilder: MyProfileUpdateUserDashboardBuildable
+    let followListBuilder: FollowListBuildable
     
     init(component: MyPageComponent) {
         self.userDashboardBuilder = MyPageUserDashboardBuilder(dependency: component)
@@ -76,6 +84,7 @@ final class MyPageRouterComponent: MypageRouterDependency {
         self.settingBuilder = SettingBuilder(dependency: component)
         self.storyDetailBuilder = component.storyDetailBuilder
         self.updateUserDashboardBuilder = MyProfileUpdateUserDashboardBuilder(dependency: component)
+        self.followListBuilder = FollowListBuilder(dependency: component)
     }
     
 }
@@ -83,5 +92,5 @@ final class MyPageRouterComponent: MypageRouterDependency {
 
 // MARK: Interactor
 protocol MyPageInteractorDependency: AnyObject {
-    var myPageUseCase: MyProfileUseCaseInterface { get }
+    var myProfileUseCase: MyProfileUseCaseInterface { get }
 }

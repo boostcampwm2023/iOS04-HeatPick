@@ -16,5 +16,7 @@ public protocol MyProfileRepositoryInterface: ProfileRepositoryInterface {
     func patchUserUpdate(userUpdate: UserUpdateContent) async -> Result<Int, Error>
     func requestResign(message: String) async -> Result<Void, Error>
     func checkUsername(username: String) async -> Result<Void, Error>
+    func requestFollowers() async -> Result<[SearchUser], Error>
+    func requestFollowings() async -> Result<[SearchUser], Error>
     
 }

@@ -12,6 +12,8 @@ import DesignKit
 
 protocol UserProfileUserDashboardPresentableListener: AnyObject {
     func followButtonDidTap()
+    func followerDidTap()
+    func followingDidTap()
 }
 
 struct UserProfileViewControllerModel {
@@ -19,6 +21,7 @@ struct UserProfileViewControllerModel {
     let profileImageURL: String?
     let isFollow: Bool
     let follower: String
+    let following: String
     let storyCount: String
     let experience: String
     let temperatureTitle: String
@@ -63,6 +66,7 @@ final class UserProfileUserDashboardViewController: UIViewController, UserProfil
         userView.setup(model: .init(
             profileImageURL: model.profileImageURL,
             follower: model.follower,
+            following: model.following,
             isFollow: model.isFollow,
             story: model.storyCount,
             experience: model.experience
@@ -81,6 +85,14 @@ extension UserProfileUserDashboardViewController: UserProfileUserViewDelegate {
     
     func followButtonDidTap() {
         listener?.followButtonDidTap()
+    }
+    
+    func followerDidTap() {
+        listener?.followerDidTap()
+    }
+    
+    func followingDidTap() {
+        listener?.followingDidTap()
     }
     
 }

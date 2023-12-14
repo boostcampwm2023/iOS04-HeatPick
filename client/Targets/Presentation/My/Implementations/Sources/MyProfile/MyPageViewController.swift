@@ -22,7 +22,7 @@ public final class MyPageViewController: BaseViewController, MyPagePresentable, 
     weak var listener: MyPagePresentableListener?
 
     private enum Constant {
-        static let tabBarTitle = "마이"
+        static let tabBarTitle = "프로필"
         static let tabBarImage = "person"
         static let tabBarImageSelected = "person.fill"
         static let contentInset: UIEdgeInsets = .init(top: 20, left: 0, bottom: 20, right: 0)

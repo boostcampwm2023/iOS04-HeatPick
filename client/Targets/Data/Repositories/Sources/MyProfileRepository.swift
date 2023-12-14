@@ -64,4 +64,18 @@ public final class MyProfileRepository: MyProfileRepositoryInterface {
         await session.request(MyAPI.checkUserName(username: username))
     }
 
+    public func requestFollowers() async -> Result<[SearchUser], Error> {
+        let target = MyAPI.myFollowers
+        let request: Result<FollowListResponseDTO, Error> = await session.request(target)
+        
+        return request.map { $0.toDomain() }
+    }
+
+    public func requestFollowings() async -> Result<[SearchUser], Error> {
+        let target = MyAPI.myFollowings
+        let request: Result<FollowListResponseDTO, Error> = await session.request(target)
+        
+        return request.map { $0.toDomain() }
+    }
+    
 }

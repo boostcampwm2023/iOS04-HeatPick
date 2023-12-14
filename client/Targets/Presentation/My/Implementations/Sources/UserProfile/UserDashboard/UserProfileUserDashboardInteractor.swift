@@ -26,6 +26,8 @@ protocol UserProfileUserDashboardPresentable: Presentable {
 
 protocol UserProfileUserDashboardListener: AnyObject  {
     func fetchProfile()
+    func followerDidTap()
+    func followingDidTap()
 }
 
 protocol UserProfileUserDashboardInteractorDependency: AnyObject {
@@ -76,6 +78,14 @@ final class UserProfileUserDashboardInteractor: PresentableInteractor<UserProfil
         isFollow ? unfollow() : follow()
     }
     
+    func followerDidTap() {
+        listener?.followerDidTap()
+    }
+    
+    func followingDidTap() {
+        listener?.followingDidTap()
+    }
+    
 }
 
 private extension UserProfileUserDashboardInteractor {
@@ -124,6 +134,7 @@ private extension UserProfile {
             profileImageURL: profileImageURL,
             isFollow: isFollow,
             follower: "\(followerCount)",
+            following: "\(followingCount)",
             storyCount: "\(storyCount)",
             experience: "\((experience * 100) / maxExperience)%",
             temperatureTitle: temperatureFeeling,

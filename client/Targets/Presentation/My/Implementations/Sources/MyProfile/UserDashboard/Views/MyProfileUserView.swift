@@ -12,11 +12,14 @@ import DesignKit
 
 protocol MyPageUserViewDelegate: AnyObject {
     func profileEditButtonDidTap()
+    func followerDidTap()
+    func followingDidTap()
 }
 
 struct MyPageUserViewModel {
     let profileImageURL: String?
     let follower: String
+    let following: String
     let isFollow: Bool
     let story: String
     let experience: String
@@ -79,9 +82,17 @@ final class MyProfileUserView: UIView {
         return button
     }()
     
-    private let followerView: ProfileUserContnetView = {
+    private lazy var followerView: ProfileUserContnetView = {
         let view = ProfileUserContnetView()
         view.updateTitle("😀 팔로워")
+        view.addTapGesture(target: self, action: #selector(followerDidTap))
+        return view
+    }()
+    
+    private lazy var followingView: ProfileUserContnetView = {
+        let view = ProfileUserContnetView()
+        view.updateTitle("😀 팔로잉")
+        view.addTapGesture(target: self, action: #selector(followingDidTap))
         return view
     }()
     
@@ -108,6 +119,7 @@ final class MyProfileUserView: UIView {
         } else { profileImageView.image = .profileDefault }
         
         followerView.updateContent(model.follower)
+        followingView.updateContent(model.following)
         storyView.updateContent(model.story)
     }
     
@@ -119,13 +131,21 @@ private extension MyProfileUserView {
         delegate?.profileEditButtonDidTap()
     }
     
+    @objc func followerDidTap(){
+        delegate?.followerDidTap()
+    }
+    
+    @objc func followingDidTap() {
+        delegate?.followingDidTap()
+    }
+    
 }
 
 private extension MyProfileUserView {
     
     func setupViews() {
         [profileImageView, containerContentStackView].forEach(addSubview)
-        [followerView, storyView].forEach(contentStackView.addArrangedSubview)
+        [followerView, followingView, storyView].forEach(contentStackView.addArrangedSubview)
         [contentStackView, profileEditButton].forEach(containerContentStackView.addArrangedSubview)
         
         NSLayoutConstraint.activate([

@@ -17,6 +17,7 @@ public struct Profile {
     public let temperature: Double
     public let temperatureFeeling: String
     public let followerCount: Int
+    public let followingCount: Int
     public let storyCount: Int
     public let experience: Int
     public let maxExperience: Int
@@ -31,6 +32,7 @@ public struct Profile {
         temperature: Double,
         temperatureFeeling: String,
         followerCount: Int,
+        followingCount: Int,
         storyCount: Int,
         experience: Int,
         maxExperience: Int,
@@ -44,6 +46,7 @@ public struct Profile {
         self.temperature = temperature
         self.temperatureFeeling = temperatureFeeling
         self.followerCount = followerCount
+        self.followingCount = followingCount
         self.storyCount = storyCount
         self.experience = experience
         self.maxExperience = maxExperience

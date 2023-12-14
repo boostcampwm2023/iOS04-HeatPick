@@ -15,4 +15,6 @@ public protocol UserProfileUseCaseInterface: ProfileUserDashboardUseCaseInterfac
                                               ProfileStoryDashboardUseCaseInterface {
     
     func fetchUserProfile(userId: Int) async -> Result<Profile, Error>
+    func fetchFollowers(userId: Int) async -> Result<[SearchUser], Error>
+    func fetchFollowings(userId: Int) async -> Result<[SearchUser], Error>
 }

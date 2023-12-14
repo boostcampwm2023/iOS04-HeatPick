@@ -99,5 +99,12 @@ public final class UserProfileUseCase: UserProfileUseCaseInterface {
         await repository.requestUnfollow(userId: userId)
     }
     
+    public func fetchFollowers(userId: Int) async -> Result<[SearchUser], Error> {
+        await repository.requestFollowers(userId: userId)
+    }
+    
+    public func fetchFollowings(userId: Int) async -> Result<[SearchUser], Error> {
+        await repository.requestFollowings(userId: userId)
+    }
 }
 
