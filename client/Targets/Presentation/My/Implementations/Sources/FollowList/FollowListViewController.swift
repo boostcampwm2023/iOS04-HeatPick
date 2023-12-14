@@ -44,6 +44,8 @@ final class FollowListViewController: BaseViewController,
     }
     
     override func setupAttributes() {
+        view.backgroundColor = .hpWhite
+        
         navigationView.do {
             $0.setup(model: .init(title: listener?.title ?? "",
                                   leftButtonType: .back,
