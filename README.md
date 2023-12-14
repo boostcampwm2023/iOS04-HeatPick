@@ -35,7 +35,7 @@
 ## 위치 기반 글 작성
 > 원하는 위치에서 스토리를 작성합니다
 
-![글작성 (1)](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/93eabfd5-1d3c-4453-9e21-51eead8779cf)
+![글작성](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/7413995f-17cc-4014-88d5-7db243b49fe4)
 
 
 ## 댓글 작성
@@ -43,7 +43,15 @@
 
 ![댓글쓰기](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/efd740e4-5840-4f9b-99b8-58c0cc65d108)
 
+## 검색
+> 원하는 키워드로 검색합니다.
 
+![search](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/32038936/05d8968d-8f22-4d0c-97d8-6ba8c6d172fe)
+
+## 클러스터링
+> 지도에서 스토리목록을 클러스터링 합니다.
+
+![clustering](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/32038936/30547f63-76fd-4dd3-a674-3f98ed7cbcd8)
 
 
 ## 📔 문서
