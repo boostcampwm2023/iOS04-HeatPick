@@ -56,6 +56,7 @@
 
 
 ## 📔 문서
+
 HeatPick의 상세한 개발 일지를 확인하고 싶다면 ?? <br>
 HeatPick Wiki를 확인해보세요 !!
 | 📑 [HeatPick Wiki](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki) | 🎨 [앱 디자인](https://www.figma.com/file/sKuM4zMuSVKnHoZzEppqOV/%EB%B6%80%EC%8A%A4%ED%8A%B8%EC%BA%A0%ED%94%84-%EA%B7%B8%EB%A3%B9-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&node-id=0%3A1&mode=design&t=SIloOfX3kCUMJh6u-1) | 📝 [API](https://junbok97.notion.site/junbok97/HeatPick-API-5773319977624e3f898bc3952ed6080e) |
@@ -93,7 +94,7 @@ HeatPick Wiki를 확인해보세요 !!
 
 
 
-## 기술적 도전
+## 🏃🏻 기술적 도전
 
 ### 배포 및 자동화
 개발을 진행하는 과정에서 iOS-server 간 개발속도의 차이로 인한 불편함을 체감하였습니다.
@@ -116,3 +117,29 @@ ORM은 쿼리를 직접 작성할 필요가 없어서 분명 편리하지만 동
 저희 프로젝트에서 알림 서비스를 도입을 위해 Firebase Cloud Messaging을 사용했고 푸시 요청을 책임지는 푸시 서버를 만들어 서비스 했습니다. 푸시 서버를 만들면서 푸시 요청의 흐름에 대해 학습할 수 있었고, 별도로 Message Queue 패턴을 학습하고 실제 적용해보며, 비동기적으로 작업하고, 시스템 장애에 따른 메세지 소실이 없도록 하기 위해서 해당 프로젝트에 적용하여 수행하였습니다.
 * [푸시서버 - 1](https://jolly-restaurant-d2f.notion.site/1-aa4d006da0e743ed91fb417dd868e5f6?pvs=4)
 * [푸시서버 - 2](https://jolly-restaurant-d2f.notion.site/2-4face9d0445743c1abe45caee63f3a7d?pvs=4)
+
+## 🫠 트러블 슈팅
+### 1주차
+- [NaverLogin-SDK-iOS SPM 미지원 이슈](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-NaverLogin-SDK-iOS-SPM-%EB%AF%B8%EC%A7%80%EC%9B%90-%EC%9D%B4%EC%8A%88)
+- [홍성준 - 힛픽팀의 아키텍처 구조](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B1%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%ED%99%8D%EC%84%B1%EC%A4%80)
+- [홍성준 - 생산성 있는 네트워크](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B1%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%ED%99%8D%EC%84%B1%EC%A4%80-(%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC))
+
+### 2주차
+- [홍성준 - 모듈 템플릿](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B2%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%ED%99%8D%EC%84%B1%EC%A4%80)
+- [이준복 - NaverMap-SDK-iOS SPM만들기](https://junbok97.tistory.com/314)
+- [정세호, 최검기 - BE 이미지 처리](https://jolly-restaurant-d2f.notion.site/NestJS-c8af499ca65846ae88794095f9f78e40?pvs=4)
+
+### 3주차
+- [임정민 - multipart/form-data](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/임정민-%E2%80%90-multipart-form%E2%80%90data)
+- [홍성준 - 네트워크 요청](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B3%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%ED%99%8D%EC%84%B1%EC%A4%80)
+- [최검기 - Exception Filter, Slack 알림](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%EC%B5%9C%EA%B2%80%EA%B8%B0-%E2%80%90-Exception-Filter-&-Slack-Notification)
+### 4주차
+- [홍성준 - 인증 토큰 에러](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B4%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%ED%99%8D%EC%84%B1%EC%A4%80)
+- [이준복 - s의 중요성](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B4%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%EC%9D%B4%EC%A4%80%EB%B3%B5-%E2%80%90-s%EC%9D%98-%EC%A4%91%EC%9A%94%EC%84%B1)
+
+### 5주차
+- [홍성준 - Swipe Back](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B5%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%ED%99%8D%EC%84%B1%EC%A4%80)
+- [홍성준 - 클러스터링](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B5%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%ED%99%8D%EC%84%B1%EC%A4%80-(%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81))
+- [정세호 - Push Server-1](https://jolly-restaurant-d2f.notion.site/1-aa4d006da0e743ed91fb417dd868e5f6?pvs=4)
+- [정세호 - Push Server-2](https://jolly-restaurant-d2f.notion.site/2-4face9d0445743c1abe45caee63f3a7d?pvs=4)
+- [이준복 - 백엔드 지식의 중요성](https://github.com/boostcampwm2023/iOS04-HeatPick/wiki/%5B5%EC%A3%BC%EC%B0%A8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%EC%9D%B4%EC%A4%80%EB%B3%B5-%E2%80%90-%EB%B0%B1%EC%97%94%EB%93%9C-%EC%A7%80%EC%8B%9D%EC%9D%98-%EC%A4%91%EC%9A%94%EC%84%B1)
