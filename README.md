@@ -41,7 +41,7 @@ HeatPick Wiki를 확인해보세요 !!
 
 <table>
     <tr>
-    <th style="width: 33%;">현재 위치를 기반으로 사용자와 스토리를 추천해줍니다.</th>
+    <th style="width: 33%;">현재 위치를 기반으로<br>사용자와 스토리를 추천해줍니다.</th>
     <th style="width: 33%;">원하는 위치에서 스토리를 작성합니다.</th>
     <th style="width: 33%;">스토리에 댓글을 작성합니다.</th>
   </tr>
@@ -63,7 +63,7 @@ HeatPick Wiki를 확인해보세요 !!
   <tr>
     <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/11e95831-a0df-4951-8b8e-8b216b6fc876" style="width: 100%;"/></td>
     <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/c5c5e2ef-2e91-46e0-ba91-ce7835258360" style="width: 100%;"/></td>
-    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/19527562-3d25-4eed-bcd3-e95b6ad070b1" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/7509d54a-c7a0-4078-9abb-9b06132ab321" style="width: 100%;"/></td>
   </tr>
 </table>
 
