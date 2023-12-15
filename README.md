@@ -57,7 +57,7 @@ HeatPick Wiki를 확인해보세요 !!
 <table>
     <tr>
     <th style="width: 33%;">원하는 키워드로 검색합니다.</th>
-    <th style="width: 33%;">지도에서 스토리목록을 클러스터링 합니다.</th>
+    <th style="width: 33%;">지도에서 스토리들을 클러스터링 합니다.</th>
     <th style="width: 33%;">관심 있는 유저를 팔로잉합니다.</th>
   </tr>
   <tr>
