@@ -39,32 +39,34 @@ HeatPick Wiki를 확인해보세요 !!
 
 ## 💡 주요 기능 소개
 
-### 위치 기반 추천
-> 현재 위치를 기반으로 사용자와 스토리를 추천해줍니다.
+<table>
+    <tr>
+    <th style="width: 33%;">현재 위치를 기반으로<br>사용자와 스토리를 추천해줍니다.</th>
+    <th style="width: 33%;">원하는 위치에서 스토리를 작성합니다.</th>
+    <th style="width: 33%;">스토리에 댓글을 작성합니다.</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/b3e4f422-1d36-49df-b58b-6a43566aee81" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/c230faf9-4072-4913-9810-d20c94b89e46" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/8645df4a-1675-4577-a99f-d238873d940d" style="width: 100%;"/></td>
+  </tr>
+</table>
 
-![위치기반](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/80e0ffb0-796d-40bb-bb14-7ffa85ef0e32)
+<br>
 
+<table>
+    <tr>
+    <th style="width: 33%;">원하는 키워드로 검색합니다.</th>
+    <th style="width: 33%;">지도에서 스토리들을<br>클러스터링 합니다.</th>
+    <th style="width: 33%;">관심 있는 유저를 팔로잉합니다.</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/11e95831-a0df-4951-8b8e-8b216b6fc876" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/c5c5e2ef-2e91-46e0-ba91-ce7835258360" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/7509d54a-c7a0-4078-9abb-9b06132ab321" style="width: 100%;"/></td>
+  </tr>
+</table>
 
-## 위치 기반 글 작성
-> 원하는 위치에서 스토리를 작성합니다
-
-![글작성](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/7413995f-17cc-4014-88d5-7db243b49fe4)
-
-
-## 댓글 작성
-> 스토리에 댓글을 작성합니다.
-
-![댓글쓰기](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/efd740e4-5840-4f9b-99b8-58c0cc65d108)
-
-## 검색
-> 원하는 키워드로 검색합니다.
-
-![search](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/32038936/05d8968d-8f22-4d0c-97d8-6ba8c6d172fe)
-
-## 클러스터링
-> 지도에서 스토리목록을 클러스터링 합니다.
-
-![clustering](https://github.com/boostcampwm2023/iOS04-HeatPick/assets/32038936/30547f63-76fd-4dd3-a674-3f98ed7cbcd8)
 
 
 
