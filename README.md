@@ -40,15 +40,10 @@ HeatPick Wiki를 확인해보세요 !!
 ## 💡 주요 기능 소개
 
 <table>
-  <tr>
-    <th style="width: 33%;">위치 기반 추천</th>
-    <th style="width: 33%;">위치 기반 글 작성</th>
-    <th style="width: 33%;">댓글 작성</th>
-  </tr>
     <tr>
-    <th>현재 위치를 기반으로 <br>사용자와 스토리를 추천해줍니다.</th>
-    <th>원하는 위치에서 스토리를 작성합니다.</th>
-    <th>스토리에 댓글을 작성합니다.</th>
+    <th style="width: 33%;">현재 위치를 기반으로 사용자와 스토리를 추천해줍니다.</th>
+    <th style="width: 33%;">원하는 위치에서 스토리를 작성합니다.</th>
+    <th style="width: 33%;">스토리에 댓글을 작성합니다.</th>
   </tr>
   <tr>
     <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/3f7e0924-db21-4c4e-955e-7b72339b7dd8" style="width: 100%;"/></td>
