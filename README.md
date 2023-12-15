@@ -47,8 +47,8 @@ HeatPick Wiki를 확인해보세요 !!
   </tr>
   <tr>
     <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/b3e4f422-1d36-49df-b58b-6a43566aee81" style="width: 100%;"/></td>
-    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/5f73f812-712d-4d1c-9828-6dccf8b1a0ce" style="width: 100%;"/></td>
-    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/2614605d-b767-48fe-87e7-0cf8d563d1b0" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/c230faf9-4072-4913-9810-d20c94b89e46" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/8645df4a-1675-4577-a99f-d238873d940d" style="width: 100%;"/></td>
   </tr>
 </table>
 
