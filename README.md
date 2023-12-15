@@ -46,7 +46,7 @@ HeatPick Wiki를 확인해보세요 !!
     <th style="width: 33%;">스토리에 댓글을 작성합니다.</th>
   </tr>
   <tr>
-    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/3f7e0924-db21-4c4e-955e-7b72339b7dd8" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/b3e4f422-1d36-49df-b58b-6a43566aee81" style="width: 100%;"/></td>
     <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/5f73f812-712d-4d1c-9828-6dccf8b1a0ce" style="width: 100%;"/></td>
     <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/2614605d-b767-48fe-87e7-0cf8d563d1b0" style="width: 100%;"/></td>
   </tr>
@@ -61,9 +61,9 @@ HeatPick Wiki를 확인해보세요 !!
     <th style="width: 33%;">관심 있는 유저를 팔로잉합니다.</th>
   </tr>
   <tr>
-    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/29457fa3-5da4-4af3-bb0d-7bc80ecabee7" style="width: 100%;"/></td>
-    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/93ae1e46-7a38-47b8-853c-8fc75204dad2" style="width: 100%;"/></td>
-    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/81787bc8-7695-4c6d-821c-785d451f126a" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/11e95831-a0df-4951-8b8e-8b216b6fc876" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/c5c5e2ef-2e91-46e0-ba91-ce7835258360" style="width: 100%;"/></td>
+    <td><img src="https://github.com/boostcampwm2023/iOS04-HeatPick/assets/71696675/19527562-3d25-4eed-bcd3-e95b6ad070b1" style="width: 100%;"/></td>
   </tr>
 </table>
 
